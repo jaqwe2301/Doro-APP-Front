@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -10,13 +10,68 @@ import NoticeScreen from "./screens/NoticeScreen";
 import { Ionicons } from "@expo/vector-icons";
 import HistoryScreen from "./screens/HistoryScreen";
 import MyPageScreen from "./screens/MypageScreen";
+import LoginScreen from "./screens/LoginScreen";
+import SearchID from "./screens/SearchID";
+import SearchPW from "./screens/SearchPW";
+import SignUp from "./screens/SignUp";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
+function LogoTitle() {
+  return (
+    <View
+      style={{
+        height: 190,
+      }}
+    >
+      <Image
+        style={{ width: 174, height: 52, marginTop: 100, marginLeft: 20 }}
+        source={require("./assets/doroLogo.png")}
+      />
+    </View>
+  );
+}
+
 //로그인 전 화면 -로그인,회원가입 등등
 function AuthStack() {
-  return <Stack.Navigator></Stack.Navigator>;
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="login"
+        component={LoginScreen}
+        options={{
+          headerTitle: (props) => <LogoTitle {...props} />,
+        }}
+      />
+      <Stack.Screen
+        name="searchId"
+        component={SearchID}
+        options={{
+          title: "아이디 찾기",
+          headerStyle: {
+            height: 150,
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="searchPw"
+        component={SearchPW}
+        options={{
+          title: "비밀번호 찾기",
+        }}
+      />
+      <Stack.Screen
+        name="signUp"
+        component={SignUp}
+        options={{
+          title: "회원가입",
+        }}
+      />
+    </Stack.Navigator>
+  );
 }
 
 // icon 바꿀 예정
@@ -116,7 +171,7 @@ function Navigation() {
     <NavigationContainer>
       {/* {isLogin && <AuthStack />} */}
       {/* {!isLogin && <AuthenticatedStack />} */}
-      <AuthenticatedStack />
+      <AuthStack />
     </NavigationContainer>
   );
 }
@@ -142,4 +197,8 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 600,
   },
+  // header: {
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: "#e1e1e1",
+  // },
 });
