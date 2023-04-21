@@ -1,11 +1,18 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { useState } from "react";
+import AuthPhone from "../components/signUp/AuthPhone";
 
-function SignUp() {
+function SignUp({ navigation }) {
+  const [isPhoneNum, setIsPhoneNum] = useState(false);
+  const [isId, setIsId] = useState(false);
+
   return (
-    <View>
-      <Text>hi</Text>
+    <View style={{ flex: 1 }}>
+      <AuthPhone navigation={navigation} />
     </View>
   );
 }
 
 export default SignUp;
+
+const styles = StyleSheet.create({});

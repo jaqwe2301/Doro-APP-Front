@@ -1,8 +1,43 @@
-import { Text, Image, View, StyleSheet, Button } from "react-native";
+import {
+  Text,
+  Image,
+  View,
+  StyleSheet,
+  Button,
+  Pressable,
+  Alert,
+} from "react-native";
 import Input from "../components/ui/Input";
 import { GlobalStyles } from "../constants/styles";
+import { useContext, useState } from "react";
+import { login } from "../utill/auth";
+import { AuthContext } from "../store/auth-context";
 
 function LoginScreen({ navigation }) {
+  const [id, setId] = useState("");
+  const [pw, setPw] = useState("");
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  const authCtx = useContext(AuthContext);
+
+  const handleId = (text) => {
+    setId(text);
+  };
+  const handlePw = (text) => {
+    setPw(text);
+  };
+
+  async function loginHandler() {
+    setIsAuthenticating(true);
+    try {
+      const token = await login({ id: id, pw: pw });
+      authCtx.authenticate(token);
+    } catch (error) {
+      Alert.alert("로그인 실패", "could not ");
+      setIsAuthenticating(false);
+    }
+  }
+
   function navigationScreen({ title }) {
     navigation.navigate(title);
   }
@@ -10,13 +45,15 @@ function LoginScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.content}>
         <View>
-          <Input title="아이디"></Input>
+          <Input title="아이디" value={id} onChangeText={handleId}></Input>
         </View>
         <View style={{ marginTop: 14 }}>
-          <Input title="비밀번호"></Input>
+          <Input title="비밀번호" value={pw} onChangeText={handlePw}></Input>
         </View>
 
-        <Text style={styles.button}>로그인</Text>
+        <Pressable onPress={loginHandler}>
+          <Text style={styles.button}>로그인</Text>
+        </Pressable>
         <View style={styles.searchText}>
           <Text
             onPress={() => {

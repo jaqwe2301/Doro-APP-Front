@@ -1,19 +1,27 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image } from "react-native";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "./screens/HomeScreen";
 import { GlobalStyles } from "./constants/styles";
-import NoticeScreen from "./screens/NoticeScreen";
 import { Ionicons } from "@expo/vector-icons";
+import { getStatusBarHeight } from "react-native-status-bar-height";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import NoticeScreen from "./screens/NoticeScreen";
 import HistoryScreen from "./screens/HistoryScreen";
-import MyPageScreen from "./screens/MypageScreen";
+import HomeScreen from "./screens/HomeScreen";
+import MyPageScreen from "./screens/MyPageScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
 import SignUp from "./screens/SignUp";
+import AuthPhone from "./components/signUp/AuthPhone";
+import Id from "./components/signUp/Id";
+import Pw from "./components/signUp/Pw";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AuthContextProvider, { AuthContext } from "./store/auth-context";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -66,6 +74,27 @@ function AuthStack() {
       <Stack.Screen
         name="signUp"
         component={SignUp}
+        options={{
+          title: "회원가입",
+        }}
+      />
+      <Stack.Screen
+        name="authPhone"
+        component={AuthPhone}
+        options={{
+          title: "회원가입",
+        }}
+      />
+      <Stack.Screen
+        name="id"
+        component={Id}
+        options={{
+          title: "회원가입",
+        }}
+      />
+      <Stack.Screen
+        name="pw"
+        component={Pw}
         options={{
           title: "회원가입",
         }}
@@ -153,7 +182,7 @@ function BottomTabNavigator() {
   );
 }
 
-// 로그인 후 화면
+//로그인 후 화면
 function AuthenticatedStack() {
   return (
     <Stack.Navigator screenOptions={{}}>
@@ -167,31 +196,47 @@ function AuthenticatedStack() {
 }
 
 function Navigation() {
+  const authCtx = useContext(AuthContext);
+  // const [isTryingLogin, setIsTryingLogin] = useState(true);
+
+  useEffect(() => {
+    async function fetchToken() {
+      const storedToken = await AsyncStorage.getItem("token");
+
+      if (storedToken) {
+        authCtx.authenticate(storedToken);
+      }
+
+      // setIsTryingLogin(false);
+    }
+
+    fetchToken();
+  }, []);
   return (
     <NavigationContainer>
-      {/* {isLogin && <AuthStack />} */}
-      {/* {!isLogin && <AuthenticatedStack />} */}
-      <AuthStack />
+      {!authCtx.isAuthenticated && <AuthStack />}
+      {authCtx.isAuthenticated && <AuthenticatedStack />}
     </NavigationContainer>
   );
 }
 
 export default function App() {
   return (
-    <>
+    <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
-      <Navigation />
-    </>
+      <AuthContextProvider>
+        <Navigation />
+      </AuthContextProvider>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    paddingTop: getStatusBarHeight(),
   },
+
   bottomtab: {
     marginBottom: 9,
     fontSize: 10,

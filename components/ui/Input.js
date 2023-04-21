@@ -1,12 +1,16 @@
 import { View, Text, TextInput, StyleSheet, Image } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
-function Input({ title }) {
+function Input({ title, value, onChangeText }) {
   return (
     <View>
       <Text style={styles.text}>{title}</Text>
       <View style={styles.input}>
-        <TextInput style={styles.inputText}></TextInput>
+        <TextInput
+          style={styles.inputText}
+          value={value}
+          onChangeText={onChangeText}
+        ></TextInput>
       </View>
     </View>
   );
