@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { GlobalStyles } from "../constants/styles";
+import InputSmall from "../components/ui/InputSmall";
+import ButtonSmall from "../components/ui/ButtonSmall";
 
 function SearchID() {
   return (
@@ -8,7 +10,15 @@ function SearchID() {
         <Text style={styles.numberText}>휴대폰 번호인증</Text>
       </View>
       <View style={styles.viewBorder}></View>
-      <Text>가입 시 입력한 휴대폰 번호</Text>
+      <Text style={styles.text}>가입 시 입력한 휴대폰 번호</Text>
+      <View style={styles.inputContainer}>
+        <View style={{ flex: 1 }}>
+          <InputSmall hint="휴대폰 번호" />
+        </View>
+        <View>
+          <ButtonSmall title="인증 요청" />
+        </View>
+      </View>
     </View>
   );
 }
@@ -42,5 +52,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     fontSize: 15,
     fontWeight: 400,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    marginTop: 5,
+    marginLeft: 20,
+    marginRight: 20,
   },
 });
