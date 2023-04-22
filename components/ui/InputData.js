@@ -1,20 +1,22 @@
 import { View, StyleSheet, TextInput } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
-function InputSmall({ hint, value, onChangeText }) {
+function InputData({ hint, value, onChangeText, keyboardType }) {
   return (
     <View>
       <TextInput
         style={styles.textInput}
         placeholder={hint}
-        keyboardType="decimal-pad"
+        placeholderTextColor={GlobalStyles.colors.gray05}
+        keyboardType={keyboardType}
         onChangeText={onChangeText}
         value={value}
+        autoCapitalize="none"
       />
     </View>
   );
 }
 
-export default InputSmall;
+export default InputData;
 
 const styles = StyleSheet.create({
   textInput: {
@@ -24,5 +26,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5.41,
     paddingLeft: 20,
+    lineHeight: 200,
   },
 });

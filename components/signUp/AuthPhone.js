@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useState } from "react";
-import InputSmall from "../../components/ui/InputSmall";
+
 import InputText from "../../components/ui/InputText";
 import ButtonSmall from "../../components/ui/ButtonSmall";
 import { GlobalStyles } from "../../constants/styles";
@@ -8,6 +8,7 @@ import ButtonBig from "../../components/ui/ButtonBig";
 
 import { useNavigation } from "@react-navigation/native";
 import { authPhoneNum, verifyauthPhoneNum } from "../../utill/auth";
+import InputData from "../ui/InputData";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
@@ -56,10 +57,11 @@ function AuthPhone() {
       <Text style={styles.text}>입력하신 번호로 인증번호가 전송됩니다.</Text>
       <View style={styles.inputContainer}>
         <View style={styles.input}>
-          <InputSmall
+          <InputData
             hint="휴대폰 번호"
             onChangeText={handlePhoneChange}
             value={phoneNum}
+            keyboardType="numeric"
           />
         </View>
         <View>
@@ -73,7 +75,7 @@ function AuthPhone() {
       {isVisible && (
         <>
           <View style={styles.lInputContainer}>
-            <InputSmall
+            <InputData
               hint="인증번호"
               value={authNum}
               onChangeText={handleAuthChange}
@@ -120,6 +122,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 6,
     marginBottom: 18,
+    lineHeight: 20,
   },
   textSend: {
     fontSize: 12,

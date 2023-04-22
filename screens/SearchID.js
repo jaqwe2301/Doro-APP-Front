@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
+
 import { GlobalStyles } from "../constants/styles";
-import InputSmall from "../components/ui/InputSmall";
+import InputSmall from "../components/ui/InputData";
 import ButtonSmall from "../components/ui/ButtonSmall";
 
 function SearchID() {
