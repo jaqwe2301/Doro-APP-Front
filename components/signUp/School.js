@@ -32,7 +32,7 @@ function School() {
   };
 
   function navigateId() {
-    navigation.navigate("school");
+    navigation.navigate("code");
   }
 
   return (
