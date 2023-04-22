@@ -1,25 +1,24 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
 
 import InputText from "../../components/ui/InputText";
-import ButtonSmall from "../../components/ui/ButtonSmall";
+
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "../../components/ui/ButtonBig";
 import { useNavigation } from "@react-navigation/native";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
-function Id() {
-  const [inputId, setInputId] = useState("");
+function Name() {
+  const [inputName, setInputName] = useState("");
+  const [inputBirth, setInputBirth] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
-
   const { signData, setSignData } = useContext(SignContext);
 
-  const handleIdChange = (text) => {
-    setInputId(text);
-    setSignData({ ...signData, account: inputId });
-
+  const handleNameChange = (text) => {
+    setInputName(text);
+    setSignData({ ...signData, name: inputName });
     if (text.length === 6) {
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
@@ -27,22 +26,36 @@ function Id() {
     }
   };
 
+  const handleBirthChange = (text) => {
+    setInputBirth(text);
+    setSignData({ ...signData, birth: inputBirth });
+  };
+
   function navigateId() {
-    navigation.navigate("pw");
+    navigation.navigate("school");
   }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={2} flex2={8} />
+      <Bar flex1={3} flex2={6} />
       <View style={styles.textContainer}>
-        <InputText text="아이디를 입력해 주세요." />
+        <InputText text="이름을 입력해 주세요." />
       </View>
-      <Text style={styles.text}>입력하신 아이디는 로그인 시 사용됩니다.</Text>
       <View style={styles.inputContainer}>
         <InputData
-          hint="영문 또는 숫자 4~20자"
-          onChangeText={handleIdChange}
-          value={inputId}
+          hint="이름"
+          onChangeText={handleNameChange}
+          value={inputName}
+        />
+      </View>
+      <View style={styles.textContainer}>
+        <InputText text="생년월일을 입력해 주세요." />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputData
+          hint="생년월일"
+          onChangeText={handleBirthChange}
+          value={inputBirth}
         />
       </View>
       <View style={styles.buttonContainer}>
@@ -52,7 +65,7 @@ function Id() {
   );
 }
 
-export default Id;
+export default Name;
 
 const styles = StyleSheet.create({
   textContainer: {
@@ -61,7 +74,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginTop: 44,
+    marginTop: 84,
   },
   inputContainer: {
     marginHorizontal: 20,
@@ -82,7 +95,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 6,
     marginBottom: 18,
-    lineHeight: 20,
   },
   textSend: {
     fontSize: 12,

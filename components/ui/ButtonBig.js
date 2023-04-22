@@ -20,10 +20,12 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 34,
   },
   text: {
     color: GlobalStyles.colors.gray07,
     fontSize: 17,
     fontWeight: 600,
+    lineHeight: 22,
   },
 });

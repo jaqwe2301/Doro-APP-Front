@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     textAlignVertical: "center",
+    lineHeight: 20,
   },
   textContainer: {
     width: 80,
