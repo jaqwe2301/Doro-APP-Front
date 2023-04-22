@@ -33,7 +33,7 @@ function Code() {
   };
 
   function navigateId() {
-    navigation.navigate("school");
+    navigation.navigate("finish");
   }
 
   function naviAgreeInfo() {
