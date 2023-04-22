@@ -27,6 +27,7 @@ import SignContextProvider from "./store/sign-context";
 import School from "./components/signUp/School";
 import Code from "./components/signUp/Code";
 import AgreeInfo from "./components/signUp/AgreeInfo";
+import Finish from "./components/signUp/finish";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -129,6 +130,13 @@ function AuthStack() {
         <Stack.Screen
           name="agreeInfo"
           component={AgreeInfo}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="finish"
+          component={Finish}
           options={{
             title: "회원가입",
           }}
