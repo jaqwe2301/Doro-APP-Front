@@ -43,6 +43,12 @@ function LoginScreen({ navigation }) {
   }
   return (
     <View style={styles.container}>
+      <View
+        style={{
+          borderBottomColor: GlobalStyles.colors.gray05,
+          borderBottomWidth: 0.5,
+        }}
+      />
       <View style={styles.content}>
         <View>
           <Input title="아이디" value={id} onChangeText={handleId}></Input>

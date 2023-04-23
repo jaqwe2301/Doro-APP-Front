@@ -27,7 +27,7 @@ import SignContextProvider from "./store/sign-context";
 import School from "./components/signUp/School";
 import Code from "./components/signUp/Code";
 import AgreeInfo from "./components/signUp/AgreeInfo";
-import Finish from "./components/signUp/finish";
+import Finish from "./components/signUp/Finish";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -47,16 +47,35 @@ function LogoTitle() {
   );
 }
 
+function HeaderStyle({ title }) {
+  return (
+    <View style={{ height: 60 }}>
+      <Text>{title}</Text>
+    </View>
+  );
+}
+
 //로그인 전 화면 -로그인,회원가입 등등
 function AuthStack() {
   return (
     <SignContextProvider>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerShadowVisible: false,
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontWeight: "600",
+            fontSize: 17,
+          },
+        }}
+      >
         <Stack.Screen
           name="login"
           component={LoginScreen}
           options={{
             headerTitle: (props) => <LogoTitle {...props} />,
+            headerBackVisible: false,
+            headerTitleAlign: "left",
           }}
         />
         <Stack.Screen
@@ -64,11 +83,6 @@ function AuthStack() {
           component={SearchID}
           options={{
             title: "아이디 찾기",
-            headerStyle: {
-              height: 150,
-              justifyContent: "center",
-              alignItems: "center",
-            },
           }}
         />
         <Stack.Screen
@@ -288,8 +302,8 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 600,
   },
-  // header: {
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: "#e1e1e1",
-  // },
+  header: {
+    fontSize: 17,
+    fontWeight: 600,
+  },
 });

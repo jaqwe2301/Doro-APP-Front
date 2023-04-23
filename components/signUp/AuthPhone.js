@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import InputText from "../../components/ui/InputText";
 import ButtonSmall from "../../components/ui/ButtonSmall";
@@ -9,6 +9,8 @@ import ButtonBig from "../../components/ui/ButtonBig";
 import { useNavigation } from "@react-navigation/native";
 import { authPhoneNum, verifyauthPhoneNum } from "../../utill/auth";
 import InputData from "../ui/InputData";
+import Bar from "../ui/Bar";
+import { SignContext } from "../../store/sign-context";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
@@ -16,9 +18,11 @@ function AuthPhone() {
   const [sbtnColor, setsbtnColor] = useState(GlobalStyles.colors.gray05);
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [isVisible, setIsVisible] = useState(false);
+  const { signData, setSignData } = useContext(SignContext);
   const navigation = useNavigation();
   const handlePhoneChange = (text) => {
     setphoneNum(text);
+    setSignData({ ...signData, phone: phoneNum });
     if (text.length === 11) {
       setsbtnColor(GlobalStyles.colors.gray01);
     } else {
@@ -51,6 +55,7 @@ function AuthPhone() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
+      <Bar flex1={0} flex2={1} />
       <View style={styles.textContainer}>
         <InputText text="휴대폰 번호를 알려주세요." />
       </View>

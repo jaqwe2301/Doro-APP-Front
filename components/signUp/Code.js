@@ -11,15 +11,16 @@ import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
 function Code() {
-  const [inputName, setInputName] = useState("");
-  const [inputBirth, setInputBirth] = useState("");
+  const [inputCode, setInputCode] = useState("");
+  const [inputRole, setInputRole] = useState("");
+
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
 
-  const handleNameChange = (text) => {
-    setInputName(text);
-    setSignData({ ...signData, name: inputName });
+  const handleCodeChange = (text) => {
+    setInputCode(text);
+    setSignData({ ...signData, doroAuth: inputCode });
     if (text.length === 6) {
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
@@ -27,9 +28,9 @@ function Code() {
     }
   };
 
-  const handleBirthChange = (text) => {
-    setInputBirth(text);
-    setSignData({ ...signData, birth: inputBirth });
+  const handleRoleChange = (text) => {
+    setInputRole(text);
+    setSignData({ ...signData, role: inputRole });
   };
 
   function navigateId() {
@@ -49,16 +50,16 @@ function Code() {
       <View style={styles.inputContainer}>
         <InputData
           hint="가입 유형을 선택해주세요"
-          onChangeText={handleNameChange}
-          value={inputName}
+          onChangeText={handleRoleChange}
+          value={inputRole}
         />
       </View>
 
       <View style={styles.inputContainer}>
         <InputData
           hint="가입 코드를 입력해주세요"
-          onChangeText={handleBirthChange}
-          value={inputBirth}
+          onChangeText={handleCodeChange}
+          value={inputCode}
         />
       </View>
       <View style={styles.textContainer}>

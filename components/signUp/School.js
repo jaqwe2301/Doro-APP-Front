@@ -10,15 +10,17 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 function School() {
-  const [inputName, setInputName] = useState("");
-  const [inputBirth, setInputBirth] = useState("");
+  const [inputSchool, setInputSchool] = useState("");
+  const [inputMajor, setInputMajor] = useState("");
+  const [inputSchoolId, setInputSchoolID] = useState("");
+  const [inputStatus, setInputStatus] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
 
-  const handleNameChange = (text) => {
-    setInputName(text);
-    setSignData({ ...signData, name: inputName });
+  const handleSchoolChange = (text) => {
+    setInputSchool(text);
+    setSignData({ ...signData, school: inputSchool });
     if (text.length === 6) {
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
@@ -26,9 +28,17 @@ function School() {
     }
   };
 
-  const handleBirthChange = (text) => {
-    setInputBirth(text);
-    setSignData({ ...signData, birth: inputBirth });
+  const handleMajorChange = (text) => {
+    setInputMajor(text);
+    setSignData({ ...signData, major: inputMajor });
+  };
+  const handleSchoolIdChange = (text) => {
+    setInputSchoolID(text);
+    setSignData({ ...signData, schoolID: inputSchoolId });
+  };
+  const handleStatusChange = (text) => {
+    setInputStatus(text);
+    setSignData({ ...signData, studentStatus: inputStatus });
   };
 
   function navigateId() {
@@ -44,8 +54,8 @@ function School() {
       <View style={styles.inputContainer}>
         <InputData
           hint="학교를 입력하세요"
-          onChangeText={handleNameChange}
-          value={inputName}
+          onChangeText={handleSchoolChange}
+          value={inputSchool}
         />
       </View>
       <View style={styles.textContainer}>
@@ -54,8 +64,8 @@ function School() {
       <View style={styles.inputContainer}>
         <InputData
           hint="전공을 입력하세요"
-          onChangeText={handleBirthChange}
-          value={inputBirth}
+          onChangeText={handleMajorChange}
+          value={inputMajor}
         />
       </View>
       <View style={styles.textContainer}>
@@ -64,8 +74,8 @@ function School() {
       <View style={styles.inputContainer}>
         <InputData
           hint="학번을 입력하세요"
-          onChangeText={handleBirthChange}
-          value={inputBirth}
+          onChangeText={handleSchoolIdChange}
+          value={inputSchoolId}
         />
       </View>
       <View style={styles.textContainer}>
@@ -77,8 +87,8 @@ function School() {
       <View style={styles.inputContainer}>
         <InputData
           hint="재학유무를 선택하세요"
-          onChangeText={handleBirthChange}
-          value={inputBirth}
+          onChangeText={handleStatusChange}
+          value={inputStatus}
         />
       </View>
       <View style={styles.buttonContainer}>
