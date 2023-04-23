@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text } from "react-native";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
 import { useNavigation } from "@react-navigation/native";
@@ -9,7 +9,13 @@ function Finish() {
     navigation.replace("login");
   }
   return (
-    <View style={{ flex: 1, backgroundColor: "white", alignItems: "stretch" }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        justifyContent: "space-between",
+      }}
+    >
       <View>
         <Image
           style={{ width: 121, height: 26, marginTop: 89, marginLeft: 24 }}
@@ -17,7 +23,7 @@ function Finish() {
         />
         <Text style={styles.text}>회원가입을 축하합니다.</Text>
       </View>
-      <View style={{ marginBottom: 83 }}>
+      <View style={{ marginBottom: 83, marginHorizontal: 20 }}>
         <ButtonBig
           text="로그인"
           style={GlobalStyles.colors.primaryDefault}
