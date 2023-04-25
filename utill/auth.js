@@ -37,6 +37,24 @@ export async function findAccount({ phone }) {
 
   return code;
 }
+export async function changePassword({
+  account,
+  newPassword,
+  newPasswordCheck,
+  phone,
+}) {
+  const response = await axios.post(URL + "/change/password", {
+    account: account,
+    newPassword: newPassword,
+    newPasswordCheck: newPasswordCheck,
+    phone: phone,
+  });
+
+  const code = response.data;
+  console.log(code);
+
+  return code;
+}
 
 export async function login({ id, pw }) {
   const response = await axios.post(URL + "/login", {
