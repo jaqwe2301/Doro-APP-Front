@@ -30,6 +30,7 @@ import AgreeInfo from "./components/signUp/AgreeInfo";
 import Finish from "./components/signUp/Finish";
 import FindId from "./components/signUp/FindId";
 import NotFindId from "./components/signUp/NotFindId";
+import ChangePw from "./components/signUp/ChangePw";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -169,6 +170,13 @@ function AuthStack() {
           component={NotFindId}
           options={{
             title: "아이디 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="changePw"
+          component={ChangePw}
+          options={{
+            title: "비밀번호 변경",
           }}
         />
       </Stack.Navigator>
