@@ -28,6 +28,8 @@ import School from "./components/signUp/School";
 import Code from "./components/signUp/Code";
 import AgreeInfo from "./components/signUp/AgreeInfo";
 import Finish from "./components/signUp/Finish";
+import FindId from "./components/signUp/FIndID";
+import NotFindId from "./components/signUp/NotFindId";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -153,6 +155,20 @@ function AuthStack() {
           component={Finish}
           options={{
             title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="findId"
+          component={FindId}
+          options={{
+            title: "아이디 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="notFindId"
+          component={NotFindId}
+          options={{
+            title: "아이디 찾기",
           }}
         />
       </Stack.Navigator>

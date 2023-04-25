@@ -12,7 +12,7 @@ import InputData from "../ui/InputData";
 function School() {
   const [inputSchool, setInputSchool] = useState("");
   const [inputMajor, setInputMajor] = useState("");
-  const [inputSchoolId, setInputSchoolID] = useState("");
+  const [inputStudentId, setInputStudentID] = useState("");
   const [inputStatus, setInputStatus] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
@@ -32,9 +32,9 @@ function School() {
     setInputMajor(text);
     setSignData({ ...signData, major: inputMajor });
   };
-  const handleSchoolIdChange = (text) => {
-    setInputSchoolID(text);
-    setSignData({ ...signData, schoolID: inputSchoolId });
+  const handleStudentIdChange = (text) => {
+    setInputStudentID(text);
+    setSignData({ ...signData, studentID: inputStudentId });
   };
   const handleStatusChange = (text) => {
     setInputStatus(text);
@@ -74,8 +74,8 @@ function School() {
       <View style={styles.inputContainer}>
         <InputData
           hint="학번을 입력하세요"
-          onChangeText={handleSchoolIdChange}
-          value={inputSchoolId}
+          onChangeText={handleStudentIdChange}
+          value={inputStudentId}
         />
       </View>
       <View style={styles.textContainer}>
