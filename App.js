@@ -28,7 +28,7 @@ import School from "./components/signUp/School";
 import Code from "./components/signUp/Code";
 import AgreeInfo from "./components/signUp/AgreeInfo";
 import Finish from "./components/signUp/Finish";
-import FindId from "./components/signUp/FIndID";
+import FindId from "./components/signUp/FindId";
 import NotFindId from "./components/signUp/NotFindId";
 
 const Stack = createNativeStackNavigator();
