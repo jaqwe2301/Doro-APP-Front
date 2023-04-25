@@ -120,7 +120,11 @@ function SearchPW() {
         </View>
       </View>
       <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-        <ButtonBig text="비밀번호 확인 " style={lbtnColor} onPress={test} />
+        <ButtonBig
+          text="비밀번호 확인 "
+          style={lbtnColor}
+          onPress={verifyAuthNum}
+        />
       </View>
     </View>
   );
