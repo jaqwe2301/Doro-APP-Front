@@ -11,15 +11,19 @@ import { authPhoneNum, verifyauthPhoneNum } from "../../utill/auth";
 import InputData from "../ui/InputData";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
+import Phone from "../ui/Phone";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
   const [authNum, setauthNum] = useState("");
   const [sbtnColor, setsbtnColor] = useState(GlobalStyles.colors.gray05);
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
-  const [isVisible, setIsVisible] = useState(false);
+
   const { signData, setSignData } = useContext(SignContext);
   const navigation = useNavigation();
+
+  const [isVisible, setIsVisible] = useState(false);
+
   const handlePhoneChange = (text) => {
     setphoneNum(text);
     setSignData({ ...signData, phone: phoneNum });
@@ -39,14 +43,13 @@ function AuthPhone() {
   };
 
   function requestNumber() {
-    authPhoneNum({ messageType: "ACCOUNT", phone: phoneNum });
+    authPhoneNum({ messageType: "JOIN", phone: phoneNum });
     setIsVisible(true);
   }
-
   function verifyAuthNum() {
     verifyauthPhoneNum({
       authNum: authNum,
-      messageType: "ACCOUNT",
+      messageType: "JOIN",
       phone: phoneNum,
     });
 
@@ -89,6 +92,7 @@ function AuthPhone() {
           <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
         </>
       )}
+
       <View style={styles.buttonContainer}>
         <ButtonBig text="다음" style={lbtnColor} onPress={verifyAuthNum} />
       </View>

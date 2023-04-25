@@ -10,6 +10,7 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
+import { signUp } from "../../utill/auth";
 function Code() {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
@@ -34,6 +35,23 @@ function Code() {
   };
 
   function navigateId() {
+    // signUp({
+    //   account: signData.account,
+    //   birth: signData.birth,
+    //   doroAuth: signData.doroAuth,
+    //   gender: "FEMALE",
+    //   generation: 1,
+    //   major: signData.major,
+    //   name: signData.name,
+    //   password: signData.password,
+    //   passwordCheck: signData.passwordCheck,
+    //   phone: signData.phone,
+    //   role: signData.role,
+    //   profileImg: "",
+    //   school: signData.school,
+    //   studentId: signData.studentId,
+    //   studentStatus: signData.studentStatus,
+    // });
     navigation.navigate("finish");
   }
 
