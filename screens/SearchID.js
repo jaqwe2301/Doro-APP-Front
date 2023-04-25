@@ -47,10 +47,16 @@ function SearchID() {
       console.log(success);
       if (success) {
         isAccount();
+      } else {
+        Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
       }
     } catch (error) {
-      Alert.alert("인증번호 불일치", "인증번호를 정확히 입력해주세요");
+      Alert.alert("ERROR", "Network Error");
     }
+  }
+
+  function test() {
+    navigation.navigate("findId");
   }
 
   async function isAccount() {
@@ -60,10 +66,17 @@ function SearchID() {
       });
 
       if (response.success) {
-        setNavi(false);
-      }
+        if (response.data) {
+          const idStar = response.data.substr(0, 2);
+          const idStar2 = response.data.substr(-1);
+          const star = response.data.length - 3;
+          const id = idStar + "*".repeat(star) + idStar2;
 
-      console.log(code);
+          navigation.navigate("findId", { id: id });
+        } else {
+          navigation.navigate("notFindId");
+        }
+      }
     } catch (error) {
       console.log(error);
     }
@@ -115,11 +128,7 @@ function SearchID() {
         </View>
       </View>
       <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-        <ButtonBig
-          text="아이디 확인 "
-          style={lbtnColor}
-          onPress={verifyAuthNum}
-        />
+        <ButtonBig text="아이디 확인 " style={lbtnColor} onPress={isAccount} />
       </View>
     </View>
   );
