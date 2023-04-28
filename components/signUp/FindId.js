@@ -15,6 +15,8 @@ function FindId({ route }) {
   function naviFindPW() {
     navigation.navigate("searchPw");
   }
+
+  
   //   const id = route.params.id;
   return (
     <View style={styles.container}>

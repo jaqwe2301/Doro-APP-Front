@@ -298,8 +298,8 @@ function Navigation() {
   return (
     // 로그인 여부에 따른 화면
     <NavigationContainer>
-      {authCtx.isAuthenticated && <AuthStack />}
-      {!authCtx.isAuthenticated && <AuthenticatedStack />}
+      {!authCtx.isAuthenticated && <AuthStack />}
+      {authCtx.isAuthenticated && <AuthenticatedStack />}
     </NavigationContainer>
   );
 }
