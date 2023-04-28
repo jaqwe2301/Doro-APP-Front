@@ -66,16 +66,14 @@ function SearchID() {
       });
 
       if (response.success) {
-        if (response.data) {
-          const idStar = response.data.substr(0, 2);
-          const idStar2 = response.data.substr(-1);
-          const star = response.data.length - 3;
-          const id = idStar + "*".repeat(star) + idStar2;
+        const idStar = response.data.substr(0, 2);
+        const idStar2 = response.data.substr(-1);
+        const star = response.data.length - 3;
+        const id = idStar + "*".repeat(star) + idStar2;
 
-          navigation.navigate("findId", { id: id });
-        } else {
-          navigation.navigate("notFindId");
-        }
+        navigation.navigate("findId", { id: id });
+      } else {
+        navigation.navigate("notFindId");
       }
     } catch (error) {
       console.log(error);
@@ -128,7 +126,11 @@ function SearchID() {
         </View>
       </View>
       <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-        <ButtonBig text="아이디 확인 " style={lbtnColor} onPress={isAccount} />
+        <ButtonBig
+          text="아이디 확인 "
+          style={lbtnColor}
+          onPress={verifyAuthNum}
+        />
       </View>
     </View>
   );
