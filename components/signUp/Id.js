@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { useContext, useState } from "react";
 
 import InputText from "../../components/ui/InputText";
@@ -12,23 +12,34 @@ import InputData from "../ui/InputData";
 function Id() {
   const [inputId, setInputId] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
+  const [isNavi, setIsNavi] = useState(false);
   const navigation = useNavigation();
 
   const { signData, setSignData } = useContext(SignContext);
 
   const handleIdChange = (text) => {
     setInputId(text);
-    setSignData({ ...signData, account: inputId });
 
-    if (text.length === 6) {
+    if (
+      text.length >= 4 &&
+      text.length <= 20 &&
+      text.search(/[a-zA-Z0-9]+/g) >= 0
+    ) {
+      setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
+      setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
   };
 
   function navigateId() {
-    navigation.navigate("pw");
+    if (isNavi) {
+      setSignData({ ...signData, account: inputId });
+      navigation.navigate("pw");
+    } else {
+      // Alert.alert("Input Error", "아이디를 제대로 입력해주세요");
+    }
   }
 
   return (
