@@ -18,21 +18,36 @@ function Name() {
 
   const handleNameChange = (text) => {
     setInputName(text);
-    setSignData({ ...signData, name: inputName });
-    if (text.length === 6) {
-      setlbtnColor(GlobalStyles.colors.primaryAccent);
-    } else {
-      setlbtnColor(GlobalStyles.colors.gray05);
-    }
+
+    // if () {
+    //   setlbtnColor(GlobalStyles.colors.primaryAccent);
+    // } else {
+    //   setlbtnColor(GlobalStyles.colors.gray05);
+    // }
+    setlbtnColor(
+      text && inputBirth !== ""
+        ? GlobalStyles.colors.primaryAccent
+        : GlobalStyles.colors.gray05
+    );
   };
 
   const handleBirthChange = (text) => {
     setInputBirth(text);
-    setSignData({ ...signData, birth: inputBirth });
+
+    setlbtnColor(
+      text && inputName !== ""
+        ? GlobalStyles.colors.primaryAccent
+        : GlobalStyles.colors.gray05
+    );
   };
 
   function navigateId() {
-    navigation.navigate("school");
+    if (inputName !== "" && inputBirth !== "") {
+      setSignData({ ...signData, name: inputName, birth: inputBirth });
+
+      navigation.navigate("school");
+    } else {
+    }
   }
 
   return (
