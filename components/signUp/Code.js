@@ -21,38 +21,45 @@ function Code() {
 
   const handleCodeChange = (text) => {
     setInputCode(text);
-    setSignData({ ...signData, doroAuth: inputCode });
-    if (text.length === 6) {
-      setlbtnColor(GlobalStyles.colors.primaryAccent);
-    } else {
-      setlbtnColor(GlobalStyles.colors.gray05);
-    }
+
+    setlbtnColor(
+      text !== "" && inputRole !== ""
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
+    );
   };
 
   const handleRoleChange = (text) => {
     setInputRole(text);
-    setSignData({ ...signData, role: inputRole });
+    setlbtnColor(
+      text !== "" && inputCode !== ""
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
+    );
   };
 
   function navigateId() {
-    // signUp({
-    //   account: signData.account,
-    //   birth: signData.birth,
-    //   doroAuth: signData.doroAuth,
-    //   gender: "FEMALE",
-    //   generation: 1,
-    //   major: signData.major,
-    //   name: signData.name,
-    //   password: signData.password,
-    //   passwordCheck: signData.passwordCheck,
-    //   phone: signData.phone,
-    //   role: signData.role,
-    //   profileImg: "",
-    //   school: signData.school,
-    //   studentId: signData.studentId,
-    //   studentStatus: signData.studentStatus,
-    // });
-    navigation.navigate("finish");
+    if (inputRole !== "" && inputCode !== "") {
+      signUp({
+        account: signData.account,
+        birth: signData.birth,
+        doroAuth: inputCode,
+        gender: "FEMALE",
+        generation: 1,
+        major: signData.major,
+        name: signData.name,
+        password: signData.password,
+        passwordCheck: signData.passwordCheck,
+        phone: signData.phone,
+        role: inputRole,
+        profileImg: "",
+        school: signData.school,
+        studentId: signData.studentId,
+        studentStatus: signData.studentStatus,
+      });
+      navigation.navigate("finish");
+    } else {
+    }
   }
 
   function naviAgreeInfo() {
@@ -62,78 +69,82 @@ function Code() {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar flex1={8} flex2={1} />
-      <View style={styles.textContainer}>
-        <InputText text="가입코드를 입력해 주세요." />
-      </View>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="가입 유형을 선택해주세요"
-          onChangeText={handleRoleChange}
-          value={inputRole}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="가입 코드를 입력해주세요"
-          onChangeText={handleCodeChange}
-          value={inputCode}
-        />
-      </View>
-      <View style={styles.textContainer}>
-        <InputText text="약관에 동의해 주세요" />
-      </View>
-      <View>
-        <View
-          style={{ flexDirection: "row", marginTop: 21, marginLeft: 22.57 }}
-        >
-          <Ionicons
-            name="checkbox"
-            color={GlobalStyles.colors.gray05}
-            size={23}
-          />
-          <Text style={styles.acceptText}>전체동의</Text>
-        </View>
-        <View style={styles.acceptContentContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <Ionicons
-              name="checkmark"
-              color={GlobalStyles.colors.gray05}
-              size={15}
-            />
-
-            <Text style={styles.acceptContentText}>[필수] 이용약관</Text>
+      <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <View>
+          <View style={styles.textContainer}>
+            <InputText text="가입코드를 입력해 주세요." />
           </View>
-          <Pressable style={{ marginRight: 42 }} onPress={naviAgreeInfo}>
-            <Ionicons
-              name="chevron-forward"
-              color={GlobalStyles.colors.gray05}
-              size={20}
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="가입 유형을 선택해주세요"
+              onChangeText={handleRoleChange}
+              value={inputRole}
             />
-          </Pressable>
-        </View>
-        <View style={styles.acceptContentContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <Ionicons
-              name="checkmark"
-              color={GlobalStyles.colors.gray05}
-              size={15}
-            />
-            <Text style={styles.acceptContentText}>
-              [필수] 개인정보 수집 및 이용
-            </Text>
           </View>
-          <Pressable style={{ marginRight: 42 }} onPress={naviAgreeInfo}>
-            <Ionicons
-              name="chevron-forward"
-              color={GlobalStyles.colors.gray05}
-              size={20}
+
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="가입 코드를 입력해주세요"
+              onChangeText={handleCodeChange}
+              value={inputCode}
             />
-          </Pressable>
+          </View>
+          <View style={styles.textContainer}>
+            <InputText text="약관에 동의해 주세요" />
+          </View>
+          <View>
+            <View
+              style={{ flexDirection: "row", marginTop: 21, marginLeft: 22.57 }}
+            >
+              <Ionicons
+                name="checkbox"
+                color={GlobalStyles.colors.gray05}
+                size={23}
+              />
+              <Text style={styles.acceptText}>전체동의</Text>
+            </View>
+            <View style={styles.acceptContentContainer}>
+              <View style={{ flexDirection: "row" }}>
+                <Ionicons
+                  name="checkmark"
+                  color={GlobalStyles.colors.gray05}
+                  size={15}
+                />
+
+                <Text style={styles.acceptContentText}>[필수] 이용약관</Text>
+              </View>
+              <Pressable style={{ marginRight: 42 }} onPress={naviAgreeInfo}>
+                <Ionicons
+                  name="chevron-forward"
+                  color={GlobalStyles.colors.gray05}
+                  size={20}
+                />
+              </Pressable>
+            </View>
+            <View style={styles.acceptContentContainer}>
+              <View style={{ flexDirection: "row" }}>
+                <Ionicons
+                  name="checkmark"
+                  color={GlobalStyles.colors.gray05}
+                  size={15}
+                />
+                <Text style={styles.acceptContentText}>
+                  [필수] 개인정보 수집 및 이용
+                </Text>
+              </View>
+              <Pressable style={{ marginRight: 42 }} onPress={naviAgreeInfo}>
+                <Ionicons
+                  name="chevron-forward"
+                  color={GlobalStyles.colors.gray05}
+                  size={20}
+                />
+              </Pressable>
+            </View>
+          </View>
         </View>
-      </View>
-      <View style={styles.buttonContainer}>
-        <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
+        <View style={styles.buttonContainer}>
+          <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
+        </View>
       </View>
     </View>
   );
@@ -148,7 +159,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginTop: 84,
+    marginBottom: 34,
   },
   inputContainer: {
     marginHorizontal: 20,
