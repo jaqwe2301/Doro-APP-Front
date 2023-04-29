@@ -21,6 +21,8 @@ function AuthPhone() {
   const [btnTitle, setBtnTitle] = useState("인증 요청");
   const { signData, setSignData } = useContext(SignContext);
   const navigation = useNavigation();
+  const [flex1, setFlex1] = useState(0);
+  const flex2 = 10 - flex1;
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -36,8 +38,10 @@ function AuthPhone() {
   const handleAuthChange = (text) => {
     setauthNum(text);
     if (text.length === 6) {
+      setFlex1(1);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
+      setFlex1(0);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
   };
@@ -65,7 +69,7 @@ function AuthPhone() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={0} flex2={1} />
+      <Bar flex1={flex1} flex2={flex2} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>

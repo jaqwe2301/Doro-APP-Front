@@ -1,6 +1,12 @@
 import { View, StyleSheet, TextInput } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
-function InputData({ hint, value, onChangeText, keyboardType }) {
+function InputData({
+  hint,
+  value,
+  onChangeText,
+  keyboardType,
+  secureTextEntry,
+}) {
   return (
     <View>
       <TextInput
@@ -11,6 +17,7 @@ function InputData({ hint, value, onChangeText, keyboardType }) {
         onChangeText={onChangeText}
         value={value}
         autoCapitalize="none"
+        secureTextEntry={secureTextEntry}
       />
     </View>
   );
