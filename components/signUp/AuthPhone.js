@@ -18,7 +18,7 @@ function AuthPhone() {
   const [authNum, setauthNum] = useState("");
   const [sbtnColor, setsbtnColor] = useState(GlobalStyles.colors.gray05);
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
-
+  const [btnTitle, setBtnTitle] = useState("인증 요청");
   const { signData, setSignData } = useContext(SignContext);
   const navigation = useNavigation();
 
@@ -43,18 +43,24 @@ function AuthPhone() {
   };
 
   function requestNumber() {
-    authPhoneNum({ messageType: "JOIN", phone: phoneNum });
-    setIsVisible(true);
+    if (phoneNum.length === 11) {
+      authPhoneNum({ messageType: "JOIN", phone: phoneNum });
+      setBtnTitle("다시 요청");
+      setIsVisible(true);
+    } else {
+    }
   }
   function verifyAuthNum() {
-    verifyauthPhoneNum({
-      authNum: authNum,
-      messageType: "JOIN",
-      phone: phoneNum,
-    });
-    setSignData({ ...signData, phone: phoneNum });
+    if (authNum.length === 6) {
+      verifyauthPhoneNum({
+        authNum: authNum,
+        messageType: "JOIN",
+        phone: phoneNum,
+      });
+      setSignData({ ...signData, phone: phoneNum });
 
-    navigation.navigate("id");
+      navigation.navigate("id");
+    }
   }
 
   return (
@@ -75,7 +81,7 @@ function AuthPhone() {
         </View>
         <View>
           <ButtonSmall
-            title="인증 요청"
+            title={btnTitle}
             onPress={requestNumber}
             style={sbtnColor}
           />
@@ -88,6 +94,7 @@ function AuthPhone() {
               hint="인증번호"
               value={authNum}
               onChangeText={handleAuthChange}
+              keyboardType="numeric"
             />
           </View>
           <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
