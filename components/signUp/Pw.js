@@ -14,32 +14,73 @@ import InputData from "../ui/InputData";
 function Pw() {
   const [inputPw, setInputPw] = useState("");
   const [inputRePw, setInputRePw] = useState("");
+  const [isNavi, setIsNavi] = useState(false);
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
+  const [eng, setEng] = useState(GlobalStyles.colors.gray05);
+  const [num, setNum] = useState(GlobalStyles.colors.gray05);
+  const [mark, setMark] = useState(GlobalStyles.colors.gray05);
+  const [len, setLen] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
 
   const handlePwChange = (text) => {
+    let hasEng = /[a-zA-Z]+/g.test(text);
+    let hasNum = /[0-9]+/g.test(text);
+    let hasMark = /[~!@#$%^&*()_+|<>?:{}]+/g.test(text);
+    let hasValidLen = text.length >= 8 && text.length <= 20;
+
+    setEng(hasEng ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setNum(hasNum ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setMark(hasMark ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setLen(
+      hasValidLen ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05
+    );
     setInputPw(text);
-    setSignData({ ...signData, password: inputPw });
-    if (text.length === 6) {
+
+    if (
+      inputPw !== "" &&
+      inputRePw !== "" &&
+      inputRePw === text &&
+      text.length >= 8 &&
+      text.length <= 20 &&
+      /[a-zA-z]+/g.test(text) &&
+      /[0-9]+/g.test(text) &&
+      /[~!@#$%^&*()_+|<>?:{}]+/g.test(text)
+    ) {
+      setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
+      setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
   };
 
   const handleRePwChange = (text) => {
     setInputRePw(text);
-    setSignData({ ...signData, password: inputRePw });
-    if (text.length === 6) {
+
+    if (
+      inputPw === text &&
+      text.length >= 8 &&
+      text.length <= 20 &&
+      /[a-zA-z]+/g.test(text) &&
+      /[0-9]+/g.test(text) &&
+      /[~!@#$%^&*()_+|<>?:{}]+/g.test(text)
+    ) {
+      setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
+      setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
   };
 
   function navigatePw() {
-    navigation.navigate("name");
+    if (isNavi) {
+      setSignData({ ...signData, password: inputPw, passwordCheck: inputRePw });
+      console.log(inputRePw);
+      navigation.navigate("name");
+    } else {
+    }
   }
 
   return (
@@ -60,10 +101,10 @@ function Pw() {
         />
       </View>
       <View style={styles.pwBtn}>
-        <PwBtn text="영문" />
-        <PwBtn text="숫자" />
-        <PwBtn text="특수문자" />
-        <PwBtn text="8~20자" />
+        <PwBtn text="영문" btnColor={eng} />
+        <PwBtn text="숫자" btnColor={num} />
+        <PwBtn text="특수문자" btnColor={mark} />
+        <PwBtn text="8~20자" btnColor={len} />
       </View>
       <View style={[styles.inputContainer, { marginTop: 5 }]}>
         <InputData
