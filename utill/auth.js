@@ -50,10 +50,10 @@ export async function changePassword({
     phone: phone,
   });
 
-  const code = response.data;
-  console.log(code);
+  const data = response.data;
+  console.log(data);
 
-  return code;
+  return data;
 }
 
 export async function login({ id, pw }) {
@@ -67,62 +67,6 @@ export async function login({ id, pw }) {
 
   return token;
 }
-
-// export async function signUp({
-//   account,
-//   birth,
-//   doroAuth,
-//   gender,
-//   generation,
-//   major,
-//   name,
-//   password,
-//   passwordCheck,
-//   phone,
-//   profileImg,
-//   role,
-//   school,
-//   studentId,
-//   studentStatus,
-// }) {
-//   const response = await axios
-//     .post(URL + "/join", {
-//       account: account,
-//       birth: birth,
-//       doroAuth: doroAuth,
-//       gender: "FEMALE",
-//       generation: 1,
-//       major: major,
-//       name: name,
-//       password: password,
-//       passwordCheck: passwordCheck,
-//       phone: phone,
-//       profileImg: "",
-//       role: role,
-//       school: school,
-//       studentId: studentId,
-//       studentStatus: studentStatus,
-//     })
-
-//       console.log(
-//         account,
-//         birth,
-//         doroAuth,
-//         gender,
-//         generation,
-//         major,
-//         name,
-//         password,
-//         passwordCheck,
-//         phone,
-//         profileImg,
-//         role,
-//         school,
-//         studentId,
-//         studentStatus
-//       );
-
-// }
 
 export async function signUp({
   account,
