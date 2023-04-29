@@ -26,7 +26,7 @@ function AuthPhone() {
 
   const handlePhoneChange = (text) => {
     setphoneNum(text);
-    setSignData({ ...signData, phone: phoneNum });
+
     if (text.length === 11) {
       setsbtnColor(GlobalStyles.colors.gray01);
     } else {
@@ -52,6 +52,7 @@ function AuthPhone() {
       messageType: "JOIN",
       phone: phoneNum,
     });
+    setSignData({ ...signData, phone: phoneNum });
 
     navigation.navigate("id");
   }

@@ -18,7 +18,10 @@ function AgreeInfo() {
         </Text>
       </View>
       <View style={{ marginTop: 14 }}>
-        <Text style={styles.content}>• 이용목적</Text>
+        <View style={{ flexDirection: row }}>
+          <Text style={styles.dot}>•</Text>
+          <Text style={styles.subTitle}>이용목적</Text>
+        </View>
         <Text style={styles.content}>개인식별, 문의사항 접수 및 처리</Text>
       </View>
       <View style={{ marginTop: 14 }}>
@@ -71,5 +74,14 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     lineHeight: 20,
     marginLeft: 20,
+  },
+  dot: {
+    marginLeft: 25,
+    marginRight: 5,
+  },
+  subTitle: {
+    fontSize: 15,
+    fontWeight: 400,
+    lineHeight: 20,
   },
 });
