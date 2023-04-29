@@ -53,28 +53,33 @@ function Name() {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar flex1={3} flex2={6} />
-      <View style={styles.textContainer}>
-        <InputText text="이름을 입력해 주세요." />
-      </View>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="이름"
-          onChangeText={handleNameChange}
-          value={inputName}
-        />
-      </View>
-      <View style={styles.textContainer}>
-        <InputText text="생년월일을 입력해 주세요." />
-      </View>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="생년월일"
-          onChangeText={handleBirthChange}
-          value={inputBirth}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
+      <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <View>
+          <View style={styles.textContainer}>
+            <InputText text="이름을 입력해 주세요." />
+          </View>
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="이름"
+              onChangeText={handleNameChange}
+              value={inputName}
+            />
+          </View>
+          <View style={styles.textContainer}>
+            <InputText text="생년월일을 입력해 주세요." />
+          </View>
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="생년월일"
+              onChangeText={handleBirthChange}
+              value={inputBirth}
+            />
+          </View>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
+        </View>
       </View>
     </View>
   );
@@ -89,7 +94,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginTop: 84,
+    marginBottom: 34,
   },
   inputContainer: {
     marginHorizontal: 20,

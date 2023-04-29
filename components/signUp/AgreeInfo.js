@@ -18,7 +18,7 @@ function AgreeInfo() {
         </Text>
       </View>
       <View style={{ marginTop: 14 }}>
-        <View style={{ flexDirection: row }}>
+        <View style={{ flexDirection: "row" }}>
           <Text style={styles.dot}>•</Text>
           <Text style={styles.subTitle}>이용목적</Text>
         </View>

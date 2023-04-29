@@ -77,7 +77,7 @@ function Pw() {
   function navigatePw() {
     if (isNavi) {
       setSignData({ ...signData, password: inputPw, passwordCheck: inputRePw });
-      console.log(inputRePw);
+
       navigation.navigate("name");
     } else {
     }
@@ -86,35 +86,39 @@ function Pw() {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar flex1={2} flex2={8} />
-      <View style={styles.textContainer}>
-        <InputText text="비밀번호를 입력해 주세요." />
-      </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.id}>{signData.account}</Text>
-        <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="영문, 숫자, 특수문자 포함 8~20자"
-          onChangeText={handlePwChange}
-          value={inputPw}
-        />
-      </View>
-      <View style={styles.pwBtn}>
-        <PwBtn text="영문" btnColor={eng} />
-        <PwBtn text="숫자" btnColor={num} />
-        <PwBtn text="특수문자" btnColor={mark} />
-        <PwBtn text="8~20자" btnColor={len} />
-      </View>
-      <View style={[styles.inputContainer, { marginTop: 5 }]}>
-        <InputData
-          hint="비밀번호 재입력"
-          onChangeText={handleRePwChange}
-          value={inputRePw}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <ButtonBig text="다음" style={lbtnColor} onPress={navigatePw} />
+      <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <View>
+          <View style={styles.textContainer}>
+            <InputText text="비밀번호를 입력해 주세요." />
+          </View>
+          <View style={styles.contentContainer}>
+            <Text style={styles.id}>{signData.account}</Text>
+            <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="영문, 숫자, 특수문자 포함 8~20자"
+              onChangeText={handlePwChange}
+              value={inputPw}
+            />
+          </View>
+          <View style={styles.pwBtn}>
+            <PwBtn text="영문" btnColor={eng} />
+            <PwBtn text="숫자" btnColor={num} />
+            <PwBtn text="특수문자" btnColor={mark} />
+            <PwBtn text="8~20자" btnColor={len} />
+          </View>
+          <View style={[styles.inputContainer, { marginTop: 5 }]}>
+            <InputData
+              hint="비밀번호 재입력"
+              onChangeText={handleRePwChange}
+              value={inputRePw}
+            />
+          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          <ButtonBig text="다음" style={lbtnColor} onPress={navigatePw} />
+        </View>
       </View>
     </View>
   );
@@ -129,7 +133,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginTop: 31,
+    marginBottom: 34,
   },
   inputContainer: {
     marginHorizontal: 20,

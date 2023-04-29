@@ -45,19 +45,25 @@ function Id() {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar flex1={2} flex2={8} />
-      <View style={styles.textContainer}>
-        <InputText text="아이디를 입력해 주세요." />
-      </View>
-      <Text style={styles.text}>입력하신 아이디는 로그인 시 사용됩니다.</Text>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="영문 또는 숫자 4~20자"
-          onChangeText={handleIdChange}
-          value={inputId}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
+      <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <View>
+          <View style={styles.textContainer}>
+            <InputText text="아이디를 입력해 주세요." />
+          </View>
+          <Text style={styles.text}>
+            입력하신 아이디는 로그인 시 사용됩니다.
+          </Text>
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="영문 또는 숫자 4~20자"
+              onChangeText={handleIdChange}
+              value={inputId}
+            />
+          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
+        </View>
       </View>
     </View>
   );
@@ -72,7 +78,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginTop: 44,
+    marginBottom: 34,
   },
   inputContainer: {
     marginHorizontal: 20,
