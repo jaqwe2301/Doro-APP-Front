@@ -18,6 +18,8 @@ function Code() {
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
+  const [flex1, setFlex1] = useState(9);
+  const flex2 = 10 - flex1;
 
   const handleCodeChange = (text) => {
     setInputCode(text);
@@ -68,7 +70,7 @@ function Code() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={8} flex2={1} />
+      <Bar flex1={flex1} flex2={flex2} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <ScrollView>
           <View style={styles.textContainer}>
