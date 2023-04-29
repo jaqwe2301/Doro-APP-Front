@@ -1,38 +1,99 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import InputData from "../ui/InputData";
 import PwBtn from "../ui/PwBtn";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
 import { useState } from "react";
+import { changePassword } from "../../utill/auth";
+import { useNavigation } from "@react-navigation/native";
 
 function ChangePw({ route }) {
   const [pw, setPw] = useState("");
   const [repw, setRePw] = useState("");
+  const [isNavi, setIsNavi] = useState(false);
   const [sbtnColor, setsbtnColor] = useState(GlobalStyles.colors.gray05);
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
+  const [eng, setEng] = useState(GlobalStyles.colors.gray05);
+  const [num, setNum] = useState(GlobalStyles.colors.gray05);
+  const [mark, setMark] = useState(GlobalStyles.colors.gray05);
+  const [len, setLen] = useState(GlobalStyles.colors.gray05);
 
   const id = route.params.id;
   const phoneNum = route.params.phone;
-
+  const navigation = useNavigation();
   async function handlerPwchange() {
-    try {
-      const response = await changePassword({
-        account: id,
-        newPassword: pw,
-        newPasswordCheck: repw,
-        phone: phoneNum,
-      });
-    } catch (error) {
-      console.log(error);
+    if (isNavi) {
+      try {
+        const response = await changePassword({
+          account: id,
+          newPassword: pw,
+          newPasswordCheck: repw,
+          phone: phoneNum,
+        });
+
+        if (response.success) {
+          Alert.alert("성공", "비밀번호 변경");
+          navigation.replace("login");
+        } else {
+          Alert.alert("Error", "일치하는 아이디가 없습니다. ");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
   const handlePwChange = (text) => {
+    let hasEng = /[a-zA-Z]+/g.test(text);
+    let hasNum = /[0-9]+/g.test(text);
+    let hasMark = /[~!@#$%^&*()_+|<>?:{}]+/g.test(text);
+    let hasValidLen = text.length >= 8 && text.length <= 20;
+
+    setEng(hasEng ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setNum(hasNum ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setMark(hasMark ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setLen(
+      hasValidLen ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05
+    );
     setPw(text);
+
+    if (
+      pw !== "" &&
+      repw !== "" &&
+      repw === text &&
+      text.length >= 8 &&
+      text.length <= 20 &&
+      /[a-zA-z]+/g.test(text) &&
+      /[0-9]+/g.test(text) &&
+      /[~!@#$%^&*()_+|<>?:{}]+/g.test(text)
+    ) {
+      setIsNavi(true);
+      setlbtnColor(GlobalStyles.colors.primaryAccent);
+    } else {
+      setIsNavi(false);
+      setlbtnColor(GlobalStyles.colors.gray05);
+    }
   };
+
   const handleRePwChange = (text) => {
     setRePw(text);
+
+    if (
+      pw === text &&
+      text.length >= 8 &&
+      text.length <= 20 &&
+      /[a-zA-z]+/g.test(text) &&
+      /[0-9]+/g.test(text) &&
+      /[~!@#$%^&*()_+|<>?:{}]+/g.test(text)
+    ) {
+      setIsNavi(true);
+      setlbtnColor(GlobalStyles.colors.primaryAccent);
+    } else {
+      setIsNavi(false);
+      setlbtnColor(GlobalStyles.colors.gray05);
+    }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerShadow}></View>
@@ -45,12 +106,12 @@ function ChangePw({ route }) {
         />
       </View>
       <View style={styles.pwBtn}>
-        <PwBtn text="영문" />
-        <PwBtn text="숫자" />
-        <PwBtn text="특수문자" />
-        <PwBtn text="8~20자" />
+        <PwBtn text="영문" btnColor={eng} />
+        <PwBtn text="숫자" btnColor={num} />
+        <PwBtn text="특수문자" btnColor={mark} />
+        <PwBtn text="8~20자" btnColor={len} />
       </View>
-      <View style={[styles.inputContainer, { marginTop: 5 }]}>
+      <View style={[styles.inputContainer, { marginTop: 8 }]}>
         <Text style={styles.textTitle}>신규 비밀번호 재확인</Text>
         <InputData
           hint="비밀번호 재입력"
