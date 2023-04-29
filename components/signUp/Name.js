@@ -14,10 +14,13 @@ function Name() {
   const [inputBirth, setInputBirth] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
+  const [flex1, setFlex1] = useState(3);
+  const flex2 = 10 - flex1;
   const { signData, setSignData } = useContext(SignContext);
 
   const handleNameChange = (text) => {
     setInputName(text);
+    setFlex1(4);
 
     // if () {
     //   setlbtnColor(GlobalStyles.colors.primaryAccent);
@@ -33,7 +36,7 @@ function Name() {
 
   const handleBirthChange = (text) => {
     setInputBirth(text);
-
+    setFlex1(5);
     setlbtnColor(
       text && inputName !== ""
         ? GlobalStyles.colors.primaryAccent
@@ -47,12 +50,13 @@ function Name() {
 
       navigation.navigate("school");
     } else {
+      setFlex1(4);
     }
   }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={3} flex2={6} />
+      <Bar flex1={flex1} flex2={flex2} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>

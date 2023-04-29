@@ -18,10 +18,12 @@ function School() {
   const [isNavi, setIsNavi] = useState(false);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
+  const [flex1, setFlex1] = useState(5);
+  const flex2 = 10 - flex1;
 
   const handleSchoolChange = (text) => {
     setInputSchool(text);
-
+    setFlex1(6);
     setlbtnColor(
       text !== "" &&
         inputMajor !== "" &&
@@ -34,7 +36,7 @@ function School() {
 
   const handleMajorChange = (text) => {
     setInputMajor(text);
-
+    setFlex1(7);
     setlbtnColor(
       text !== "" &&
         inputSchool !== "" &&
@@ -46,6 +48,7 @@ function School() {
   };
   const handleStudentIdChange = (text) => {
     setInputStudentId(text);
+    setFlex1(8);
     setlbtnColor(
       text !== "" &&
         inputMajor !== "" &&
@@ -57,6 +60,7 @@ function School() {
   };
   const handleStatusChange = (text) => {
     setInputStatus(text);
+    setFlex1(9);
     setlbtnColor(
       text !== "" &&
         inputMajor !== "" &&
@@ -88,7 +92,7 @@ function School() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={6} flex2={3} />
+      <Bar flex1={flex1} flex2={flex2} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <ScrollView>
           <View style={styles.textContainer}>

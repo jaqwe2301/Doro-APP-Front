@@ -14,6 +14,8 @@ function Id() {
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [isNavi, setIsNavi] = useState(false);
   const navigation = useNavigation();
+  const [flex1, setFlex1] = useState(1);
+  const flex2 = 10 - flex1;
 
   const { signData, setSignData } = useContext(SignContext);
 
@@ -25,9 +27,11 @@ function Id() {
       text.length <= 20 &&
       text.search(/[a-zA-Z0-9]+/g) >= 0
     ) {
+      setFlex1(2);
       setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
+      setFlex1(1);
       setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
@@ -44,7 +48,7 @@ function Id() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={2} flex2={8} />
+      <Bar flex1={flex1} flex2={flex2} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
