@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { useState, useContext } from "react";
 
 import InputText from "../../components/ui/InputText";
@@ -70,7 +70,7 @@ function Code() {
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar flex1={8} flex2={1} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
-        <View>
+        <ScrollView>
           <View style={styles.textContainer}>
             <InputText text="가입코드를 입력해 주세요." />
           </View>
@@ -122,7 +122,7 @@ function Code() {
               </Pressable>
             </View>
             <View style={styles.acceptContentContainer}>
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row", marginBottom: 40 }}>
                 <Ionicons
                   name="checkmark"
                   color={GlobalStyles.colors.gray05}
@@ -141,7 +141,7 @@ function Code() {
               </Pressable>
             </View>
           </View>
-        </View>
+        </ScrollView>
         <View style={styles.buttonContainer}>
           <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
         </View>
@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 13,
     marginLeft: 27,
+
     justifyContent: "space-between",
   },
 });

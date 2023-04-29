@@ -66,43 +66,48 @@ function AuthPhone() {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar flex1={0} flex2={1} />
-      <View style={styles.textContainer}>
-        <InputText text="휴대폰 번호를 알려주세요." />
-      </View>
-      <Text style={styles.text}>입력하신 번호로 인증번호가 전송됩니다.</Text>
-      <View style={styles.inputContainer}>
-        <View style={styles.input}>
-          <InputData
-            hint="휴대폰 번호"
-            onChangeText={handlePhoneChange}
-            value={phoneNum}
-            keyboardType="numeric"
-          />
-        </View>
+      <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
-          <ButtonSmall
-            title={btnTitle}
-            onPress={requestNumber}
-            style={sbtnColor}
-          />
-        </View>
-      </View>
-      {isVisible && (
-        <>
-          <View style={styles.lInputContainer}>
-            <InputData
-              hint="인증번호"
-              value={authNum}
-              onChangeText={handleAuthChange}
-              keyboardType="numeric"
-            />
+          <View style={styles.textContainer}>
+            <InputText text="휴대폰 번호를 알려주세요." />
           </View>
-          <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
-        </>
-      )}
-
-      <View style={styles.buttonContainer}>
-        <ButtonBig text="다음" style={lbtnColor} onPress={verifyAuthNum} />
+          <Text style={styles.text}>
+            입력하신 번호로 인증번호가 전송됩니다.
+          </Text>
+          <View style={styles.inputContainer}>
+            <View style={styles.input}>
+              <InputData
+                hint="휴대폰 번호"
+                onChangeText={handlePhoneChange}
+                value={phoneNum}
+                keyboardType="numeric"
+              />
+            </View>
+            <View>
+              <ButtonSmall
+                title={btnTitle}
+                onPress={requestNumber}
+                style={sbtnColor}
+              />
+            </View>
+          </View>
+          {isVisible && (
+            <>
+              <View style={styles.lInputContainer}>
+                <InputData
+                  hint="인증번호"
+                  value={authNum}
+                  onChangeText={handleAuthChange}
+                  keyboardType="numeric"
+                />
+              </View>
+              <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
+            </>
+          )}
+        </View>
+        <View style={styles.buttonContainer}>
+          <ButtonBig text="다음" style={lbtnColor} onPress={verifyAuthNum} />
+        </View>
       </View>
     </View>
   );
@@ -117,7 +122,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginTop: 44,
+    marginBottom: 34,
   },
   inputContainer: {
     marginHorizontal: 20,
