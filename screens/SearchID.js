@@ -37,26 +37,25 @@ function SearchID() {
   };
 
   async function verifyAuthNum() {
-    try {
-      const success = await verifyauthPhoneNum({
-        authNum: authNum,
-        messageType: "ACCOUNT",
-        phone: phoneNum,
-      });
+    if (authNum.length === 6) {
+      try {
+        const success = await verifyauthPhoneNum({
+          authNum: authNum,
+          messageType: "ACCOUNT",
+          phone: phoneNum,
+        });
 
-      console.log(success);
-      if (success) {
-        isAccount();
-      } else {
-        Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
+        console.log(success);
+        if (success) {
+          isAccount();
+        } else {
+          Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
+        }
+      } catch (error) {
+        Alert.alert("ERROR", "Network Error");
       }
-    } catch (error) {
-      Alert.alert("ERROR", "Network Error");
+    } else {
     }
-  }
-
-  function test() {
-    navigation.navigate("findId");
   }
 
   async function isAccount() {
@@ -81,8 +80,14 @@ function SearchID() {
   }
 
   function requestNumber() {
-    authPhoneNum({ messageType: "ACCOUNT", phone: phoneNum });
-    setIsVisible(true);
+    if (phoneNum.length === 11) {
+      try {
+        authPhoneNum({ messageType: "ACCOUNT", phone: phoneNum });
+      } catch (error) {
+        Alert.alert("ERROR", "다시 시도해주세요");
+      }
+      setIsVisible(true);
+    }
   }
 
   return (
@@ -118,6 +123,7 @@ function SearchID() {
                   hint="인증번호"
                   value={authNum}
                   onChangeText={handleAuthChange}
+                  keyboardType="numeric"
                 />
               </View>
               <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
