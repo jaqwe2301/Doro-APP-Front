@@ -68,6 +68,62 @@ export async function login({ id, pw }) {
   return token;
 }
 
+// export async function signUp({
+//   account,
+//   birth,
+//   doroAuth,
+//   gender,
+//   generation,
+//   major,
+//   name,
+//   password,
+//   passwordCheck,
+//   phone,
+//   profileImg,
+//   role,
+//   school,
+//   studentId,
+//   studentStatus,
+// }) {
+//   const response = await axios
+//     .post(URL + "/join", {
+//       account: account,
+//       birth: birth,
+//       doroAuth: doroAuth,
+//       gender: "FEMALE",
+//       generation: 1,
+//       major: major,
+//       name: name,
+//       password: password,
+//       passwordCheck: passwordCheck,
+//       phone: phone,
+//       profileImg: "",
+//       role: role,
+//       school: school,
+//       studentId: studentId,
+//       studentStatus: studentStatus,
+//     })
+
+//       console.log(
+//         account,
+//         birth,
+//         doroAuth,
+//         gender,
+//         generation,
+//         major,
+//         name,
+//         password,
+//         passwordCheck,
+//         phone,
+//         profileImg,
+//         role,
+//         school,
+//         studentId,
+//         studentStatus
+//       );
+
+// }
+
 export async function signUp({
   account,
   birth,
@@ -79,49 +135,46 @@ export async function signUp({
   password,
   passwordCheck,
   phone,
-  profileImg,
   role,
   school,
   studentId,
   studentStatus,
 }) {
-  axios
-    .post(URL + "/join", {
+  try {
+    console.log(
+      account,
+      birth,
+      doroAuth,
+      gender,
+      generation,
+      major,
+      name,
+      password,
+      passwordCheck,
+      phone,
+      role,
+      school,
+      studentId,
+      studentStatus
+    );
+    const response = await axios.post(URL + "/join", {
       account: account,
       birth: birth,
       doroAuth: doroAuth,
-      gender: "FEMALE",
-      generation: 1,
+      gender: gender,
+      generation: generation,
       major: major,
       name: name,
       password: password,
       passwordCheck: passwordCheck,
       phone: phone,
-      profileImg: "",
       role: role,
       school: school,
       studentId: studentId,
       studentStatus: studentStatus,
-    })
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      console.log(
-        account,
-        birth,
-        doroAuth,
-        gender,
-        major,
-        name,
-        password,
-        passwordCheck,
-        phone,
-        role,
-        school,
-        studentId,
-        studentStatus
-      );
-      console.log(error);
     });
+    console.log(response.data);
+  } catch (error) {
+    console.log(error);
+  }
 }
