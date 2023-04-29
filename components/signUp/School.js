@@ -12,89 +12,134 @@ import InputData from "../ui/InputData";
 function School() {
   const [inputSchool, setInputSchool] = useState("");
   const [inputMajor, setInputMajor] = useState("");
-  const [inputStudentId, setInputStudentID] = useState("");
+  const [inputStudentId, setInputStudentId] = useState("");
   const [inputStatus, setInputStatus] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
+  const [isNavi, setIsNavi] = useState(false);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
 
   const handleSchoolChange = (text) => {
     setInputSchool(text);
-    setSignData({ ...signData, school: inputSchool });
-    if (text.length === 6) {
-      setlbtnColor(GlobalStyles.colors.primaryAccent);
-    } else {
-      setlbtnColor(GlobalStyles.colors.gray05);
-    }
+
+    setlbtnColor(
+      text !== "" &&
+        inputMajor !== "" &&
+        inputStudentId !== "" &&
+        inputStatus !== ""
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
+    );
   };
 
   const handleMajorChange = (text) => {
     setInputMajor(text);
-    setSignData({ ...signData, major: inputMajor });
+
+    setlbtnColor(
+      text !== "" &&
+        inputSchool !== "" &&
+        inputStudentId !== "" &&
+        inputStatus !== ""
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
+    );
   };
   const handleStudentIdChange = (text) => {
-    setInputStudentID(text);
-    setSignData({ ...signData, studentID: inputStudentId });
+    setInputStudentId(text);
+    setlbtnColor(
+      text !== "" &&
+        inputMajor !== "" &&
+        inputSchool !== "" &&
+        inputStatus !== ""
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
+    );
   };
   const handleStatusChange = (text) => {
     setInputStatus(text);
-    setSignData({ ...signData, studentStatus: inputStatus });
+    setlbtnColor(
+      text !== "" &&
+        inputMajor !== "" &&
+        inputStudentId !== "" &&
+        inputSchool !== ""
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
+    );
   };
 
   function navigateId() {
-    navigation.navigate("code");
+    setSignData({
+      ...signData,
+      school: inputSchool,
+      major: inputMajor,
+      studentId: inputStudentId,
+      studentStatus: inputStatus,
+    });
+    if (
+      inputSchool !== "" &&
+      inputMajor !== "" &&
+      inputStudentId !== "" &&
+      inputStatus !== ""
+    ) {
+      navigation.navigate("code");
+    } else {
+    }
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar flex1={6} flex2={3} />
-      <View style={styles.textContainer}>
-        <InputText text="학교를 입력해 주세요." />
+      <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <ScrollView>
+          <View style={styles.textContainer}>
+            <InputText text="학교를 입력해 주세요." />
+          </View>
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="학교를 입력하세요"
+              onChangeText={handleSchoolChange}
+              value={inputSchool}
+            />
+          </View>
+          <View style={styles.textContainer}>
+            <InputText text="전공을 입력해 주세요." />
+          </View>
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="전공을 입력하세요"
+              onChangeText={handleMajorChange}
+              value={inputMajor}
+            />
+          </View>
+          <View style={styles.textContainer}>
+            <InputText text="학번을 입력해 주세요." />
+          </View>
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="학번을 입력하세요"
+              onChangeText={handleStudentIdChange}
+              value={inputStudentId}
+            />
+          </View>
+          <View style={styles.textContainer}>
+            <InputText text="재학유무를 선택해 주세요." />
+          </View>
+          <Text style={styles.text}>
+            재학중인 아닌 경우 모두 휴학으로 선택해 주세요.
+          </Text>
+          <View style={[styles.inputContainer, { marginBottom: 78 }]}>
+            <InputData
+              hint="재학유무를 선택하세요"
+              onChangeText={handleStatusChange}
+              value={inputStatus}
+            />
+          </View>
+        </ScrollView>
+        <View style={styles.buttonContainer}>
+          <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
+        </View>
       </View>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="학교를 입력하세요"
-          onChangeText={handleSchoolChange}
-          value={inputSchool}
-        />
-      </View>
-      <View style={styles.textContainer}>
-        <InputText text="전공을 입력해 주세요." />
-      </View>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="전공을 입력하세요"
-          onChangeText={handleMajorChange}
-          value={inputMajor}
-        />
-      </View>
-      <View style={styles.textContainer}>
-        <InputText text="학번을 입력해 주세요." />
-      </View>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="학번을 입력하세요"
-          onChangeText={handleStudentIdChange}
-          value={inputStudentId}
-        />
-      </View>
-      <View style={styles.textContainer}>
-        <InputText text="재학유무를 선택해 주세요." />
-      </View>
-      <Text style={styles.text}>
-        재학중인 아닌 경우 모두 휴학으로 선택해 주세요.
-      </Text>
-      <View style={styles.inputContainer}>
-        <InputData
-          hint="재학유무를 선택하세요"
-          onChangeText={handleStatusChange}
-          value={inputStatus}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
-      </View>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -107,7 +152,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginTop: 78,
+    marginBottom: 34,
   },
   inputContainer: {
     marginHorizontal: 20,
