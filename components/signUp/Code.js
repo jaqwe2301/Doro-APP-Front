@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  Modal,
+} from "react-native";
 import { useState, useContext } from "react";
 
 import InputText from "../../components/ui/InputText";
@@ -14,6 +21,12 @@ import { signUp } from "../../utill/auth";
 function Code() {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
+
+  const [visible, setVisible] = useState(false);
+  const [display1, setDispaly1] = useState("none");
+  const [display2, setDispaly2] = useState("none");
+  const [select, setSelect] = useState("가입 유형을 선택해주세요");
+  const [statusStyle, setStatusStyle] = useState(styles.textModal);
 
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
@@ -67,6 +80,28 @@ function Code() {
   function naviAgreeInfo() {
     navigation.navigate("agreeInfo");
   }
+  function statusSelect() {
+    if (display1 === "none") {
+      setDispaly1("flex");
+      setDispaly2("none");
+    } else {
+      setDispaly1("none");
+      setDispaly2("flex");
+    }
+  }
+
+  function okayBtn() {
+    setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
+    setSelect(display1 === "none" ? "매니저" : "강사");
+    setStatusStyle(styles.textInputText);
+    setFlex1(9);
+    setlbtnColor(
+      inputRole !== "" && inputCode !== ""
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
+    );
+    setVisible(!visible);
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -77,11 +112,23 @@ function Code() {
             <InputText text="가입코드를 입력해 주세요." />
           </View>
           <View style={styles.inputContainer}>
-            <InputData
+            {/* <InputData
               hint="가입 유형을 선택해주세요"
               onChangeText={handleRoleChange}
               value={inputRole}
-            />
+            /> */}
+            <Pressable onPress={() => setVisible(!visible)}>
+              <View style={styles.textInput}>
+                <Text style={statusStyle}>{select}</Text>
+                <View style={{ marginRight: 13 }}>
+                  <Ionicons
+                    name="chevron-down"
+                    size={25}
+                    color={GlobalStyles.colors.gray05}
+                  />
+                </View>
+              </View>
+            </Pressable>
           </View>
 
           <View style={styles.inputContainer}>
@@ -148,6 +195,67 @@ function Code() {
           <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
         </View>
       </View>
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={visible}
+        statusBarTranslucent={true}
+        onRequestClose={() => setVisible(!visible)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setVisible(!visible)}
+        >
+          <Pressable>
+            <View
+              style={{
+                backgroundColor: "white",
+                height: 273,
+                justifyContent: "space-between",
+
+                borderTopEndRadius: 5.41,
+                borderTopStartRadius: 5.41,
+              }}
+            >
+              <View>
+                <View style={styles.statusTitleContainer}>
+                  <View style={styles.iconContainer}>
+                    <Pressable onPress={() => setVisible(!visible)}>
+                      <Ionicons name="close-outline" size={40} />
+                    </Pressable>
+                  </View>
+                  <Text style={styles.statusTitle}>가입 유형</Text>
+                </View>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={statusSelect}
+                >
+                  <Text style={styles.statusText}>강사</Text>
+                  <View style={[styles.iconContainer2, { display: display1 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={statusSelect}
+                >
+                  <Text style={styles.statusText}>매니저</Text>
+                  <View style={[styles.iconContainer2, { display: display2 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+              </View>
+              <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                <ButtonBig
+                  text="확인"
+                  style={GlobalStyles.colors.primaryDefault}
+                  onPress={okayBtn}
+                />
+              </View>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -210,5 +318,73 @@ const styles = StyleSheet.create({
     marginLeft: 27,
 
     justifyContent: "space-between",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+  },
+  textInput: {
+    height: 40,
+    width: "100%",
+    borderColor: GlobalStyles.colors.gray05,
+    borderWidth: 1,
+    borderRadius: 5.41,
+    paddingLeft: 20,
+    lineHeight: 20,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  textModal: {
+    fontSize: 15,
+    fontWeight: "600",
+    lineHeight: 20,
+    color: GlobalStyles.colors.gray05,
+  },
+  textInputText: {
+    lineHeight: 20,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray01,
+    fontWeight: "600",
+  },
+  statusTitleContainer: {
+    flexDirection: "row",
+    borderBottomColor: GlobalStyles.colors.gray05,
+    borderBottomWidth: 1,
+    height: 53,
+    alignItems: "center",
+  },
+  statusTitle: {
+    fontSize: 17,
+    fontWeight: 600,
+    lineHeight: 22,
+    marginTop: 3,
+    flex: 1,
+
+    marginRight: 50,
+    textAlign: "center",
+  },
+  statusText: {
+    fontSize: 15,
+    fontWeight: 400,
+    lineHeight: 20,
+    marginLeft: 20,
+  },
+  statusTextContainer: {
+    borderBottomColor: GlobalStyles.colors.gray05,
+    borderBottomWidth: 0.5,
+    height: 42,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconContainer: {
+    marginLeft: 10,
+    marginTop: 3,
+  },
+  iconContainer2: {
+    marginRight: 10,
+    marginTop: 2,
   },
 });
