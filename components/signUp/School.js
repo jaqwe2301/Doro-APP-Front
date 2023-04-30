@@ -113,19 +113,20 @@ function School() {
   }
 
   function okayBtn() {
-    setInputStatus(display1 === "none" ? "ABSENCE" : "ATTENDING");
-    setSelect(display1 === "none" ? "휴학" : "재학");
-    setStatusStyle(styles.textInputText);
-    setFlex1(9);
-    setlbtnColor(
-      inputStatus !== "" &&
-        inputMajor !== "" &&
-        inputStudentId !== "" &&
-        inputSchool !== ""
-        ? GlobalStyles.colors.primaryDefault
-        : GlobalStyles.colors.gray05
-    );
-    setVisible(!visible);
+    if (display1 === "flex" || display2 === "flex") {
+      setInputStatus(display1 === "none" ? "ABSENCE" : "ATTENDING");
+      setSelect(display1 === "none" ? "휴학" : "재학");
+      setStatusStyle(styles.textInputText);
+      setFlex1(9);
+      setVisible(!visible);
+      setlbtnColor(
+        inputMajor !== "" && inputStudentId !== "" && inputSchool !== ""
+          ? GlobalStyles.colors.primaryDefault
+          : GlobalStyles.colors.gray05
+      );
+    } else {
+      setVisible(!visible);
+    }
   }
 
   return (
@@ -204,50 +205,54 @@ function School() {
           style={styles.modalOverlay}
           onPress={() => setVisible(!visible)}
         >
-          <View
-            style={{
-              backgroundColor: "white",
-              height: 273,
-              justifyContent: "space-between",
+          <Pressable>
+            <View
+              style={{
+                backgroundColor: "white",
+                height: 273,
+                justifyContent: "space-between",
 
-              borderTopEndRadius: 5.41,
-              borderTopStartRadius: 5.41,
-            }}
-          >
-            <View>
-              <View style={styles.statusTitleContainer}>
-                <View style={styles.iconContainer}>
-                  <Ionicons name="close-outline" size={40} />
+                borderTopEndRadius: 5.41,
+                borderTopStartRadius: 5.41,
+              }}
+            >
+              <View>
+                <View style={styles.statusTitleContainer}>
+                  <View style={styles.iconContainer}>
+                    <Pressable onPress={() => setVisible(!visible)}>
+                      <Ionicons name="close-outline" size={40} />
+                    </Pressable>
+                  </View>
+                  <Text style={styles.statusTitle}>재학 유무</Text>
                 </View>
-                <Text style={styles.statusTitle}>재학 유무</Text>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={statusSelect}
+                >
+                  <Text style={styles.statusText}>재학</Text>
+                  <View style={[styles.iconContainer2, { display: display1 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={statusSelect}
+                >
+                  <Text style={styles.statusText}>휴학</Text>
+                  <View style={[styles.iconContainer2, { display: display2 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
               </View>
-              <Pressable
-                style={styles.statusTextContainer}
-                onPress={statusSelect}
-              >
-                <Text style={styles.statusText}>재학</Text>
-                <View style={[styles.iconContainer2, { display: display1 }]}>
-                  <Ionicons name="checkmark" size={30} />
-                </View>
-              </Pressable>
-              <Pressable
-                style={styles.statusTextContainer}
-                onPress={statusSelect}
-              >
-                <Text style={styles.statusText}>휴학</Text>
-                <View style={[styles.iconContainer2, { display: display2 }]}>
-                  <Ionicons name="checkmark" size={30} />
-                </View>
-              </Pressable>
+              <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                <ButtonBig
+                  text="확인"
+                  style={GlobalStyles.colors.primaryDefault}
+                  onPress={okayBtn}
+                />
+              </View>
             </View>
-            <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-              <ButtonBig
-                text="확인"
-                style={GlobalStyles.colors.primaryDefault}
-                onPress={okayBtn}
-              />
-            </View>
-          </View>
+          </Pressable>
         </Pressable>
       </Modal>
     </View>
