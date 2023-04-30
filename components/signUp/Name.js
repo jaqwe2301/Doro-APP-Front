@@ -1,61 +1,56 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
-import { useContext, useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { useState, useContext } from "react";
 
 import InputText from "../../components/ui/InputText";
-import ButtonSmall from "../../components/ui/ButtonSmall";
+
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "../../components/ui/ButtonBig";
 import { useNavigation } from "@react-navigation/native";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
-import { checkAccount } from "../../utill/auth";
-function Id() {
-  const [inputId, setInputId] = useState("");
+function Name() {
+  const [inputName, setInputName] = useState("");
+  const [inputBirth, setInputBirth] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
-  const [isNavi, setIsNavi] = useState(false);
   const navigation = useNavigation();
-  const [flex1, setFlex1] = useState(1);
+  const [flex1, setFlex1] = useState(3);
   const flex2 = 10 - flex1;
-
   const { signData, setSignData } = useContext(SignContext);
 
-  const handleIdChange = (text) => {
-    setInputId(text);
+  const handleNameChange = (text) => {
+    setInputName(text);
+    setFlex1(4);
 
-    if (
-      text.length >= 4 &&
-      text.length <= 20 &&
-      text.search(/[a-zA-Z0-9]+/g) >= 0
-    ) {
-      setFlex1(2);
-      setIsNavi(true);
-      setlbtnColor(GlobalStyles.colors.primaryAccent);
-    } else {
-      setFlex1(1);
-      setIsNavi(false);
-      setlbtnColor(GlobalStyles.colors.gray05);
-    }
+    // if () {
+    //   setlbtnColor(GlobalStyles.colors.primaryAccent);
+    // } else {
+    //   setlbtnColor(GlobalStyles.colors.gray05);
+    // }
+    setlbtnColor(
+      text && inputBirth !== ""
+        ? GlobalStyles.colors.primaryAccent
+        : GlobalStyles.colors.gray05
+    );
   };
 
-  async function navigateId() {
-    if (isNavi) {
-      try {
-        const response = await checkAccount({
-          account: inputId,
-        });
+  const handleBirthChange = (text) => {
+    setInputBirth(text);
+    setFlex1(5);
+    setlbtnColor(
+      text && inputName !== ""
+        ? GlobalStyles.colors.primaryAccent
+        : GlobalStyles.colors.gray05
+    );
+  };
 
-        if (response.success) {
-          setSignData({ ...signData, account: inputId });
-          navigation.navigate("pw");
-        } else {
-          Alert.alert("Error", "이미 존재하는 아이디입니다.");
-        }
-      } catch (error) {
-        console.log(error);
-      }
+  function navigateId() {
+    if (inputName !== "" && inputBirth !== "") {
+      setSignData({ ...signData, name: inputName, birth: inputBirth });
+
+      navigation.navigate("school");
     } else {
-      // Alert.alert("Input Error", "아이디를 제대로 입력해주세요");
+      setFlex1(4);
     }
   }
 
@@ -65,19 +60,27 @@ function Id() {
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
-            <InputText text="아이디를 입력해 주세요." />
+            <InputText text="이름을 입력해 주세요." />
           </View>
-          <Text style={styles.text}>
-            입력하신 아이디는 로그인 시 사용됩니다.
-          </Text>
           <View style={styles.inputContainer}>
             <InputData
-              hint="영문 또는 숫자 4~20자"
-              onChangeText={handleIdChange}
-              value={inputId}
+              hint="이름"
+              onChangeText={handleNameChange}
+              value={inputName}
+            />
+          </View>
+          <View style={styles.textContainer}>
+            <InputText text="생년월일을 입력해 주세요." />
+          </View>
+          <View style={styles.inputContainer}>
+            <InputData
+              hint="생년월일"
+              onChangeText={handleBirthChange}
+              value={inputBirth}
             />
           </View>
         </View>
+
         <View style={styles.buttonContainer}>
           <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
         </View>
@@ -86,7 +89,7 @@ function Id() {
   );
 }
 
-export default Id;
+export default Name;
 
 const styles = StyleSheet.create({
   textContainer: {
@@ -116,7 +119,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 6,
     marginBottom: 18,
-    lineHeight: 20,
   },
   textSend: {
     fontSize: 12,
