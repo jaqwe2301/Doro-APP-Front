@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
+import { checkAccount } from "../../utill/auth";
 function Id() {
   const [inputId, setInputId] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
@@ -37,10 +38,22 @@ function Id() {
     }
   };
 
-  function navigateId() {
+  async function navigateId() {
     if (isNavi) {
-      setSignData({ ...signData, account: inputId });
-      navigation.navigate("pw");
+      try {
+        const response = await checkAccount({
+          account: inputId,
+        });
+
+        if (response.success) {
+          setSignData({ ...signData, account: inputId });
+          navigation.navigate("pw");
+        } else {
+          Alert.alert("Error", "이미 존재하는 아이디입니다.");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       // Alert.alert("Input Error", "아이디를 제대로 입력해주세요");
     }
