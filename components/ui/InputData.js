@@ -34,5 +34,8 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     paddingLeft: 20,
     lineHeight: 20,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray01,
+    fontWeight: "600",
   },
 });
