@@ -37,6 +37,17 @@ export async function findAccount({ phone }) {
 
   return code;
 }
+
+export async function checkAccount({ account }) {
+  const response = await axios.get(URL + "/check/account?account=" + account);
+
+  console.log(account);
+  const data = response.data;
+  console.log(data);
+
+  return data;
+}
+
 export async function changePassword({
   account,
   newPassword,
