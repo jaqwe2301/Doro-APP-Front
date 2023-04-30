@@ -91,16 +91,20 @@ function Code() {
   }
 
   function okayBtn() {
-    setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
-    setSelect(display1 === "none" ? "매니저" : "강사");
-    setStatusStyle(styles.textInputText);
-    setFlex1(9);
-    setlbtnColor(
-      inputRole !== "" && inputCode !== ""
-        ? GlobalStyles.colors.primaryDefault
-        : GlobalStyles.colors.gray05
-    );
-    setVisible(!visible);
+    if (display1 === "flex" || display2 === "flex") {
+      setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
+      setSelect(display1 === "none" ? "매니저" : "강사");
+      setStatusStyle(styles.textInputText);
+      setFlex1(9);
+      setlbtnColor(
+        inputCode !== ""
+          ? GlobalStyles.colors.primaryDefault
+          : GlobalStyles.colors.gray05
+      );
+      setVisible(!visible);
+    } else {
+      setVisible(!visible);
+    }
   }
 
   return (
