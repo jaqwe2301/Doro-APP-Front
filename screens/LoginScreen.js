@@ -6,6 +6,7 @@ import {
   Button,
   Pressable,
   Alert,
+  Modal,
 } from "react-native";
 import Input from "../components/ui/Input";
 import { GlobalStyles } from "../constants/styles";
@@ -43,6 +44,12 @@ function LoginScreen({ navigation }) {
   }
   return (
     <View style={styles.container}>
+      <View
+        style={{
+          borderBottomColor: GlobalStyles.colors.gray05,
+          borderBottomWidth: 0.5,
+        }}
+      />
       <View style={styles.content}>
         <View>
           <Input title="아이디" value={id} onChangeText={handleId}></Input>
@@ -50,7 +57,6 @@ function LoginScreen({ navigation }) {
         <View style={{ marginTop: 14 }}>
           <Input title="비밀번호" value={pw} onChangeText={handlePw}></Input>
         </View>
-
         <Pressable onPress={loginHandler}>
           <Text style={styles.button}>로그인</Text>
         </Pressable>
@@ -110,6 +116,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5.41,
     elevation: 3,
   },
+
   buttonText: {
     color: "white",
   },
