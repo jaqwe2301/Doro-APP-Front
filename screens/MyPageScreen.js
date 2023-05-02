@@ -7,8 +7,15 @@ import {
   Pressable,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
+import { useContext } from "react";
+import { AuthContext } from "../store/auth-context";
 
 function MyPageScreen() {
+  const authCtx = useContext(AuthContext);
+
+  function logoutHandler() {
+    authCtx.logout();
+  }
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -100,11 +107,13 @@ function MyPageScreen() {
           <View style={styles.border}></View>
         </View>
         <View style={{ marginBottom: 33 }}>
-          <Text
-            style={[styles.contentTitle, { borderBottomWidth: 1, width: 57 }]}
-          >
-            로그아웃
-          </Text>
+          <Pressable onPress={logoutHandler}>
+            <Text
+              style={[styles.contentTitle, { borderBottomWidth: 1, width: 57 }]}
+            >
+              로그아웃
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </View>
