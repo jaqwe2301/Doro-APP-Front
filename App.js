@@ -31,6 +31,7 @@ import Finish from "./components/signUp/Finish";
 import FindId from "./components/signUp/FindId";
 import NotFindId from "./components/signUp/NotFindId";
 import ChangePw from "./components/signUp/ChangePw";
+import ProfileEdit from "./screens/ProfileEdit";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -184,7 +185,34 @@ function AuthStack() {
   );
 }
 
+function MyPageNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+        },
+      }}
+    >
+      <Stack.Screen
+        name="myPage"
+        component={MyPageScreen}
+        options={{ title: "마이 페이지" }}
+      />
+      <Stack.Screen
+        name="profileEdit"
+        component={ProfileEdit}
+        options={{ title: "프로필 수정" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 // icon 바꿀 예정
+// 로그인 후 화면
 function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
@@ -192,7 +220,8 @@ function BottomTabNavigator() {
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
         tabBarStyle: { height: 60 },
-        headerTitleAlign: "center",
+
+        headerShown: false,
       }}
     >
       <BottomTab.Screen
@@ -245,7 +274,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="MyPage"
-        component={MyPageScreen}
+        component={MyPageNavigator}
         options={{
           title: "마이 페이지",
           tabBarIcon: ({ color }) => (
@@ -299,7 +328,7 @@ function Navigation() {
     // 로그인 여부에 따른 화면
     <NavigationContainer>
       {!authCtx.isAuthenticated && <AuthStack />}
-      {authCtx.isAuthenticated && <AuthenticatedStack />}
+      {authCtx.isAuthenticated && <BottomTabNavigator />}
     </NavigationContainer>
   );
 }
