@@ -15,4 +15,5 @@ export const GlobalStyles = {
     red: "#EF2B49",
     yellow: "#FFC559",
   },
+  indicationColors: ["#41C19F", "#EF2B49", "#FFC559", "#0068FF"]
 };
