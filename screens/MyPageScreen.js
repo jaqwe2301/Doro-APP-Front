@@ -9,9 +9,11 @@ import {
 import { GlobalStyles } from "../constants/styles";
 import { useContext } from "react";
 import { AuthContext } from "../store/auth-context";
+import { useNavigation } from "@react-navigation/native";
 
 function MyPageScreen() {
   const authCtx = useContext(AuthContext);
+  const navigation = useNavigation();
 
   function logoutHandler() {
     authCtx.logout();
@@ -52,7 +54,7 @@ function MyPageScreen() {
           }}
         >
           <View style={[styles.btnContainer, { marginRight: 10 }]}>
-            <Pressable>
+            <Pressable onPress={() => navigation.navigate("profileEdit")}>
               <Text style={styles.btn}>프로필 편집</Text>
             </Pressable>
           </View>
