@@ -16,6 +16,7 @@ import MyPageScreen from "./screens/MyPageScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
+import DetailLectureScreen from "./screens/DetailLectureScreen";
 import SignUp from "./screens/SignUp";
 import AuthPhone from "./components/signUp/AuthPhone";
 import Id from "./components/signUp/Id";
@@ -105,20 +106,75 @@ function AuthStack() {
 
 // icon 바꿀 예정
 function BottomTabNavigator() {
+  const [detailLetureVisible, setDetailLetureVisible] = useState(true);
+  const [lectureIdState, setLectureIdState] = useState()
+
+  const detailLectureVisibleHandler = (id) => {
+    console.log(id)
+    setLectureIdState(id)
+    setDetailLetureVisible(false);
+  };
+
+  const detailLectureBackHandler = () => {
+    setDetailLetureVisible(true);
+  };
+
   return (
     <BottomTab.Navigator
       screenOptions={{
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
         tabBarStyle: { height: 60 },
-        headerTitleAlign: "center",
       }}
     >
       <BottomTab.Screen
         name="Home"
-        component={HomeScreen}
+        // component={HomeScreen}
+        children={() =>
+          detailLetureVisible ? (
+            <HomeScreen lectureIdProps={detailLectureVisibleHandler} />
+          ) : (
+            <DetailLectureScreen
+              detailLectureBackButton={detailLectureBackHandler}
+              lectureId={lectureIdState}
+            />
+          )
+        }
         options={{
-          title: "홈",
+          headerShown: detailLetureVisible,
+          header: () => {
+            return (
+              <View style={styles.HomeHeader}>
+                <View style={styles.headerTopContainer}>
+                  <Image
+                    source={require("./assets/doroLogoMain.png")}
+                    style={styles.Logo}
+                  />
+                  <Image
+                    source={require("./assets/icons/alarm_after.png")}
+                    style={styles.iconSize}
+                  />
+                </View>
+                <View style={styles.noticeContainer}>
+                  <Image
+                    source={require("./assets/icons/megaphone.png")}
+                    style={styles.iconSize}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 16,
+                      fontStyle: GlobalStyles.gray01,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    메이커 스페이스 사용 안내
+                  </Text>
+                </View>
+              </View>
+            );
+          },
+          // title: "홈",
           tabBarIcon: ({ color }) => (
             <Ionicons name="home" color={color} size={24} />
           ),
@@ -214,7 +270,7 @@ function Navigation() {
   }, []);
   return (
     <NavigationContainer>
-      {!authCtx.isAuthenticated && <AuthStack />}
+      {!authCtx.isAuthenticated && <AuthenticatedStack />}
       {authCtx.isAuthenticated && <AuthenticatedStack />}
     </NavigationContainer>
   );
@@ -234,16 +290,38 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: getStatusBarHeight(),
+    // paddingTop: getStatusBarHeight(),
   },
-
   bottomtab: {
     marginBottom: 9,
     fontSize: 10,
     fontWeight: 600,
   },
-  // header: {
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: "#e1e1e1",
-  // },
+  HomeHeader: {
+    paddingTop: 45,
+    paddingBottom: 54,
+    paddingHorizontal: 20,
+    backgroundColor: "white",
+  },
+  headerTopContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 40,
+  },
+  Logo: {
+    height: 20,
+    width: 93.35,
+  },
+  iconSize: {
+    height: 24,
+    width: 24,
+  },
+  noticeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 44,
+    backgroundColor: "#F4F4F4",
+    paddingLeft: 16,
+    borderRadius: 5.41,
+  },
 });
