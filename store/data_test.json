@@ -1,0 +1,48 @@
+{
+  "success": true,
+  "code": "SUCCESS",
+  "message": "OK",
+  "httpStatus": "OK",
+  "data": [
+    {
+      "id": 4,
+      "title": "강원 과학고 브레이크 키트",
+      "lectureStatus": null,
+      "enrollEndDate": "2023-05-07T14:25:30",
+      "city": "원주시",
+      "mainTutor": "1",
+      "subTutor": "1",
+      "time": "1"
+    },
+    {
+      "id": 8,
+      "title": "[SW] YMS 대안학교 SW캠프",
+      "lectureStatus": null,
+      "enrollEndDate": "2023-04-23T10:00:30",
+      "city": "안산시",
+      "mainTutor": "1",
+      "subTutor": "20~25",
+      "time": "3"
+    },
+    {
+      "id": 5,
+      "title": "강원 과학고 브레이크 키트",
+      "lectureStatus": null,
+      "enrollEndDate": "2023-05-07T14:25:30",
+      "city": "원주시",
+      "mainTutor": "1",
+      "subTutor": "1",
+      "time": "1"
+    },
+    {
+      "id": 7,
+      "title": "[SW] YMS 대안학교 SW캠프",
+      "lectureStatus": null,
+      "enrollEndDate": "2023-04-23T10:00:30",
+      "city": "안산시",
+      "mainTutor": "1",
+      "subTutor": "20~25",
+      "time": "3"
+    }
+  ]
+}
