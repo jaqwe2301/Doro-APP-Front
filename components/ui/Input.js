@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     marginLeft: 3,
     marginBottom: 6,
+    lineHeight: 20,
   },
   input: {
     height: 47,

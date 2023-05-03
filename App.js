@@ -23,6 +23,15 @@ import Id from "./components/signUp/Id";
 import Pw from "./components/signUp/Pw";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
+import Name from "./components/signUp/Name";
+import SignContextProvider from "./store/sign-context";
+import School from "./components/signUp/School";
+import Code from "./components/signUp/Code";
+import AgreeInfo from "./components/signUp/AgreeInfo";
+import Finish from "./components/signUp/Finish";
+import FindId from "./components/signUp/FindId";
+import NotFindId from "./components/signUp/NotFindId";
+import ChangePw from "./components/signUp/ChangePw";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -42,65 +51,137 @@ function LogoTitle() {
   );
 }
 
+function HeaderStyle({ title }) {
+  return (
+    <View style={{ height: 60 }}>
+      <Text>{title}</Text>
+    </View>
+  );
+}
+
 //로그인 전 화면 -로그인,회원가입 등등
 function AuthStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="login"
-        component={LoginScreen}
-        options={{
-          headerTitle: (props) => <LogoTitle {...props} />,
-        }}
-      />
-      <Stack.Screen
-        name="searchId"
-        component={SearchID}
-        options={{
-          title: "아이디 찾기",
-          headerStyle: {
-            height: 150,
-            justifyContent: "center",
-            alignItems: "center",
+    <SignContextProvider>
+      <Stack.Navigator
+        screenOptions={{
+          headerShadowVisible: false,
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontWeight: "600",
+            fontSize: 17,
           },
         }}
-      />
-      <Stack.Screen
-        name="searchPw"
-        component={SearchPW}
-        options={{
-          title: "비밀번호 찾기",
-        }}
-      />
-      <Stack.Screen
-        name="signUp"
-        component={SignUp}
-        options={{
-          title: "회원가입",
-        }}
-      />
-      <Stack.Screen
-        name="authPhone"
-        component={AuthPhone}
-        options={{
-          title: "회원가입",
-        }}
-      />
-      <Stack.Screen
-        name="id"
-        component={Id}
-        options={{
-          title: "회원가입",
-        }}
-      />
-      <Stack.Screen
-        name="pw"
-        component={Pw}
-        options={{
-          title: "회원가입",
-        }}
-      />
-    </Stack.Navigator>
+      >
+        <Stack.Screen
+          name="login"
+          component={LoginScreen}
+          options={{
+            headerTitle: (props) => <LogoTitle {...props} />,
+            headerBackVisible: false,
+            headerTitleAlign: "left",
+          }}
+        />
+        <Stack.Screen
+          name="searchId"
+          component={SearchID}
+          options={{
+            title: "아이디 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="searchPw"
+          component={SearchPW}
+          options={{
+            title: "비밀번호 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="signUp"
+          component={SignUp}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="authPhone"
+          component={AuthPhone}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="id"
+          component={Id}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="pw"
+          component={Pw}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="name"
+          component={Name}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="school"
+          component={School}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="code"
+          component={Code}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="agreeInfo"
+          component={AgreeInfo}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="finish"
+          component={Finish}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="findId"
+          component={FindId}
+          options={{
+            title: "아이디 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="notFindId"
+          component={NotFindId}
+          options={{
+            title: "아이디 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="changePw"
+          component={ChangePw}
+          options={{
+            title: "비밀번호 변경",
+          }}
+        />
+      </Stack.Navigator>
+    </SignContextProvider>
   );
 }
 
@@ -255,8 +336,10 @@ function Navigation() {
   const authCtx = useContext(AuthContext);
   // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
+  // 자동로그인
   useEffect(() => {
     async function fetchToken() {
+      // 저장된 jwt 가져오기
       const storedToken = await AsyncStorage.getItem("token");
 
       if (storedToken) {
@@ -269,8 +352,9 @@ function Navigation() {
     fetchToken();
   }, []);
   return (
+    // 로그인 여부에 따른 화면
     <NavigationContainer>
-      {!authCtx.isAuthenticated && <AuthenticatedStack />}
+      {!authCtx.isAuthenticated && <AuthStack />}
       {authCtx.isAuthenticated && <AuthenticatedStack />}
     </NavigationContainer>
   );
@@ -292,6 +376,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingTop: getStatusBarHeight(),
   },
+
   bottomtab: {
     marginBottom: 9,
     fontSize: 10,

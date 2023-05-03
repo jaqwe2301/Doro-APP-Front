@@ -17,6 +17,7 @@ import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
 import LectureBox from "./../components/ui/LectureBox";
+import Code from "../components/signUp/Code";
 
 const HomeScreen = (props,{ onPressLecture }) => {
   const [lectureData, setLectureData] = useState([]);
