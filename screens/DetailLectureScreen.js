@@ -4,8 +4,31 @@ import { Text, Pressable } from "react-native";
 import axios from "axios";
 
 function DetailLectureScreen({ lectureId, detailLectureBackButton }) {
-  const [lectureBasicInfo, setLectureBasicInfo] = useState();
-  const [lectureContent, setLectureContent] = useState();
+  const [lectureBasicInfo, setLectureBasicInfo] = useState({
+    city: "",
+    enrollEndDate: "",
+    enrollStartDate: "",
+    institution: "",
+    lectureDates: [],
+    mainPayment: "",
+    mainTitle: "",
+    mainTutor: "",
+    place: "",
+    staff: "",
+    staffPayment: "",
+    studentGrade: ",",
+    studentNumber: "",
+    subPayment: "",
+    subTitle: "",
+    subTutor: "",
+    time: "",
+  });
+  const [lectureContent, setLectureContent] = useState({
+    detail: "",
+    kit: "",
+    remark: "",
+    requirement: "",
+  });
 
   useEffect(() => {
     axios
@@ -18,7 +41,7 @@ function DetailLectureScreen({ lectureId, detailLectureBackButton }) {
       .then((res) => {
         setLectureBasicInfo(res.data.data.lectureDto);
         setLectureContent(res.data.data.lectureContentDto);
-        console.log(res.data.data.lectureDto)
+        console.log(res.data.data.lectureContentDto);
         // console.log("성공");
       })
       .catch((error) => {
