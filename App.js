@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image} from "react-native";
 import { useState, useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -188,11 +188,11 @@ function AuthStack() {
 // icon 바꿀 예정
 function BottomTabNavigator() {
   const [detailLetureVisible, setDetailLetureVisible] = useState(true);
-  const [lectureIdState, setLectureIdState] = useState()
+  const [lectureIdState, setLectureIdState] = useState();
 
   const detailLectureVisibleHandler = (id) => {
-    console.log(id)
-    setLectureIdState(id)
+    console.log(id);
+    setLectureIdState(id);
     setDetailLetureVisible(false);
   };
 
@@ -210,7 +210,6 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Home"
-        // component={HomeScreen}
         children={() =>
           detailLetureVisible ? (
             <HomeScreen lectureIdProps={detailLectureVisibleHandler} />
@@ -303,11 +302,26 @@ function BottomTabNavigator() {
         name="MyPage"
         component={MyPageScreen}
         options={{
-          title: "마이 페이지",
+          // title: "마이 페이지",
+          header: () => {
+            return (
+              <View
+                style={{
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  paddingTop: 22.73,
+                }}
+              >
+                <Text style={{ fontSize: 22 }}>매니저</Text>
+              </View>
+            );
+          },
           tabBarIcon: ({ color }) => (
             <Ionicons name="person" color={color} size={24} />
           ),
           tabBarLabelStyle: {
+            justifyContent: "center",
             marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
