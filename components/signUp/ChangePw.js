@@ -1,29 +1,48 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useContext, useState } from "react";
-import { GlobalStyles } from "../../constants/styles";
-
-import ButtonBig from "../ui/ButtonBig";
-import InputText from "../ui/InputText";
-import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import PwBtn from "../ui/PwBtn";
-import Bar from "../ui/Bar";
-import { SignContext } from "../../store/sign-context";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import InputData from "../ui/InputData";
+import PwBtn from "../ui/PwBtn";
+import ButtonBig from "../ui/ButtonBig";
+import { GlobalStyles } from "../../constants/styles";
+import { useState } from "react";
+import { changePassword } from "../../utill/auth";
+import { useNavigation } from "@react-navigation/native";
 
-function Pw() {
-  const [inputPw, setInputPw] = useState("");
-  const [inputRePw, setInputRePw] = useState("");
+function ChangePw({ route }) {
+  const [pw, setPw] = useState("");
+  const [repw, setRePw] = useState("");
   const [isNavi, setIsNavi] = useState(false);
+  const [sbtnColor, setsbtnColor] = useState(GlobalStyles.colors.gray05);
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [eng, setEng] = useState(GlobalStyles.colors.gray05);
   const [num, setNum] = useState(GlobalStyles.colors.gray05);
   const [mark, setMark] = useState(GlobalStyles.colors.gray05);
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
+
+  const id = route.params.id;
+  const phoneNum = route.params.phone;
   const navigation = useNavigation();
-  const { signData, setSignData } = useContext(SignContext);
-  const [flex1, setFlex1] = useState(2);
-  const flex2 = 10 - flex1;
+  async function handlerPwchange() {
+    if (isNavi) {
+      try {
+        const response = await changePassword({
+          account: id,
+          newPassword: pw,
+          newPasswordCheck: repw,
+          phone: phoneNum,
+        });
+
+        if (response.success) {
+          Alert.alert("성공", "비밀번호 변경");
+          navigation.replace("login");
+        } else {
+          Alert.alert("Error", "일치하는 아이디가 없습니다. ");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
   const handlePwChange = (text) => {
     let hasEng = /[a-zA-Z]+/g.test(text);
     let hasNum = /[0-9]+/g.test(text);
@@ -36,12 +55,12 @@ function Pw() {
     setLen(
       hasValidLen ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05
     );
-    setInputPw(text);
+    setPw(text);
 
     if (
-      inputPw !== "" &&
-      inputRePw !== "" &&
-      inputRePw === text &&
+      pw !== "" &&
+      repw !== "" &&
+      repw === text &&
       text.length >= 8 &&
       text.length <= 20 &&
       /[a-zA-z]+/g.test(text) &&
@@ -57,92 +76,89 @@ function Pw() {
   };
 
   const handleRePwChange = (text) => {
-    setInputRePw(text);
+    setRePw(text);
 
     if (
-      inputPw === text &&
+      pw === text &&
       text.length >= 8 &&
       text.length <= 20 &&
       /[a-zA-z]+/g.test(text) &&
       /[0-9]+/g.test(text) &&
       /[~!@#$%^&*()_+|<>?:{}]+/g.test(text)
     ) {
-      setFlex1(3);
       setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
-      setFlex1(2);
       setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
   };
 
-  function navigatePw() {
-    if (isNavi) {
-      setSignData({ ...signData, password: inputPw, passwordCheck: inputRePw });
-
-      navigation.navigate("name");
-    } else {
-    }
-  }
-
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
-      <View style={{ flex: 1, justifyContent: "space-between" }}>
-        <View>
-          <View style={styles.textContainer}>
-            <InputText text="비밀번호를 입력해 주세요." />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.id}>{signData.account}</Text>
-            <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <InputData
-              hint="영문, 숫자, 특수문자 포함 8~20자"
-              onChangeText={handlePwChange}
-              value={inputPw}
-              secureTextEntry={true}
-            />
-          </View>
-          <View style={styles.pwBtn}>
-            <PwBtn text="영문" btnColor={eng} />
-            <PwBtn text="숫자" btnColor={num} />
-            <PwBtn text="특수문자" btnColor={mark} />
-            <PwBtn text="8~20자" btnColor={len} />
-          </View>
-          <View style={[styles.inputContainer, { marginTop: 5 }]}>
-            <InputData
-              hint="비밀번호 재입력"
-              onChangeText={handleRePwChange}
-              value={inputRePw}
-              secureTextEntry={true}
-            />
-          </View>
-        </View>
-        <View style={styles.buttonContainer}>
-          <ButtonBig text="다음" style={lbtnColor} onPress={navigatePw} />
-        </View>
+    <View style={styles.container}>
+      <View style={styles.headerShadow}></View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.textTitle}>신규 비밀번호</Text>
+        <InputData
+          hint="영문, 숫자, 특수문자 포함 8~20자"
+          onChangeText={handlePwChange}
+          value={pw}
+        />
+      </View>
+      <View style={styles.pwBtn}>
+        <PwBtn text="영문" btnColor={eng} />
+        <PwBtn text="숫자" btnColor={num} />
+        <PwBtn text="특수문자" btnColor={mark} />
+        <PwBtn text="8~20자" btnColor={len} />
+      </View>
+      <View style={[styles.inputContainer, { marginTop: 8 }]}>
+        <Text style={styles.textTitle}>신규 비밀번호 재확인</Text>
+        <InputData
+          hint="비밀번호 재입력"
+          onChangeText={handleRePwChange}
+          value={repw}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <ButtonBig
+          text="변경 하기"
+          style={lbtnColor}
+          onPress={handlerPwchange}
+        />
       </View>
     </View>
   );
 }
 
-export default Pw;
+export default ChangePw;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  headerShadow: {
+    borderBottomColor: GlobalStyles.colors.gray05,
+    borderBottomWidth: 0.5,
+  },
+  textTitle: {
+    marginLeft: 6,
+    marginBottom: 5,
+    fontSize: 15,
+    fontWeight: 400,
+    lineHeight: 20,
+  },
   textContainer: {
     marginHorizontal: 20,
     marginTop: 45,
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginBottom: 34,
+    marginTop: 36,
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 23,
   },
   lInputContainer: {
     marginHorizontal: 20,
