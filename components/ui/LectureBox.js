@@ -4,7 +4,7 @@ import { useState } from "react";
 
 function LectureBox(props) {
   const recruitingData = props.LectureData.filter(
-    (item) => item.lectureStatus === null
+    (item) => item.status === "RECRUITING"
   );
 
   // for (let i = 0; i < recruitingData.length; i++) {
