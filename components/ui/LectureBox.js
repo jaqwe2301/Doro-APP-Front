@@ -7,12 +7,6 @@ function LectureBox(props) {
     (item) => item.status === "RECRUITING"
   );
 
-  // for (let i = 0; i < recruitingData.length; i++) {
-  //   let splitedTitle = recruitingData[i].title.split("#");
-  //   recruitingData[i].mainTitle = splitedTitle[0];
-  //   recruitingData[i].subTitle = splitedTitle[1];
-  // }
-
   const allTitleArray = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
@@ -61,13 +55,13 @@ function LectureBox(props) {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
 
             let dateHours =
-              dateControl(filteringItem.lectureDates[0]).getHours().length === 2
+              dateControl(filteringItem.lectureDates[0]).getHours() > 10
                 ? dateControl(filteringItem.lectureDates[0]).getHours()
                 : "0" + dateControl(filteringItem.lectureDates[0]).getHours();
 
             let dateMinutes =
-              dateControl(filteringItem.lectureDates[0]).getMinutes().length ===
-              2
+              dateControl(filteringItem.lectureDates[0]).getMinutes().length >
+              10
                 ? dateControl(filteringItem.lectureDates[0]).getMinutes()
                 : "0" + dateControl(filteringItem.lectureDates[0]).getMinutes();
 
