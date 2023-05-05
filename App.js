@@ -208,6 +208,13 @@ function MyPageNavigator() {
         component={ProfileEdit}
         options={{ title: "프로필 수정" }}
       />
+      <Stack.Screen
+        name="searchPw"
+        component={SearchPW}
+        options={{
+          title: "비밀번호 찾기",
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -240,16 +247,17 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Home"
-        children={() =>
-          detailLetureVisible ? (
-            <HomeScreen lectureIdProps={detailLectureVisibleHandler} />
-          ) : (
-            <DetailLectureScreen
-              detailLectureBackButton={detailLectureBackHandler}
-              lectureId={lectureIdState}
-            />
-          )
-        }
+        // children={() =>
+        //   detailLetureVisible ? (
+        //     <HomeScreen lectureIdProps={detailLectureVisibleHandler} />
+        //   ) : (
+        //     <DetailLectureScreen
+        //       detailLectureBackButton={detailLectureBackHandler}
+        //       lectureId={lectureIdState}
+        //     />
+        //   )
+        // }
+        component={NoticeScreen}
         options={{
           headerShown: detailLetureVisible,
           header: () => {
