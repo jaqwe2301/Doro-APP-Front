@@ -7,17 +7,45 @@ import {
   Pressable,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
 import { useNavigation } from "@react-navigation/native";
+import { getProfile } from "../utill/http";
 
 function MyPageScreen() {
+  // const [birth, setBirth] = useState("");
+  // const [generation, setGeneration] = useState("");
+  // const [major, setMajor] = useState("");
+  // const [name, setName] = useState("");
+  // const [phone, setPhone] = useState("");
+  // const [school, setSchool] = useState("");
+  // const [studentId, setStudentId] = useState("");
+  // const [studentStatus, setStudentStatus] = useState("");
+  const [data, setData] = useState([]);
   const authCtx = useContext(AuthContext);
   const navigation = useNavigation();
 
   function logoutHandler() {
     authCtx.logout();
   }
+
+  function navi() {
+    navigation.navigate("searchPw");
+  }
+
+  async function profileHandler() {
+    try {
+      const response = await getProfile({ id: 1 });
+      setData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    profileHandler();
+  }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -42,7 +70,7 @@ function MyPageScreen() {
           </View>
         </View>
         <View style={{ marginHorizontal: 20, marginTop: 6 }}>
-          <Text style={styles.name}>김혜원</Text>
+          <Text style={styles.name}>{data.name}</Text>
           <Text style={styles.title}>DORO 3기</Text>
         </View>
         <View
@@ -68,23 +96,23 @@ function MyPageScreen() {
           <Text style={[styles.contentTitle, { marginTop: 45 }]}>기본정보</Text>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>생년월일</Text>
-            <Text style={styles.contentText}>2001.09.27</Text>
+            <Text style={styles.contentText}>{data.birth}</Text>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>휴대전화번호</Text>
-            <Text style={styles.contentText}>010-4478-1672</Text>
+            <Text style={styles.contentText}>{data.phone}</Text>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>학교</Text>
-            <Text style={styles.contentText}>한양대학교</Text>
+            <Text style={styles.contentText}>{data.school}</Text>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>전공</Text>
-            <Text style={styles.contentText}>ICT융합학부</Text>
+            <Text style={styles.contentText}>{data.major}</Text>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>학번</Text>
-            <Text style={styles.contentText}>202004257</Text>
+            <Text style={styles.contentText}>{data.studentId}</Text>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>재학 유무</Text>
@@ -100,7 +128,7 @@ function MyPageScreen() {
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>비밀번호</Text>
-            <Pressable>
+            <Pressable onPress={navi}>
               <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
                 비밀번호 수정
               </Text>
