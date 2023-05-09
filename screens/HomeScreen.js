@@ -18,7 +18,7 @@ import axios from "axios";
 import { GlobalStyles } from "../constants/styles";
 import LectureBox from "./../components/ui/LectureBox";
 
-const HomeScreen = (props, { onPressLecture }) => {
+const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
   const [lectureData, setLectureData] = useState([]);
 
   useEffect(() => {
@@ -50,20 +50,18 @@ const HomeScreen = (props, { onPressLecture }) => {
 
   const lectureIdHomeScreen = (id) => {
     // 강의 클릭하면 id 값 state로 넘어옴
-    props.lectureIdProps(id);
+    lectureIdProps(id);
   };
 
   const FirstRoute = () => (
     <LectureBox
       LectureData={lectureData}
       onPresslectureId={lectureIdHomeScreen}
-    ></LectureBox>
+    />
   );
   const SecondRoute = () => (
     <View style={styles.lectureListContainer}>
-      <Pressable onPress={onPressLecture}>
-        <Text>클릭해보세요</Text>
-      </Pressable>
+      <Text>진행중</Text>
     </View>
   );
 
@@ -146,6 +144,9 @@ const HomeScreen = (props, { onPressLecture }) => {
         initialLayout={{ width: Dimensions.get("window").width }}
         style={styles.container}
       />
+      <Pressable onPress={createLectureVisibleProps}>
+        <View style={styles.BottomButton}></View>
+      </Pressable>
     </>
   );
 };
@@ -217,5 +218,13 @@ const styles = StyleSheet.create({
   date: {
     color: "#41C19F",
     fontSize: 12,
+  },
+  BottomButton: {
+    position: "absolute",
+    height: 56,
+    width: 56,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+    bottom: 27,
+    right: 20,
   },
 });
