@@ -1,13 +1,18 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
-function ButtonOneThird({ text, style, onPress }) {
+function ButtonOneThird({
+  text,
+  onPress,
+}) {
   return (
-    <Pressable onPress={onPress}>
-      <View style={[styles.container, { backgroundColor: style }]}>
+    <View style={styles.container}>
+      <Pressable
+        onPress={onPress}
+      >
         <Text style={styles.text}>{text}</Text>
-      </View>
-    </Pressable>
+      </Pressable>
+    </View>
   );
 }
 
@@ -15,15 +20,17 @@ export default ButtonOneThird;
 
 const styles = StyleSheet.create({
   container: {
-    height: 49,
-    elevation: 3,
+    height: 40,
+    width: (Dimensions.get("window").width - 50) / 3,
+    elevation: 4,
     borderRadius: 5.41,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: GlobalStyles.colors.primaryDefault,
   },
   text: {
     color: GlobalStyles.colors.gray07,
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: 600,
     lineHeight: 22,
   },
