@@ -5,11 +5,67 @@ import {
   StyleSheet,
   Image,
   Pressable,
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import InputLine from "../components/ui/InputLine";
+import { useState } from "react";
+import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-function ProfileEdit() {
+function ProfileEdit({ route }) {
+  const [phoneNum, setphoneNum] = useState("");
+  const [authNum, setauthNum] = useState("");
+  const [request, setRequest] = useState([]);
+  const navigation = useNavigation();
+
+  const data = route.params.data;
+  const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
+
+  const handlePhoneChange = (text) => {
+    setphoneNum(text);
+  };
+  const handleAuthChange = (text) => {
+    setauthNum(text);
+  };
+
+  function requestNumber() {
+    try {
+      setphoneNum(data.phone);
+      if (data !== "") {
+        authPhoneNum({ messageType: "UPDATE", phone: phoneNum });
+      }
+    } catch (error) {
+      Alert.alert("ERROR", "다시 시도해주세요");
+    }
+  }
+
+  async function verifyAuthNum() {
+    if (authNum.length === 6) {
+      try {
+        const success = await verifyauthPhoneNum({
+          authNum: authNum,
+          messageType: "UPDATE",
+          phone: phoneNum,
+        });
+
+        console.log(success);
+        if (success) {
+          Alert.alert("인증", "인증 완료");
+        } else {
+          Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
+        }
+      } catch (error) {
+        Alert.alert("ERROR", "Network Error");
+      }
+    } else {
+    }
+  }
+
+  function navi() {
+    navigation.navigate("searchPw");
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -29,42 +85,46 @@ function ProfileEdit() {
           <Text style={styles.contentTitle}>기본정보</Text>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>이름</Text>
-            <Text style={styles.contentText}>김혜원</Text>
+            <Text style={styles.contentText}>{data.name}</Text>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>생년월일</Text>
-            <Text style={styles.contentText}>2001.09.27</Text>
+            <Text style={styles.contentText}>{data.birth}</Text>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>휴대전화번호</Text>
-            <InputLine placeholder={"010-4478-1672"} />
+            <InputLine
+              placeholder={data.phone}
+              onChangeText={handlePhoneChange}
+              value={phoneNum}
+            />
 
-            <Pressable>
+            <Pressable onPress={requestNumber}>
               <Text style={styles.auth}>인증요청</Text>
             </Pressable>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>인증번호</Text>
-            <InputLine placeholder={"548342"} />
-            <Pressable>
+            <InputLine onChangeText={handleAuthChange} value={authNum} />
+            <Pressable onPress={verifyAuthNum}>
               <Text style={styles.auth}>인증확인</Text>
             </Pressable>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>학교</Text>
-            <InputLine placeholder={"한양대학교 ERICA"} />
+            <InputLine placeholder={data.school} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>전공</Text>
-            <InputLine placeholder={"ICT융합학부"} />
+            <InputLine placeholder={data.major} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>학번</Text>
-            <InputLine placeholder={"2020004257"} />
+            <InputLine placeholder={data.studentId} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>재학 유무</Text>
-            <InputLine placeholder={"재학"} />
+            <InputLine placeholder={status} />
           </View>
           <View style={styles.border}></View>
         </View>
@@ -83,7 +143,7 @@ function ProfileEdit() {
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>비밀번호</Text>
-            <Pressable>
+            <Pressable onPress={navi}>
               <Text
                 style={[
                   styles.contentText,

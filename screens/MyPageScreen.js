@@ -24,6 +24,7 @@ function MyPageScreen() {
   const [data, setData] = useState([]);
   const authCtx = useContext(AuthContext);
   const navigation = useNavigation();
+  const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
 
   function logoutHandler() {
     authCtx.logout();
@@ -37,6 +38,7 @@ function MyPageScreen() {
     try {
       const response = await getProfile({ id: 1 });
       setData(response);
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -71,7 +73,7 @@ function MyPageScreen() {
         </View>
         <View style={{ marginHorizontal: 20, marginTop: 6 }}>
           <Text style={styles.name}>{data.name}</Text>
-          <Text style={styles.title}>DORO 3기</Text>
+          <Text style={styles.title}>DORO {data.generation}기</Text>
         </View>
         <View
           style={{
@@ -82,7 +84,9 @@ function MyPageScreen() {
           }}
         >
           <View style={[styles.btnContainer, { marginRight: 10 }]}>
-            <Pressable onPress={() => navigation.navigate("profileEdit")}>
+            <Pressable
+              onPress={() => navigation.navigate("profileEdit", { data: data })}
+            >
               <Text style={styles.btn}>프로필 편집</Text>
             </Pressable>
           </View>
@@ -116,7 +120,7 @@ function MyPageScreen() {
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>재학 유무</Text>
-            <Text style={styles.contentText}>재학중</Text>
+            <Text style={styles.contentText}>{status}</Text>
           </View>
           <View style={styles.border}></View>
         </View>
