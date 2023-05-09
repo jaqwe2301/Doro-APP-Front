@@ -17,9 +17,9 @@ export async function getProfile({ id }) {
       //   params: {
       //     id: id,
       //   },
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     });
     return response.data.data;
   } catch (error) {
