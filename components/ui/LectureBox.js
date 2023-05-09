@@ -76,14 +76,16 @@ function LectureBox(props) {
                 ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
                   `${lectureDateControl(
                     filteringItem.lectureDates
-                  )} ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`
+                    // )} ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`
+                  )} ${filteringItem.time}`
                 : `${
                     dateControl(filteringItem.lectureDates[0]).getMonth() + 1
                   }월 ${dateControl(
                     filteringItem.lectureDates[0]
                   ).getDate()}일 (${
                     days[dateControl(filteringItem.lectureDates[0]).getDay()]
-                  }) ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`;
+                    // }) ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`;
+                  }) ${filteringItem.time}`;
 
             const lectureIdHandler = () => {
               props.onPresslectureId(filteringItem.id);
