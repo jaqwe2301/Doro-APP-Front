@@ -55,7 +55,12 @@ function LoginScreen({ navigation }) {
           <Input title="아이디" value={id} onChangeText={handleId}></Input>
         </View>
         <View style={{ marginTop: 14 }}>
-          <Input title="비밀번호" value={pw} onChangeText={handlePw}></Input>
+          <Input
+            title="비밀번호"
+            value={pw}
+            onChangeText={handlePw}
+            secureTextEntry={true}
+          ></Input>
         </View>
         <Pressable onPress={loginHandler}>
           <Text style={styles.button}>로그인</Text>
