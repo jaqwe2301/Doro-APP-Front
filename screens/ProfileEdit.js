@@ -9,15 +9,24 @@ import {
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import InputLine from "../components/ui/InputLine";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { updateProfile } from "../utill/http";
 
-function ProfileEdit({ route }) {
+function ProfileEdit({ navigation, route }) {
   const [phoneNum, setphoneNum] = useState("");
   const [authNum, setauthNum] = useState("");
   const [request, setRequest] = useState([]);
-  const navigation = useNavigation();
+  const [birth, setBirth] = useState("");
+  const [generation, setGeneration] = useState("");
+  const [major, setMajor] = useState("");
+  const [name, setName] = useState("");
+
+  const [school, setSchool] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [studentStatus, setStudentStatus] = useState("");
+  // const navigation = useNavigation();
 
   const data = route.params.data;
   const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
@@ -29,12 +38,56 @@ function ProfileEdit({ route }) {
     setauthNum(text);
   };
 
+  function profileHandler() {
+    setphoneNum(data.phone);
+    setGeneration(data.generation);
+    // console.log(generation);
+    setMajor(data.major);
+    setSchool(data.school);
+    setStudentId(data.studentId);
+    setStudentStatus(data.studentStatus);
+  }
+
+  async function completeHandler() {
+    try {
+      const success = await updateProfile({
+        generation: generation,
+        major: major,
+        phone: phoneNum,
+        school: school,
+        studentId: studentId,
+        studenStatus: studentStatus,
+        id: 1,
+      });
+    } catch (error) {
+      Alert.alert("ERROR", "Network Error");
+    }
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => {
+        return (
+          <Text style={styles.cancelText} onPress={() => navigation.goBack()}>
+            취소
+          </Text>
+        );
+      },
+      headerRight: () => {
+        return (
+          <Text style={styles.completeText} onPress={completeHandler}>
+            완료
+          </Text>
+        );
+      },
+    });
+    profileHandler();
+    console.log(generation);
+  }, []);
+
   function requestNumber() {
     try {
-      setphoneNum(data.phone);
-      if (data !== "") {
-        authPhoneNum({ messageType: "UPDATE", phone: phoneNum });
-      }
+      authPhoneNum({ messageType: "UPDATE", phone: phoneNum });
     } catch (error) {
       Alert.alert("ERROR", "다시 시도해주세요");
     }
@@ -66,6 +119,22 @@ function ProfileEdit({ route }) {
     navigation.navigate("searchPw");
   }
 
+  const handleSchoolChange = (text) => {
+    setSchool(text);
+  };
+  const handleMajorChange = (text) => {
+    setMajor(text);
+  };
+  const handleStudentIdChange = (text) => {
+    setStudentId(text);
+  };
+  const handleStatusChange = (text) => {
+    setStudentStatus(text);
+  };
+  const handleGenerationChange = (text) => {
+    setGeneration(text);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -94,37 +163,51 @@ function ProfileEdit({ route }) {
           <View style={styles.contentContainer}>
             <Text style={styles.title}>휴대전화번호</Text>
             <InputLine
-              placeholder={data.phone}
               onChangeText={handlePhoneChange}
               value={phoneNum}
+              keyboardType="numeric"
             />
-
             <Pressable onPress={requestNumber}>
               <Text style={styles.auth}>인증요청</Text>
             </Pressable>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>인증번호</Text>
-            <InputLine onChangeText={handleAuthChange} value={authNum} />
+            <InputLine
+              onChangeText={handleAuthChange}
+              value={authNum}
+              keyboardType="numeric"
+            />
             <Pressable onPress={verifyAuthNum}>
               <Text style={styles.auth}>인증확인</Text>
             </Pressable>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>학교</Text>
-            <InputLine placeholder={data.school} />
+            <InputLine onChangeText={handleSchoolChange} value={school} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>전공</Text>
-            <InputLine placeholder={data.major} />
+            <InputLine onChangeText={handleMajorChange} value={major} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>학번</Text>
-            <InputLine placeholder={data.studentId} />
+            <InputLine onChangeText={handleStudentIdChange} value={studentId} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>재학 유무</Text>
-            <InputLine placeholder={status} />
+            <InputLine
+              onChangeText={handleStatusChange}
+              value={studentStatus}
+            />
+          </View>
+          <View style={styles.contentContainer}>
+            <Text style={styles.title}>기수</Text>
+            <InputLine
+              onChangeText={handleGenerationChange}
+              value={String(generation)}
+              keyboardType="numeric"
+            />
           </View>
           <View style={styles.border}></View>
         </View>
@@ -225,5 +308,18 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: 50,
     textAlign: "center",
+  },
+  cancelText: {
+    fontWeight: 400,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray05,
+    marginLeft: 10,
+  },
+  completeText: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    color: GlobalStyles.colors.primaryDefault,
+    marginRight: 10,
   },
 });
