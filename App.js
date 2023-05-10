@@ -33,6 +33,7 @@ import FindId from "./components/signUp/FindId";
 import NotFindId from "./components/signUp/NotFindId";
 import ChangePw from "./components/signUp/ChangePw";
 import ProfileEdit from "./screens/ProfileEdit";
+import NoticeDetailScreen from "./screens/NoticeDetailScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -227,6 +228,37 @@ function MyPageNavigator() {
     </Stack.Navigator>
   );
 }
+function NoticeNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+          // lineHeight: 22,
+        },
+      }}
+    >
+      <Stack.Screen
+        name="noticeScreen"
+        component={NoticeScreen}
+        options={{
+          title: "공지사항",
+          headerRight: () => {
+            return <Ionicons name="home-outline" size={20} />;
+          },
+        }}
+      />
+      <Stack.Screen
+        name="noticeDetail"
+        component={NoticeDetailScreen}
+        options={{ title: "" }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 // icon 바꿀 예정
 // 로그인 후 화면
@@ -315,7 +347,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Notice"
-        component={NoticeScreen}
+        component={NoticeNavigator}
         options={{
           title: "공지사항",
           tabBarIcon: ({ color }) => (
