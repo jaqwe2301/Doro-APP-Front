@@ -44,6 +44,32 @@ export async function getProfile2({ id }) {
   }
 }
 
+export async function updateProfile({
+  generation,
+  major,
+  phone,
+  school,
+  studentId,
+  studenStatus,
+  id,
+}) {
+  try {
+    const response = await axios.patch(URL + "/users/" + `${id}`, {
+      generation: generation,
+      major: major,
+      phone: phone,
+      school: school,
+      studentId: studentId,
+      studenStatus: studenStatus,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(generation, major, phone, school, studentId, studenStatus, id);
+    console.log(error);
+    throw error;
+  }
+}
+
 export async function checkAccount({ account }) {
   const response = await axios.get(URL + "/check/account?account=" + account);
 
