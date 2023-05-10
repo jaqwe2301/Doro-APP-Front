@@ -11,6 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
 
 import { getProfile } from "../utill/http";
+import jwtDecode from "jwt-decode";
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -25,7 +26,14 @@ function MyPageScreen({ navigation }) {
   const authCtx = useContext(AuthContext);
   // const navigation = useNavigation();
   const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
-
+  const token =
+    "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJpYXQiOjE2ODM3MjM2OTQsImV4cCI6MTY4Mzc3NTUzNH0.n21Fgv_ejPxWklqDqe29fvAfDd51q8Lb25N2nCAdusc";
+  const decoded = jwtDecode(token);
+  console.log(decoded);
+  var decodedHeader = jwtDecode(token, { payload: true });
+  console.log(decodedHeader);
+  const payload = decoded.payload;
+  console.log(payload);
   function logoutHandler() {
     authCtx.logout();
   }
