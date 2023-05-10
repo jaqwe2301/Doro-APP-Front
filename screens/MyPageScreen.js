@@ -9,10 +9,10 @@ import {
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
-import { useNavigation } from "@react-navigation/native";
+
 import { getProfile } from "../utill/http";
 
-function MyPageScreen() {
+function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
   // const [generation, setGeneration] = useState("");
   // const [major, setMajor] = useState("");
@@ -23,7 +23,7 @@ function MyPageScreen() {
   // const [studentStatus, setStudentStatus] = useState("");
   const [data, setData] = useState([]);
   const authCtx = useContext(AuthContext);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
 
   function logoutHandler() {

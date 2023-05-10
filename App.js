@@ -195,6 +195,7 @@ function MyPageNavigator() {
         headerTitleStyle: {
           fontWeight: "600",
           fontSize: 17,
+          // lineHeight: 22,
         },
       }}
     >
@@ -206,7 +207,15 @@ function MyPageNavigator() {
       <Stack.Screen
         name="profileEdit"
         component={ProfileEdit}
-        options={{ title: "프로필 수정" }}
+        options={{
+          title: "프로필 수정",
+          headerRight: () => {
+            return <Text style={styles.completeText}>완료</Text>;
+          },
+          headerLeft: () => {
+            return <Text style={styles.cancelText}>취소</Text>;
+          },
+        }}
       />
       <Stack.Screen
         name="searchPw"
@@ -460,5 +469,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F4F4",
     paddingLeft: 16,
     borderRadius: 5.41,
+  },
+  completeText: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    color: GlobalStyles.colors.primaryDefault,
+    marginRight: 10,
+  },
+  cancelText: {
+    fontWeight: 400,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray05,
+    marginLeft: 10,
   },
 });
