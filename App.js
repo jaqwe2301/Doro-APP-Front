@@ -34,6 +34,7 @@ import NotFindId from "./components/signUp/NotFindId";
 import ChangePw from "./components/signUp/ChangePw";
 import ProfileEdit from "./screens/ProfileEdit";
 import NoticeDetailScreen from "./screens/NoticeDetailScreen";
+import AddNoticeScreen from "./screens/AddNoticeScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -256,6 +257,16 @@ function NoticeNavigator() {
         component={NoticeDetailScreen}
         options={{ title: "" }}
       />
+      <Stack.Screen
+        name="noticeAdd"
+        component={AddNoticeScreen}
+        options={{
+          title: "글쓰기",
+          headerRight: () => {
+            return <Text style={styles.completeText2}>완료</Text>;
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -282,7 +293,7 @@ function BottomTabNavigator() {
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
         tabBarStyle: { height: 60 },
-
+        tabBarHideOnKeyboard: true,
         headerShown: false,
       }}
     >
@@ -508,6 +519,21 @@ const styles = StyleSheet.create({
     // lineHeight: 20,
     color: GlobalStyles.colors.primaryDefault,
     marginRight: 10,
+  },
+  completeText2: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    width: 50,
+    height: 30,
+    borderRadius: 5.41,
+    color: "white",
+    textAlign: "center",
+    textAlignVertical: "center",
+    // marginLeft: -4,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+
+    lineHeight: 20,
   },
   cancelText: {
     fontWeight: 400,
