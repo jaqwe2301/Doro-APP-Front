@@ -5,6 +5,7 @@ import {
   StatusBar,
   View,
   Pressable,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles } from "../constants/styles";
@@ -90,6 +91,9 @@ function NoticeScreen({ navigation }) {
   function navigHandler() {
     navigation.navigate("noticeDetail", { data: DATA });
   }
+  function naviAddHandler() {
+    navigation.navigate("noticeAdd");
+  }
 
   const Item = ({ title, name, date }) => (
     <View style={styles.content}>
@@ -113,6 +117,11 @@ function NoticeScreen({ navigation }) {
         )}
         keyExtractor={(item) => item.id}
       />
+      <Pressable onPress={naviAddHandler}>
+        <View style={styles.plusBtn}>
+          <Image source={require("../assets/plus.png")} />
+        </View>
+      </Pressable>
     </View>
   );
 }
@@ -149,5 +158,12 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     lineHeight: 17,
     color: GlobalStyles.colors.gray03,
+  },
+  plusBtn: {
+    position: "absolute",
+    right: 20,
+    width: 56,
+    height: 56,
+    bottom: 16,
   },
 });
