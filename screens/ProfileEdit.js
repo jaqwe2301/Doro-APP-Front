@@ -12,7 +12,7 @@ import InputLine from "../components/ui/InputLine";
 import { useEffect, useState } from "react";
 import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { updateProfile } from "../utill/http";
+import { getProfile2, updateProfile } from "../utill/http";
 
 function ProfileEdit({ navigation, route }) {
   const [phoneNum, setphoneNum] = useState("");
@@ -41,7 +41,6 @@ function ProfileEdit({ navigation, route }) {
   function profileHandler() {
     setphoneNum(data.phone);
     setGeneration(data.generation);
-    // console.log(generation);
     setMajor(data.major);
     setSchool(data.school);
     setStudentId(data.studentId);
@@ -56,8 +55,8 @@ function ProfileEdit({ navigation, route }) {
         phone: phoneNum,
         school: school,
         studentId: studentId,
-        studenStatus: studentStatus,
-        id: 1,
+        studentStatus: studentStatus,
+        id: "1",
       });
     } catch (error) {
       Alert.alert("ERROR", "Network Error");
@@ -75,14 +74,13 @@ function ProfileEdit({ navigation, route }) {
       },
       headerRight: () => {
         return (
-          <Text style={styles.completeText} onPress={completeHandler}>
-            완료
-          </Text>
+          <Pressable onPress={completeHandler}>
+            <Text style={styles.completeText}>완료</Text>
+          </Pressable>
         );
       },
     });
     profileHandler();
-    console.log(generation);
   }, []);
 
   function requestNumber() {

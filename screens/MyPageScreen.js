@@ -12,6 +12,8 @@ import { AuthContext } from "../store/auth-context";
 
 import { getProfile } from "../utill/http";
 import jwtDecode from "jwt-decode";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { HeaderContext } from "../store/header-context";
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -26,14 +28,16 @@ function MyPageScreen({ navigation }) {
   const authCtx = useContext(AuthContext);
   // const navigation = useNavigation();
   const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
-  const token =
-    "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJpYXQiOjE2ODM3MjM2OTQsImV4cCI6MTY4Mzc3NTUzNH0.n21Fgv_ejPxWklqDqe29fvAfDd51q8Lb25N2nCAdusc";
-  const decoded = jwtDecode(token);
-  console.log(decoded);
-  var decodedHeader = jwtDecode(token, { payload: true });
-  console.log(decodedHeader);
-  const payload = decoded.payload;
-  console.log(payload);
+
+  async function token2() {
+    const token = await AsyncStorage.getItem("token");
+    const decoded = jwtDecode(token);
+    console.log(decoded.roles[0].authority);
+  }
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
+
+  console.log(headerRole);
+
   function logoutHandler() {
     authCtx.logout();
   }
