@@ -35,6 +35,8 @@ import ChangePw from "./components/signUp/ChangePw";
 import ProfileEdit from "./screens/ProfileEdit";
 import NoticeDetailScreen from "./screens/NoticeDetailScreen";
 import AddNoticeScreen from "./screens/AddNoticeScreen";
+import jwtDecode from "jwt-decode";
+import HeaderContextProvider, { HeaderContext } from "./store/header-context";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -423,21 +425,9 @@ function BottomTabNavigator() {
   );
 }
 
-//로그인 후 화면
-function AuthenticatedStack() {
-  return (
-    <Stack.Navigator screenOptions={{}}>
-      <Stack.Screen
-        name="Bottom"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
-}
-
 function Navigation() {
   const authCtx = useContext(AuthContext);
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
   // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   // 자동로그인
@@ -445,7 +435,9 @@ function Navigation() {
     async function fetchToken() {
       // 저장된 jwt 가져오기
       const storedToken = await AsyncStorage.getItem("token");
+      const decoded = jwtDecode(storedToken);
 
+      setHeaderRole(decoded.roles[0].authority);
       if (storedToken) {
         authCtx.authenticate(storedToken);
       }
@@ -469,7 +461,9 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <AuthContextProvider>
-        <Navigation />
+        <HeaderContextProvider>
+          <Navigation />
+        </HeaderContextProvider>
       </AuthContextProvider>
     </SafeAreaView>
   );
