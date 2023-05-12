@@ -301,17 +301,17 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Home"
-        // children={() =>
-        //   detailLetureVisible ? (
-        //     <HomeScreen lectureIdProps={detailLectureVisibleHandler} />
-        //   ) : (
-        //     <DetailLectureScreen
-        //       detailLectureBackButton={detailLectureBackHandler}
-        //       lectureId={lectureIdState}
-        //     />
-        //   )
-        // }
-        component={NoticeScreen}
+        children={() =>
+          detailLetureVisible ? (
+            <HomeScreen lectureIdProps={detailLectureVisibleHandler} />
+          ) : (
+            <DetailLectureScreen
+              detailLectureBackButton={detailLectureBackHandler}
+              lectureId={lectureIdState}
+            />
+          )
+        }
+        // component={NoticeScreen}
         options={{
           headerShown: detailLetureVisible,
           header: () => {
@@ -439,7 +439,7 @@ function Navigation() {
 
       if (storedToken) {
         authCtx.authenticate(storedToken);
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(storedToken);
         setHeaderRole(decoded.roles[0].authority);
       }
 
