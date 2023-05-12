@@ -9,8 +9,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles } from "../constants/styles";
+import { useContext } from "react";
+import { HeaderContext } from "../store/header-context";
 
 function NoticeScreen({ navigation }) {
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const DATA = [
     {
       id: "1",
@@ -117,11 +120,15 @@ function NoticeScreen({ navigation }) {
         )}
         keyExtractor={(item) => item.id}
       />
-      <Pressable onPress={naviAddHandler}>
-        <View style={styles.plusBtn}>
-          <Image source={require("../assets/plus.png")} />
-        </View>
-      </Pressable>
+      {headerRole === "ROLE_ADMIN" ? (
+        <Pressable onPress={naviAddHandler}>
+          <View style={styles.plusBtn}>
+            <Image source={require("../assets/plus.png")} />
+          </View>
+        </Pressable>
+      ) : (
+        <View />
+      )}
     </View>
   );
 }
