@@ -1,21 +1,25 @@
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { GlobalStyles } from "../constants/styles";
+import moment from "moment";
 
 function NoticeDetailScreen({ navigation, route }) {
   const data = route.params.data;
-  const targetData = data.find((item) => item.id === "3");
+  console.log(data);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerBar} />
       <ScrollView>
         <View style={styles.contentContainer}>
-          <Text style={styles.title}>{targetData.title}</Text>
+          <Text style={styles.title}>{data.title}</Text>
           <View style={styles.nameContainer}>
-            <Text style={styles.name}>{targetData.name} 매니저</Text>
-            <Text style={styles.name}>{targetData.date}</Text>
+            <Text style={styles.name}>김동규 매니저</Text>
+            <Text style={styles.name}>
+              {moment(data.date).format("YYYY-MM-DD")}
+            </Text>
           </View>
 
-          <Text style={styles.subcontentContainer}>{targetData.content}</Text>
+          <Text style={styles.subcontentContainer}>{data.body}</Text>
         </View>
       </ScrollView>
     </View>

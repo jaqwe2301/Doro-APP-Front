@@ -102,3 +102,20 @@ export async function checkAccount({ account }) {
 
   return data;
 }
+
+export async function getNotification() {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+    console.log(token);
+
+    const response = await axios.get(URL + "/notifications", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
