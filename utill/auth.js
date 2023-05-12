@@ -73,7 +73,7 @@ export async function login({ id, pw }) {
     password: pw,
   });
 
-  const token = response.data;
+  const token = response.headers.authorization;
   console.log(token);
 
   return token;
