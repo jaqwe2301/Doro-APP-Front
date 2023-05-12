@@ -31,8 +31,6 @@ function MyPageScreen({ navigation }) {
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
 
-  console.log(headerRole);
-
   useEffect(() => {
     profileHandler();
   }, []);

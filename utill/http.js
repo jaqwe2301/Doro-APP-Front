@@ -14,12 +14,7 @@ export async function getProfile({ id }) {
     console.log(token);
 
     const response = await axios.get(URL + "/users/" + `${id}`, {
-      //   params: {
-      //     id: id,
-      //   },
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data.data;
   } catch (error) {
@@ -30,11 +25,24 @@ export async function getProfile({ id }) {
 }
 
 //findAllUser를 구현해버렸네
-export async function getProfile2({ id }) {
+export async function getProfile2({
+  generation,
+  major,
+  phone,
+  school,
+  studentId,
+  studenStatus,
+  id,
+}) {
   try {
-    const response = await instance.get("/users/", {
+    const response = await instance.get("/users/" + `${id}`, {
       params: {
-        id: id,
+        generation: generation,
+        major: major,
+        phone: phone,
+        school: school,
+        studentId: studentId,
+        studenStatus: studenStatus,
       },
     });
     return response.data;
@@ -50,21 +58,36 @@ export async function updateProfile({
   phone,
   school,
   studentId,
-  studenStatus,
+  studentStatus,
   id,
 }) {
   try {
-    const response = await axios.patch(URL + "/users/" + `${id}`, {
-      generation: generation,
-      major: major,
-      phone: phone,
-      school: school,
-      studentId: studentId,
-      studenStatus: studenStatus,
-    });
-    return response.data;
+    const token = await AsyncStorage.getItem("token");
+    const response = await axios.patch(
+      URL + "/users/" + `${parseInt(id)}`,
+      {
+        generation: parseInt(generation),
+        major: major,
+        phone: phone,
+        school: school,
+        studentId: studentId,
+        studentStatus: studentStatus,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response;
   } catch (error) {
-    console.log(generation, major, phone, school, studentId, studenStatus, id);
+    console.log(
+      parseInt(generation),
+      major,
+      phone,
+      school,
+      studentId,
+      studentStatus,
+      parseInt(id)
+    );
     console.log(error);
     throw error;
   }

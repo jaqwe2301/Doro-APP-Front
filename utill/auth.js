@@ -74,6 +74,7 @@ export async function login({ id, pw }) {
   });
 
   const token = response.headers.authorization;
+  console.log("hihi\t");
   console.log(token);
 
   return token;
