@@ -435,11 +435,12 @@ function Navigation() {
     async function fetchToken() {
       // 저장된 jwt 가져오기
       const storedToken = await AsyncStorage.getItem("token");
-      const decoded = jwtDecode(storedToken);
+      // console.log();
 
-      setHeaderRole(decoded.roles[0].authority);
       if (storedToken) {
         authCtx.authenticate(storedToken);
+        const decoded = jwtDecode(token);
+        setHeaderRole(decoded.roles[0].authority);
       }
 
       // setIsTryingLogin(false);
