@@ -4,14 +4,8 @@ import { useState } from "react";
 
 function LectureBox(props) {
   const recruitingData = props.LectureData.filter(
-    (item) => item.lectureStatus === null
+    (item) => item.status === "RECRUITING"
   );
-
-  // for (let i = 0; i < recruitingData.length; i++) {
-  //   let splitedTitle = recruitingData[i].title.split("#");
-  //   recruitingData[i].mainTitle = splitedTitle[0];
-  //   recruitingData[i].subTitle = splitedTitle[1];
-  // }
 
   const allTitleArray = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
@@ -61,13 +55,13 @@ function LectureBox(props) {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
 
             let dateHours =
-              dateControl(filteringItem.lectureDates[0]).getHours().length === 2
+              dateControl(filteringItem.lectureDates[0]).getHours() > 10
                 ? dateControl(filteringItem.lectureDates[0]).getHours()
                 : "0" + dateControl(filteringItem.lectureDates[0]).getHours();
 
             let dateMinutes =
-              dateControl(filteringItem.lectureDates[0]).getMinutes().length ===
-              2
+              dateControl(filteringItem.lectureDates[0]).getMinutes().length >
+              10
                 ? dateControl(filteringItem.lectureDates[0]).getMinutes()
                 : "0" + dateControl(filteringItem.lectureDates[0]).getMinutes();
 
@@ -82,14 +76,16 @@ function LectureBox(props) {
                 ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
                   `${lectureDateControl(
                     filteringItem.lectureDates
-                  )} ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`
+                    // )} ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`
+                  )} ${filteringItem.time}`
                 : `${
                     dateControl(filteringItem.lectureDates[0]).getMonth() + 1
                   }월 ${dateControl(
                     filteringItem.lectureDates[0]
                   ).getDate()}일 (${
                     days[dateControl(filteringItem.lectureDates[0]).getDay()]
-                  }) ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`;
+                    // }) ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`;
+                  }) ${filteringItem.time}`;
 
             const lectureIdHandler = () => {
               props.onPresslectureId(filteringItem.id);
@@ -113,10 +109,11 @@ function LectureBox(props) {
                         {dateTypeValue.getDate()}일{" "}
                       </Text>
                     </View>
-                    <Text style={styles.tutor}>
+                    {/* <Text style={styles.tutor}>
                       주강사 {filteringItem.mainTutor}명 · 보조강사{" "}
                       {filteringItem.subTutor}명
-                    </Text>
+                    </Text> */}
+                    <Text style={styles.tutor}>{filteringItem.mainTutor}</Text>
                     <View style={styles.placeDateContainer}>
                       <Text style={styles.place}>{filteringItem.place}</Text>
                       <Text style={[styles.date, { color: SelectedColor }]}>
