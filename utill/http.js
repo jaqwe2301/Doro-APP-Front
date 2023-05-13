@@ -2,9 +2,11 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import instance from "./Interceptor";
+
+import Interceptor from "./Interceptor";
 
 const URL = "http://10.0.2.2:8080";
+const instance = Interceptor();
 
 // id를 넣어주면 header 필요없고 id없으면 header 필요하다
 export async function getProfile({ id }) {
@@ -148,13 +150,7 @@ export async function pushNotification({ body, title }) {
 
 export async function getAnnouncement() {
   try {
-    const token = await AsyncStorage.getItem("token");
-
-    console.log(token);
-
-    const response = await axios.get(URL + "/announcements", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await instance.get("/announcements");
     return response.data.data;
   } catch (error) {
     console.log(error);
@@ -165,24 +161,11 @@ export async function getAnnouncement() {
 
 export async function createAnnouncement({ body, picture, title }) {
   try {
-    const token = await AsyncStorage.getItem("token");
-
-    console.log(token);
-
-    const response = await axios.post(
-      URL + "/announcements",
-      {
-        body: body,
-        picture: picture,
-        title: title,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axios.post(URL + "/announcements", {
+      body: body,
+      picture: picture,
+      title: title,
+    });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -193,24 +176,11 @@ export async function createAnnouncement({ body, picture, title }) {
 
 export async function editAnnouncement({ body, picture, title, id }) {
   try {
-    const token = await AsyncStorage.getItem("token");
-
-    console.log(token);
-
-    const response = await axios.patch(
-      URL + "/announcements" + `${id}`,
-      {
-        body: body,
-        picture: picture,
-        title: title,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axios.patch(URL + "/announcements" + `${id}`, {
+      body: body,
+      picture: picture,
+      title: title,
+    });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -220,24 +190,11 @@ export async function editAnnouncement({ body, picture, title, id }) {
 }
 export async function deleteAnnouncement({ body, picture, title, id }) {
   try {
-    const token = await AsyncStorage.getItem("token");
-
-    console.log(token);
-
-    const response = await axios.delete(
-      URL + "/announcements" + `${id}`,
-      {
-        body: body,
-        picture: picture,
-        title: title,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axios.delete(URL + "/announcements" + `${id}`, {
+      body: body,
+      picture: picture,
+      title: title,
+    });
     return response.data;
   } catch (error) {
     console.log(error);
