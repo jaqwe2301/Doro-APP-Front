@@ -1,11 +1,44 @@
-import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Pressable,
+  Alert,
+} from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
+import { deleteAnnouncement } from "../utill/http";
 
 function NoticeDetailScreen({ navigation, route }) {
   const data = route.params.data;
   console.log(data);
 
+  function editHandler() {
+    // navigation.navigator("")
+  }
+
+  async function deleteAnnouncementHandler() {
+    try {
+      const response = await deleteAnnouncement({ id: data.id });
+      // console.log(data.id);
+      console.log(response);
+      if (response.success) {
+        navigation.replace("noticeScreen");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  function deleteHandler() {
+    Alert.alert("삭제하시겠습니까?", undefined, [
+      {
+        text: "취소",
+      },
+      { text: "확인", onPress: deleteAnnouncementHandler },
+    ]);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headerBar} />
@@ -23,11 +56,15 @@ function NoticeDetailScreen({ navigation, route }) {
         </View>
       </ScrollView>
       <View style={styles.btnContainer}>
-        <Image
-          source={require("../assets/editBtn.png")}
-          style={{ marginRight: 5 }}
-        />
-        <Image source={require("../assets/deleteBtn.png")} />
+        <Pressable onPress={editHandler}>
+          <Image
+            source={require("../assets/editBtn.png")}
+            style={{ marginRight: 5 }}
+          />
+        </Pressable>
+        <Pressable onPress={deleteHandler}>
+          <Image source={require("../assets/deleteBtn.png")} />
+        </Pressable>
       </View>
     </View>
   );
