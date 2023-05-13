@@ -27,8 +27,20 @@ function Interceptor() {
   );
 
   instance.interceptors.response.use(
-    function (response) {
+    async function (response) {
       console.log(response);
+      if (response.status === 401) {
+        const token = await AsyncStorage.getItem("token");
+        const refreshToken = await AsyncStorage.getItem("refreshToken");
+
+        const reToken = await axios.post("http://10.0.2.2:8080/reissue", {
+          accessToken: token,
+          refreshToken: refreshToken,
+        });
+
+        // AsyncStorage.setItem("token",reToken)
+        console.log(reToken);
+      }
 
       return response;
     },
