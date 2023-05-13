@@ -207,7 +207,7 @@ function MyPageNavigator() {
       <Stack.Screen
         name="myPage"
         component={MyPageScreen}
-        options={{ title: "마이 페이지" }}
+        options={{ title: "마이 페이지", headerBackVisible: false }}
       />
       <Stack.Screen
         name="profileEdit"
@@ -253,6 +253,7 @@ function NoticeNavigator() {
           headerRight: () => {
             return <Ionicons name="home-outline" size={20} />;
           },
+          headerBackVisible: false,
         }}
       />
       <Stack.Screen
