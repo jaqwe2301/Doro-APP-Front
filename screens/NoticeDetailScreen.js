@@ -13,6 +13,7 @@ import { deleteAnnouncement } from "../utill/http";
 
 function NoticeDetailScreen({ navigation, route }) {
   const data = route.params.data;
+  const headerRole = route.params.role;
   console.log(data);
 
   function editHandler() {
@@ -55,17 +56,21 @@ function NoticeDetailScreen({ navigation, route }) {
           <Text style={styles.subcontentContainer}>{data.body}</Text>
         </View>
       </ScrollView>
-      <View style={styles.btnContainer}>
-        <Pressable onPress={editHandler}>
-          <Image
-            source={require("../assets/editBtn.png")}
-            style={{ marginRight: 5 }}
-          />
-        </Pressable>
-        <Pressable onPress={deleteHandler}>
-          <Image source={require("../assets/deleteBtn.png")} />
-        </Pressable>
-      </View>
+      {headerRole === "ROLE_ADMIN" ? (
+        <View style={styles.btnContainer}>
+          <Pressable onPress={editHandler}>
+            <Image
+              source={require("../assets/editBtn.png")}
+              style={{ marginRight: 5 }}
+            />
+          </Pressable>
+          <Pressable onPress={deleteHandler}>
+            <Image source={require("../assets/deleteBtn.png")} />
+          </Pressable>
+        </View>
+      ) : (
+        <View />
+      )}
     </View>
   );
 }
