@@ -33,7 +33,7 @@ function NoticeScreen({ navigation }) {
   }, []);
 
   const navigHandler = (item) => {
-    navigation.navigate("noticeDetail", { data: item });
+    navigation.navigate("noticeDetail", { data: item, role: headerRole });
   };
   function naviAddHandler() {
     navigation.navigate("noticeAdd");

@@ -39,7 +39,7 @@ function Interceptor() {
         });
 
         // AsyncStorage.setItem("token",reToken)
-        console.log(reToken);
+        console.log("hihi" + reToken);
       }
 
       return response;
