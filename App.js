@@ -14,6 +14,7 @@ import HistoryScreen from "./screens/HistoryScreen";
 import HomeScreen from "./screens/HomeScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import LoginScreen from "./screens/LoginScreen";
+import NewLectureScreen from "./screens/NewLectureScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
 import DetailLectureScreen from "./screens/DetailLectureScreen";
@@ -222,17 +223,27 @@ function MyPageNavigator() {
 // icon 바꿀 예정
 // 로그인 후 화면
 function BottomTabNavigator() {
-  const [detailLetureVisible, setDetailLetureVisible] = useState(true);
-  const [lectureIdState, setLectureIdState] = useState();
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const [homeScreenState, setHomeScreenState] = useState("home");
+  const [lectureIdState, setLectureIdState] = useState([0,"home"]);
 
   const detailLectureVisibleHandler = (id) => {
-    console.log(id);
-    setLectureIdState(id);
-    setDetailLetureVisible(false);
+    console.log("아이디", id);
+    setLectureIdState([id,"detailLecture"]);
+    // setHomeScreenState("detailLecture");
+    setHeaderVisible(false);
   };
 
-  const detailLectureBackHandler = () => {
-    setDetailLetureVisible(true);
+  const createLectureVisibleHandler = () => {
+    setLectureIdState([0,"createLecture"]);
+    // setHomeScreenState("createLecture");
+    setHeaderVisible(false);
+  };
+
+  const screenBackHandler = () => {
+    setLectureIdState([0,"home"]);
+    setHomeScreenState("home");
+    setHeaderVisible(true);
   };
 
   return (
@@ -247,19 +258,23 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Home"
-        // children={() =>
-        //   detailLetureVisible ? (
-        //     <HomeScreen lectureIdProps={detailLectureVisibleHandler} />
-        //   ) : (
-        //     <DetailLectureScreen
-        //       detailLectureBackButton={detailLectureBackHandler}
-        //       lectureId={lectureIdState}
-        //     />
-        //   )
-        // }
-        component={NoticeScreen}
+        children={() =>
+          lectureIdState[1] === "home" ? (
+            <HomeScreen
+              lectureIdProps={detailLectureVisibleHandler}
+              createLectureVisibleProps={createLectureVisibleHandler}
+            />
+          ) : lectureIdState[1] === "detailLecture" ? (
+            <DetailLectureScreen
+              screenBackButton={screenBackHandler}
+              lectureId={lectureIdState[0]}
+            />
+          ) : (
+            <NewLectureScreen screenBackButton={screenBackHandler} />
+          )
+        }
         options={{
-          headerShown: detailLetureVisible,
+          headerShown: headerVisible,
           header: () => {
             return (
               <View style={styles.HomeHeader}>
