@@ -119,3 +119,29 @@ export async function getNotification() {
     throw error;
   }
 }
+export async function pushNotification({ body, title }) {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+    console.log(token);
+
+    const response = await axios.post(
+      URL + "/notifications",
+      {
+        body: body,
+        title: title,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
