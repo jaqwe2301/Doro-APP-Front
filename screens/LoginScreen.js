@@ -34,8 +34,10 @@ function LoginScreen({ navigation }) {
     setIsAuthenticating(true);
     try {
       const token = await login({ id: id, pw: pw });
-      authCtx.authenticate(token);
-      const decoded = jwtDecode(token);
+      console.log(token.headers.authorization);
+      console.log(token.data);
+      authCtx.authenticate(token.headers.authorization, token.data);
+      const decoded = jwtDecode(token.headers.authorization);
       setHeaderRole(decoded.roles[0].authority);
     } catch (error) {
       Alert.alert("로그인 실패", "could not ");

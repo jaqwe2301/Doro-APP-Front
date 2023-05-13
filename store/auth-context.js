@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext({
   token: "",
+  refreshToken: "",
   // 사용자의 로그인 여부
   isAuthenticated: false,
   authenticate: () => {},
@@ -12,20 +13,26 @@ export const AuthContext = createContext({
 
 function AuthContextProvider({ children }) {
   const [authToken, setAuthToken] = useState();
+  const [reToken, setReToken] = useState();
 
-  function authenticate(token) {
+  function authenticate(token, refreshToken) {
     setAuthToken(token);
+    setReToken(refreshToken);
     // 데이터 저장, 첫번째인자는 key 두번쨰 인자는 데이터(반드시 문자열이어야함 아니면 변환하셈)
     AsyncStorage.setItem("token", token);
+    AsyncStorage.setItem("refreshToken", refreshToken);
   }
 
   function logout() {
     setAuthToken(null);
+    setReToken(null);
     AsyncStorage.removeItem("token");
+    AsyncStorage.removeItem("refreshToken");
   }
 
   const value = {
     token: authToken,
+    refreshToken: reToken,
     isAuthenticated: !!authToken,
     authenticate: authenticate,
     logout: logout,
