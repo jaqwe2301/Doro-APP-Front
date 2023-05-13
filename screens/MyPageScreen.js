@@ -37,7 +37,7 @@ function MyPageScreen({ navigation }) {
 
   async function profileHandler() {
     try {
-      const response = await getProfile({ id: 1 });
+      const response = await getProfile({ id: 7 });
       setData(response);
       console.log(response);
     } catch (error) {
