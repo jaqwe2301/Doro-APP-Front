@@ -109,10 +109,11 @@ function LectureBox(props) {
                         {dateTypeValue.getDate()}일{" "}
                       </Text>
                     </View>
-                    <Text style={styles.tutor}>
+                    {/* <Text style={styles.tutor}>
                       주강사 {filteringItem.mainTutor}명 · 보조강사{" "}
                       {filteringItem.subTutor}명
-                    </Text>
+                    </Text> */}
+                    <Text style={styles.tutor}>{filteringItem.mainTutor}</Text>
                     <View style={styles.placeDateContainer}>
                       <Text style={styles.place}>{filteringItem.place}</Text>
                       <Text style={[styles.date, { color: SelectedColor }]}>
