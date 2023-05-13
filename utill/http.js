@@ -65,21 +65,15 @@ export async function updateProfile({
 }) {
   try {
     const token = await AsyncStorage.getItem("token");
-    const response = await axios.patch(
-      URL + "/users/" + `${parseInt(id)}`,
-      {
-        generation: parseInt(generation),
-        major: major,
-        phone: phone,
-        school: school,
-        studentId: studentId,
-        studentStatus: studentStatus,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    return response;
+    const response = await instance.patch("/users/" + `${parseInt(id)}`, {
+      generation: parseInt(generation),
+      major: major,
+      phone: phone,
+      school: school,
+      studentId: studentId,
+      studentStatus: studentStatus,
+    });
+    return response.data;
   } catch (error) {
     console.log(
       parseInt(generation),
