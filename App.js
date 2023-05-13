@@ -37,6 +37,7 @@ import NoticeDetailScreen from "./screens/NoticeDetailScreen";
 import AddNoticeScreen from "./screens/AddNoticeScreen";
 import jwtDecode from "jwt-decode";
 import HeaderContextProvider, { HeaderContext } from "./store/header-context";
+import EditNoticeScreen from "./screens/EditNoticeScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -262,6 +263,16 @@ function NoticeNavigator() {
       <Stack.Screen
         name="noticeAdd"
         component={AddNoticeScreen}
+        options={{
+          title: "글쓰기",
+          headerRight: () => {
+            return <Text style={styles.completeText2}>완료</Text>;
+          },
+        }}
+      />
+      <Stack.Screen
+        name="noticeEdit"
+        component={EditNoticeScreen}
         options={{
           title: "글쓰기",
           headerRight: () => {
