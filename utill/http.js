@@ -161,7 +161,7 @@ export async function getAnnouncement() {
 
 export async function createAnnouncement({ body, picture, title }) {
   try {
-    const response = await axios.post(URL + "/announcements", {
+    const response = await instance.post("/announcements", {
       body: body,
       picture: picture,
       title: title,
@@ -176,7 +176,7 @@ export async function createAnnouncement({ body, picture, title }) {
 
 export async function editAnnouncement({ body, picture, title, id }) {
   try {
-    const response = await axios.patch(URL + "/announcements" + `${id}`, {
+    const response = await instance.patch("/announcements/" + `${id}`, {
       body: body,
       picture: picture,
       title: title,
@@ -188,13 +188,9 @@ export async function editAnnouncement({ body, picture, title, id }) {
     throw error;
   }
 }
-export async function deleteAnnouncement({ body, picture, title, id }) {
+export async function deleteAnnouncement({ id }) {
   try {
-    const response = await axios.delete(URL + "/announcements" + `${id}`, {
-      body: body,
-      picture: picture,
-      title: title,
-    });
+    const response = await instance.delete("/announcements/" + `${id}`);
     return response.data;
   } catch (error) {
     console.log(error);
