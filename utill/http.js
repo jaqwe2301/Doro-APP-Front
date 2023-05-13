@@ -2,7 +2,6 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import Interceptor from "./Interceptor";
 
 const URL = "http://10.0.2.2:8080";
@@ -27,6 +26,7 @@ export async function getProfile({ id }) {
 }
 
 //findAllUser를 구현해버렸네
+
 export async function getProfile2({
   generation,
   major,
@@ -53,6 +53,7 @@ export async function getProfile2({
     throw error;
   }
 }
+
 
 export async function updateProfile({
   generation,

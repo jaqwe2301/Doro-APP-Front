@@ -17,9 +17,8 @@ import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
 import LectureBox from "./../components/ui/LectureBox";
-import Code from "../components/signUp/Code";
 
-const HomeScreen = (props,{ onPressLecture }) => {
+const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
   const [lectureData, setLectureData] = useState([]);
 
   useEffect(() => {
@@ -46,27 +45,27 @@ const HomeScreen = (props,{ onPressLecture }) => {
   }, []);
 
   let recruitingData = lectureData.filter(
-    (item) => item.lectureStatus === null
+    (item) => item.status === "RECRUITING"
   );
 
   const lectureIdHomeScreen = (id) => {
     // 강의 클릭하면 id 값 state로 넘어옴
-    props.lectureIdProps(id)
-  }
+    lectureIdProps(id);
+  };
 
-  const FirstRoute = () => <LectureBox LectureData={lectureData} onPresslectureId={lectureIdHomeScreen}></LectureBox>;
+  const FirstRoute = () => (
+    <LectureBox
+      LectureData={lectureData}
+      onPresslectureId={lectureIdHomeScreen}
+    />
+  );
   const SecondRoute = () => (
     <View style={styles.lectureListContainer}>
-      <Pressable onPress={onPressLecture}>
-        <Text>클릭해보세요</Text>
-      </Pressable>
+      <Text>진행중</Text>
     </View>
   );
 
-  let recruitingCount = 11;
   let underwayCount = 20;
-
-  // console.log(recruitingData.length);
 
   let fristTapState = {
     index: 0,
@@ -81,7 +80,7 @@ const HomeScreen = (props,{ onPressLecture }) => {
   const [tapState, setTapState] = useState({
     index: 0,
     routes: [
-      { key: "first", title: `모집중 (r)` },
+      { key: "first", title: `모집중 (${recruitingData.length})` },
       { key: "second", title: `진행중 (${underwayCount})` },
     ],
   });
@@ -145,6 +144,9 @@ const HomeScreen = (props,{ onPressLecture }) => {
         initialLayout={{ width: Dimensions.get("window").width }}
         style={styles.container}
       />
+      <Pressable onPress={createLectureVisibleProps}>
+        <View style={styles.BottomButton}></View>
+      </Pressable>
     </>
   );
 };
@@ -159,11 +161,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    // height: 0,
-    // width: 0,
     backgroundColor: "white",
     flexDirection: "row",
-    // paddingTop: StatusBar.currentHeight,
   },
   tabItem: {
     flex: 1,
@@ -175,11 +174,9 @@ const styles = StyleSheet.create({
   },
   colorCover: {
     marginTop: 8,
-    // marginBottom: 8,
     paddingLeft: 5,
     overflow: "hidden",
     height: 120,
-    // width: 335,
     backgroundColor: "#41C19F",
     borderRadius: 5.41,
     shadowColor: "Black",
@@ -221,5 +218,13 @@ const styles = StyleSheet.create({
   date: {
     color: "#41C19F",
     fontSize: 12,
+  },
+  BottomButton: {
+    position: "absolute",
+    height: 56,
+    width: 56,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+    bottom: 27,
+    right: 20,
   },
 });
