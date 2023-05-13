@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import instance from "./Interceptor";
+// import instance from "./Interceptor";
 
 const URL = "http://10.0.2.2:8080";
 
@@ -30,19 +30,19 @@ export async function getProfile({ id }) {
 }
 
 //findAllUser를 구현해버렸네
-export async function getProfile2({ id }) {
-  try {
-    const response = await instance.get("/users/", {
-      params: {
-        id: id,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
+// export async function getProfile2({ id }) {
+//   try {
+//     const response = await instance.get("/users/", {
+//       params: {
+//         id: id,
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// }
 
 export async function checkAccount({ account }) {
   const response = await axios.get(URL + "/check/account?account=" + account);
