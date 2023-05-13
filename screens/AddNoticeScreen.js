@@ -8,8 +8,38 @@ import {
   Keyboard,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
+import { pushNotification } from "../utill/http";
+import { useEffect, useState } from "react";
 
-function AddNoticeScreen() {
+function AddNoticeScreen({ navigation }) {
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+
+  async function completeHandler() {
+    try {
+      const response = await pushNotification({ title: title, body: body });
+
+      console.log(response);
+      if (response.code === "SUCCESS") {
+        navigation.replace("noticeScreen");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={completeHandler}>
+            <Text style={styles.completeText}>완료</Text>
+          </Pressable>
+        );
+      },
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerBar} />
@@ -21,6 +51,8 @@ function AddNoticeScreen() {
               style={styles.title}
               placeholderTextColor={GlobalStyles.colors.gray03}
               multiline
+              onChangeText={(text) => setTitle(text)}
+              value={title}
             ></TextInput>
           </View>
           <View style={styles.contentContainer}>
@@ -28,6 +60,8 @@ function AddNoticeScreen() {
               placeholder="내용을 입력하세요."
               style={styles.content}
               multiline
+              value={body}
+              onChangeText={(text) => setBody(text)}
               placeholderTextColor={GlobalStyles.colors.gray03}
             ></TextInput>
           </View>
@@ -63,5 +97,20 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     margin: 20,
+  },
+  completeText: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    width: 50,
+    height: 30,
+    borderRadius: 5.41,
+    color: "white",
+    textAlign: "center",
+    textAlignVertical: "center",
+    // marginLeft: -4,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+
+    lineHeight: 20,
   },
 });
