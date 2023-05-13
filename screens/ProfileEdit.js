@@ -15,20 +15,20 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { getProfile2, updateProfile } from "../utill/http";
 
 function ProfileEdit({ navigation, route }) {
-  const [phoneNum, setphoneNum] = useState("");
+  const data = route.params.data;
+  const [phoneNum, setphoneNum] = useState(data.phone);
   const [authNum, setauthNum] = useState("");
-  const [request, setRequest] = useState([]);
-  const [birth, setBirth] = useState("");
-  const [generation, setGeneration] = useState("");
-  const [major, setMajor] = useState("");
-  const [name, setName] = useState("");
 
-  const [school, setSchool] = useState("");
-  const [studentId, setStudentId] = useState("");
-  const [studentStatus, setStudentStatus] = useState("");
+  const [birth, setBirth] = useState(data.birth);
+  const [generation, setGeneration] = useState(data.generation);
+  const [major, setMajor] = useState(data.major);
+  const [name, setName] = useState(data.name);
+
+  const [school, setSchool] = useState(data.school);
+  const [studentId, setStudentId] = useState(data.studentId);
+  const [studentStatus, setStudentStatus] = useState(data.studentStatus);
   // const navigation = useNavigation();
 
-  const data = route.params.data;
   const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
 
   const handlePhoneChange = (text) => {
@@ -37,15 +37,6 @@ function ProfileEdit({ navigation, route }) {
   const handleAuthChange = (text) => {
     setauthNum(text);
   };
-
-  function profileHandler() {
-    setphoneNum(data.phone);
-    setGeneration(data.generation);
-    setMajor(data.major);
-    setSchool(data.school);
-    setStudentId(data.studentId);
-    setStudentStatus(data.studentStatus);
-  }
 
   async function completeHandler() {
     try {
@@ -58,6 +49,10 @@ function ProfileEdit({ navigation, route }) {
         studentStatus: studentStatus,
         id: "1",
       });
+      console.log(success);
+      if (success.success) {
+        navigation.replace("myPage");
+      }
     } catch (error) {
       Alert.alert("ERROR", "Network Error");
     }
@@ -80,8 +75,8 @@ function ProfileEdit({ navigation, route }) {
         );
       },
     });
-    profileHandler();
-  }, []);
+    // profileHandler();
+  }, [completeHandler]);
 
   function requestNumber() {
     try {
@@ -102,7 +97,7 @@ function ProfileEdit({ navigation, route }) {
 
         console.log(success);
         if (success) {
-          Alert.alert("인증", "인증 완료");
+          Alert.alert("번호 변경", "휴대폰 번호 변경 완료");
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
         }
