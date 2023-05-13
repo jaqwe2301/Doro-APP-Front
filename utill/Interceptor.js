@@ -3,7 +3,7 @@ import axios from "axios";
 
 function Interceptor() {
   const instance = axios.create({
-    baseUrl: "http://10.0.2.2:8080",
+    baseURL: "http://10.0.2.2:8080",
     timeout: 1000,
   });
 
@@ -19,23 +19,26 @@ function Interceptor() {
         config.headers["Authorization"] = `Bearer ${token}`;
       }
       return config;
+    },
+    function (error) {
+      console.log(error);
+      return Promise.reject(error);
     }
-    // function (error) {
-    //   console.log(error);
-    //   return Promise.reject(error);
-    // }
   );
 
   instance.interceptors.response.use(
     function (response) {
       console.log(response);
 
-      return response.data;
+      return response;
     },
     function (error) {
       console.log(error);
+      return Promise.reject(error);
     }
   );
+
+  return instance;
 }
 
 export default Interceptor;
