@@ -1,50 +1,15 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Image,
-  Pressable,
-  Alert,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
-import { deleteAnnouncement } from "../utill/http";
 
-function NoticeDetailScreen({ navigation, route }) {
+function EditNoticeScreen({ navigation, route }) {
   const data = route.params.data;
-  console.log(data);
-
-  function editHandler() {
-    navigation.navigate("noticeEdit", { data: data });
-  }
-
-  async function deleteAnnouncementHandler() {
-    try {
-      const response = await deleteAnnouncement({ id: data.id });
-      // console.log(data.id);
-      console.log(response);
-      if (response.success) {
-        navigation.replace("noticeScreen");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  function deleteHandler() {
-    Alert.alert("삭제하시겠습니까?", undefined, [
-      {
-        text: "취소",
-      },
-      { text: "확인", onPress: deleteAnnouncementHandler },
-    ]);
-  }
   return (
     <View style={styles.container}>
       <View style={styles.headerBar} />
       <ScrollView>
         <View style={styles.contentContainer}>
-          <Text style={styles.title}>{data.title}</Text>
+          <TextInput style={styles.title}>{data.title}</TextInput>
           <View style={styles.nameContainer}>
             <Text style={styles.name}>김동규 매니저</Text>
             <Text style={styles.name}>
@@ -52,25 +17,14 @@ function NoticeDetailScreen({ navigation, route }) {
             </Text>
           </View>
 
-          <Text style={styles.subcontentContainer}>{data.body}</Text>
+          <TextInput style={styles.subcontentContainer}>{data.body}</TextInput>
         </View>
       </ScrollView>
-      <View style={styles.btnContainer}>
-        <Pressable onPress={editHandler}>
-          <Image
-            source={require("../assets/editBtn.png")}
-            style={{ marginRight: 5 }}
-          />
-        </Pressable>
-        <Pressable onPress={deleteHandler}>
-          <Image source={require("../assets/deleteBtn.png")} />
-        </Pressable>
-      </View>
     </View>
   );
 }
 
-export default NoticeDetailScreen;
+export default EditNoticeScreen;
 
 const styles = StyleSheet.create({
   container: {
