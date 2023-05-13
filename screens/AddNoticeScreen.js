@@ -42,7 +42,7 @@ function AddNoticeScreen({ navigation }) {
         );
       },
     });
-  }, []);
+  }, [completeHandler]);
 
   return (
     <View style={styles.container}>
