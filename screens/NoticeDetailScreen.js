@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
 
@@ -22,6 +22,13 @@ function NoticeDetailScreen({ navigation, route }) {
           <Text style={styles.subcontentContainer}>{data.body}</Text>
         </View>
       </ScrollView>
+      <View style={styles.btnContainer}>
+        <Image
+          source={require("../assets/editBtn.png")}
+          style={{ marginRight: 5 }}
+        />
+        <Image source={require("../assets/deleteBtn.png")} />
+      </View>
     </View>
   );
 }
@@ -63,5 +70,11 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     lineHeight: 22,
     color: GlobalStyles.colors.gray03,
+  },
+  btnContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    bottom: 16,
+    right: 16,
   },
 });
