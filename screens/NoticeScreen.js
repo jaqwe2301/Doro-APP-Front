@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../store/header-context";
-import { getNotification } from "../utill/http";
+import { getAnnouncement, getNotification } from "../utill/http";
 import moment from "moment";
 
 function NoticeScreen({ navigation }) {
@@ -20,7 +20,7 @@ function NoticeScreen({ navigation }) {
 
   async function notiHandler() {
     try {
-      const response = await getNotification();
+      const response = await getAnnouncement();
       setData(response);
       console.log(response);
     } catch (error) {
@@ -46,7 +46,7 @@ function NoticeScreen({ navigation }) {
         <View style={styles.subContent}>
           <Text style={styles.name}>김동규 매니저</Text>
           <Text style={styles.name}>
-            {moment(item.date).format("YYYY-MM-DD")}
+            {moment(item.createdAt).format("YYYY-MM-DD")}
           </Text>
         </View>
       </Pressable>
