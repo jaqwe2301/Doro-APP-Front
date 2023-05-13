@@ -145,3 +145,103 @@ export async function pushNotification({ body, title }) {
     throw error;
   }
 }
+
+export async function getAnnouncement() {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+    console.log(token);
+
+    const response = await axios.get(URL + "/announcements", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
+
+export async function createAnnouncement({ body, picture, title }) {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+    console.log(token);
+
+    const response = await axios.post(
+      URL + "/announcements",
+      {
+        body: body,
+        picture: picture,
+        title: title,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
+
+export async function editAnnouncement({ body, picture, title, id }) {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+    console.log(token);
+
+    const response = await axios.patch(
+      URL + "/announcements" + `${id}`,
+      {
+        body: body,
+        picture: picture,
+        title: title,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
+export async function deleteAnnouncement({ body, picture, title, id }) {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+    console.log(token);
+
+    const response = await axios.delete(
+      URL + "/announcements" + `${id}`,
+      {
+        body: body,
+        picture: picture,
+        title: title,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}

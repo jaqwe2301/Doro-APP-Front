@@ -8,7 +8,7 @@ import {
   Keyboard,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
-import { pushNotification } from "../utill/http";
+import { createAnnouncement, pushNotification } from "../utill/http";
 import { useEffect, useState } from "react";
 
 function AddNoticeScreen({ navigation }) {
@@ -17,10 +17,14 @@ function AddNoticeScreen({ navigation }) {
 
   async function completeHandler() {
     try {
-      const response = await pushNotification({ title: title, body: body });
+      const response = await createAnnouncement({
+        title: title,
+        body: body,
+        picture: "",
+      });
 
       console.log(response);
-      if (response.code === "SUCCESS") {
+      if (response.success) {
         navigation.replace("noticeScreen");
       }
     } catch (error) {
