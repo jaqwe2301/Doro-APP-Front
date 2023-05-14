@@ -10,6 +10,7 @@ import {
   Pressable,
   Text,
   Modal,
+  ScrollView,
 } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
 
@@ -44,9 +45,104 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
       });
   }, []);
 
-  let recruitingData = lectureData.filter(
+  const recruitingData = lectureData.filter(
     (item) => item.status === "RECRUITING"
   );
+
+  const allTitleArray = [
+    ...new Set(recruitingData.map((item) => item.mainTitle)),
+  ];
+
+  let LectureElements = [];
+
+  const dateControl = (stringDate) => {
+    // string에서 date 타입으로 전환하기 위해 만듬
+    return new Date(stringDate);
+  };
+
+  const lectureDateControl = (date) => {
+    let result = dateControl(date[0]).getMonth() + 1 + "월 ";
+    for (let i = 0; i < date.length; i++) {
+      if (i === date.length - 1) {
+        result += dateControl(date[i]).getDate() + "일";
+      } else {
+        result += dateControl(date[i]).getDate() + "일 / ";
+      }
+    }
+    return result;
+  };
+
+  const days = [
+    "일요일",
+    "월요일",
+    "화요일",
+    "수요일",
+    "목요일",
+    "금요일",
+    "토요일",
+  ];
+
+  for (let i = 0; i < allTitleArray.length; i++) {
+    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+
+    LectureElements.push(
+      <View key={i}>
+        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+          {allTitleArray[i]}
+        </Text>
+
+        {recruitingData
+          .filter((item) => item.mainTitle === allTitleArray[i])
+          .map((filteringItem, i) => {
+            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+
+            let dateHours =
+              dateControl(filteringItem.lectureDates[0]).getHours() > 10
+                ? dateControl(filteringItem.lectureDates[0]).getHours()
+                : "0" + dateControl(filteringItem.lectureDates[0]).getHours();
+
+            let dateMinutes =
+              dateControl(filteringItem.lectureDates[0]).getMinutes().length >
+              10
+                ? dateControl(filteringItem.lectureDates[0]).getMinutes()
+                : "0" + dateControl(filteringItem.lectureDates[0]).getMinutes();
+
+            let EndTime =
+              Number(dateHours) + Number(filteringItem.time) >= 10
+                ? Number(dateHours) + Number(filteringItem.time)
+                : "0" + (Number(dateHours) + Number(filteringItem.time));
+
+            let dateText =
+              // 날짜 텍스트
+              filteringItem.lectureDates.length > 1
+                ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
+                  `${lectureDateControl(filteringItem.lectureDates)} ${
+                    filteringItem.time
+                  }`
+                : `${
+                    dateControl(filteringItem.lectureDates[0]).getMonth() + 1
+                  }월 ${dateControl(
+                    filteringItem.lectureDates[0]
+                  ).getDate()}일 (${
+                    days[dateControl(filteringItem.lectureDates[0]).getDay()]
+                  }) ${filteringItem.time}`;
+
+            return (
+              <LectureBox
+                lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+                id={filteringItem.id}
+                colors={SelectedColor}
+                subTitle={filteringItem.subTitle}
+                dateTypeValue={dateTypeValue}
+                mainTutor={filteringItem.mainTutor}
+                place={filteringItem.place}
+                date={dateText}
+              ></LectureBox>
+            );
+          })}
+      </View>
+    );
+  }
 
   const lectureIdHomeScreen = (id) => {
     // 강의 클릭하면 id 값 state로 넘어옴
@@ -54,10 +150,9 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
   };
 
   const FirstRoute = () => (
-    <LectureBox
-      LectureData={lectureData}
-      onPresslectureId={lectureIdHomeScreen}
-    />
+    <ScrollView style={styles.lectureListContainer}>
+      {LectureElements}
+    </ScrollView>
   );
   const SecondRoute = () => (
     <View style={styles.lectureListContainer}>
@@ -172,53 +267,6 @@ const styles = StyleSheet.create({
   lectureListContainer: {
     paddingHorizontal: 20,
   },
-  colorCover: {
-    marginTop: 8,
-    paddingLeft: 5,
-    overflow: "hidden",
-    height: 120,
-    backgroundColor: "#41C19F",
-    borderRadius: 5.41,
-    shadowColor: "Black",
-    elevation: 2,
-  },
-  whieBox: {
-    paddingLeft: 15,
-    paddingRight: 11,
-    backgroundColor: "white",
-    height: 120,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  SubTitle: {
-    marginTop: 10,
-    fontSize: 15,
-    fontWeight: "bold",
-    color: GlobalStyles.gray01,
-  },
-  enrollEndDate: {
-    marginTop: 10,
-    color: "#7C7C80",
-    fontSize: 10,
-  },
-  tutor: {
-    fontSize: 10,
-    color: GlobalStyles.gray03,
-  },
-  placeDateContainer: {
-    marginTop: 7.61,
-    alignItems: "flex-end",
-  },
-  place: {
-    color: GlobalStyles.gray03,
-    fontSize: 10,
-  },
-  date: {
-    color: "#41C19F",
-    fontSize: 12,
-  },
   BottomButton: {
     position: "absolute",
     height: 56,
@@ -226,5 +274,12 @@ const styles = StyleSheet.create({
     backgroundColor: GlobalStyles.colors.primaryDefault,
     bottom: 27,
     right: 20,
+  },
+  mainTitle: {
+    fontSize: 17,
+    fontWeight: "bold",
+  },
+  lectureListContainer: {
+    paddingHorizontal: 20,
   },
 });
