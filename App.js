@@ -34,6 +34,7 @@ import FindId from "./components/signUp/FindId";
 import NotFindId from "./components/signUp/NotFindId";
 import ChangePw from "./components/signUp/ChangePw";
 import ProfileEdit from "./screens/ProfileEdit";
+import ApplicationDetails from "./screens/ApplicationDetails";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -206,8 +207,13 @@ function MyPageNavigator() {
       />
       <Stack.Screen
         name="profileEdit"
-        component={ProfileEdit}
+        component={ApplicationDetails}
         options={{ title: "프로필 수정" }}
+      />
+      <Stack.Screen
+        name="ApplicationDetails"
+        component={ApplicationDetails}
+        options={{ title: "강의신청내역" }}
       />
       <Stack.Screen
         name="searchPw"
@@ -225,23 +231,23 @@ function MyPageNavigator() {
 function BottomTabNavigator() {
   const [headerVisible, setHeaderVisible] = useState(true);
   const [homeScreenState, setHomeScreenState] = useState("home");
-  const [lectureIdState, setLectureIdState] = useState([0,"home"]);
+  const [lectureIdState, setLectureIdState] = useState([0, "home"]);
 
   const detailLectureVisibleHandler = (id) => {
     console.log("아이디", id);
-    setLectureIdState([id,"detailLecture"]);
+    setLectureIdState([id, "detailLecture"]);
     // setHomeScreenState("detailLecture");
     setHeaderVisible(false);
   };
 
   const createLectureVisibleHandler = () => {
-    setLectureIdState([0,"createLecture"]);
+    setLectureIdState([0, "createLecture"]);
     // setHomeScreenState("createLecture");
     setHeaderVisible(false);
   };
 
   const screenBackHandler = () => {
-    setLectureIdState([0,"home"]);
+    setLectureIdState([0, "home"]);
     setHomeScreenState("home");
     setHeaderVisible(true);
   };

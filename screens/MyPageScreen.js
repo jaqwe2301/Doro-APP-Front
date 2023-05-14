@@ -91,7 +91,9 @@ function MyPageScreen() {
             </Pressable>
           </View>
           <View style={styles.btnContainer}>
-            <Pressable>
+            <Pressable
+              onPress={() => navigation.navigate("ApplicationDetails", { data: data })}
+            >
               <Text style={styles.btn}>강의신청내역</Text>
             </Pressable>
           </View>
