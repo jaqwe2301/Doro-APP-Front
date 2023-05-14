@@ -1,12 +1,30 @@
 import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { GlobalStyles } from "../constants/styles";
 import LectureBox from "../components/ui/LectureBox";
+import axios from "axios";
 
 function ApplicationDetails({ route }) {
-  console.log(route);
+  // console.log(route);
+  useEffect(() => {
+    axios
+      .get(`http://10.0.2.2:8080/users-lectures/users/${16}`, {
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data.data);
+        // console.log("성공");
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+      });
+  }, []);
 
   const layout = useWindowDimensions();
 
