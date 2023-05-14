@@ -3,7 +3,6 @@ import { GlobalStyles } from "../../constants/styles";
 import { useState } from "react";
 
 function LectureBox(props) {
-
   return (
     <Pressable key={props.id} onPress={props.lectureIdHandler}>
       <View style={[styles.colorCover, { backgroundColor: props.colors }]}>
@@ -16,8 +15,21 @@ function LectureBox(props) {
             </Text>
           </View>
           <Text style={styles.tutor}>{props.mainTutor}</Text>
-          <View style={styles.placeDateContainer}>
+          <View style={styles.placeContainer}>
             <Text style={styles.place}>{props.place}</Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={{ fontSize: 12 }}>
+              {props.tutorRole === "MAIN_TUTOR"
+                ? "주강사 신청중"
+                : props.tutorRole === "SUB_TUTOR"
+                ? "보조강사 신청중"
+                : props.tutorRole === "STAFF"
+                ? "스태프 신청중"
+                : ""}
+            </Text>
             <Text style={[styles.date, { color: props.colors }]}>
               {props.date}
             </Text>
@@ -72,7 +84,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: GlobalStyles.colors.gray03,
   },
-  placeDateContainer: {
+  placeContainer: {
     marginTop: 7.61,
     alignItems: "flex-end",
   },
@@ -81,7 +93,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   date: {
-    // color: GlobalStyles.colors.green,
     fontSize: 12,
   },
 });

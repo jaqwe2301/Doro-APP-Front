@@ -57,7 +57,7 @@ function DetailLectureScreen({ lectureId, screenBackButton }) {
         `http://10.0.2.2:8080/users-lectures/lectures/${lectureId}`,
         {
           tutorRole: role,
-          userId: 8,
+          userId: 16,
         },
         {
           headers: {
