@@ -27,11 +27,8 @@ function ApplicationDetails({ route }) {
         },
       })
       .then((res) => {
-        // controlUserLecture(res.data.data);
         setUserLecture(res.data.data);
-
         finishLectureHandler(res.data.data);
-        // finishLectureHandler(userLecture);
         // console.log("성공");
       })
       .catch((error) => {
@@ -39,7 +36,7 @@ function ApplicationDetails({ route }) {
         console.log(error);
       });
   }, []);
-  
+
   const controlFinishedLecture = (data) => {
     setFinishedLecture(data);
   };
@@ -47,11 +44,19 @@ function ApplicationDetails({ route }) {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: "first", title: `01\n\n신청중` },
-    { key: "second", title: `02\n\n배정 완료` },
-    { key: "third", title: `03\n\n강의 완료` },
+  const [routes, setRoutes] = useState([
+    { key: "first", title: `0\n\n신청중` },
+    { key: "second", title: `0\n\n배정 완료` },
+    { key: "third", title: `0\n\n강의 완료` },
   ]);
+
+  useEffect(() => {
+    setRoutes([
+      { key: "first", title: `${userLecture.length}\n\n신청중` },
+      { key: "second", title: `02\n\n배정 완료` },
+      { key: "third", title: `${finishedLecture.length}\n\n강의 완료` },
+    ]);
+  }, [userLecture.length, finishedLecture.length]);
 
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
@@ -72,6 +77,8 @@ function ApplicationDetails({ route }) {
     });
     controlFinishedLecture(finished);
   };
+
+  console.log(userLecture.length);
 
   const renderScene = ({ route }) => {
     switch (route.key) {
