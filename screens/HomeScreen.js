@@ -129,6 +129,7 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
 
             return (
               <LectureBox
+              
                 key={filteringItem.id}
                 colors={SelectedColor}
                 subTitle={filteringItem.subTitle}

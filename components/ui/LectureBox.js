@@ -44,12 +44,16 @@ function LectureBox(props) {
   return (
     <Pressable key={props.id} onPress={props.lectureIdHandler}>
       <View style={[styles.colorCover, { backgroundColor: props.colors }]}>
-        <View style={styles.whieBox}>
+        <View style={[styles.whiteBox, {backgroundColor : props.boxColor === undefined ? "white" : props.boxColor }]}>
+
           <View style={styles.titleContainer}>
             <Text style={styles.SubTitle}>{props.subTitle}</Text>
             <Text style={styles.enrollEndDate}>
-              신청마감 {props.dateTypeValue?.getMonth() + 1}월{" "}
-              {props.dateTypeValue?.getDate()}일{" "}
+              {typeof props.dateTypeValue === "object"
+                ? `신청마감 ${
+                    props.dateTypeValue?.getMonth() + 1
+                  }월 ${props.dateTypeValue?.getDate()}일`
+                : props.dateTypeValue}
             </Text>
           </View>
           <Text style={styles.tutor}>{props.mainTutor}</Text>
@@ -66,7 +70,7 @@ function LectureBox(props) {
                 ? "보조강사 신청중"
                 : props.tutorRole === "STAFF"
                 ? "스태프 신청중"
-                : ""}
+                : props.tutorRole}
             </Text>
             <Text style={[styles.date, { color: props.colors }]}>
               {dateText}
@@ -97,10 +101,9 @@ const styles = StyleSheet.create({
     shadowColor: "Black",
     elevation: 2,
   },
-  whieBox: {
+  whiteBox: {
     paddingLeft: 15,
     paddingRight: 11,
-    backgroundColor: "white",
     height: 120,
   },
   titleContainer: {
