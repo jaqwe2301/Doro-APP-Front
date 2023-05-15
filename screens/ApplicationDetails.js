@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  FlatList,
+} from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useEffect, useState } from "react";
 
@@ -8,16 +14,20 @@ import axios from "axios";
 
 function ApplicationDetails({ route }) {
   // console.log(route);
+
+  const [userLecture, setUserLecture] = useState([]);
+
   useEffect(() => {
     axios
-      .get(`http://10.0.2.2:8080/users-lectures/users/${16}`, {
+      .get(`http://10.0.2.2:8080/users-lectures/users/${8}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
         },
       })
       .then((res) => {
-        console.log(res.data.data);
+        setUserLecture(res.data.data);
+        // console.log(res.data.data)
         // console.log("성공");
       })
       .catch((error) => {
@@ -35,15 +45,57 @@ function ApplicationDetails({ route }) {
     { key: "third", title: `03\n\n강의 완료` },
   ]);
 
-  const [test, setTest] = useState([]);
+  const dateControl = (stringDate) => {
+    // string에서 date 타입으로 전환하기 위해 만듬
+    return new Date(stringDate);
+  };
 
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
         return (
-          <>
-            <LectureBox LectureData={test}></LectureBox>
-          </>
+          <FlatList
+            style={styles.container}
+            data={userLecture}
+            renderItem={(data, index) => {
+              let dateTypeValue = dateControl(
+                data.item.lectureDate.enrollEndDate
+              );
+              return (
+                <LectureBox
+                  colors={GlobalStyles.indicationColors[data.index % 4]}
+                  subTitle={data.item.subTitle}
+                  date={data.item.lectureDates}
+                  time={data.item.time}
+                  lectureIdHandler={() => console.log()}
+                  id=""
+                  dateTypeValue={dateTypeValue}
+                  mainTutor={data.item.mainTutor}
+                  place={data.item.place}
+                />
+              );
+            }}
+          >
+            {/* {userLecture
+              ? userLecture.map((item, i) => {
+                  let dateTypeValue = dateControl(item.enrollEndDate);
+                  console.log(item);
+                  return (
+                    <LectureBox
+                      colors={GlobalStyles.indicationColors[i % 4]}
+                      subTitle={item.subTitle}
+                      date={item.lectureDates}
+                      time={item.time}
+                      lectureIdHandler={() => console.log()}
+                      id=""
+                      dateTypeValue={dateTypeValue}
+                      mainTutor={item.mainTutor}
+                      place={item.place}
+                    />
+                  );
+                })
+              : ""} */}
+          </FlatList>
         );
       case "second":
         return <></>;
@@ -85,3 +137,9 @@ function ApplicationDetails({ route }) {
 }
 
 export default ApplicationDetails;
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 20,
+  },
+});
