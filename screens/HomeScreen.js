@@ -60,27 +60,27 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
     return new Date(stringDate);
   };
 
-  const lectureDateControl = (date) => {
-    let result = dateControl(date[0]).getMonth() + 1 + "월 ";
-    for (let i = 0; i < date.length; i++) {
-      if (i === date.length - 1) {
-        result += dateControl(date[i]).getDate() + "일";
-      } else {
-        result += dateControl(date[i]).getDate() + "일 / ";
-      }
-    }
-    return result;
-  };
+  // const lectureDateControl = (date) => {
+  //   let result = dateControl(date[0]).getMonth() + 1 + "월 ";
+  //   for (let i = 0; i < date.length; i++) {
+  //     if (i === date.length - 1) {
+  //       result += dateControl(date[i]).getDate() + "일";
+  //     } else {
+  //       result += dateControl(date[i]).getDate() + "일 / ";
+  //     }
+  //   }
+  //   return result;
+  // };
 
-  const days = [
-    "일요일",
-    "월요일",
-    "화요일",
-    "수요일",
-    "목요일",
-    "금요일",
-    "토요일",
-  ];
+  // const days = [
+  //   "일요일",
+  //   "월요일",
+  //   "화요일",
+  //   "수요일",
+  //   "목요일",
+  //   "금요일",
+  //   "토요일",
+  // ];
 
   for (let i = 0; i < allTitleArray.length; i++) {
     let SelectedColor = GlobalStyles.indicationColors[i % 4];
@@ -96,48 +96,51 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
 
-            let dateHours =
-              dateControl(filteringItem.lectureDates[0]).getHours() > 10
-                ? dateControl(filteringItem.lectureDates[0]).getHours()
-                : "0" + dateControl(filteringItem.lectureDates[0]).getHours();
+            // let dateHours =
+            //   dateControl(filteringItem.lectureDates[0]).getHours() > 10
+            //     ? dateControl(filteringItem.lectureDates[0]).getHours()
+            //     : "0" + dateControl(filteringItem.lectureDates[0]).getHours();
 
-            let dateMinutes =
-              dateControl(filteringItem.lectureDates[0]).getMinutes().length >
-              10
-                ? dateControl(filteringItem.lectureDates[0]).getMinutes()
-                : "0" + dateControl(filteringItem.lectureDates[0]).getMinutes();
+            // let dateMinutes =
+            //   dateControl(filteringItem.lectureDates[0]).getMinutes().length >
+            //   10
+            //     ? dateControl(filteringItem.lectureDates[0]).getMinutes()
+            //     : "0" + dateControl(filteringItem.lectureDates[0]).getMinutes();
 
-            let EndTime =
-              Number(dateHours) + Number(filteringItem.time) >= 10
-                ? Number(dateHours) + Number(filteringItem.time)
-                : "0" + (Number(dateHours) + Number(filteringItem.time));
+            // let EndTime =
+            //   Number(dateHours) + Number(filteringItem.time) >= 10
+            //     ? Number(dateHours) + Number(filteringItem.time)
+            //     : "0" + (Number(dateHours) + Number(filteringItem.time));
 
-            let dateText =
-              // 날짜 텍스트
-              filteringItem.lectureDates.length > 1
-                ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
-                  `${lectureDateControl(filteringItem.lectureDates)} ${
-                    filteringItem.time
-                  }`
-                : `${
-                    dateControl(filteringItem.lectureDates[0]).getMonth() + 1
-                  }월 ${dateControl(
-                    filteringItem.lectureDates[0]
-                  ).getDate()}일 (${
-                    days[dateControl(filteringItem.lectureDates[0]).getDay()]
-                  }) ${filteringItem.time}`;
+            // let dateText =
+            //   // 날짜 텍스트
+            //   filteringItem.lectureDates.length > 1
+            //     ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
+            //       `${lectureDateControl(filteringItem.lectureDates)} ${
+            //         filteringItem.time
+            //       }`
+            //     : `${
+            //         dateControl(filteringItem.lectureDates[0]).getMonth() + 1
+            //       }월 ${dateControl(
+            //         filteringItem.lectureDates[0]
+            //       ).getDate()}일 (${
+            //         days[dateControl(filteringItem.lectureDates[0]).getDay()]
+            //       }) ${filteringItem.time}`;
 
             return (
               <LectureBox
-                lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-                id={filteringItem.id}
+                key={filteringItem.id}
                 colors={SelectedColor}
                 subTitle={filteringItem.subTitle}
+                date={filteringItem.lectureDates}
+                time={filteringItem.time}
+                lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+                id={filteringItem.id}
                 dateTypeValue={dateTypeValue}
                 mainTutor={filteringItem.mainTutor}
                 place={filteringItem.place}
-                date={dateText}
-              ></LectureBox>
+                // date={dateText}
+              />
             );
           })}
       </View>

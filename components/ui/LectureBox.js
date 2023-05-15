@@ -3,6 +3,44 @@ import { GlobalStyles } from "../../constants/styles";
 import { useState } from "react";
 
 function LectureBox(props) {
+  const dateControl = (stringDate) => {
+    // string에서 date 타입으로 전환하기 위해 만듬
+    return new Date(stringDate);
+  };
+
+  const lectureDateControl = (date) => {
+    let result = dateControl(date[0]).getMonth() + 1 + "월 ";
+    for (let i = 0; i < date.length; i++) {
+      if (i === date.length - 1) {
+        result += dateControl(date[i]).getDate() + "일";
+      } else {
+        result += dateControl(date[i]).getDate() + "일 / ";
+      }
+    }
+    return result;
+  };
+
+  const days = [
+    "일요일",
+    "월요일",
+    "화요일",
+    "수요일",
+    "목요일",
+    "금요일",
+    "토요일",
+  ];
+
+  const dateText = props.date
+    ? props.date?.length > 1
+      ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
+        `${lectureDateControl(props.date)} ${props.time}`
+      : `${dateControl(props.date[0]).getMonth() + 1}월 ${dateControl(
+          props.date[0]
+        ).getDate()}일 (${days[dateControl(props.date[0]).getDay()]}) ${
+          props.time
+        }`
+    : "";
+
   return (
     <Pressable key={props.id} onPress={props.lectureIdHandler}>
       <View style={[styles.colorCover, { backgroundColor: props.colors }]}>
@@ -31,7 +69,7 @@ function LectureBox(props) {
                 : ""}
             </Text>
             <Text style={[styles.date, { color: props.colors }]}>
-              {props.date}
+              {dateText}
             </Text>
           </View>
         </View>
