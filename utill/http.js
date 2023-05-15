@@ -11,16 +11,10 @@ const instance = Interceptor();
 // id를 넣어주면 header 필요없고 id없으면 header 필요하다
 export async function getProfile({ id }) {
   try {
-    const token = await AsyncStorage.getItem("token");
-
-    console.log(token);
-
-    const response = await axios.get(URL + "/users/" + `${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await instance.get("/users/" + `${id}`);
     return response.data.data;
   } catch (error) {
-    console.log(error);
+    console.log(error + "api er");
 
     throw error;
   }

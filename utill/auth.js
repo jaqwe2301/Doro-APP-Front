@@ -81,6 +81,26 @@ export async function login({ id, pw }) {
   return token;
 }
 
+export async function reToken({ accessToken, refreshToken }) {
+  const response = await axios.post(
+    URL + "/reissue",
+    {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  const token = response;
+  //.headers.authorization
+  console.log("hihi\t");
+  console.log(token);
+
+  return token;
+}
+
 export async function signUp({
   account,
   birth,

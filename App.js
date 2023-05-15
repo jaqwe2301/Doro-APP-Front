@@ -440,6 +440,7 @@ function BottomTabNavigator() {
 function Navigation() {
   const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const { headerId, setHeaderId } = useContext(HeaderContext);
   // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   // 자동로그인
@@ -453,7 +454,9 @@ function Navigation() {
       if (storedToken) {
         authCtx.authenticate(storedToken, storedReToken);
         const decoded = jwtDecode(storedToken);
+        console.log(decoded);
         setHeaderRole(decoded.roles[0].authority);
+        setHeaderId(decoded.id);
       }
 
       // setIsTryingLogin(false);

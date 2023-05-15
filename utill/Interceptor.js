@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { reToken } from "./auth";
 
 function Interceptor() {
   const instance = axios.create({
@@ -28,10 +29,11 @@ function Interceptor() {
 
   instance.interceptors.response.use(
     async function (response) {
-      console.log(response);
+      console.log(response + "hihi");
       if (response.status === 401) {
         const token = await AsyncStorage.getItem("token");
         const refreshToken = await AsyncStorage.getItem("refreshToken");
+        console.log("re화이팅");
 
         const reToken = await axios.post("http://10.0.2.2:8080/reissue", {
           accessToken: token,
@@ -44,8 +46,32 @@ function Interceptor() {
 
       return response;
     },
-    function (error) {
-      console.log(error);
+    async function (error) {
+      if (error.response.status === 401) {
+        const token = await AsyncStorage.getItem("token");
+        const refreshToken = await AsyncStorage.getItem("refreshToken");
+        console.log("hi \t");
+        console.log(token);
+        console.log(refreshToken);
+
+        // const reToken = await axios.post("http://10.0.2.2:8080/reissue", {
+        //   accessToken: token,
+        //   refreshToken: refreshToken,
+        // });
+
+        try {
+          const token = await reToken({
+            accessToken: token,
+            refreshToken: refreshToken,
+          });
+          console.log(token);
+        } catch (error) {
+          console.log("error발생" + error);
+          // console.log(error)
+        }
+
+        // console.log(reToken);
+      }
       return Promise.reject(error);
     }
   );
