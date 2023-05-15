@@ -18,9 +18,21 @@ import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
 import LectureBox from "./../components/ui/LectureBox";
+import { getProfile } from "../utill/http";
 
 const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
+  const [data, setData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
+
+  async function profileHandler() {
+    try {
+      const response = await getProfile({ id: 7 });
+      setData(response);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     axios
@@ -43,6 +55,8 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
         console.log("에러");
         console.log(error);
       });
+
+    profileHandler();
   }, []);
 
   const recruitingData = lectureData.filter(
@@ -59,28 +73,6 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
     // string에서 date 타입으로 전환하기 위해 만듬
     return new Date(stringDate);
   };
-
-  // const lectureDateControl = (date) => {
-  //   let result = dateControl(date[0]).getMonth() + 1 + "월 ";
-  //   for (let i = 0; i < date.length; i++) {
-  //     if (i === date.length - 1) {
-  //       result += dateControl(date[i]).getDate() + "일";
-  //     } else {
-  //       result += dateControl(date[i]).getDate() + "일 / ";
-  //     }
-  //   }
-  //   return result;
-  // };
-
-  // const days = [
-  //   "일요일",
-  //   "월요일",
-  //   "화요일",
-  //   "수요일",
-  //   "목요일",
-  //   "금요일",
-  //   "토요일",
-  // ];
 
   for (let i = 0; i < allTitleArray.length; i++) {
     let SelectedColor = GlobalStyles.indicationColors[i % 4];
@@ -129,7 +121,6 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
 
             return (
               <LectureBox
-              
                 key={filteringItem.id}
                 colors={SelectedColor}
                 subTitle={filteringItem.subTitle}
@@ -243,9 +234,13 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
         initialLayout={{ width: Dimensions.get("window").width }}
         style={styles.container}
       />
-      <Pressable onPress={createLectureVisibleProps}>
-        <View style={styles.BottomButton}></View>
-      </Pressable>
+      {data.role === "ROLE_ADMIN" ? (
+        <Pressable onPress={createLectureVisibleProps}>
+          <View style={styles.BottomButton}></View>
+        </Pressable>
+      ) : (
+        ""
+      )}
     </>
   );
 };
