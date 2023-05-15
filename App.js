@@ -207,7 +207,7 @@ function MyPageNavigator() {
       />
       <Stack.Screen
         name="profileEdit"
-        component={ApplicationDetails}
+        component={ProfileEdit}
         options={{ title: "프로필 수정" }}
       />
       <Stack.Screen
