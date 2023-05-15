@@ -13,7 +13,7 @@ import LectureBox from "../components/ui/LectureBox";
 import axios from "axios";
 
 function ApplicationDetails({ route, header }) {
-  // console.log(route);
+  console.log(route);
 
   const [userLecture, setUserLecture] = useState([]);
   const [finishedLecture, setFinishedLecture] = useState([]);
