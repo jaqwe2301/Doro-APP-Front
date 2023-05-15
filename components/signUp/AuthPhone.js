@@ -23,6 +23,7 @@ function AuthPhone() {
   const navigation = useNavigation();
   const [flex1, setFlex1] = useState(0);
   const flex2 = 10 - flex1;
+  const { timer, setTimer } = useState(false);
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -31,6 +32,7 @@ function AuthPhone() {
 
     if (text.length === 11) {
       setsbtnColor(GlobalStyles.colors.gray01);
+      setInterval(() => {});
     } else {
       setsbtnColor(GlobalStyles.colors.gray05);
     }
@@ -44,6 +46,25 @@ function AuthPhone() {
       setFlex1(0);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
+  };
+
+  const handleTimerButtonPress = () => {
+    setTimerRunning(!timerRunning); // 타이머 상태 토글
+
+    if (!timerRunning) {
+      // 타이머 시작
+      startTimer();
+    } else {
+      // 타이머 중지
+      stopTimer();
+    }
+  };
+
+  const startTimer = () => {
+    // 타이머 시작 로직
+    const intervalId = setInterval(() => {
+      console.log("Timer tick");
+    }, 1000);
   };
 
   function requestNumber() {
@@ -104,6 +125,7 @@ function AuthPhone() {
                   onChangeText={handleAuthChange}
                   keyboardType="numeric"
                 />
+                <Text style={styles.timer}>02:59</Text>
               </View>
               <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
             </>
@@ -156,5 +178,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
+  },
+  timer: {
+    color: GlobalStyles.colors.red,
+    fontSize: 15,
+    fontWeight: 400,
+    lineHeight: 20,
+    position: "absolute",
+    top: 10,
+    right: 12,
   },
 });

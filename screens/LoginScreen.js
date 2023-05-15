@@ -21,6 +21,7 @@ function LoginScreen({ navigation }) {
   const [pw, setPw] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const { headerId, setHeaderId } = useContext(HeaderContext);
   const authCtx = useContext(AuthContext);
 
   const handleId = (text) => {
@@ -35,10 +36,13 @@ function LoginScreen({ navigation }) {
     try {
       const token = await login({ id: id, pw: pw });
       console.log(token.headers.authorization);
-      console.log(token.data);
+      console.log(token.body);
       authCtx.authenticate(token.headers.authorization, token.data);
       const decoded = jwtDecode(token.headers.authorization);
+      console.log(decoded);
+
       setHeaderRole(decoded.roles[0].authority);
+      setHeaderId(decoded.id);
     } catch (error) {
       Alert.alert("로그인 실패", "could not ");
       setIsAuthenticating(false);
