@@ -16,6 +16,7 @@ function ApplicationDetails({ route }) {
   // console.log(route);
 
   const [userLecture, setUserLecture] = useState([]);
+  const [finishedLecture, setFinishedLecture] = useState([]);
 
   useEffect(() => {
     axios
@@ -26,8 +27,11 @@ function ApplicationDetails({ route }) {
         },
       })
       .then((res) => {
+        // controlUserLecture(res.data.data);
         setUserLecture(res.data.data);
-        // console.log(res.data.data)
+
+        finishLectureHandler(res.data.data);
+        // finishLectureHandler(userLecture);
         // console.log("성공");
       })
       .catch((error) => {
@@ -35,6 +39,10 @@ function ApplicationDetails({ route }) {
         console.log(error);
       });
   }, []);
+  
+  const controlFinishedLecture = (data) => {
+    setFinishedLecture(data);
+  };
 
   const layout = useWindowDimensions();
 
@@ -50,6 +58,21 @@ function ApplicationDetails({ route }) {
     return new Date(stringDate);
   };
 
+  const finishLectureHandler = (data) => {
+    let finished = data.filter((item) => {
+      for (const value of item.lectureDates) {
+        let changedDays = new Date(value);
+        changedDays.setDate(changedDays.getDate() + 1);
+        // 강의 날짜에서 1일 추가 (3월 9일 -> 3월 10일)
+        // 시간 다루지 않기 때문에 이렇게 함
+        if (changedDays < new Date()) {
+          return true;
+        }
+      }
+    });
+    controlFinishedLecture(finished);
+  };
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
@@ -57,7 +80,7 @@ function ApplicationDetails({ route }) {
           <FlatList
             style={styles.container}
             data={userLecture}
-            renderItem={(data, index) => {
+            renderItem={(data) => {
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
@@ -67,40 +90,67 @@ function ApplicationDetails({ route }) {
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => console.log()}
+                  lectureIdHandler={() => {}}
                   id=""
                   dateTypeValue={dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
+                  tutorRole={data.item.tutorRole}
                 />
               );
             }}
-          >
-            {/* {userLecture
-              ? userLecture.map((item, i) => {
-                  let dateTypeValue = dateControl(item.enrollEndDate);
-                  console.log(item);
-                  return (
-                    <LectureBox
-                      colors={GlobalStyles.indicationColors[i % 4]}
-                      subTitle={item.subTitle}
-                      date={item.lectureDates}
-                      time={item.time}
-                      lectureIdHandler={() => console.log()}
-                      id=""
-                      dateTypeValue={dateTypeValue}
-                      mainTutor={item.mainTutor}
-                      place={item.place}
-                    />
-                  );
-                })
-              : ""} */}
-          </FlatList>
+          />
         );
       case "second":
-        return <></>;
+        return (
+          <FlatList
+            style={styles.container}
+            data={userLecture}
+            renderItem={(data) => {
+              let dateTypeValue = dateControl(
+                data.item.lectureDate.enrollEndDate
+              );
+              return (
+                <LectureBox
+                  colors={GlobalStyles.indicationColors[data.index % 4]}
+                  subTitle={data.item.subTitle}
+                  date={data.item.lectureDates}
+                  time={data.item.time}
+                  lectureIdHandler={() => {}}
+                  id=""
+                  dateTypeValue={dateTypeValue}
+                  mainTutor={data.item.mainTutor}
+                  place={data.item.place}
+                  tutorRole={data.item.tutorRole}
+                />
+              );
+            }}
+          />
+        );
       case "third":
-        return <></>;
+        return (
+          <FlatList
+            style={styles.container}
+            data={finishedLecture}
+            renderItem={(data) => {
+              return (
+                <LectureBox
+                  colors={GlobalStyles.indicationColors[data.index % 4]}
+                  subTitle={data.item.subTitle}
+                  date={data.item.lectureDates}
+                  time={data.item.time}
+                  lectureIdHandler={() => {}}
+                  id=""
+                  dateTypeValue="강의 완료"
+                  mainTutor={data.item.mainTutor}
+                  place={data.item.place}
+                  tutorRole="값을 받아야해요"
+                  boxColor={GlobalStyles.colors.gray06}
+                />
+              );
+            }}
+          />
+        );
 
       default:
         return <View />;
