@@ -12,7 +12,7 @@ import { GlobalStyles } from "../constants/styles";
 import LectureBox from "../components/ui/LectureBox";
 import axios from "axios";
 
-function ApplicationDetails({ route }) {
+function ApplicationDetails({ route, header }) {
   // console.log(route);
 
   const [userLecture, setUserLecture] = useState([]);
@@ -77,8 +77,6 @@ function ApplicationDetails({ route }) {
     });
     controlFinishedLecture(finished);
   };
-
-  console.log(userLecture.length);
 
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -165,31 +163,40 @@ function ApplicationDetails({ route }) {
   };
 
   return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-      renderTabBar={(props) => (
-        <TabBar
-          {...props}
-          indicatorStyle={{
-            backgroundColor: GlobalStyles.colors.primaryDefault,
-            border: "none",
-          }}
-          style={{
-            backgroundColor: "white",
-            shadowOffset: { height: 0, width: 0 },
-            shadowColor: "transparent",
-          }}
-          labelStyle={{
-            // 폰트 컬러
-            color: "black",
-          }}
-          pressColor={"transparent"}
-        />
+    <>
+      {header === true ? (
+        <View style={{ backgroundColor: "white", alignItems: "center" }}>
+          <Text>강의신청내역</Text>
+        </View>
+      ) : (
+        ""
       )}
-    />
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={(props) => (
+          <TabBar
+            {...props}
+            indicatorStyle={{
+              backgroundColor: GlobalStyles.colors.primaryDefault,
+              border: "none",
+            }}
+            style={{
+              backgroundColor: "white",
+              shadowOffset: { height: 0, width: 0 },
+              shadowColor: "transparent",
+            }}
+            labelStyle={{
+              // 폰트 컬러
+              color: "black",
+            }}
+            pressColor={"transparent"}
+          />
+        )}
+      />
+    </>
   );
 }
 

@@ -343,7 +343,8 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="History"
-        component={HistoryScreen}
+        children={() => <ApplicationDetails header={true} />}
+        // component={ApplicationDetails}
         options={{
           title: "신청 내역",
           tabBarIcon: ({ color }) => (
