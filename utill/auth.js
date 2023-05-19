@@ -82,19 +82,13 @@ export async function login({ id, pw }) {
 }
 
 export async function reToken({ accessToken, refreshToken }) {
-  const response = await axios.post(
-    URL + "/reissue",
-    {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    },
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
+  const response = await axios.post(URL + "/reissue", {
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  });
 
-  const token = response;
-  //.headers.authorization
+  const token = response.headers.authorization;
+
   console.log("hihi\t");
   console.log(token);
 
