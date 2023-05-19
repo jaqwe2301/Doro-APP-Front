@@ -17,6 +17,7 @@ import { getProfile2, updateProfile } from "../utill/http";
 import { Ionicons } from "@expo/vector-icons";
 import ButtonBig from "../components/ui/ButtonBig";
 import { HeaderContext } from "../store/header-context";
+import Timer from "../components/ui/Timer";
 
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
@@ -27,6 +28,8 @@ function ProfileEdit({ navigation, route }) {
   const [visible, setVisible] = useState(false);
   const [display1, setDispaly1] = useState("none");
   const [display2, setDispaly2] = useState("none");
+  const [count, setCount] = useState(0);
+  const [authVisible, setAuthVisible] = useState(false);
 
   const [birth, setBirth] = useState(data.birth);
   const [generation, setGeneration] = useState(data.generation);
@@ -100,6 +103,8 @@ function ProfileEdit({ navigation, route }) {
   function requestNumber() {
     try {
       authPhoneNum({ messageType: "UPDATE", phone: phoneNum });
+      setCount(179);
+      setAuthVisible(true);
     } catch (error) {
       Alert.alert("ERROR", "다시 시도해주세요");
     }
@@ -116,6 +121,8 @@ function ProfileEdit({ navigation, route }) {
 
         console.log(success);
         if (success) {
+          setCount(0);
+          setAuthVisible(false);
           Alert.alert("번호 변경", "휴대폰 번호 변경 완료");
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
@@ -198,6 +205,15 @@ function ProfileEdit({ navigation, route }) {
               value={authNum}
               keyboardType="numeric"
             />
+            {authVisible && (
+              <View style={{ marginTop: 0 }}>
+                <Timer
+                  count={count}
+                  setCount={setCount}
+                  smallStyle={styles.timer2}
+                />
+              </View>
+            )}
             <Pressable onPress={verifyAuthNum}>
               <Text style={styles.auth}>인증확인</Text>
             </Pressable>
@@ -464,5 +480,14 @@ const styles = StyleSheet.create({
   iconContainer2: {
     marginRight: 10,
     marginTop: 2,
+  },
+  timer2: {
+    color: GlobalStyles.colors.red,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 17,
+    position: "absolute",
+    top: 0,
+    right: 9,
   },
 });
