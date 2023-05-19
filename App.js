@@ -229,6 +229,13 @@ function MyPageNavigator() {
           title: "비밀번호 찾기",
         }}
       />
+      <Stack.Screen
+        name="changePw"
+        component={ChangePw}
+        options={{
+          title: "비밀번호 변경",
+        }}
+      />
     </Stack.Navigator>
   );
 }
