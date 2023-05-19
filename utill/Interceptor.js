@@ -50,7 +50,7 @@ function Interceptor() {
       if (error.response.status === 401) {
         const token = await AsyncStorage.getItem("token");
         const refreshToken = await AsyncStorage.getItem("refreshToken");
-        console.log("hi \t");
+        console.log("hi refresh 할꺼염 \t");
         console.log(token);
         console.log(refreshToken);
 

@@ -20,7 +20,7 @@ function AddNoticeScreen({ navigation }) {
       const response = await createAnnouncement({
         title: title,
         body: body,
-        picture: "",
+        // picture: "",
       });
 
       console.log(response);
