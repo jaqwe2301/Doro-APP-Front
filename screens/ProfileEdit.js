@@ -9,17 +9,26 @@ import {
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import InputLine from "../components/ui/InputLine";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { getProfile2, updateProfile } from "../utill/http";
 
-function ProfileEdit({ route }) {
-  const [phoneNum, setphoneNum] = useState("");
-  const [authNum, setauthNum] = useState("");
-  const [request, setRequest] = useState([]);
-  const navigation = useNavigation();
-
+function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
+  const [phoneNum, setphoneNum] = useState(data.phone);
+  const [authNum, setauthNum] = useState("");
+
+  const [birth, setBirth] = useState(data.birth);
+  const [generation, setGeneration] = useState(data.generation);
+  const [major, setMajor] = useState(data.major);
+  const [name, setName] = useState(data.name);
+
+  const [school, setSchool] = useState(data.school);
+  const [studentId, setStudentId] = useState(data.studentId);
+  const [studentStatus, setStudentStatus] = useState(data.studentStatus);
+  // const navigation = useNavigation();
+
   const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
 
   const handlePhoneChange = (text) => {
@@ -29,12 +38,49 @@ function ProfileEdit({ route }) {
     setauthNum(text);
   };
 
+  async function completeHandler() {
+    try {
+      const success = await updateProfile({
+        generation: generation,
+        major: major,
+        phone: phoneNum,
+        school: school,
+        studentId: studentId,
+        studentStatus: studentStatus,
+        id: "1",
+      });
+      console.log(success);
+      if (success.success) {
+        navigation.replace("myPage");
+      }
+    } catch (error) {
+      Alert.alert("ERROR", "Network Error");
+    }
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => {
+        return (
+          <Text style={styles.cancelText} onPress={() => navigation.goBack()}>
+            취소
+          </Text>
+        );
+      },
+      headerRight: () => {
+        return (
+          <Pressable onPress={completeHandler}>
+            <Text style={styles.completeText}>완료</Text>
+          </Pressable>
+        );
+      },
+    });
+    // profileHandler();
+  }, [completeHandler]);
+
   function requestNumber() {
     try {
-      setphoneNum(data.phone);
-      if (data !== "") {
-        authPhoneNum({ messageType: "UPDATE", phone: phoneNum });
-      }
+      authPhoneNum({ messageType: "UPDATE", phone: phoneNum });
     } catch (error) {
       Alert.alert("ERROR", "다시 시도해주세요");
     }
@@ -51,7 +97,7 @@ function ProfileEdit({ route }) {
 
         console.log(success);
         if (success) {
-          Alert.alert("인증", "인증 완료");
+          Alert.alert("번호 변경", "휴대폰 번호 변경 완료");
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
         }
@@ -65,6 +111,22 @@ function ProfileEdit({ route }) {
   function navi() {
     navigation.navigate("searchPw");
   }
+
+  const handleSchoolChange = (text) => {
+    setSchool(text);
+  };
+  const handleMajorChange = (text) => {
+    setMajor(text);
+  };
+  const handleStudentIdChange = (text) => {
+    setStudentId(text);
+  };
+  const handleStatusChange = (text) => {
+    setStudentStatus(text);
+  };
+  const handleGenerationChange = (text) => {
+    setGeneration(text);
+  };
 
   return (
     <View style={styles.container}>
@@ -94,37 +156,51 @@ function ProfileEdit({ route }) {
           <View style={styles.contentContainer}>
             <Text style={styles.title}>휴대전화번호</Text>
             <InputLine
-              placeholder={data.phone}
               onChangeText={handlePhoneChange}
               value={phoneNum}
+              keyboardType="numeric"
             />
-
             <Pressable onPress={requestNumber}>
               <Text style={styles.auth}>인증요청</Text>
             </Pressable>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>인증번호</Text>
-            <InputLine onChangeText={handleAuthChange} value={authNum} />
+            <InputLine
+              onChangeText={handleAuthChange}
+              value={authNum}
+              keyboardType="numeric"
+            />
             <Pressable onPress={verifyAuthNum}>
               <Text style={styles.auth}>인증확인</Text>
             </Pressable>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>학교</Text>
-            <InputLine placeholder={data.school} />
+            <InputLine onChangeText={handleSchoolChange} value={school} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>전공</Text>
-            <InputLine placeholder={data.major} />
+            <InputLine onChangeText={handleMajorChange} value={major} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>학번</Text>
-            <InputLine placeholder={data.studentId} />
+            <InputLine onChangeText={handleStudentIdChange} value={studentId} />
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>재학 유무</Text>
-            <InputLine placeholder={status} />
+            <InputLine
+              onChangeText={handleStatusChange}
+              value={studentStatus}
+            />
+          </View>
+          <View style={styles.contentContainer}>
+            <Text style={styles.title}>기수</Text>
+            <InputLine
+              onChangeText={handleGenerationChange}
+              value={String(generation)}
+              keyboardType="numeric"
+            />
           </View>
           <View style={styles.border}></View>
         </View>
@@ -225,5 +301,18 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: 50,
     textAlign: "center",
+  },
+  cancelText: {
+    fontWeight: 400,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray05,
+    marginLeft: 10,
+  },
+  completeText: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    color: GlobalStyles.colors.primaryDefault,
+    marginRight: 10,
   },
 });
