@@ -29,20 +29,20 @@ function Interceptor() {
 
   instance.interceptors.response.use(
     async function (response) {
-      console.log(response + "hihi");
-      if (response.status === 401) {
-        const token = await AsyncStorage.getItem("token");
-        const refreshToken = await AsyncStorage.getItem("refreshToken");
-        console.log("re화이팅");
+      // console.log(response + "hihi");
+      // if (response.status === 401) {
+      //   const token = await AsyncStorage.getItem("token");
+      //   const refreshToken = await AsyncStorage.getItem("refreshToken");
+      //   console.log("re화이팅");
 
-        const reToken = await axios.post("http://10.0.2.2:8080/reissue", {
-          accessToken: token,
-          refreshToken: refreshToken,
-        });
+      //   const reToken = await axios.post("http://10.0.2.2:8080/reissue", {
+      //     accessToken: token,
+      //     refreshToken: refreshToken,
+      //   });
 
-        // AsyncStorage.setItem("token",reToken)
-        console.log("hihi" + reToken);
-      }
+      //   // AsyncStorage.setItem("token",reToken)
+      //   console.log("hihi" + reToken);
+      // }
 
       return response;
     },
@@ -54,17 +54,14 @@ function Interceptor() {
         console.log(token);
         console.log(refreshToken);
 
-        // const reToken = await axios.post("http://10.0.2.2:8080/reissue", {
-        //   accessToken: token,
-        //   refreshToken: refreshToken,
-        // });
-
         try {
-          const token = await reToken({
-            accessToken: token,
+          const response = await reToken({
+            accessToken: `Bearer ${token}`,
             refreshToken: refreshToken,
           });
-          console.log(token);
+          console.log(response);
+
+          authCtx.authenticate(response, refreshToken);
         } catch (error) {
           console.log("error발생" + error);
           // console.log(error)
