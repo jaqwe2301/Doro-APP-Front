@@ -38,6 +38,7 @@ import AddNoticeScreen from "./screens/AddNoticeScreen";
 import jwtDecode from "jwt-decode";
 import HeaderContextProvider, { HeaderContext } from "./store/header-context";
 import EditNoticeScreen from "./screens/EditNoticeScreen";
+import AlarmScreen from "./screens/AlarmScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -286,6 +287,13 @@ function NoticeNavigator() {
           headerRight: () => {
             return <Text style={styles.completeText2}>완료</Text>;
           },
+        }}
+      />
+      <Stack.Screen
+        name="alarm"
+        component={AlarmScreen}
+        options={{
+          title: "알림",
         }}
       />
     </Stack.Navigator>
