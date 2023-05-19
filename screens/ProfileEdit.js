@@ -130,15 +130,8 @@ function ProfileEdit({ navigation, route }) {
   function okayBtn() {
     if (display1 === "flex" || display2 === "flex") {
       setStudentStatus(display1 === "none" ? "ABSENCE" : "ATTENDING");
-      // setSelect(display1 === "none" ? "휴학" : "재학");
-      // setStatusStyle(styles.textInputText);
-      // setFlex1(9);
+
       setVisible(!visible);
-      // setlbtnColor(
-      //   inputMajor !== "" && inputStudentId !== "" && inputSchool !== ""
-      //     ? GlobalStyles.colors.primaryDefault
-      //     : GlobalStyles.colors.gray05
-      // );
     } else {
       setVisible(!visible);
     }
@@ -157,9 +150,7 @@ function ProfileEdit({ navigation, route }) {
   const handleStudentIdChange = (text) => {
     setStudentId(text);
   };
-  const handleStatusChange = (text) => {
-    setStudentStatus(text);
-  };
+
   const handleGenerationChange = (text) => {
     setGeneration(text);
   };

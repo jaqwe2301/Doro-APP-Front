@@ -26,6 +26,7 @@ function MyPageScreen({ navigation }) {
   // const [studentId, setStudentId] = useState("");
   // const [studentStatus, setStudentStatus] = useState("");
   const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const authCtx = useContext(AuthContext);
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
@@ -40,8 +41,10 @@ function MyPageScreen({ navigation }) {
       const response = await getProfile({ id: headerId });
       setData(response);
       console.log(response);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      setIsLoading(true);
     }
   }
 
@@ -58,7 +61,8 @@ function MyPageScreen({ navigation }) {
       navigation.navigate("searchPw");
     }
 
-    if (Object.keys(data).length === 0) {
+    // if (Object.keys(data).length === 0) {
+    if (isLoading) {
       return (
         <View style={{ marginBottom: 33 }}>
           <Pressable onPress={logoutHandler}>
