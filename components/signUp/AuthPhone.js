@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import InputText from "../../components/ui/InputText";
 import ButtonSmall from "../../components/ui/ButtonSmall";
@@ -11,7 +11,6 @@ import { authPhoneNum, verifyauthPhoneNum } from "../../utill/auth";
 import InputData from "../ui/InputData";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
-import Phone from "../ui/Phone";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
@@ -23,7 +22,9 @@ function AuthPhone() {
   const navigation = useNavigation();
   const [flex1, setFlex1] = useState(0);
   const flex2 = 10 - flex1;
-  const { timer, setTimer } = useState(false);
+  const [count, setCount] = useState(0);
+  const [mm, setMM] = useState(0);
+  const [ss, setSS] = useState(0);
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -32,7 +33,6 @@ function AuthPhone() {
 
     if (text.length === 11) {
       setsbtnColor(GlobalStyles.colors.gray01);
-      setInterval(() => {});
     } else {
       setsbtnColor(GlobalStyles.colors.gray05);
     }
@@ -48,30 +48,32 @@ function AuthPhone() {
     }
   };
 
-  const handleTimerButtonPress = () => {
-    setTimerRunning(!timerRunning); // 타이머 상태 토글
+  useEffect(() => {
+    console.log("timer시작");
+    if (count > 0) {
+      const intervalId = setInterval(() => {
+        setCount((prev) => prev - 1);
+        // setMM(Math.floor(count / 60));
+        // setSS(count % 60);
+        console.log("1초 빠이");
+      }, 1000);
 
-    if (!timerRunning) {
-      // 타이머 시작
-      startTimer();
-    } else {
-      // 타이머 중지
-      stopTimer();
+      return () => clearInterval(intervalId);
     }
-  };
+  }, [count]);
 
-  const startTimer = () => {
-    // 타이머 시작 로직
-    const intervalId = setInterval(() => {
-      console.log("Timer tick");
-    }, 1000);
-  };
+  useEffect(() => {
+    setMM(Math.floor(count / 60));
+    setSS(count % 60);
+  }, [count, setMM, setSS]);
 
   function requestNumber() {
     if (phoneNum.length === 11) {
-      authPhoneNum({ messageType: "JOIN", phone: phoneNum });
+      // authPhoneNum({ messageType: "JOIN", phone: phoneNum });
       setBtnTitle("다시 요청");
       setIsVisible(true);
+      // setTimer(true);
+      setCount(5);
     } else {
     }
   }
@@ -125,7 +127,10 @@ function AuthPhone() {
                   onChangeText={handleAuthChange}
                   keyboardType="numeric"
                 />
-                <Text style={styles.timer}>02:59</Text>
+                <Text style={styles.timer}>{`${String(mm).padStart(
+                  2,
+                  "0"
+                )}:${String(ss).padStart(2, "0")}`}</Text>
               </View>
               <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
             </>
