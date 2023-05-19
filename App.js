@@ -34,6 +34,11 @@ import FindId from "./components/signUp/FindId";
 import NotFindId from "./components/signUp/NotFindId";
 import ChangePw from "./components/signUp/ChangePw";
 import ProfileEdit from "./screens/ProfileEdit";
+import NoticeDetailScreen from "./screens/NoticeDetailScreen";
+import AddNoticeScreen from "./screens/AddNoticeScreen";
+import jwtDecode from "jwt-decode";
+import HeaderContextProvider, { HeaderContext } from "./store/header-context";
+import EditNoticeScreen from "./screens/EditNoticeScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -196,24 +201,85 @@ function MyPageNavigator() {
         headerTitleStyle: {
           fontWeight: "600",
           fontSize: 17,
+          // lineHeight: 22,
         },
       }}
     >
       <Stack.Screen
         name="myPage"
         component={MyPageScreen}
-        options={{ title: "마이 페이지" }}
+        options={{ title: "마이 페이지", headerBackVisible: false }}
       />
       <Stack.Screen
         name="profileEdit"
         component={ProfileEdit}
-        options={{ title: "프로필 수정" }}
+        options={{
+          title: "프로필 수정",
+          headerRight: () => {
+            return <Text style={styles.completeText}>완료</Text>;
+          },
+          headerLeft: () => {
+            return <Text style={styles.cancelText}>취소</Text>;
+          },
+        }}
       />
       <Stack.Screen
         name="searchPw"
         component={SearchPW}
         options={{
           title: "비밀번호 찾기",
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+function NoticeNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+          // lineHeight: 22,
+        },
+      }}
+    >
+      <Stack.Screen
+        name="noticeScreen"
+        component={NoticeScreen}
+        options={{
+          title: "공지사항",
+          headerRight: () => {
+            return <Ionicons name="home-outline" size={20} />;
+          },
+          headerBackVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="noticeDetail"
+        component={NoticeDetailScreen}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="noticeAdd"
+        component={AddNoticeScreen}
+        options={{
+          title: "글쓰기",
+          headerRight: () => {
+            return <Text style={styles.completeText2}>완료</Text>;
+          },
+        }}
+      />
+      <Stack.Screen
+        name="noticeEdit"
+        component={EditNoticeScreen}
+        options={{
+          title: "글쓰기",
+          headerRight: () => {
+            return <Text style={styles.completeText2}>완료</Text>;
+          },
         }}
       />
     </Stack.Navigator>
@@ -252,13 +318,14 @@ function BottomTabNavigator() {
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
         tabBarStyle: { height: 60 },
-
+        tabBarHideOnKeyboard: true,
         headerShown: false,
       }}
     >
       <BottomTab.Screen
         name="Home"
         children={() =>
+
           lectureIdState[1] === "home" ? (
             <HomeScreen
               lectureIdProps={detailLectureVisibleHandler}
@@ -273,6 +340,7 @@ function BottomTabNavigator() {
             <NewLectureScreen screenBackButton={screenBackHandler} />
           )
         }
+
         options={{
           headerShown: headerVisible,
           header: () => {
@@ -321,7 +389,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Notice"
-        component={NoticeScreen}
+        component={NoticeNavigator}
         options={{
           title: "공지사항",
           tabBarIcon: ({ color }) => (
@@ -386,21 +454,9 @@ function BottomTabNavigator() {
   );
 }
 
-//로그인 후 화면
-function AuthenticatedStack() {
-  return (
-    <Stack.Navigator screenOptions={{}}>
-      <Stack.Screen
-        name="Bottom"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
-}
-
 function Navigation() {
   const authCtx = useContext(AuthContext);
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
   // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   // 자동로그인
@@ -408,9 +464,13 @@ function Navigation() {
     async function fetchToken() {
       // 저장된 jwt 가져오기
       const storedToken = await AsyncStorage.getItem("token");
+      const storedReToken = await AsyncStorage.getItem("refreshToken");
+      // console.log();
 
       if (storedToken) {
-        authCtx.authenticate(storedToken);
+        authCtx.authenticate(storedToken, storedReToken);
+        const decoded = jwtDecode(storedToken);
+        setHeaderRole(decoded.roles[0].authority);
       }
 
       // setIsTryingLogin(false);
@@ -432,7 +492,9 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <AuthContextProvider>
-        <Navigation />
+        <HeaderContextProvider>
+          <Navigation />
+        </HeaderContextProvider>
       </AuthContextProvider>
     </SafeAreaView>
   );
@@ -475,5 +537,33 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F4F4",
     paddingLeft: 16,
     borderRadius: 5.41,
+  },
+  completeText: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    color: GlobalStyles.colors.primaryDefault,
+    marginRight: 10,
+  },
+  completeText2: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    width: 50,
+    height: 30,
+    borderRadius: 5.41,
+    color: "white",
+    textAlign: "center",
+    textAlignVertical: "center",
+    // marginLeft: -4,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+
+    lineHeight: 20,
+  },
+  cancelText: {
+    fontWeight: 400,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray05,
+    marginLeft: 10,
   },
 });
