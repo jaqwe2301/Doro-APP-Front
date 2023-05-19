@@ -15,6 +15,7 @@ import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
+import { reToken } from "../utill/auth";
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -45,6 +46,26 @@ function MyPageScreen({ navigation }) {
     } catch (error) {
       console.log(error);
       setIsLoading(true);
+    }
+  }
+
+  async function tokenHandler() {
+    const token = await AsyncStorage.getItem("token");
+    const refreshToken = await AsyncStorage.getItem("refreshToken");
+
+    console.log("전 토큰" + token);
+    console.log("리프레쉬 토큰" + refreshToken);
+
+    try {
+      const response = await reToken({
+        accessToken: `Bearer ${token}`,
+        refreshToken: refreshToken,
+      });
+      console.log("되는듯" + response);
+      authCtx.authenticate(response, refreshToken);
+    } catch (error) {
+      console.log("error발생" + error);
+      // console.log(error)
     }
   }
 
@@ -124,7 +145,7 @@ function MyPageScreen({ navigation }) {
                 </Pressable>
               </View>
               <View style={styles.btnContainer}>
-                <Pressable>
+                <Pressable onPress={tokenHandler}>
                   <Text style={styles.btn}>강의신청내역</Text>
                 </Pressable>
               </View>

@@ -13,6 +13,7 @@ import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../store/header-context";
 import { getAnnouncement, getNotification } from "../utill/http";
 import moment from "moment";
+import { Ionicons } from "@expo/vector-icons";
 
 function NoticeScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
@@ -31,6 +32,16 @@ function NoticeScreen({ navigation }) {
   useEffect(() => {
     notiHandler();
   }, []);
+
+  navigation.setOptions({
+    headerRight: () => {
+      return (
+        <Pressable onPress={() => navigation.navigate("alarm")}>
+          <Ionicons name="home-outline" size={20} />
+        </Pressable>
+      );
+    },
+  });
 
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });
