@@ -36,7 +36,7 @@ function LoginScreen({ navigation }) {
     try {
       const token = await login({ id: id, pw: pw });
       console.log(token.headers.authorization);
-      console.log(token.body);
+      console.log(token.data);
       authCtx.authenticate(token.headers.authorization, token.data);
       const decoded = jwtDecode(token.headers.authorization);
       console.log(decoded);

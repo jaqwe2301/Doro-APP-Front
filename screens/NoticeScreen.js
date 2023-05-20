@@ -19,17 +19,17 @@ function NoticeScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [data, setData] = useState([]);
 
-  async function notiHandler() {
-    try {
-      const response = await getAnnouncement();
-      setData(response);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
+    async function notiHandler() {
+      try {
+        const response = await getAnnouncement();
+        setData(response);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     notiHandler();
   }, []);
 
