@@ -112,7 +112,7 @@ function Pw() {
             <PwBtn text="특수문자" btnColor={mark} />
             <PwBtn text="8~20자" btnColor={len} />
           </View>
-          <View style={[styles.inputContainer, { marginTop: 5 }]}>
+          <View style={[styles.inputContainer, { marginTop: 0 }]}>
             <InputData
               hint="비밀번호 재입력"
               onChangeText={handleRePwChange}
@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
   pwBtn: {
     flexDirection: "row",
     marginHorizontal: 20,
-    marginTop: 4,
   },
   text: {
     fontSize: 15,
