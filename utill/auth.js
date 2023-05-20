@@ -1,9 +1,6 @@
 import axios from "axios";
-import Interceptor from "./Interceptor";
 
 const URL = "http://10.0.2.2:8080";
-
-const instance = Interceptor();
 
 export function authPhoneNum({ messageType, phone }) {
   axios
@@ -151,13 +148,4 @@ export async function signUp({
   } catch (error) {
     console.log(error);
   }
-}
-
-export async function deleteUser() {
-  const response = await instance.delete("/withdrawal");
-
-  // console.log("hihi\t");
-  // console.log(token);
-
-  return response.data;
 }

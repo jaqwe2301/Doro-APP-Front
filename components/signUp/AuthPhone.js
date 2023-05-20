@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Alert } from "react-native";
 import { useState, useContext, useEffect } from "react";
-
 import InputText from "../../components/ui/InputText";
 import ButtonSmall from "../../components/ui/ButtonSmall";
 import { GlobalStyles } from "../../constants/styles";
@@ -68,11 +67,12 @@ function AuthPhone() {
         if (success) {
           setSignData({ ...signData, phone: phoneNum });
           navigation.navigate("id");
+          setCount(0);
         } else {
           Alert.alert("인증번호 불일치");
         }
       } catch (error) {}
-      Alert.alert("ERROR", "Network Error");
+      // Alert.alert("ERROR", "Network Error");
     }
   }
 
