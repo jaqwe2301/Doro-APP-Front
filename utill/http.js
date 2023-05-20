@@ -186,3 +186,12 @@ export async function deleteAnnouncement({ id }) {
     throw error;
   }
 }
+
+export async function deleteUser() {
+  const response = await instance.delete("/withdrawal");
+
+  // console.log("hihi\t");
+  // console.log(token);
+
+  return response;
+}

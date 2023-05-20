@@ -9,6 +9,8 @@ import {
 import { useState, useContext } from "react";
 
 import InputText from "../../components/ui/InputText";
+import { WithLocalSvg } from "react-native-svg";
+import Down from "../../assets/down.svg";
 
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "../../components/ui/ButtonBig";
@@ -155,11 +157,11 @@ function School() {
             />
           </View>
           <View style={styles.textContainer}>
-            <InputText text="학번을 입력해 주세요." />
+            <InputText text="학년을 입력해 주세요." />
           </View>
           <View style={styles.inputContainer}>
             <InputData
-              hint="학번을 입력하세요"
+              hint="학년을 입력하세요"
               onChangeText={handleStudentIdChange}
               value={inputStudentId}
             />
@@ -180,11 +182,7 @@ function School() {
               <View style={styles.textInput}>
                 <Text style={statusStyle}>{select}</Text>
                 <View style={{ marginRight: 13 }}>
-                  <Ionicons
-                    name="chevron-down"
-                    size={25}
-                    color={GlobalStyles.colors.gray05}
-                  />
+                  <WithLocalSvg asset={Down} />
                 </View>
               </View>
             </Pressable>

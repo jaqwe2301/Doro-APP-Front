@@ -6,7 +6,7 @@ import {
   ScrollView,
   Modal,
 } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import InputText from "../../components/ui/InputText";
 
@@ -18,6 +18,15 @@ import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
 import { signUp } from "../../utill/auth";
+
+import { WithLocalSvg } from "react-native-svg";
+import Checkmark from "../../assets/checkmark.svg";
+import Checkbox from "../../assets/checkbox.svg";
+import CheckmarkAfter from "../../assets/checkmark_after.svg";
+import CheckboxAfter from "../../assets/checkbox_after.svg";
+import Right from "../../assets/right.svg";
+import Down from "../../assets/down.svg";
+
 function Code() {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
@@ -34,27 +43,23 @@ function Code() {
   const [flex1, setFlex1] = useState(9);
   const flex2 = 10 - flex1;
 
+  const [accept1, setAccept1] = useState(false);
+  const [accept2, setAccept2] = useState(false);
+
   const handleCodeChange = (text) => {
     setInputCode(text);
+  };
 
+  useEffect(() => {
     setlbtnColor(
-      text !== "" && inputRole !== ""
+      inputRole !== "" && inputCode !== "" && accept1 && accept2
         ? GlobalStyles.colors.primaryDefault
         : GlobalStyles.colors.gray05
     );
-  };
-
-  const handleRoleChange = (text) => {
-    setInputRole(text);
-    setlbtnColor(
-      text !== "" && inputCode !== ""
-        ? GlobalStyles.colors.primaryDefault
-        : GlobalStyles.colors.gray05
-    );
-  };
+  }, [accept1, accept2, inputCode, inputRole]);
 
   function navigateId() {
-    if (inputRole !== "" && inputCode !== "") {
+    if (inputRole !== "" && inputCode !== "" && accept1 && accept2) {
       signUp({
         account: signData.account,
         birth: signData.birth,
@@ -96,11 +101,7 @@ function Code() {
       setSelect(display1 === "none" ? "매니저" : "강사");
       setStatusStyle(styles.textInputText);
       setFlex1(9);
-      setlbtnColor(
-        inputCode !== ""
-          ? GlobalStyles.colors.primaryDefault
-          : GlobalStyles.colors.gray05
-      );
+
       setVisible(!visible);
     } else {
       setVisible(!visible);
@@ -112,6 +113,9 @@ function Code() {
       <Bar flex1={flex1} flex2={flex2} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <ScrollView>
+          <View style={styles.textContainer}>
+            <InputText text="기수를 입력해 주세요." />
+          </View>
           <View style={styles.textContainer}>
             <InputText text="가입코드를 입력해 주세요." />
           </View>
@@ -125,11 +129,7 @@ function Code() {
               <View style={styles.textInput}>
                 <Text style={statusStyle}>{select}</Text>
                 <View style={{ marginRight: 13 }}>
-                  <Ionicons
-                    name="chevron-down"
-                    size={25}
-                    color={GlobalStyles.colors.gray05}
-                  />
+                  <WithLocalSvg asset={Down} />
                 </View>
               </View>
             </Pressable>
@@ -147,50 +147,97 @@ function Code() {
           </View>
           <View>
             <View
-              style={{ flexDirection: "row", marginTop: 21, marginLeft: 22.57 }}
+              style={{
+                flexDirection: "row",
+                marginTop: 21,
+                marginLeft: 20,
+              }}
             >
-              <Ionicons
-                name="checkbox"
-                color={GlobalStyles.colors.gray05}
-                size={23}
-              />
-              <Text style={styles.acceptText}>전체동의</Text>
+              <Pressable
+                onPress={() => {
+                  setAccept1(!accept1);
+                  setAccept2(!accept2);
+                }}
+              >
+                <View style={{ marginTop: -3 }}>
+                  <WithLocalSvg
+                    asset={accept1 && accept2 ? CheckboxAfter : Checkbox}
+                  />
+                </View>
+              </Pressable>
+              <Text
+                style={[
+                  styles.acceptText,
+                  {
+                    color:
+                      accept1 && accept2
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                  },
+                ]}
+              >
+                전체동의
+              </Text>
             </View>
             <View style={styles.acceptContentContainer}>
               <View style={{ flexDirection: "row" }}>
-                <Ionicons
-                  name="checkmark"
-                  color={GlobalStyles.colors.gray05}
-                  size={15}
-                />
+                <Pressable
+                  onPress={() => {
+                    setAccept1(!accept1);
+                  }}
+                >
+                  <View style={{ marginTop: 4 }}>
+                    <WithLocalSvg
+                      asset={!accept1 ? Checkmark : CheckmarkAfter}
+                    />
+                  </View>
+                </Pressable>
 
-                <Text style={styles.acceptContentText}>[필수] 이용약관</Text>
+                <Text
+                  style={[
+                    styles.acceptContentText,
+                    {
+                      color: accept1
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                    },
+                  ]}
+                >
+                  [필수] 이용약관
+                </Text>
               </View>
-              <Pressable style={{ marginRight: 42 }} onPress={naviAgreeInfo}>
-                <Ionicons
-                  name="chevron-forward"
-                  color={GlobalStyles.colors.gray05}
-                  size={20}
-                />
+              <Pressable style={{ marginRight: 35 }} onPress={naviAgreeInfo}>
+                <WithLocalSvg asset={Right} />
               </Pressable>
             </View>
             <View style={styles.acceptContentContainer}>
               <View style={{ flexDirection: "row", marginBottom: 40 }}>
-                <Ionicons
-                  name="checkmark"
-                  color={GlobalStyles.colors.gray05}
-                  size={15}
-                />
-                <Text style={styles.acceptContentText}>
+                <Pressable
+                  onPress={() => {
+                    setAccept2(!accept2);
+                  }}
+                >
+                  <View style={{ marginTop: 4 }}>
+                    <WithLocalSvg
+                      asset={!accept2 ? Checkmark : CheckmarkAfter}
+                    />
+                  </View>
+                </Pressable>
+                <Text
+                  style={[
+                    styles.acceptContentText,
+                    {
+                      color: accept2
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                    },
+                  ]}
+                >
                   [필수] 개인정보 수집 및 이용
                 </Text>
               </View>
-              <Pressable style={{ marginRight: 42 }} onPress={naviAgreeInfo}>
-                <Ionicons
-                  name="chevron-forward"
-                  color={GlobalStyles.colors.gray05}
-                  size={20}
-                />
+              <Pressable style={{ marginRight: 35 }} onPress={naviAgreeInfo}>
+                <WithLocalSvg asset={Right} />
               </Pressable>
             </View>
           </View>
@@ -306,7 +353,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 600,
     lineHeight: 22,
-    marginLeft: 21,
+    marginLeft: 19,
     color: GlobalStyles.colors.gray05,
   },
   acceptContentText: {
