@@ -15,7 +15,7 @@ import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
-import { reToken } from "../utill/auth";
+import { deleteUser, reToken } from "../utill/auth";
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -76,6 +76,16 @@ function MyPageScreen({ navigation }) {
   function UserScreen() {
     function logoutHandler() {
       authCtx.logout();
+    }
+
+    async function deleteHandler() {
+      try {
+        const response = await deleteUser();
+        console.log("삭제?" + response);
+      } catch (error) {
+        console.log("error발생" + error);
+        // console.log(error)
+      }
     }
 
     function navi() {
@@ -196,7 +206,7 @@ function MyPageScreen({ navigation }) {
               </View>
               <View style={styles.border}></View>
             </View>
-            <View style={{ marginBottom: 33 }}>
+            <View>
               <Pressable onPress={logoutHandler}>
                 <Text
                   style={[
@@ -205,6 +215,19 @@ function MyPageScreen({ navigation }) {
                   ]}
                 >
                   로그아웃
+                </Text>
+              </Pressable>
+              <View style={styles.border}></View>
+            </View>
+            <View style={{ marginBottom: 33 }}>
+              <Pressable onPress={deleteHandler}>
+                <Text
+                  style={[
+                    styles.contentTitle,
+                    { borderBottomWidth: 1, width: 61 },
+                  ]}
+                >
+                  회원 탈퇴
                 </Text>
               </Pressable>
             </View>
