@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
-import { Text, Pressable, StyleSheet, View } from "react-native";
-import ButtonOneThird from "../components/ui/ButtonOneThird";
-
+import { Text, Pressable, StyleSheet, View, ScrollView } from "react-native";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
-function DetailLectureScreen({ lectureId, screenBackButton }) {
+import ButtonOneThird from "../components/ui/ButtonOneThird";
+import { getProfile } from "../utill/http";
+import { GlobalStyles } from "../constants/styles";
+
+function DetailLectureScreen({ lectureId, screenBackButton, route }) {
+  const navigation = useNavigation();
+  const [data, setData] = useState([]);
   const [lectureBasicInfo, setLectureBasicInfo] = useState({
     city: "",
     enrollEndDate: "",
@@ -31,9 +36,19 @@ function DetailLectureScreen({ lectureId, screenBackButton }) {
     requirement: "",
   });
 
+  async function profileHandler() {
+    try {
+      const response = await getProfile({ id: 7 });
+      setData(response);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     axios
-      .get(`http://10.0.2.2:8080/lectures/${lectureId}`, {
+      .get(`http://10.0.2.2:8080/lectures/${route}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -49,9 +64,11 @@ function DetailLectureScreen({ lectureId, screenBackButton }) {
         console.log("에러");
         console.log(error);
       });
+
+    profileHandler();
   }, []);
 
-  const ApplyingTutor = (role) => {
+  const applyingTutor = (role) => {
     axios
       .post(
         `http://10.0.2.2:8080/users-lectures/lectures/${lectureId}`,
@@ -78,28 +95,38 @@ function DetailLectureScreen({ lectureId, screenBackButton }) {
 
   return (
     <>
-      <Pressable onPress={screenBackButton}>
-        <Text>백버튼</Text>
-      </Pressable>
-      <Text>{lectureBasicInfo.subTitle}</Text>
-      <Text>강사 급여</Text>
-      <Text>주강사: {lectureBasicInfo.mainPayment}</Text>
-      <Text>보조강사: {lectureBasicInfo.subPayment}</Text>
-      <View style={styles.buttonContainer}>
-        {/* 튜터 역할 [MAIN_TUTOR, SUB_TUTOR, STAFF] */}
-        <ButtonOneThird
-          onPress={() => ApplyingTutor("MAIN_TUTOR")}
-          text="주 강사 신청"
-        />
-        <ButtonOneThird
-          onPress={() => ApplyingTutor("SUB_TUTOR")}
-          text="보조 강사 신청"
-        />
-        <ButtonOneThird
-          onPress={() => ApplyingTutor("STAFF")}
-          text="스태프 신청"
-        />
-      </View>
+      <ScrollView>
+        <Pressable onPress={() => navigation.goBack()}>
+          <Text>백버튼</Text>
+        </Pressable>
+        <Text>{lectureBasicInfo.subTitle}</Text>
+        <Text>강사 급여</Text>
+        <Text>주강사: {lectureBasicInfo.mainPayment}</Text>
+        <Text>보조강사: {lectureBasicInfo.subPayment}</Text>
+
+        <View style={styles.buttonContainer}>
+          {/* 튜터 역할 [MAIN_TUTOR, SUB_TUTOR, STAFF] */}
+          <ButtonOneThird
+            onPress={() => applyingTutor("MAIN_TUTOR")}
+            text="주 강사 신청"
+          />
+          <ButtonOneThird
+            onPress={() => applyingTutor("SUB_TUTOR")}
+            text="보조 강사 신청"
+          />
+          <ButtonOneThird
+            onPress={() => applyingTutor("STAFF")}
+            text="스태프 신청"
+          />
+        </View>
+      </ScrollView>
+      {data.role === "ROLE_ADMIN" ? (
+        <Pressable onPress>
+          <View style={styles.BottomButton}></View>
+        </Pressable>
+      ) : (
+        ""
+      )}
     </>
   );
 }
@@ -108,9 +135,18 @@ export default DetailLectureScreen;
 
 const styles = StyleSheet.create({
   buttonContainer: {
+    flex: 1,
     height: 40,
     justifyContent: "space-between",
     paddingHorizontal: 20,
     flexDirection: "row",
+  },
+  BottomButton: {
+    position: "absolute",
+    height: 56,
+    width: 56,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+    bottom: 27,
+    right: 20,
   },
 });
