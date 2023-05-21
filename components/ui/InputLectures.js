@@ -435,8 +435,6 @@ function InputLectures() {
             </View>
             <Pressable
               onPress={creatingLecture}
-              // onPress={consoleTest}
-              // onPress={(text) => handleSingeInputChange(text)}
               style={{ backgroundColor: "blue", height: 20, width: 20 }}
             />
           </ScrollView>
