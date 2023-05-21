@@ -188,6 +188,39 @@ function AuthStack() {
   );
 }
 
+function HomeNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        // headerShown: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+        },
+      }}
+    >
+      <Stack.Screen
+        name="HomePage"
+        component={HomeScreen}
+        options={{ title: "강의 홈" }}
+      />
+      <Stack.Screen
+        name="DetailLecture"
+        component={DetailLectureScreen}
+        options={{ title: "강의 상세" }}
+      />
+      <Stack.Screen
+        name="NewLecture"
+        component={NewLectureScreen}
+        options={{ title: "강의 상세" }}
+      />
+
+    </Stack.Navigator>
+  );
+}
+
 function MyPageNavigator() {
   return (
     <Stack.Navigator
@@ -225,6 +258,8 @@ function MyPageNavigator() {
     </Stack.Navigator>
   );
 }
+
+
 
 // icon 바꿀 예정
 // 로그인 후 화면
@@ -264,55 +299,56 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Home"
-        children={() =>
-          lectureIdState[1] === "home" ? (
-            <HomeScreen
-              lectureIdProps={detailLectureVisibleHandler}
-              createLectureVisibleProps={createLectureVisibleHandler}
-            />
-          ) : lectureIdState[1] === "detailLecture" ? (
-            <DetailLectureScreen
-              screenBackButton={screenBackHandler}
-              lectureId={lectureIdState[0]}
-            />
-          ) : (
-            <NewLectureScreen screenBackButton={screenBackHandler} />
-          )
-        }
+        component={HomeNavigator}
+        // children={() =>
+        //   lectureIdState[1] === "home" ? (
+        //     <HomeScreen
+        //       lectureIdProps={detailLectureVisibleHandler}
+        //       createLectureVisibleProps={createLectureVisibleHandler}
+        //     />
+        //   ) : lectureIdState[1] === "detailLecture" ? (
+        //     <DetailLectureScreen
+        //       screenBackButton={screenBackHandler}
+        //       lectureId={lectureIdState[0]}
+        //     />
+        //   ) : (
+        //     <NewLectureScreen screenBackButton={screenBackHandler} />
+        //   )
+        // }
         options={{
-          headerShown: headerVisible,
-          header: () => {
-            return (
-              <View style={styles.HomeHeader}>
-                <View style={styles.headerTopContainer}>
-                  <Image
-                    source={require("./assets/doroLogoMain.png")}
-                    style={styles.Logo}
-                  />
-                  <Image
-                    source={require("./assets/icons/alarm_after.png")}
-                    style={styles.iconSize}
-                  />
-                </View>
-                <View style={styles.noticeContainer}>
-                  <Image
-                    source={require("./assets/icons/megaphone.png")}
-                    style={styles.iconSize}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 16,
-                      fontStyle: GlobalStyles.gray01,
-                      fontSize: 15,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    메이커 스페이스 사용 안내
-                  </Text>
-                </View>
-              </View>
-            );
-          },
+          headerShown: false,
+          // header: () => {
+          //   return (
+          //     <View style={styles.HomeHeader}>
+          //       <View style={styles.headerTopContainer}>
+          //         <Image
+          //           source={require("./assets/doroLogoMain.png")}
+          //           style={styles.Logo}
+          //         />
+          //         <Image
+          //           source={require("./assets/icons/alarm_after.png")}
+          //           style={styles.iconSize}
+          //         />
+          //       </View>
+          //       <View style={styles.noticeContainer}>
+          //         <Image
+          //           source={require("./assets/icons/megaphone.png")}
+          //           style={styles.iconSize}
+          //         />
+          //         <Text
+          //           style={{
+          //             marginLeft: 16,
+          //             fontStyle: GlobalStyles.gray01,
+          //             fontSize: 15,
+          //             fontWeight: "bold",
+          //           }}
+          //         >
+          //           메이커 스페이스 사용 안내
+          //         </Text>
+          //       </View>
+          //     </View>
+          //   );
+          // },
           // title: "홈",
           tabBarIcon: ({ color }) => (
             <Ionicons name="home" color={color} size={24} />

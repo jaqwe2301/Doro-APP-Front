@@ -13,6 +13,7 @@ import {
   ScrollView,
 } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
+import { useNavigation } from "@react-navigation/native";
 
 import axios from "axios";
 
@@ -23,6 +24,7 @@ import { getProfile } from "../utill/http";
 const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
   const [data, setData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
+  const navigation = useNavigation();
 
   async function profileHandler() {
     try {
@@ -126,7 +128,12 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
                 subTitle={filteringItem.subTitle}
                 date={filteringItem.lectureDates}
                 time={filteringItem.time}
-                lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+                lectureIdHandler={() =>
+                  navigation.navigate("DetailLecture", {
+                    data: filteringItem.id,
+                  })
+                }
                 id={filteringItem.id}
                 dateTypeValue={dateTypeValue}
                 mainTutor={filteringItem.mainTutor}
