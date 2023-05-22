@@ -195,3 +195,18 @@ export async function deleteUser() {
 
   return response;
 }
+
+export async function updateUserImage({ formData }) {
+  try {
+    const response = await instance.patch("/users/profile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
