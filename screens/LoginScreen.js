@@ -7,6 +7,7 @@ import {
   Pressable,
   Alert,
   Modal,
+  ScrollView,
 } from "react-native";
 import Input from "../components/ui/Input";
 import { GlobalStyles } from "../constants/styles";
@@ -20,6 +21,10 @@ import ButtonBig from "../components/ui/ButtonBig";
 function LoginScreen({ navigation }) {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+
+  const [borderColor1, setBorderColor1] = useState(GlobalStyles.colors.gray04);
+  const [borderColor2, setBorderColor2] = useState(GlobalStyles.colors.gray04);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
@@ -45,7 +50,9 @@ function LoginScreen({ navigation }) {
       setHeaderRole(decoded.roles[0].authority);
       setHeaderId(decoded.id);
     } catch (error) {
-      Alert.alert("로그인 실패", "could not ");
+      setBorderColor1(GlobalStyles.colors.red);
+      setIsVisible(true);
+      setBorderColor2(GlobalStyles.colors.red);
       setIsAuthenticating(false);
     }
   }
@@ -61,54 +68,70 @@ function LoginScreen({ navigation }) {
           borderBottomWidth: 0.5,
         }}
       />
-      <View style={styles.content}>
-        <View>
-          <Input title="아이디" value={id} onChangeText={handleId}></Input>
+      <ScrollView>
+        <View style={styles.content}>
+          <View>
+            <Input
+              title="아이디"
+              value={id}
+              onChangeText={handleId}
+              borderColor={borderColor1}
+              setBorderColor={setBorderColor1}
+            ></Input>
+            {isVisible && (
+              <Text style={styles.failText}>아이디가 틀렸습니다</Text>
+            )}
+          </View>
+          <View style={{ marginTop: 30 }}>
+            <Input
+              title="비밀번호"
+              value={pw}
+              onChangeText={handlePw}
+              secureTextEntry={true}
+              borderColor={borderColor2}
+              setBorderColor={setBorderColor2}
+            ></Input>
+            {isVisible && (
+              <Text style={styles.failText}>비밀번호가 틀렸습니다</Text>
+            )}
+          </View>
         </View>
-        <View style={{ marginTop: 14 }}>
-          <Input
-            title="비밀번호"
-            value={pw}
-            onChangeText={handlePw}
-            secureTextEntry={true}
-          ></Input>
+        <View style={styles.button}>
+          <ButtonBig
+            onPress={loginHandler}
+            text="로그인"
+            style={GlobalStyles.colors.primaryDefault}
+          />
         </View>
-      </View>
-      <View style={styles.button}>
-        <ButtonBig
-          onPress={loginHandler}
-          text="로그인"
-          style={GlobalStyles.colors.primaryDefault}
-        />
-      </View>
-      <View style={styles.searchTextContainer}>
-        <Text
-          onPress={() => {
-            navigationScreen({ title: "searchId" });
-          }}
-          style={styles.searchText}
-        >
-          아이디 찾기
-        </Text>
-        <View style={styles.slash}></View>
-        <Text
-          onPress={() => {
-            navigationScreen({ title: "searchPw" });
-          }}
-          style={styles.searchText}
-        >
-          비밀번호 찾기
-        </Text>
-        <View style={styles.slash}></View>
-        <Text
-          onPress={() => {
-            navigationScreen({ title: "signUp" });
-          }}
-          style={styles.searchText}
-        >
-          회원가입
-        </Text>
-      </View>
+        <View style={styles.searchTextContainer}>
+          <Text
+            onPress={() => {
+              navigationScreen({ title: "searchId" });
+            }}
+            style={styles.searchText}
+          >
+            아이디 찾기
+          </Text>
+          <View style={styles.slash}></View>
+          <Text
+            onPress={() => {
+              navigationScreen({ title: "searchPw" });
+            }}
+            style={styles.searchText}
+          >
+            비밀번호 찾기
+          </Text>
+          <View style={styles.slash}></View>
+          <Text
+            onPress={() => {
+              navigationScreen({ title: "signUp" });
+            }}
+            style={styles.searchText}
+          >
+            회원가입
+          </Text>
+        </View>
+      </ScrollView>
       {/* </View> */}
     </View>
   );
@@ -117,7 +140,7 @@ function LoginScreen({ navigation }) {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F4F4F4" },
+  container: { flex: 1, backgroundColor: "white" },
 
   content: { marginTop: 58 },
   button: {
@@ -151,6 +174,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 30,
   },
   searchText: {
     color: GlobalStyles.colors.gray01,
@@ -163,5 +187,15 @@ const styles = StyleSheet.create({
     height: 13,
     backgroundColor: GlobalStyles.colors.gray05,
     marginHorizontal: 18,
+  },
+  failText: {
+    color: GlobalStyles.colors.red,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 17,
+    marginHorizontal: 25,
+    marginTop: 3,
+    position: "absolute",
+    top: 73,
   },
 });
