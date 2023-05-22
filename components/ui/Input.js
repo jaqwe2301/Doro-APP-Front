@@ -1,16 +1,25 @@
 import { View, Text, TextInput, StyleSheet, Image } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
-function Input({ title, value, onChangeText, secureTextEntry }) {
+function Input({
+  title,
+  value,
+  onChangeText,
+  secureTextEntry,
+  borderColor,
+  setBorderColor,
+}) {
   return (
     <View>
       <Text style={styles.text}>{title}</Text>
-      <View style={styles.input}>
+      <View style={[styles.input, { borderColor: borderColor }]}>
         <TextInput
           style={styles.inputText}
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={secureTextEntry}
+          onFocus={() => setBorderColor(GlobalStyles.colors.secondaryAccent)}
+          onBlur={() => setBorderColor(GlobalStyles.colors.gray04)}
         ></TextInput>
       </View>
     </View>
@@ -30,8 +39,7 @@ const styles = StyleSheet.create({
   input: {
     height: 47,
     marginHorizontal: 20,
-    borderColor: GlobalStyles.colors.gray04,
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 5.41,
     justifyContent: "center",
   },
