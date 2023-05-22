@@ -30,12 +30,20 @@ import Down from "../../assets/down.svg";
 function Code() {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
+  const [inputGeneration, setInputGeneration] = useState(0);
 
   const [visible, setVisible] = useState(false);
+  const [visibleCode, setVisibleCode] = useState(false);
   const [display1, setDispaly1] = useState("none");
   const [display2, setDispaly2] = useState("none");
-  const [select, setSelect] = useState("가입 유형을 선택해주세요");
+  const [cdisplay3, setCDisplay3] = useState("none");
+  const [cdisplay4, setCDisplay4] = useState("none");
+  const [cdisplay1, setCDisplay1] = useState("none");
+  const [cdisplay2, setCDisplay2] = useState("none");
+  const [select, setSelect] = useState("가입 유형을 선택하세요");
+  const [selectCode, setSelectCode] = useState("기수를 선택하세요");
   const [statusStyle, setStatusStyle] = useState(styles.textModal);
+  const [statusGStyle, setStatusGStyle] = useState(styles.textModal);
 
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
@@ -52,20 +60,30 @@ function Code() {
 
   useEffect(() => {
     setlbtnColor(
-      inputRole !== "" && inputCode !== "" && accept1 && accept2
+      inputRole !== "" &&
+        inputCode !== "" &&
+        accept1 &&
+        accept2 &&
+        inputGeneration
         ? GlobalStyles.colors.primaryDefault
         : GlobalStyles.colors.gray05
     );
-  }, [accept1, accept2, inputCode, inputRole]);
+  }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
 
   function navigateId() {
-    if (inputRole !== "" && inputCode !== "" && accept1 && accept2) {
+    if (
+      inputRole !== "" &&
+      inputCode !== "" &&
+      accept1 &&
+      accept2 &&
+      inputGeneration
+    ) {
       signUp({
         account: signData.account,
         birth: signData.birth,
         doroAuth: inputCode,
         gender: "FEMALE",
-        generation: 1,
+        generation: inputGeneration,
         major: signData.major,
         name: signData.name,
         password: signData.password,
@@ -95,6 +113,31 @@ function Code() {
     }
   }
 
+  function generationSelect1() {
+    setCDisplay1("flex");
+    setCDisplay2("none");
+    setCDisplay3("none");
+    setCDisplay4("none");
+  }
+  function generationSelect2() {
+    setCDisplay1("none");
+    setCDisplay2("flex");
+    setCDisplay3("none");
+    setCDisplay4("none");
+  }
+  function generationSelect3() {
+    setCDisplay1("none");
+    setCDisplay2("none");
+    setCDisplay3("flex");
+    setCDisplay4("none");
+  }
+  function generationSelect4() {
+    setCDisplay1("none");
+    setCDisplay2("none");
+    setCDisplay3("none");
+    setCDisplay4("flex");
+  }
+
   function okayBtn() {
     if (display1 === "flex" || display2 === "flex") {
       setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
@@ -107,6 +150,34 @@ function Code() {
       setVisible(!visible);
     }
   }
+  function okayBtn2() {
+    if (
+      cdisplay1 === "flex" ||
+      cdisplay2 === "flex" ||
+      cdisplay3 === "flex" ||
+      cdisplay4 === "flex"
+    ) {
+      if (cdisplay1 === "flex") {
+        setInputGeneration(0);
+        setSelectCode("0기");
+      } else if (cdisplay2 === "flex") {
+        setInputGeneration(1);
+        setSelectCode("1기");
+      } else if (cdisplay3 === "flex") {
+        setInputGeneration(2);
+        setSelectCode("2기");
+      } else {
+        setInputGeneration(3);
+        setSelectCode("3기");
+      }
+      setStatusGStyle(styles.textInputText);
+      setFlex1(9);
+
+      setVisibleCode(!visibleCode);
+    } else {
+      setVisibleCode(!visibleCode);
+    }
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -115,6 +186,16 @@ function Code() {
         <ScrollView>
           <View style={styles.textContainer}>
             <InputText text="기수를 입력해 주세요." />
+          </View>
+          <View style={styles.inputContainer}>
+            <Pressable onPress={() => setVisibleCode(!visibleCode)}>
+              <View style={styles.textInput}>
+                <Text style={statusGStyle}>{selectCode}</Text>
+                <View style={{ marginRight: 13 }}>
+                  <WithLocalSvg asset={Down} />
+                </View>
+              </View>
+            </Pressable>
           </View>
           <View style={styles.textContainer}>
             <InputText text="가입코드를 입력해 주세요." />
@@ -301,6 +382,85 @@ function Code() {
                   text="확인"
                   style={GlobalStyles.colors.primaryDefault}
                   onPress={okayBtn}
+                />
+              </View>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={visibleCode}
+        statusBarTranslucent={true}
+        onRequestClose={() => setVisibleCode(!visibleCode)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setVisibleCode(!visibleCode)}
+        >
+          <Pressable>
+            <View
+              style={{
+                backgroundColor: "white",
+                height: 357,
+                justifyContent: "space-between",
+
+                borderTopEndRadius: 5.41,
+                borderTopStartRadius: 5.41,
+              }}
+            >
+              <View>
+                <View style={styles.statusTitleContainer}>
+                  <View style={styles.iconContainer}>
+                    <Pressable onPress={() => setVisibleCode(!visibleCode)}>
+                      <Ionicons name="close-outline" size={40} />
+                    </Pressable>
+                  </View>
+                  <Text style={styles.statusTitle}>가입 유형</Text>
+                </View>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={generationSelect1}
+                >
+                  <Text style={styles.statusText}>0기</Text>
+                  <View style={[styles.iconContainer2, { display: cdisplay1 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={generationSelect2}
+                >
+                  <Text style={styles.statusText}>1기</Text>
+                  <View style={[styles.iconContainer2, { display: cdisplay2 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={generationSelect3}
+                >
+                  <Text style={styles.statusText}>2기</Text>
+                  <View style={[styles.iconContainer2, { display: cdisplay3 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={generationSelect4}
+                >
+                  <Text style={styles.statusText}>3기</Text>
+                  <View style={[styles.iconContainer2, { display: cdisplay4 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+              </View>
+              <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                <ButtonBig
+                  text="확인"
+                  style={GlobalStyles.colors.primaryDefault}
+                  onPress={okayBtn2}
                 />
               </View>
             </View>
