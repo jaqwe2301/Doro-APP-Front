@@ -9,7 +9,7 @@ import { useContext, useState } from "react";
 import { authPhoneNum, changePassword, findAccount } from "../utill/auth";
 import ButtonBig from "../components/ui/ButtonBig";
 import { verifyauthPhoneNum } from "../utill/auth";
-import Timer from "../components/ui/Timer";
+import Timer from "../components/feat/Timer";
 
 function SearchPW() {
   const [isVisible, setIsVisible] = useState(false);

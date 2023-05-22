@@ -13,7 +13,8 @@ import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../store/header-context";
 import { getAnnouncement, getNotification } from "../utill/http";
 import moment from "moment";
-import { Ionicons } from "@expo/vector-icons";
+import { WithLocalSvg } from "react-native-svg";
+import Add from "../assets/addNotice.svg";
 
 function NoticeScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
@@ -33,15 +34,15 @@ function NoticeScreen({ navigation }) {
     notiHandler();
   }, []);
 
-  navigation.setOptions({
-    headerRight: () => {
-      return (
-        <Pressable onPress={() => navigation.navigate("alarm")}>
-          <Ionicons name="home-outline" size={20} />
-        </Pressable>
-      );
-    },
-  });
+  // navigation.setOptions({
+  //   headerRight: () => {
+  //     return (
+  //       <Pressable onPress={() => navigation.navigate("alarm")}>
+  //         <Ionicons name="home-outline" size={20} />
+  //       </Pressable>
+  //     );
+  //   },
+  // });
 
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });
@@ -75,7 +76,8 @@ function NoticeScreen({ navigation }) {
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable onPress={naviAddHandler}>
           <View style={styles.plusBtn}>
-            <Image source={require("../assets/plus.png")} />
+            {/* <Image source={require("../assets/plus.png")} /> */}
+            <WithLocalSvg asset={Add} />
           </View>
         </Pressable>
       ) : (
@@ -120,9 +122,7 @@ const styles = StyleSheet.create({
   },
   plusBtn: {
     position: "absolute",
-    right: 20,
-    width: 56,
-    height: 56,
-    bottom: 16,
+    right: 16,
+    bottom: 12,
   },
 });

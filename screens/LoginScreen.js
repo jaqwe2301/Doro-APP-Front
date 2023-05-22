@@ -15,6 +15,7 @@ import { login } from "../utill/auth";
 import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 import jwtDecode from "jwt-decode";
+import ButtonBig from "../components/ui/ButtonBig";
 
 function LoginScreen({ navigation }) {
   const [id, setId] = useState("");
@@ -72,35 +73,43 @@ function LoginScreen({ navigation }) {
             secureTextEntry={true}
           ></Input>
         </View>
-        <Pressable onPress={loginHandler}>
-          <Text style={styles.button}>로그인</Text>
-        </Pressable>
-        <View style={styles.searchText}>
-          <Text
-            onPress={() => {
-              navigationScreen({ title: "searchId" });
-            }}
-          >
-            아이디 찾기
-          </Text>
-          <View style={styles.slash}></View>
-          <Text
-            onPress={() => {
-              navigationScreen({ title: "searchPw" });
-            }}
-          >
-            비밀번호 찾기
-          </Text>
-          <View style={styles.slash}></View>
-          <Text
-            onPress={() => {
-              navigationScreen({ title: "signUp" });
-            }}
-          >
-            회원가입
-          </Text>
-        </View>
       </View>
+      <View style={styles.button}>
+        <ButtonBig
+          onPress={loginHandler}
+          text="로그인"
+          style={GlobalStyles.colors.primaryDefault}
+        />
+      </View>
+      <View style={styles.searchTextContainer}>
+        <Text
+          onPress={() => {
+            navigationScreen({ title: "searchId" });
+          }}
+          style={styles.searchText}
+        >
+          아이디 찾기
+        </Text>
+        <View style={styles.slash}></View>
+        <Text
+          onPress={() => {
+            navigationScreen({ title: "searchPw" });
+          }}
+          style={styles.searchText}
+        >
+          비밀번호 찾기
+        </Text>
+        <View style={styles.slash}></View>
+        <Text
+          onPress={() => {
+            navigationScreen({ title: "signUp" });
+          }}
+          style={styles.searchText}
+        >
+          회원가입
+        </Text>
+      </View>
+      {/* </View> */}
     </View>
   );
 }
@@ -108,41 +117,46 @@ function LoginScreen({ navigation }) {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, backgroundColor: "#F4F4F4" },
 
-  content: { flex: 1, alignItems: "center", marginTop: 58 },
+  content: { marginTop: 58 },
   button: {
-    width: 332,
-    height: 49,
-    borderRadius: 5.41,
+    marginHorizontal: 20,
+    // width: "100%",
+    // height: 49,
+    // borderRadius: 5.41,
     marginTop: 58,
+    // justifyContent: "center",
+    // alignItems: "center",
+    // backgroundColor: GlobalStyles.colors.primaryDefault,
+    // shadowColor: "#000000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 5.41,
+    // elevation: 3,
+  },
+
+  buttonText: {
     textAlign: "center",
     textAlignVertical: "center",
     color: "white",
     fontSize: 17,
     fontWeight: 600,
-    backgroundColor: GlobalStyles.colors.primaryDefault,
-    shadowColor: "#000000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5.41,
-    elevation: 3,
   },
-
-  buttonText: {
-    color: "white",
-  },
-  searchText: {
+  searchTextContainer: {
     marginTop: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  searchText: {
     color: GlobalStyles.colors.gray01,
     fontSize: 15,
     fontWeight: 400,
+    lineHeight: 20,
   },
   slash: {
     width: 1,

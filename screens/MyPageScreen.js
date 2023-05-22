@@ -108,14 +108,24 @@ function MyPageScreen({ navigation }) {
     } else {
       const status =
         data.degree.studentStatus === "ATTENDING" ? "재학" : "휴학";
+      console.log(data.profileImg);
       return (
         <View style={styles.container}>
           <ScrollView>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                style={styles.image}
-                source={require("../assets/profile.png")}
-              />
+              {data.profileImg !== "" ? (
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri: data.profileImg,
+                  }}
+                />
+              ) : (
+                <Image
+                  style={styles.image}
+                  source={require("../assets/profile.png")}
+                />
+              )}
               <View style={styles.statusContainer}>
                 <View style={styles.textContainer}>
                   <Text style={styles.text}>강의 신청</Text>
@@ -247,8 +257,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   image: {
-    width: 99,
-    marginLeft: 20,
+    width: 78,
+    margin: 11,
+    height: 78,
+    borderRadius: 50,
+    marginLeft: 31,
   },
   text: {
     fontSize: 12,

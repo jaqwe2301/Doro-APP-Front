@@ -1,7 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { useState, useContext, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  getFocusedRouteNameFromRoute,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GlobalStyles } from "./constants/styles";
@@ -39,6 +42,17 @@ import jwtDecode from "jwt-decode";
 import HeaderContextProvider, { HeaderContext } from "./store/header-context";
 import EditNoticeScreen from "./screens/EditNoticeScreen";
 import AlarmScreen from "./screens/AlarmScreen";
+import { WithLocalSvg } from "react-native-svg";
+import DoroHorizontal from "./assets/doroHorizontal.svg";
+import Home from "./assets/home.svg";
+import Main from "./assets/main.svg";
+import MainFill from "./assets/main_fill.svg";
+import Megaphone from "./assets/megaphone.svg";
+import MegaphoneFill from "./assets/megaphone_fill.svg";
+import Tray from "./assets/tray.svg";
+import TrayFill from "./assets/tray_fill.svg";
+import Profile from "./assets/profile.svg";
+import ProfileFill from "./assets/profile_fill.svg";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -47,13 +61,12 @@ function LogoTitle() {
   return (
     <View
       style={{
-        height: 190,
+        height: 174.81,
       }}
     >
-      <Image
-        style={{ width: 174, height: 52, marginTop: 100, marginLeft: 20 }}
-        source={require("./assets/doroLogo.png")}
-      />
+      <View style={{ marginTop: 86.81, marginLeft: 20 }}>
+        <WithLocalSvg asset={DoroHorizontal} />
+      </View>
     </View>
   );
 }
@@ -84,9 +97,9 @@ function AuthStack() {
           name="login"
           component={LoginScreen}
           options={{
-            headerTitle: (props) => <LogoTitle {...props} />,
+            header: (props) => <LogoTitle {...props} />,
             headerBackVisible: false,
-            headerTitleAlign: "left",
+            // headerTitleAlign: "left",
           }}
         />
         <Stack.Screen
@@ -259,7 +272,7 @@ function NoticeNavigator() {
         options={{
           title: "공지사항",
           headerRight: () => {
-            return <Ionicons name="home-outline" size={20} />;
+            return <WithLocalSvg asset={Home} />;
           },
           headerBackVisible: false,
         }}
@@ -374,9 +387,12 @@ function BottomTabNavigator() {
             );
           },
           // title: "홈",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home" color={color} size={24} />
-          ),
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Main} />
+            ) : (
+              <WithLocalSvg asset={MainFill} />
+            ),
           tabBarLabelStyle: {
             marginBottom: 9,
             fontSize: 10,
@@ -388,27 +404,52 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Notice"
         component={NoticeNavigator}
-        options={{
+        options={({ route }) => ({
           title: "공지사항",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="notifications-outline" color={color} size={24} />
-          ),
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Megaphone} />
+            ) : (
+              <WithLocalSvg asset={MegaphoneFill} />
+            ),
+          // tabBarLabelStyle: {
+          //   marginBottom: 9,
+          //   fontSize: 10,
+          //   fontWeight: 600,
+          //   marginTop: -10,
+          // },
+
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+
+            if (
+              routeName === "noticeDetail" ||
+              routeName === "noticeAdd" ||
+              routeName === "noticeEdit"
+            ) {
+              return { display: "none" };
+            }
+            return { height: 60 };
+          })(route),
           tabBarLabelStyle: {
             marginBottom: 9,
             fontSize: 10,
-            fontWeight: 600,
+            fontWeight: "600",
             marginTop: -10,
           },
-        }}
+        })}
       />
       <BottomTab.Screen
         name="History"
         component={HistoryScreen}
         options={{
           title: "신청 내역",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="file-tray-outline" color={color} size={24} />
-          ),
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Tray} />
+            ) : (
+              <WithLocalSvg asset={TrayFill} />
+            ),
           tabBarLabelStyle: {
             marginBottom: 9,
             fontSize: 10,
@@ -436,9 +477,12 @@ function BottomTabNavigator() {
               </View>
             );
           },
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="person" color={color} size={24} />
-          ),
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Profile} />
+            ) : (
+              <WithLocalSvg asset={ProfileFill} />
+            ),
           tabBarLabelStyle: {
             justifyContent: "center",
             marginBottom: 9,

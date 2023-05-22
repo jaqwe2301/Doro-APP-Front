@@ -13,11 +13,12 @@ import InputLine from "../components/ui/InputLine";
 import { useContext, useEffect, useState } from "react";
 import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { getProfile2, updateProfile } from "../utill/http";
+import { getProfile2, updateProfile, updateUserImage } from "../utill/http";
 import { Ionicons } from "@expo/vector-icons";
 import ButtonBig from "../components/ui/ButtonBig";
 import { HeaderContext } from "../store/header-context";
-import Timer from "../components/ui/Timer";
+import Timer from "../components/feat/Timer";
+import * as ImagePicker from "expo-image-picker";
 
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
@@ -41,7 +42,8 @@ function ProfileEdit({ navigation, route }) {
   const [studentStatus, setStudentStatus] = useState(data.degree.studentStatus);
   // const navigation = useNavigation();
 
-  const status = studentStatus === "ATTENDING" ? "재학" : "휴학";
+  const status1 = studentStatus === "ATTENDING" ? "재학" : "휴학";
+  const formData = new FormData();
 
   const handlePhoneChange = (text) => {
     setphoneNum(text);
@@ -62,6 +64,14 @@ function ProfileEdit({ navigation, route }) {
 
   async function completeHandler() {
     try {
+      if (imageUrl !== "") {
+        try {
+          const response = await updateUserImage({ formData: formData });
+          console.log(response);
+        } catch (error) {
+          console.log(error + "사진 못보냄");
+        }
+      }
       const success = await updateProfile({
         generation: generation,
         major: major,
@@ -162,16 +172,61 @@ function ProfileEdit({ navigation, route }) {
     setGeneration(text);
   };
 
+  //camera
+  const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
+  const [imageUrl, setImageUrl] = useState("");
+
+  const uploadImage = async () => {
+    if (!statusCamera?.granted) {
+      const permission = await requestPermission();
+      if (!permission.granted) {
+        return null;
+      }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+    console.log(!result.canceled);
+
+    if (!result.canceled) {
+      const filename = result.assets[0].uri.split("/").pop();
+      console.log(filename);
+      formData.append("images", {
+        uri: result.assets[0].uri,
+        type: "multipart/form-data",
+        name: filename,
+      });
+      setImageUrl(result.assets[0].uri);
+    } else {
+      return null;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={require("../assets/profile.png")}
-          />
-          <View style={{ marginTop: 8 }}>
-            <Pressable>
+          {imageUrl !== "" ? (
+            <Image
+              style={styles.image}
+              source={{
+                uri: imageUrl,
+              }}
+            />
+          ) : (
+            <Image
+              style={styles.image}
+              source={require("../assets/profile.png")}
+            />
+          )}
+          <View style={{ marginTop: 4 }}>
+            <Pressable onPress={uploadImage}>
               <Text style={styles.imgEditText}>사진 수정</Text>
             </Pressable>
           </View>
@@ -234,7 +289,7 @@ function ProfileEdit({ navigation, route }) {
             <Text style={styles.title}>재학 유무</Text>
             <Pressable onPress={() => setVisible(!visible)}>
               <View style={styles.statusContainer2}>
-                <Text style={styles.statusText2}>{status}</Text>
+                <Text style={styles.statusText2}>{status1}</Text>
               </View>
             </Pressable>
           </View>
@@ -359,8 +414,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   image: {
-    width: 99,
-    height: 99,
+    width: 78,
+    margin: 11,
+    height: 78,
+
+    borderRadius: 50,
   },
   imgEditText: {
     color: GlobalStyles.colors.primaryDefault,
