@@ -10,7 +10,7 @@ import { authPhoneNum, verifyauthPhoneNum } from "../../utill/auth";
 import InputData from "../ui/InputData";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
-import Timer from "../ui/Timer";
+import Timer from "../feat/Timer";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
