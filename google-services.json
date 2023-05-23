@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "772279583725",
+    "project_id": "doro-app-project",
+    "storage_bucket": "doro-app-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772279583725:android:604e32490f604ea1471de4",
+        "android_client_info": {
+          "package_name": "com.doro.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "772279583725-0uvcb91grs9lo0jpl5ehe3hae4mnr8or.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO-d7T1H2FIU8oxwNNimR3j7aG-5nyvvM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "772279583725-0uvcb91grs9lo0jpl5ehe3hae4mnr8or.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
