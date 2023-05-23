@@ -7,6 +7,7 @@ import {
   Pressable,
   Alert,
   Modal,
+  ScrollView,
 } from "react-native";
 import Input from "../components/ui/Input";
 import { GlobalStyles } from "../constants/styles";
@@ -15,12 +16,18 @@ import { login } from "../utill/auth";
 import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 import jwtDecode from "jwt-decode";
+import ButtonBig from "../components/ui/ButtonBig";
 
 function LoginScreen({ navigation }) {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+
+  const [borderColor1, setBorderColor1] = useState(GlobalStyles.colors.gray04);
+  const [borderColor2, setBorderColor2] = useState(GlobalStyles.colors.gray04);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const { headerId, setHeaderId } = useContext(HeaderContext);
   const authCtx = useContext(AuthContext);
 
   const handleId = (text) => {
@@ -38,9 +45,14 @@ function LoginScreen({ navigation }) {
       console.log(token.data);
       authCtx.authenticate(token.headers.authorization, token.data);
       const decoded = jwtDecode(token.headers.authorization);
+      console.log(decoded);
+
       setHeaderRole(decoded.roles[0].authority);
+      setHeaderId(decoded.id);
     } catch (error) {
-      Alert.alert("로그인 실패", "could not ");
+      setBorderColor1(GlobalStyles.colors.red);
+      setIsVisible(true);
+      setBorderColor2(GlobalStyles.colors.red);
       setIsAuthenticating(false);
     }
   }
@@ -56,26 +68,47 @@ function LoginScreen({ navigation }) {
           borderBottomWidth: 0.5,
         }}
       />
-      <View style={styles.content}>
-        <View>
-          <Input title="아이디" value={id} onChangeText={handleId}></Input>
+      <ScrollView>
+        <View style={styles.content}>
+          <View>
+            <Input
+              title="아이디"
+              value={id}
+              onChangeText={handleId}
+              borderColor={borderColor1}
+              setBorderColor={setBorderColor1}
+            ></Input>
+            {isVisible && (
+              <Text style={styles.failText}>아이디가 틀렸습니다</Text>
+            )}
+          </View>
+          <View style={{ marginTop: 30 }}>
+            <Input
+              title="비밀번호"
+              value={pw}
+              onChangeText={handlePw}
+              secureTextEntry={true}
+              borderColor={borderColor2}
+              setBorderColor={setBorderColor2}
+            ></Input>
+            {isVisible && (
+              <Text style={styles.failText}>비밀번호가 틀렸습니다</Text>
+            )}
+          </View>
         </View>
-        <View style={{ marginTop: 14 }}>
-          <Input
-            title="비밀번호"
-            value={pw}
-            onChangeText={handlePw}
-            secureTextEntry={true}
-          ></Input>
+        <View style={styles.button}>
+          <ButtonBig
+            onPress={loginHandler}
+            text="로그인"
+            style={GlobalStyles.colors.primaryDefault}
+          />
         </View>
-        <Pressable onPress={loginHandler}>
-          <Text style={styles.button}>로그인</Text>
-        </Pressable>
-        <View style={styles.searchText}>
+        <View style={styles.searchTextContainer}>
           <Text
             onPress={() => {
               navigationScreen({ title: "searchId" });
             }}
+            style={styles.searchText}
           >
             아이디 찾기
           </Text>
@@ -84,19 +117,22 @@ function LoginScreen({ navigation }) {
             onPress={() => {
               navigationScreen({ title: "searchPw" });
             }}
+            style={styles.searchText}
           >
             비밀번호 찾기
           </Text>
           <View style={styles.slash}></View>
           <Text
             onPress={() => {
-              navigationScreen({ title: "signUp" });
+              navigationScreen({ title: "authPhone" });
             }}
+            style={styles.searchText}
           >
             회원가입
           </Text>
         </View>
-      </View>
+      </ScrollView>
+      {/* </View> */}
     </View>
   );
 }
@@ -104,46 +140,62 @@ function LoginScreen({ navigation }) {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, backgroundColor: "white" },
 
-  content: { flex: 1, alignItems: "center", marginTop: 58 },
+  content: { marginTop: 58 },
   button: {
-    width: 332,
-    height: 49,
-    borderRadius: 5.41,
+    marginHorizontal: 20,
+    // width: "100%",
+    // height: 49,
+    // borderRadius: 5.41,
     marginTop: 58,
+    // justifyContent: "center",
+    // alignItems: "center",
+    // backgroundColor: GlobalStyles.colors.primaryDefault,
+    // shadowColor: "#000000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 5.41,
+    // elevation: 3,
+  },
+
+  buttonText: {
     textAlign: "center",
     textAlignVertical: "center",
     color: "white",
     fontSize: 17,
     fontWeight: 600,
-    backgroundColor: GlobalStyles.colors.primaryDefault,
-    shadowColor: "#000000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5.41,
-    elevation: 3,
   },
-
-  buttonText: {
-    color: "white",
-  },
-  searchText: {
+  searchTextContainer: {
     marginTop: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 30,
+  },
+  searchText: {
     color: GlobalStyles.colors.gray01,
     fontSize: 15,
     fontWeight: 400,
+    lineHeight: 20,
   },
   slash: {
     width: 1,
     height: 13,
     backgroundColor: GlobalStyles.colors.gray05,
     marginHorizontal: 18,
+  },
+  failText: {
+    color: GlobalStyles.colors.red,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 17,
+    marginHorizontal: 25,
+    marginTop: 3,
+    position: "absolute",
+    top: 73,
   },
 });

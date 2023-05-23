@@ -13,24 +13,39 @@ import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../store/header-context";
 import { getAnnouncement, getNotification } from "../utill/http";
 import moment from "moment";
+import { WithLocalSvg } from "react-native-svg";
+import Add from "../assets/addNotice.svg";
+import Home from "../assets/home.svg";
 
 function NoticeScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [data, setData] = useState([]);
 
-  async function notiHandler() {
-    try {
-      const response = await getAnnouncement();
-      setData(response);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
+    async function notiHandler() {
+      try {
+        const response = await getAnnouncement({ page: 0, size: 10 });
+        setData(response);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     notiHandler();
   }, []);
+
+  navigation.setOptions({
+    headerRight: () => {
+      return (
+        <Pressable onPress={() => navigation.navigate("alarm")}>
+          <View>
+            <WithLocalSvg asset={Home} />
+          </View>
+        </Pressable>
+      );
+    },
+  });
 
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });
@@ -57,14 +72,15 @@ function NoticeScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.headerBar} />
       <FlatList
-        data={data.reverse()}
+        data={data}
         renderItem={Item}
         keyExtractor={(item) => item.id}
       />
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable onPress={naviAddHandler}>
           <View style={styles.plusBtn}>
-            <Image source={require("../assets/plus.png")} />
+            {/* <Image source={require("../assets/plus.png")} /> */}
+            <WithLocalSvg asset={Add} />
           </View>
         </Pressable>
       ) : (
@@ -109,9 +125,7 @@ const styles = StyleSheet.create({
   },
   plusBtn: {
     position: "absolute",
-    right: 20,
-    width: 56,
-    height: 56,
-    bottom: 16,
+    right: 16,
+    bottom: 12,
   },
 });

@@ -10,6 +10,9 @@ import {
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
 import { deleteAnnouncement } from "../utill/http";
+import { WithLocalSvg } from "react-native-svg";
+import Edit from "../assets/edit.svg";
+import Delete from "../assets/delete.svg";
 
 function NoticeDetailScreen({ navigation, route }) {
   const data = route.params.data;
@@ -54,18 +57,32 @@ function NoticeDetailScreen({ navigation, route }) {
           </View>
 
           <Text style={styles.subcontentContainer}>{data.body}</Text>
+          {data.picture && (
+            <Image
+              source={{ uri: data.picture }}
+              style={{
+                width: "100%",
+                height: 500,
+                resizeMode: "contain",
+              }}
+            />
+          )}
         </View>
       </ScrollView>
       {headerRole === "ROLE_ADMIN" ? (
         <View style={styles.btnContainer}>
           <Pressable onPress={editHandler}>
-            <Image
+            {/* <Image
               source={require("../assets/editBtn.png")}
               style={{ marginRight: 5 }}
-            />
+            /> */}
+            <View style={{ marginRight: 4 }}>
+              <WithLocalSvg asset={Edit} />
+            </View>
           </Pressable>
           <Pressable onPress={deleteHandler}>
-            <Image source={require("../assets/deleteBtn.png")} />
+            {/* <Image source={require("../assets/deleteBtn.png")} /> */}
+            <WithLocalSvg asset={Delete} />
           </Pressable>
         </View>
       ) : (
@@ -116,7 +133,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 16,
-    right: 16,
+    bottom: 12,
+    right: 12,
   },
 });

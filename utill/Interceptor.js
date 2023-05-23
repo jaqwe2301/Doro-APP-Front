@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { reToken } from "./auth";
 
 function Interceptor() {
   const instance = axios.create({
@@ -28,24 +29,46 @@ function Interceptor() {
 
   instance.interceptors.response.use(
     async function (response) {
-      console.log(response);
-      if (response.status === 401) {
-        const token = await AsyncStorage.getItem("token");
-        const refreshToken = await AsyncStorage.getItem("refreshToken");
+      // console.log(response + "hihi");
+      // if (response.status === 401) {
+      //   const token = await AsyncStorage.getItem("token");
+      //   const refreshToken = await AsyncStorage.getItem("refreshToken");
+      //   console.log("re화이팅");
 
-        const reToken = await axios.post("http://10.0.2.2:8080/reissue", {
-          accessToken: token,
-          refreshToken: refreshToken,
-        });
+      //   const reToken = await axios.post("http://10.0.2.2:8080/reissue", {
+      //     accessToken: token,
+      //     refreshToken: refreshToken,
+      //   });
 
-        // AsyncStorage.setItem("token",reToken)
-        console.log("hihi" + reToken);
-      }
+      //   // AsyncStorage.setItem("token",reToken)
+      //   console.log("hihi" + reToken);
+      // }
 
       return response;
     },
-    function (error) {
-      console.log(error);
+    async function (error) {
+      if (error.response.status === 401) {
+        const token = await AsyncStorage.getItem("token");
+        const refreshToken = await AsyncStorage.getItem("refreshToken");
+        console.log("hi refresh 할꺼염 \t");
+        console.log(token);
+        console.log(refreshToken);
+
+        try {
+          const response = await reToken({
+            accessToken: `Bearer ${token}`,
+            refreshToken: refreshToken,
+          });
+          console.log(response);
+
+          authCtx.authenticate(response, refreshToken);
+        } catch (error) {
+          console.log("error발생" + error);
+          // console.log(error)
+        }
+
+        // console.log(reToken);
+      }
       return Promise.reject(error);
     }
   );

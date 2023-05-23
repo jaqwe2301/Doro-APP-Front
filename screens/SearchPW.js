@@ -9,11 +9,13 @@ import { useContext, useState } from "react";
 import { authPhoneNum, changePassword, findAccount } from "../utill/auth";
 import ButtonBig from "../components/ui/ButtonBig";
 import { verifyauthPhoneNum } from "../utill/auth";
+import Timer from "../components/feat/Timer";
 
 function SearchPW() {
   const [isVisible, setIsVisible] = useState(false);
   const [phoneNum, setphoneNum] = useState("");
-
+  const [count, setCount] = useState(0);
+  const [btnTitle, setBtnTitle] = useState("인증 요청");
   const [id, setId] = useState("");
   const [authNum, setauthNum] = useState("");
   const [sbtnColor, setsbtnColor] = useState(GlobalStyles.colors.gray05);
@@ -32,11 +34,16 @@ function SearchPW() {
 
   const handleIdChange = (text) => {
     setId(text);
+    if (authNum.length === 6) {
+      setlbtnColor(GlobalStyles.colors.primaryAccent);
+    } else {
+      setlbtnColor(GlobalStyles.colors.gray05);
+    }
   };
 
   const handleAuthChange = (text) => {
     setauthNum(text);
-    if (text.length === 6) {
+    if (text.length === 6 && id !== "") {
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
       setlbtnColor(GlobalStyles.colors.gray05);
@@ -55,6 +62,7 @@ function SearchPW() {
         console.log(success);
         if (success) {
           navigation.navigate("changePw", { id: id, phone: phoneNum });
+          setCount(0);
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
         }
@@ -73,6 +81,8 @@ function SearchPW() {
           phone: phoneNum,
         });
         setIsVisible(true);
+        setBtnTitle("다시 요청");
+        setCount(179);
       } catch (error) {
         Alert.alert("ERROR", "Network Error");
       }
@@ -107,7 +117,7 @@ function SearchPW() {
             </View>
             <View>
               <ButtonSmall
-                title="인증 요청"
+                title={btnTitle}
                 onPress={requestNumber}
                 style={sbtnColor}
               />
@@ -122,6 +132,7 @@ function SearchPW() {
                   onChangeText={handleAuthChange}
                   keyboardType="numeric"
                 />
+                <Timer count={count} setCount={setCount} />
               </View>
               <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
             </>
