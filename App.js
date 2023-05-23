@@ -278,11 +278,11 @@ function MyPageNavigator() {
         },
       }}
     >
-      <Stack.Screen
+      {/* <Stack.Screen
         name="ManagerPage"
         component={ManagerScreen}
         options={{ title: "매니저 페이지" }}
-      />
+      /> */}
       <Stack.Screen
         name="myPage"
         component={MyPageScreen}

@@ -30,6 +30,7 @@ function MyPageScreen({ navigation }) {
   const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const { headerId, setHeaderId } = useContext(HeaderContext);
 
   useEffect(() => {
     profileHandler();
@@ -37,7 +38,7 @@ function MyPageScreen({ navigation }) {
 
   async function profileHandler() {
     try {
-      const response = await getProfile({ id: 7 });
+      const response = await getProfile({ id: 18 });
       setData(response);
       console.log(response);
     } catch (error) {
