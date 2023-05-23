@@ -40,6 +40,7 @@ function MyPageScreen({ navigation }) {
   async function profileHandler() {
     try {
       const response = await getProfile({ id: headerId });
+
       setData(response);
       console.log(response);
       setIsLoading(false);
