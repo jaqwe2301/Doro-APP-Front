@@ -93,16 +93,10 @@ export async function checkAccount({ account }) {
   return data;
 }
 
-export async function getNotification() {
+export async function getNotification({ userId }) {
   try {
-    const token = await AsyncStorage.getItem("token");
-
-    console.log(token);
-
-    const response = await axios.get(URL + "/notifications", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data.data;
+    const response = await instance.get(URL + "/notifications/" + `${userId}`);
+    return response;
   } catch (error) {
     console.log(error);
 
@@ -136,9 +130,11 @@ export async function pushNotification({ body, title }) {
   }
 }
 
-export async function getAnnouncement() {
+export async function getAnnouncement({ page, size }) {
   try {
-    const response = await instance.get("/announcements");
+    const response = await instance.get(
+      "/announcements?page=" + page + "&size=" + size
+    );
     return response.data.data;
   } catch (error) {
     console.log(error);
@@ -147,14 +143,16 @@ export async function getAnnouncement() {
   }
 }
 
-export async function createAnnouncement({ body, picture, title }) {
+export async function createAnnouncement({ formData }) {
   try {
-    const response = await instance.post("/announcements", {
-      body: body,
-      picture: picture,
-      title: title,
+    const token = AsyncStorage.getItem("token");
+    const response = await axios.post(URL + "/announcements", formData, {
+      headers: {
+        // Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.log(error);
 
@@ -162,13 +160,13 @@ export async function createAnnouncement({ body, picture, title }) {
   }
 }
 
-export async function editAnnouncement({ body, picture, title, id }) {
+export async function editAnnouncement({ formData, id }) {
   try {
-    const response = await instance.patch("/announcements/" + `${id}`, {
-      body: body,
-      picture: picture,
-      title: title,
-    });
+    const response = await instance.patch(
+      "/announcements/" + `${id}`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
     return response.data;
   } catch (error) {
     console.log(error);
