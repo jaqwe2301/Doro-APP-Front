@@ -6,10 +6,8 @@ import {
   Dimensions,
   TouchableOpacity,
   Animated,
-  Image,
   Pressable,
   Text,
-  Modal,
   ScrollView,
 } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
@@ -21,7 +19,7 @@ import { GlobalStyles } from "../constants/styles";
 import LectureBox from "./../components/ui/LectureBox";
 import { getProfile } from "../utill/http";
 
-const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
+const HomeScreen = ({ lectureIdProps }) => {
   const [data, setData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
   const navigation = useNavigation();
@@ -62,6 +60,10 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
   }, []);
 
   const recruitingData = lectureData.filter(
+    (item) => item.status === "RECRUITING"
+  );
+
+  const underwayDate = lectureData.filter(
     (item) => item.status === "RECRUITING"
   );
 
@@ -241,13 +243,17 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
         initialLayout={{ width: Dimensions.get("window").width }}
         style={styles.container}
       />
-      {data.role === "ROLE_ADMIN" ? (
-        <Pressable onPress={createLectureVisibleProps}>
-          <View style={styles.BottomButton}></View>
-        </Pressable>
-      ) : (
+      {/* {data.role === "ROLE_ADMIN" ? ( */}
+      <Pressable
+        onPress={() =>
+          navigation.navigate("UpdateLectureScreen", { data: "" })
+        }
+      >
+        <View style={styles.BottomButton}></View>
+      </Pressable>
+      {/* ) : (
         ""
-      )}
+      )} */}
     </>
   );
 };
