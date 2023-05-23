@@ -26,7 +26,7 @@ const HomeScreen = ({ lectureIdProps }) => {
 
   async function profileHandler() {
     try {
-      const response = await getProfile({ id: 7 });
+      const response = await getProfile({ id: 18 });
       setData(response);
       console.log(response);
     } catch (error) {
