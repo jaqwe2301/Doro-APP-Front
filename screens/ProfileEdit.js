@@ -31,7 +31,7 @@ function ProfileEdit({ navigation, route }) {
   const [display2, setDispaly2] = useState("none");
   const [count, setCount] = useState(0);
   const [authVisible, setAuthVisible] = useState(false);
-
+  const [imageUrl, setImageUrl] = useState(data.profileImg);
   const [birth, setBirth] = useState(data.birth);
   const [generation, setGeneration] = useState(data.generation);
   const [major, setMajor] = useState(data.degree.major);
@@ -174,7 +174,6 @@ function ProfileEdit({ navigation, route }) {
 
   //camera
   const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
-  const [imageUrl, setImageUrl] = useState("");
 
   const uploadImage = async () => {
     if (!statusCamera?.granted) {

@@ -57,6 +57,16 @@ function NoticeDetailScreen({ navigation, route }) {
           </View>
 
           <Text style={styles.subcontentContainer}>{data.body}</Text>
+          {data.picture && (
+            <Image
+              source={{ uri: data.picture }}
+              style={{
+                width: "100%",
+                height: 500,
+                resizeMode: "contain",
+              }}
+            />
+          )}
         </View>
       </ScrollView>
       {headerRole === "ROLE_ADMIN" ? (

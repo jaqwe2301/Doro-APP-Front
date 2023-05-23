@@ -14,6 +14,20 @@ function AlarmScreen() {
     { id: 2, title: "알림", content: "hihi", date: "2023.04.02 오후 12:00" },
   ];
 
+  useEffect(() => {
+    async function notiHandler() {
+      try {
+        const response = await getAnnouncement({ page: 0, size: 10 });
+        setData(response);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    notiHandler();
+  }, []);
+
   const Item = ({ item }) => (
     <View style={styles.contentContainer}>
       <View style={styles.textTopContainer}>
