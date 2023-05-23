@@ -13,12 +13,14 @@ import { GlobalStyles } from "../constants/styles";
 import { useContext, useState } from "react";
 import { login } from "../utill/auth";
 import { AuthContext } from "../store/auth-context";
+import { HeaderContext } from "../store/header-context";
+import jwtDecode from "jwt-decode";
 
 function LoginScreen({ navigation }) {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const authCtx = useContext(AuthContext);
 
   const handleId = (text) => {
@@ -32,7 +34,11 @@ function LoginScreen({ navigation }) {
     setIsAuthenticating(true);
     try {
       const token = await login({ id: id, pw: pw });
-      authCtx.authenticate(token);
+      console.log(token.headers.authorization);
+      console.log(token.data);
+      authCtx.authenticate(token.headers.authorization, token.data);
+      const decoded = jwtDecode(token.headers.authorization);
+      setHeaderRole(decoded.roles[0].authority);
     } catch (error) {
       Alert.alert("로그인 실패", "could not ");
       setIsAuthenticating(false);

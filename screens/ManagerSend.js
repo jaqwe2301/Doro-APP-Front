@@ -6,14 +6,24 @@ import {
   StyleSheet,
   StatusBar,
   Dimensions,
+  Pressable,
 } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { GlobalStyles } from "../constants/styles";
+import { AuthContext } from "../store/auth-context";
 
 function ManagerSend() {
-  const FirstRoute = () => <Text>첫번째</Text>;
+  const authCtx = useContext(AuthContext);
+  function logoutHandler() {
+    authCtx.logout();
+  }
+  const FirstRoute = () => (
+    <Pressable onPress={logoutHandler}>
+      <Text>로그아웃</Text>
+    </Pressable>
+  );
   const SecondRoute = () => <Text>두번째</Text>;
 
   const [tapState, setTapState] = useState({
