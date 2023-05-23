@@ -1,6 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useState, useContext } from "react";
-
+import { View, Text, StyleSheet, Alert } from "react-native";
+import { useState, useContext, useEffect } from "react";
 import InputText from "../../components/ui/InputText";
 import ButtonSmall from "../../components/ui/ButtonSmall";
 import { GlobalStyles } from "../../constants/styles";
@@ -11,7 +10,7 @@ import { authPhoneNum, verifyauthPhoneNum } from "../../utill/auth";
 import InputData from "../ui/InputData";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
-import Phone from "../ui/Phone";
+import Timer from "../feat/Timer";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
@@ -23,6 +22,7 @@ function AuthPhone() {
   const navigation = useNavigation();
   const [flex1, setFlex1] = useState(0);
   const flex2 = 10 - flex1;
+  const [count, setCount] = useState(0);
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -51,19 +51,28 @@ function AuthPhone() {
       authPhoneNum({ messageType: "JOIN", phone: phoneNum });
       setBtnTitle("다시 요청");
       setIsVisible(true);
+      // setTimer(true);
+      setCount(179);
     } else {
     }
   }
-  function verifyAuthNum() {
+  async function verifyAuthNum() {
     if (authNum.length === 6) {
-      verifyauthPhoneNum({
-        authNum: authNum,
-        messageType: "JOIN",
-        phone: phoneNum,
-      });
-      setSignData({ ...signData, phone: phoneNum });
-
-      navigation.navigate("id");
+      try {
+        const success = await verifyauthPhoneNum({
+          authNum: authNum,
+          messageType: "JOIN",
+          phone: phoneNum,
+        });
+        if (success) {
+          setSignData({ ...signData, phone: phoneNum });
+          navigation.navigate("id");
+          setCount(0);
+        } else {
+          Alert.alert("인증번호 불일치");
+        }
+      } catch (error) {}
+      // Alert.alert("ERROR", "Network Error");
     }
   }
 
@@ -104,6 +113,7 @@ function AuthPhone() {
                   onChangeText={handleAuthChange}
                   keyboardType="numeric"
                 />
+                <Timer count={count} setCount={setCount} />
               </View>
               <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
             </>
@@ -156,5 +166,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
+  },
+  timer: {
+    color: GlobalStyles.colors.red,
+    fontSize: 15,
+    fontWeight: 400,
+    lineHeight: 20,
+    position: "absolute",
+    top: 10,
+    right: 12,
   },
 });

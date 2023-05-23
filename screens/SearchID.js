@@ -9,15 +9,16 @@ import { useContext, useState } from "react";
 import { authPhoneNum, findAccount } from "../utill/auth";
 import ButtonBig from "../components/ui/ButtonBig";
 import { verifyauthPhoneNum } from "../utill/auth";
+import Timer from "../components/feat/Timer";
 
-function SearchID() {
+function SearchID({ navigation }) {
   const [isVisible, setIsVisible] = useState(false);
   const [phoneNum, setphoneNum] = useState("");
   const [authNum, setauthNum] = useState("");
+  const [btnTitle, setBtnTitle] = useState("인증 요청");
   const [sbtnColor, setsbtnColor] = useState(GlobalStyles.colors.gray05);
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
-
-  const navigation = useNavigation();
+  const [count, setCount] = useState(0);
 
   const handlePhoneChange = (text) => {
     setphoneNum(text);
@@ -71,8 +72,10 @@ function SearchID() {
         const id = idStar + "*".repeat(star) + idStar2;
 
         navigation.navigate("findId", { id: id });
+        setCount(0);
       } else {
         navigation.navigate("notFindId");
+        setCount(0);
       }
     } catch (error) {
       console.log(error);
@@ -83,10 +86,12 @@ function SearchID() {
     if (phoneNum.length === 11) {
       try {
         authPhoneNum({ messageType: "ACCOUNT", phone: phoneNum });
+        setBtnTitle("다시 요청");
+        setCount(179);
+        setIsVisible(true);
       } catch (error) {
         Alert.alert("ERROR", "다시 시도해주세요");
       }
-      setIsVisible(true);
     }
   }
 
@@ -110,7 +115,7 @@ function SearchID() {
             </View>
             <View>
               <ButtonSmall
-                title="인증 요청"
+                title={btnTitle}
                 onPress={requestNumber}
                 style={sbtnColor}
               />
@@ -125,6 +130,7 @@ function SearchID() {
                   onChangeText={handleAuthChange}
                   keyboardType="numeric"
                 />
+                <Timer count={count} setCount={setCount} />
               </View>
               <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
             </>
