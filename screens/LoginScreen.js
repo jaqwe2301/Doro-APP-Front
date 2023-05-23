@@ -124,7 +124,7 @@ function LoginScreen({ navigation }) {
           <View style={styles.slash}></View>
           <Text
             onPress={() => {
-              navigationScreen({ title: "signUp" });
+              navigationScreen({ title: "authPhone" });
             }}
             style={styles.searchText}
           >

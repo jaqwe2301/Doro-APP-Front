@@ -30,11 +30,19 @@ function Pw() {
     let hasMark = /[~!@#$%^&*()_+|<>?:{}]+/g.test(text);
     let hasValidLen = text.length >= 8 && text.length <= 20;
 
-    setEng(hasEng ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
-    setNum(hasNum ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
-    setMark(hasMark ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setEng(
+      hasEng ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
+    setNum(
+      hasNum ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
+    setMark(
+      hasMark ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
     setLen(
-      hasValidLen ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05
+      hasValidLen
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
     );
     setInputPw(text);
 

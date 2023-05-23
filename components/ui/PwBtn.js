@@ -8,7 +8,7 @@ function PwBtn({ text, btnColor }) {
   return (
     <View style={styles.container}>
       <View style={styles.icon}>
-        {btnColor === GlobalStyles.colors.gray01 ? (
+        {btnColor === GlobalStyles.colors.primaryDefault ? (
           <WithLocalSvg asset={PasswordAfter} />
         ) : (
           <WithLocalSvg asset={Password} />

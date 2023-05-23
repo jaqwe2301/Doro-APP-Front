@@ -15,6 +15,7 @@ import { getAnnouncement, getNotification } from "../utill/http";
 import moment from "moment";
 import { WithLocalSvg } from "react-native-svg";
 import Add from "../assets/addNotice.svg";
+import Home from "../assets/home.svg";
 
 function NoticeScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
@@ -23,7 +24,7 @@ function NoticeScreen({ navigation }) {
   useEffect(() => {
     async function notiHandler() {
       try {
-        const response = await getAnnouncement();
+        const response = await getAnnouncement({ page: 0, size: 10 });
         setData(response);
         console.log(response);
       } catch (error) {
@@ -34,15 +35,17 @@ function NoticeScreen({ navigation }) {
     notiHandler();
   }, []);
 
-  // navigation.setOptions({
-  //   headerRight: () => {
-  //     return (
-  //       <Pressable onPress={() => navigation.navigate("alarm")}>
-  //         <Ionicons name="home-outline" size={20} />
-  //       </Pressable>
-  //     );
-  //   },
-  // });
+  navigation.setOptions({
+    headerRight: () => {
+      return (
+        <Pressable onPress={() => navigation.navigate("alarm")}>
+          <View>
+            <WithLocalSvg asset={Home} />
+          </View>
+        </Pressable>
+      );
+    },
+  });
 
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });
@@ -69,7 +72,7 @@ function NoticeScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.headerBar} />
       <FlatList
-        data={data.reverse()}
+        data={data}
         renderItem={Item}
         keyExtractor={(item) => item.id}
       />
