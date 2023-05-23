@@ -35,6 +35,8 @@ import NotFindId from "./components/signUp/NotFindId";
 import ChangePw from "./components/signUp/ChangePw";
 import ProfileEdit from "./screens/ProfileEdit";
 import ApplicationDetails from "./screens/ApplicationDetails";
+import UpdateLectureScreen from "./screens/UpdateLectureScreen";
+import ManagerScreen from "./screens/ManagerScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -204,7 +206,40 @@ function HomeNavigator() {
       <Stack.Screen
         name="HomePage"
         component={HomeScreen}
-        options={{ title: "강의 홈" }}
+        options={{
+          header: () => {
+            return (
+              <View style={styles.HomeHeader}>
+                <View style={styles.headerTopContainer}>
+                  <Image
+                    source={require("./assets/doroLogoMain.png")}
+                    style={styles.Logo}
+                  />
+                  <Image
+                    source={require("./assets/icons/alarm_after.png")}
+                    style={styles.iconSize}
+                  />
+                </View>
+                <View style={styles.noticeContainer}>
+                  <Image
+                    source={require("./assets/icons/megaphone.png")}
+                    style={styles.iconSize}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 16,
+                      fontStyle: GlobalStyles.gray01,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    메이커 스페이스 사용 안내
+                  </Text>
+                </View>
+              </View>
+            );
+          },
+        }}
       />
       <Stack.Screen
         name="DetailLecture"
@@ -214,9 +249,13 @@ function HomeNavigator() {
       <Stack.Screen
         name="NewLecture"
         component={NewLectureScreen}
-        options={{ title: "강의 상세" }}
+        options={{ title: "강의 생성" }}
       />
-
+      <Stack.Screen
+        name="UpdateLectureScreen"
+        component={UpdateLectureScreen}
+        options={{ title: "강의 생성 및 수정" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -233,6 +272,11 @@ function MyPageNavigator() {
         },
       }}
     >
+      <Stack.Screen
+        name="ManagerPage"
+        component={ManagerScreen}
+        options={{ title: "매니저 페이지" }}
+      />
       <Stack.Screen
         name="myPage"
         component={MyPageScreen}
@@ -258,8 +302,6 @@ function MyPageNavigator() {
     </Stack.Navigator>
   );
 }
-
-
 
 // icon 바꿀 예정
 // 로그인 후 화면
@@ -317,39 +359,6 @@ function BottomTabNavigator() {
         // }
         options={{
           headerShown: false,
-          // header: () => {
-          //   return (
-          //     <View style={styles.HomeHeader}>
-          //       <View style={styles.headerTopContainer}>
-          //         <Image
-          //           source={require("./assets/doroLogoMain.png")}
-          //           style={styles.Logo}
-          //         />
-          //         <Image
-          //           source={require("./assets/icons/alarm_after.png")}
-          //           style={styles.iconSize}
-          //         />
-          //       </View>
-          //       <View style={styles.noticeContainer}>
-          //         <Image
-          //           source={require("./assets/icons/megaphone.png")}
-          //           style={styles.iconSize}
-          //         />
-          //         <Text
-          //           style={{
-          //             marginLeft: 16,
-          //             fontStyle: GlobalStyles.gray01,
-          //             fontSize: 15,
-          //             fontWeight: "bold",
-          //           }}
-          //         >
-          //           메이커 스페이스 사용 안내
-          //         </Text>
-          //       </View>
-          //     </View>
-          //   );
-          // },
-          // title: "홈",
           tabBarIcon: ({ color }) => (
             <Ionicons name="home" color={color} size={24} />
           ),
