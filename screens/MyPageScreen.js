@@ -9,10 +9,14 @@ import {
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
-import { useNavigation } from "@react-navigation/native";
-import { getProfile } from "../utill/http";
 
-function MyPageScreen() {
+import { getProfile } from "../utill/http";
+import jwtDecode from "jwt-decode";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { HeaderContext } from "../store/header-context";
+import ManagerSend from "./ManagerSend";
+
+function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
   // const [generation, setGeneration] = useState("");
   // const [major, setMajor] = useState("");
@@ -23,16 +27,13 @@ function MyPageScreen() {
   // const [studentStatus, setStudentStatus] = useState("");
   const [data, setData] = useState([]);
   const authCtx = useContext(AuthContext);
-  const navigation = useNavigation();
   const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
 
-  function logoutHandler() {
-    authCtx.logout();
-  }
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
 
-  function navi() {
-    navigation.navigate("searchPw");
-  }
+  useEffect(() => {
+    profileHandler();
+  }, []);
 
   async function profileHandler() {
     try {
@@ -44,116 +45,133 @@ function MyPageScreen() {
     }
   }
 
-  useEffect(() => {
-    profileHandler();
-  }, []);
+  function ManagerScreen() {
+    return <ManagerSend />;
+  }
 
-  return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image
-            style={styles.image}
-            source={require("../assets/profile.png")}
-          />
-          <View style={styles.statusContainer}>
-            <View style={styles.textContainer}>
-              <Text style={styles.text}>강의 신청</Text>
-              <Text style={styles.textNum}>02</Text>
+  function UserScreen() {
+    function logoutHandler() {
+      authCtx.logout();
+    }
+
+    function navi() {
+      navigation.navigate("searchPw");
+    }
+
+    return (
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Image
+              style={styles.image}
+              source={require("../assets/profile.png")}
+            />
+            <View style={styles.statusContainer}>
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>강의 신청</Text>
+                <Text style={styles.textNum}>02</Text>
+              </View>
+              <View style={[styles.textContainer, { marginHorizontal: 26 }]}>
+                <Text style={styles.text}>배정 완료</Text>
+                <Text style={styles.textNum}>02</Text>
+              </View>
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>강의 완료</Text>
+                <Text style={styles.textNum}>02</Text>
+              </View>
             </View>
-            <View style={[styles.textContainer, { marginHorizontal: 26 }]}>
-              <Text style={styles.text}>배정 완료</Text>
-              <Text style={styles.textNum}>02</Text>
+          </View>
+          <View style={{ marginHorizontal: 20, marginTop: 6 }}>
+            <Text style={styles.name}>{data.name}</Text>
+            <Text style={styles.title}>DORO {data.generation}기</Text>
+          </View>
+          <View
+            style={{
+              marginHorizontal: 20,
+              marginTop: 16,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={[styles.btnContainer, { marginRight: 10 }]}>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("profileEdit", { data: data })
+                }
+              >
+                <Text style={styles.btn}>프로필 편집</Text>
+              </Pressable>
             </View>
-            <View style={styles.textContainer}>
-              <Text style={styles.text}>강의 완료</Text>
-              <Text style={styles.textNum}>02</Text>
+            <View style={styles.btnContainer}>
+              <Pressable>
+                <Text style={styles.btn}>강의신청내역</Text>
+              </Pressable>
             </View>
           </View>
-        </View>
-        <View style={{ marginHorizontal: 20, marginTop: 6 }}>
-          <Text style={styles.name}>{data.name}</Text>
-          <Text style={styles.title}>DORO {data.generation}기</Text>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 20,
-            marginTop: 16,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={[styles.btnContainer, { marginRight: 10 }]}>
-            <Pressable
-              onPress={() => navigation.navigate("profileEdit", { data: data })}
-            >
-              <Text style={styles.btn}>프로필 편집</Text>
-            </Pressable>
+          <View>
+            <Text style={[styles.contentTitle, { marginTop: 45 }]}>
+              기본정보
+            </Text>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>생년월일</Text>
+              <Text style={styles.contentText}>{data.birth}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>휴대전화번호</Text>
+              <Text style={styles.contentText}>{data.phone}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>학교</Text>
+              <Text style={styles.contentText}>{data.school}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>전공</Text>
+              <Text style={styles.contentText}>{data.major}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>학번</Text>
+              <Text style={styles.contentText}>{data.studentId}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>재학 유무</Text>
+              <Text style={styles.contentText}>{status}</Text>
+            </View>
+            <View style={styles.border}></View>
           </View>
-          <View style={styles.btnContainer}>
-            <Pressable
-              onPress={() => navigation.navigate("ApplicationDetails", { data: data })}
-            >
-              <Text style={styles.btn}>강의신청내역</Text>
-            </Pressable>
+          <View>
+            <Text style={styles.contentTitle}>로그인 정보</Text>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>아이디</Text>
+              <Text style={styles.contentText}>hynnk0</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>비밀번호</Text>
+              <Pressable onPress={navi}>
+                <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
+                  비밀번호 수정
+                </Text>
+              </Pressable>
+            </View>
+            <View style={styles.border}></View>
           </View>
-        </View>
-        <View>
-          <Text style={[styles.contentTitle, { marginTop: 45 }]}>기본정보</Text>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>생년월일</Text>
-            <Text style={styles.contentText}>{data.birth}</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>휴대전화번호</Text>
-            <Text style={styles.contentText}>{data.phone}</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>학교</Text>
-            <Text style={styles.contentText}>{data.school}</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>전공</Text>
-            <Text style={styles.contentText}>{data.major}</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>학번</Text>
-            <Text style={styles.contentText}>{data.studentId}</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>재학 유무</Text>
-            <Text style={styles.contentText}>{status}</Text>
-          </View>
-          <View style={styles.border}></View>
-        </View>
-        <View>
-          <Text style={styles.contentTitle}>로그인 정보</Text>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>아이디</Text>
-            <Text style={styles.contentText}>hynnk0</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>비밀번호</Text>
-            <Pressable onPress={navi}>
-              <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
-                비밀번호 수정
+          <View style={{ marginBottom: 33 }}>
+            <Pressable onPress={logoutHandler}>
+              <Text
+                style={[
+                  styles.contentTitle,
+                  { borderBottomWidth: 1, width: 57 },
+                ]}
+              >
+                로그아웃
               </Text>
             </Pressable>
           </View>
-          <View style={styles.border}></View>
-        </View>
-        <View style={{ marginBottom: 33 }}>
-          <Pressable onPress={logoutHandler}>
-            <Text
-              style={[styles.contentTitle, { borderBottomWidth: 1, width: 57 }]}
-            >
-              로그아웃
-            </Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </View>
-  );
+        </ScrollView>
+      </View>
+    );
+  }
+
+  return headerRole === "ROLE_USER" ? <UserScreen /> : <ManagerScreen />;
 }
 
 export default MyPageScreen;

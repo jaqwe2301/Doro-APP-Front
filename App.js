@@ -37,6 +37,11 @@ import ProfileEdit from "./screens/ProfileEdit";
 import ApplicationDetails from "./screens/ApplicationDetails";
 import UpdateLectureScreen from "./screens/UpdateLectureScreen";
 import ManagerScreen from "./screens/ManagerScreen";
+import NoticeDetailScreen from "./screens/NoticeDetailScreen";
+import AddNoticeScreen from "./screens/AddNoticeScreen";
+import jwtDecode from "jwt-decode";
+import HeaderContextProvider, { HeaderContext } from "./store/header-context";
+import EditNoticeScreen from "./screens/EditNoticeScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -200,6 +205,7 @@ function HomeNavigator() {
         headerTitleStyle: {
           fontWeight: "600",
           fontSize: 17,
+          // lineHeight: 22,
         },
       }}
     >
@@ -280,17 +286,20 @@ function MyPageNavigator() {
       <Stack.Screen
         name="myPage"
         component={MyPageScreen}
-        options={{ title: "마이 페이지" }}
+        options={{ title: "마이 페이지", headerBackVisible: false }}
       />
       <Stack.Screen
         name="profileEdit"
         component={ProfileEdit}
-        options={{ title: "프로필 수정" }}
-      />
-      <Stack.Screen
-        name="ApplicationDetails"
-        component={ApplicationDetails}
-        options={{ title: "강의신청내역" }}
+        options={{
+          title: "프로필 수정",
+          headerRight: () => {
+            return <Text style={styles.completeText}>완료</Text>;
+          },
+          headerLeft: () => {
+            return <Text style={styles.cancelText}>취소</Text>;
+          },
+        }}
       />
       <Stack.Screen
         name="searchPw"
@@ -303,28 +312,81 @@ function MyPageNavigator() {
   );
 }
 
+function NoticeNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+          // lineHeight: 22,
+        },
+      }}
+    >
+      <Stack.Screen
+        name="noticeScreen"
+        component={NoticeScreen}
+        options={{
+          title: "공지사항",
+          headerRight: () => {
+            return <Ionicons name="home-outline" size={20} />;
+          },
+          headerBackVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="noticeDetail"
+        component={NoticeDetailScreen}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="noticeAdd"
+        component={AddNoticeScreen}
+        options={{
+          title: "글쓰기",
+          headerRight: () => {
+            return <Text style={styles.completeText2}>완료</Text>;
+          },
+        }}
+      />
+      <Stack.Screen
+        name="noticeEdit"
+        component={EditNoticeScreen}
+        options={{
+          title: "글쓰기",
+          headerRight: () => {
+            return <Text style={styles.completeText2}>완료</Text>;
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 // icon 바꿀 예정
 // 로그인 후 화면
 function BottomTabNavigator() {
   const [headerVisible, setHeaderVisible] = useState(true);
   const [homeScreenState, setHomeScreenState] = useState("home");
-  const [lectureIdState, setLectureIdState] = useState([0, "home"]);
+  const [lectureIdState, setLectureIdState] = useState([0,"home"]);
 
   const detailLectureVisibleHandler = (id) => {
     console.log("아이디", id);
-    setLectureIdState([id, "detailLecture"]);
+    setLectureIdState([id,"detailLecture"]);
     // setHomeScreenState("detailLecture");
     setHeaderVisible(false);
   };
 
   const createLectureVisibleHandler = () => {
-    setLectureIdState([0, "createLecture"]);
+    setLectureIdState([0,"createLecture"]);
     // setHomeScreenState("createLecture");
     setHeaderVisible(false);
   };
 
   const screenBackHandler = () => {
-    setLectureIdState([0, "home"]);
+    setLectureIdState([0,"home"]);
     setHomeScreenState("home");
     setHeaderVisible(true);
   };
@@ -335,7 +397,7 @@ function BottomTabNavigator() {
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
         tabBarStyle: { height: 60 },
-
+        tabBarHideOnKeyboard: true,
         headerShown: false,
       }}
     >
@@ -372,7 +434,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Notice"
-        component={NoticeScreen}
+        component={NoticeNavigator}
         options={{
           title: "공지사항",
           tabBarIcon: ({ color }) => (
@@ -438,21 +500,9 @@ function BottomTabNavigator() {
   );
 }
 
-//로그인 후 화면
-function AuthenticatedStack() {
-  return (
-    <Stack.Navigator screenOptions={{}}>
-      <Stack.Screen
-        name="Bottom"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
-}
-
 function Navigation() {
   const authCtx = useContext(AuthContext);
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
   // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   // 자동로그인
@@ -460,9 +510,13 @@ function Navigation() {
     async function fetchToken() {
       // 저장된 jwt 가져오기
       const storedToken = await AsyncStorage.getItem("token");
+      const storedReToken = await AsyncStorage.getItem("refreshToken");
+      // console.log();
 
       if (storedToken) {
-        authCtx.authenticate(storedToken);
+        authCtx.authenticate(storedToken, storedReToken);
+        const decoded = jwtDecode(storedToken);
+        setHeaderRole(decoded.roles[0].authority);
       }
 
       // setIsTryingLogin(false);
@@ -484,7 +538,9 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <AuthContextProvider>
-        <Navigation />
+        <HeaderContextProvider>
+          <Navigation />
+        </HeaderContextProvider>
       </AuthContextProvider>
     </SafeAreaView>
   );
@@ -527,5 +583,33 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F4F4",
     paddingLeft: 16,
     borderRadius: 5.41,
+  },
+  completeText: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    color: GlobalStyles.colors.primaryDefault,
+    marginRight: 10,
+  },
+  completeText2: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    width: 50,
+    height: 30,
+    borderRadius: 5.41,
+    color: "white",
+    textAlign: "center",
+    textAlignVertical: "center",
+    // marginLeft: -4,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+
+    lineHeight: 20,
+  },
+  cancelText: {
+    fontWeight: 400,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray05,
+    marginLeft: 10,
   },
 });
