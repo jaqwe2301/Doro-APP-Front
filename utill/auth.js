@@ -87,12 +87,13 @@ export async function reToken({ accessToken, refreshToken }) {
     refreshToken: refreshToken,
   });
 
-  const token = response.headers.authorization;
+  // const token = response.headers.authorization;
+  console.log(response);
 
   // console.log("hihi\t");
   // console.log(token);
 
-  return token;
+  return response;
 }
 
 export async function signUp({

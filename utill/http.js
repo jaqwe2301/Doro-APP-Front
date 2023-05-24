@@ -48,7 +48,6 @@ export async function getProfile2({
   }
 }
 
-
 export async function updateProfile({
   generation,
   major,
@@ -59,7 +58,6 @@ export async function updateProfile({
   id,
 }) {
   try {
-    const token = await AsyncStorage.getItem("token");
     const response = await instance.patch("/users/" + `${parseInt(id)}`, {
       generation: parseInt(generation),
       major: major,
@@ -144,18 +142,24 @@ export async function getAnnouncement({ page, size }) {
   }
 }
 
-export async function createAnnouncement({ formData }) {
+export async function createAnnouncement({ formData, title, body }) {
   try {
-    const token = AsyncStorage.getItem("token");
-    const response = await axios.post(URL + "/announcements", formData, {
-      headers: {
-        // Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const token = await AsyncStorage.getItem("token");
+    const announcementReq = JSON.stringify({ title: title, body: body });
+    const response = await axios.post(
+      URL + "/announcements/",
+      { announcementReq: announcementReq, picture: formData },
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
+    console.log(error + "여기여기");
 
     throw error;
   }
