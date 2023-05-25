@@ -15,8 +15,7 @@ function Id() {
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [isNavi, setIsNavi] = useState(false);
   const navigation = useNavigation();
-  const [flex1, setFlex1] = useState(1);
-  const flex2 = 10 - flex1;
+
   const [isVisible, setIsVisible] = useState(false);
 
   const { signData, setSignData } = useContext(SignContext);
@@ -29,11 +28,9 @@ function Id() {
       text.length <= 20 &&
       text.search(/[a-zA-Z0-9]+/g) >= 0
     ) {
-      setFlex1(2);
       setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
-      setFlex1(1);
       setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
@@ -50,7 +47,6 @@ function Id() {
           setSignData({ ...signData, account: inputId });
           navigation.navigate("pw");
         } else {
-          Alert.alert("Error", "이미 존재하는 아이디입니다.");
           setIsVisible(true);
         }
       } catch (error) {
@@ -63,7 +59,7 @@ function Id() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={1} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
@@ -97,8 +93,8 @@ export default Id;
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginHorizontal: 20,
-    marginTop: 45,
+    marginHorizontal: 23,
+    marginTop: 35,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -106,7 +102,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 20,
   },
   lInputContainer: {
     marginHorizontal: 20,
@@ -120,9 +116,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 400,
     color: GlobalStyles.colors.gray04,
-    marginHorizontal: 20,
+    marginLeft: 23,
     marginTop: 6,
-    marginBottom: 18,
+
     lineHeight: 20,
   },
   textSend: {
