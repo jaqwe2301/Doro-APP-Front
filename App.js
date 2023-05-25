@@ -54,6 +54,7 @@ import Tray from "./assets/tray.svg";
 import TrayFill from "./assets/tray_fill.svg";
 import Profile from "./assets/profile.svg";
 import ProfileFill from "./assets/profile_fill.svg";
+import FinishPw from "./components/signUp/FinishPw";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -170,7 +171,7 @@ function AuthStack() {
           name="agreeInfo"
           component={AgreeInfo}
           options={{
-            title: "회원가입",
+            title: "이용약관",
           }}
         />
         <Stack.Screen
@@ -197,6 +198,13 @@ function AuthStack() {
         <Stack.Screen
           name="changePw"
           component={ChangePw}
+          options={{
+            title: "비밀번호 변경",
+          }}
+        />
+        <Stack.Screen
+          name="finishPw"
+          component={FinishPw}
           options={{
             title: "비밀번호 변경",
           }}
@@ -319,23 +327,23 @@ function NoticeNavigator() {
 function BottomTabNavigator() {
   const [headerVisible, setHeaderVisible] = useState(true);
   const [homeScreenState, setHomeScreenState] = useState("home");
-  const [lectureIdState, setLectureIdState] = useState([0,"home"]);
+  const [lectureIdState, setLectureIdState] = useState([0, "home"]);
 
   const detailLectureVisibleHandler = (id) => {
     console.log("아이디", id);
-    setLectureIdState([id,"detailLecture"]);
+    setLectureIdState([id, "detailLecture"]);
     // setHomeScreenState("detailLecture");
     setHeaderVisible(false);
   };
 
   const createLectureVisibleHandler = () => {
-    setLectureIdState([0,"createLecture"]);
+    setLectureIdState([0, "createLecture"]);
     // setHomeScreenState("createLecture");
     setHeaderVisible(false);
   };
 
   const screenBackHandler = () => {
-    setLectureIdState([0,"home"]);
+    setLectureIdState([0, "home"]);
     setHomeScreenState("home");
     setHeaderVisible(true);
   };
@@ -353,7 +361,6 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Home"
         children={() =>
-
           lectureIdState[1] === "home" ? (
             <HomeScreen
               lectureIdProps={detailLectureVisibleHandler}
@@ -368,7 +375,6 @@ function BottomTabNavigator() {
             <NewLectureScreen screenBackButton={screenBackHandler} />
           )
         }
-
         options={{
           headerShown: headerVisible,
           header: () => {

@@ -96,7 +96,7 @@ function Pw() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={1} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
@@ -141,8 +141,8 @@ export default Pw;
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginHorizontal: 20,
-    marginTop: 45,
+    marginHorizontal: 23,
+    marginTop: 35,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 25,
   },
   lInputContainer: {
     marginHorizontal: 20,
@@ -169,21 +169,24 @@ const styles = StyleSheet.create({
   },
   pwBtn: {
     flexDirection: "row",
-    marginHorizontal: 20,
+    marginHorizontal: 16,
   },
   text: {
     fontSize: 15,
     fontWeight: 400,
     color: GlobalStyles.colors.gray04,
     marginRight: 20,
+
+    lineHeight: 20,
     textAlign: "center",
   },
   id: {
     fontSize: 15,
     fontWeight: 600,
-    marginLeft: 20,
+    marginLeft: 23,
     marginRight: 4,
     flex: 0,
+    lineHeight: 20,
     color: GlobalStyles.colors.gray01,
     textAlign: "center",
   },
