@@ -26,7 +26,7 @@ function NoticeScreen({ navigation }) {
       try {
         const response = await getAnnouncement({ page: 0, size: 10 });
         setData(response);
-        console.log(response);
+        // console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -35,17 +35,17 @@ function NoticeScreen({ navigation }) {
     notiHandler();
   }, []);
 
-  navigation.setOptions({
-    headerRight: () => {
-      return (
-        <Pressable onPress={() => navigation.navigate("alarm")}>
-          <View>
-            <WithLocalSvg asset={Home} />
-          </View>
-        </Pressable>
-      );
-    },
-  });
+  // navigation.setOptions({
+  //   headerRight: () => {
+  //     return (
+  //       <Pressable onPress={() => navigation.navigate("alarm")}>
+  //         <View>
+  //           <WithLocalSvg asset={Home} />
+  //         </View>
+  //       </Pressable>
+  //     );
+  //   },
+  // });
 
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });

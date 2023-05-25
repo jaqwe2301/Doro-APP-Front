@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-// import { reToken } from "./auth";
 
 function Interceptor() {
   const instance = axios.create({
@@ -29,6 +28,7 @@ function Interceptor() {
       return response;
     },
     async function (error) {
+      const originalConfig = error.config;
       if (error.response.status === 401) {
         const token = await AsyncStorage.getItem("token");
         const refreshToken = await AsyncStorage.getItem("refreshToken");
@@ -43,7 +43,11 @@ function Interceptor() {
           });
           const newToken = response.headers.authorization;
           console.log("새로운 토큰이얌" + newToken);
-          AsyncStorage.setItem("token", newToken);
+          await AsyncStorage.setItem("token", newToken);
+          if (newToken) {
+            originalConfig.headers["Authorization"] = `Bearer ${newToken}`;
+          }
+          return axios(originalConfig);
         } catch (error) {
           console.log("error발생" + error);
         }
