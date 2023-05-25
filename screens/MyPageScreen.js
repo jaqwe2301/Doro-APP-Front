@@ -114,7 +114,7 @@ function MyPageScreen({ navigation }) {
         <View style={styles.container}>
           <ScrollView>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {data.profileImg !== "" ? (
+              {data.profileImg !== null ? (
                 <Image
                   style={styles.image}
                   source={{
@@ -165,10 +165,11 @@ function MyPageScreen({ navigation }) {
                   <Text style={styles.btn}>프로필 편집</Text>
                 </Pressable>
               </View>
-              <View style={styles.btnContainer}>
-                <Pressable onPress={tokenHandler}>
+              {/* <View style={styles.btnContainer}> */}
+              <View style={{ flex: 1 }}>
+                {/* <Pressable onPress={tokenHandler}>
                   <Text style={styles.btn}>강의신청내역</Text>
-                </Pressable>
+                </Pressable> */}
               </View>
             </View>
             <View>
