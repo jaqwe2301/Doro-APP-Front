@@ -145,7 +145,11 @@ export async function getAnnouncement({ page, size }) {
 export async function createAnnouncement({ formData, title, body }) {
   try {
     const token = await AsyncStorage.getItem("token");
-    const announcementReq = JSON.stringify({ title: title, body: body });
+
+    const announcementReq = new Blob(
+      [JSON.stringify({ title: title, body: body })],
+      { type: "application/json" }
+    );
     const response = await axios.post(
       URL + "/announcements/",
       { announcementReq: announcementReq, picture: formData },
