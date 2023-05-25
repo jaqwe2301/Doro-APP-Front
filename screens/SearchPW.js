@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 22,
-    marginLeft: 26,
+    marginLeft: 23,
     fontSize: 15,
     fontWeight: 400,
     lineHeight: 20,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   textSend: {
     fontSize: 12,
     fontWeight: 400,
-    marginHorizontal: 20,
+    marginLeft: 23,
     marginTop: 8,
     marginBottom: 66,
   },

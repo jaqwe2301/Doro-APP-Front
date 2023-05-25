@@ -3,7 +3,7 @@ import InputData from "../ui/InputData";
 import PwBtn from "../ui/PwBtn";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { changePassword } from "../../utill/auth";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../store/auth-context";
@@ -18,7 +18,7 @@ function ChangePw({ route }) {
   const [num, setNum] = useState(GlobalStyles.colors.gray05);
   const [mark, setMark] = useState(GlobalStyles.colors.gray05);
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
-  const authCtx = useContext(AuthContext);
+
   const id = route.params.id;
   const phoneNum = route.params.phone;
   const navigation = useNavigation();
@@ -33,10 +33,7 @@ function ChangePw({ route }) {
         });
 
         if (response.success) {
-          Alert.alert("성공", "비밀번호 변경");
-          authCtx.isAuthenticated
-            ? authCtx.logout()
-            : navigation.replace("login");
+          navigation.navigate("finishPw");
         } else {
           Alert.alert("Error", "일치하는 아이디가 없습니다. ");
         }
@@ -46,17 +43,27 @@ function ChangePw({ route }) {
     }
   }
 
+  // useEffect(() => {}, [pw, repw]);
+
   const handlePwChange = (text) => {
     let hasEng = /[a-zA-Z]+/g.test(text);
     let hasNum = /[0-9]+/g.test(text);
     let hasMark = /[~!@#$%^&*()_+|<>?:{}]+/g.test(text);
     let hasValidLen = text.length >= 8 && text.length <= 20;
 
-    setEng(hasEng ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
-    setNum(hasNum ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
-    setMark(hasMark ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setEng(
+      hasEng ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
+    setNum(
+      hasNum ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
+    setMark(
+      hasMark ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
     setLen(
-      hasValidLen ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05
+      hasValidLen
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
     );
     setPw(text);
 
@@ -117,7 +124,7 @@ function ChangePw({ route }) {
           <PwBtn text="특수문자" btnColor={mark} />
           <PwBtn text="8~20자" btnColor={len} />
         </View>
-        <View style={[styles.inputContainer, { marginTop: 8 }]}>
+        <View style={[styles.inputContainer, { marginTop: 21 }]}>
           <Text style={styles.textTitle}>신규 비밀번호 재확인</Text>
           <InputData
             hint="비밀번호 재입력"
@@ -126,6 +133,7 @@ function ChangePw({ route }) {
             secureTextEntry={true}
           />
         </View>
+        {/* <Text style={styles.textSend}>비밀번호가 틀립니다.</Text> */}
       </View>
       <View style={styles.buttonContainer}>
         <ButtonBig
@@ -151,7 +159,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
   },
   textTitle: {
-    marginLeft: 6,
+    marginLeft: 3,
     marginBottom: 5,
     fontSize: 15,
     fontWeight: 400,
@@ -168,7 +176,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 23,
+    marginTop: 35,
   },
   lInputContainer: {
     marginHorizontal: 20,
@@ -188,7 +196,6 @@ const styles = StyleSheet.create({
   pwBtn: {
     flexDirection: "row",
     marginHorizontal: 20,
-    marginTop: 4,
   },
   text: {
     fontSize: 15,
@@ -209,8 +216,7 @@ const styles = StyleSheet.create({
   textSend: {
     fontSize: 12,
     fontWeight: 400,
-    marginHorizontal: 20,
-    marginTop: 8,
-    marginBottom: 66,
+    marginHorizontal: 26,
+    marginTop: 3,
   },
 });

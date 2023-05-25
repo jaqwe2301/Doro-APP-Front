@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     marginLeft: 6,
     marginRight: 10,
-    marginTop: 4,
-    marginBottom: 5,
+    marginTop: 3,
+    marginBottom: 10,
   },
-  icon: { marginTop: 8, marginBottom: 8.6, marginLeft: 7 },
+  icon: { marginTop: 7, marginBottom: 13.6, marginLeft: 7 },
 });

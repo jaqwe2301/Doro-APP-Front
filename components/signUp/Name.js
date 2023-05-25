@@ -14,19 +14,12 @@ function Name() {
   const [inputBirth, setInputBirth] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
-  const [flex1, setFlex1] = useState(3);
-  const flex2 = 10 - flex1;
+
   const { signData, setSignData } = useContext(SignContext);
 
   const handleNameChange = (text) => {
     setInputName(text);
-    setFlex1(4);
 
-    // if () {
-    //   setlbtnColor(GlobalStyles.colors.primaryAccent);
-    // } else {
-    //   setlbtnColor(GlobalStyles.colors.gray05);
-    // }
     setlbtnColor(
       text && inputBirth !== ""
         ? GlobalStyles.colors.primaryAccent
@@ -36,7 +29,7 @@ function Name() {
 
   const handleBirthChange = (text) => {
     setInputBirth(text);
-    setFlex1(5);
+
     setlbtnColor(
       text && inputName !== ""
         ? GlobalStyles.colors.primaryAccent
@@ -50,13 +43,12 @@ function Name() {
 
       navigation.navigate("school");
     } else {
-      setFlex1(4);
     }
   }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={2} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
@@ -69,7 +61,7 @@ function Name() {
               value={inputName}
             />
           </View>
-          <View style={styles.textContainer}>
+          <View style={[styles.textContainer, { marginTop: 50 }]}>
             <InputText text="생년월일을 입력해 주세요." />
           </View>
           <View style={styles.inputContainer}>
@@ -93,8 +85,8 @@ export default Name;
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginHorizontal: 20,
-    marginTop: 45,
+    marginHorizontal: 23,
+    marginTop: 35,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -102,7 +94,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 13,
   },
   lInputContainer: {
     marginHorizontal: 20,
