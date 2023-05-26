@@ -10,6 +10,7 @@ export const HeaderContext = createContext();
 function HeaderContextProvider({ children }) {
   const [headerRole, setHeaderRole] = useState("");
   const [headerId, setHeaderId] = useState("");
+  const [headerAccount, setHeaderAccount] = useState("");
   //   const [headerPayload, setHeaderPayload] = useState();
 
   //   function getRole(decoded) {
@@ -18,7 +19,14 @@ function HeaderContextProvider({ children }) {
   //   }
 
   //   const values = { decoded: headerPayload, getRole: getRole };
-  const values = { headerRole, setHeaderRole, headerId, setHeaderId };
+  const values = {
+    headerRole,
+    setHeaderRole,
+    headerId,
+    setHeaderId,
+    headerAccount,
+    setHeaderAccount,
+  };
 
   return (
     <HeaderContext.Provider value={values}>{children}</HeaderContext.Provider>
