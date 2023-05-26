@@ -33,8 +33,6 @@ function Interceptor() {
         const token = await AsyncStorage.getItem("token");
         const refreshToken = await AsyncStorage.getItem("refreshToken");
         console.log("hi refresh 할꺼염 \t");
-        console.log(token);
-        console.log(refreshToken);
 
         try {
           const response = await axios.post("http://10.0.2.2:8080/reissue", {

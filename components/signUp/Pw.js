@@ -22,8 +22,7 @@ function Pw() {
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
-  const [flex1, setFlex1] = useState(2);
-  const flex2 = 10 - flex1;
+
   const handlePwChange = (text) => {
     let hasEng = /[a-zA-Z]+/g.test(text);
     let hasNum = /[0-9]+/g.test(text);
@@ -75,11 +74,9 @@ function Pw() {
       /[0-9]+/g.test(text) &&
       /[~!@#$%^&*()_+|<>?:{}]+/g.test(text)
     ) {
-      setFlex1(3);
       setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
-      setFlex1(2);
       setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }

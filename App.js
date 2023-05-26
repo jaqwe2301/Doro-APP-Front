@@ -55,6 +55,7 @@ import TrayFill from "./assets/tray_fill.svg";
 import Profile from "./assets/profile.svg";
 import ProfileFill from "./assets/profile_fill.svg";
 import FinishPw from "./components/signUp/FinishPw";
+import DeleteUser from "./screens/DeleteUser";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -257,6 +258,13 @@ function MyPageNavigator() {
         component={ChangePw}
         options={{
           title: "비밀번호 변경",
+        }}
+      />
+      <Stack.Screen
+        name="deleteUser"
+        component={DeleteUser}
+        options={{
+          title: "회원탈퇴",
         }}
       />
     </Stack.Navigator>
@@ -523,6 +531,7 @@ function Navigation() {
   const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   // 자동로그인
@@ -539,6 +548,7 @@ function Navigation() {
         console.log(decoded);
         setHeaderRole(decoded.roles[0].authority);
         setHeaderId(decoded.id);
+        setHeaderAccount(decoded.sub);
       }
 
       // setIsTryingLogin(false);

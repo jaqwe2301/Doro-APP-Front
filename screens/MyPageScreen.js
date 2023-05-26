@@ -32,6 +32,7 @@ function MyPageScreen({ navigation }) {
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
 
   useEffect(() => {
     profileHandler();
@@ -77,20 +78,6 @@ function MyPageScreen({ navigation }) {
   function UserScreen() {
     function logoutHandler() {
       authCtx.logout();
-    }
-
-    async function deleteHandler() {
-      try {
-        const response = await deleteUser();
-        console.log("삭제?" + response);
-      } catch (error) {
-        console.log("error발생" + error);
-        // console.log(error)
-      }
-    }
-
-    function navi() {
-      navigation.navigate("searchPw");
     }
 
     // if (Object.keys(data).length === 0) {
@@ -206,11 +193,11 @@ function MyPageScreen({ navigation }) {
               <Text style={styles.contentTitle}>로그인 정보</Text>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>아이디</Text>
-                <Text style={styles.contentText}>{data.name}</Text>
+                <Text style={styles.contentText}>{headerAccount}</Text>
               </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>비밀번호</Text>
-                <Pressable onPress={navi}>
+                <Pressable onPress={() => navigation.navigate("searchPw")}>
                   <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
                     비밀번호 수정
                   </Text>
@@ -232,7 +219,11 @@ function MyPageScreen({ navigation }) {
               <View style={styles.border}></View>
             </View>
             <View style={{ marginBottom: 33 }}>
-              <Pressable onPress={deleteHandler}>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("deleteUser", { account: headerAccount })
+                }
+              >
                 <Text
                   style={[
                     styles.contentTitle,
