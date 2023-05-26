@@ -20,32 +20,46 @@ import Home from "../assets/home.svg";
 function NoticeScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [data, setData] = useState([]);
+  const [pageNum, setPageNum] = useState(0);
 
   useEffect(() => {
-    async function notiHandler() {
-      try {
-        const response = await getAnnouncement({ page: 0, size: 10 });
-        setData(response);
-        // console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
     notiHandler();
   }, []);
 
-  // navigation.setOptions({
-  //   headerRight: () => {
-  //     return (
-  //       <Pressable onPress={() => navigation.navigate("alarm")}>
-  //         <View>
-  //           <WithLocalSvg asset={Home} />
-  //         </View>
-  //       </Pressable>
-  //     );
-  //   },
-  // });
+  // let pageNum = 0;
+  async function notiHandler() {
+    try {
+      const response = await getAnnouncement({ page: pageNum, size: 10 });
+      if (response) {
+        setData((prev) => [...prev, ...response]);
+        setPageNum((prev) => prev + 1);
+        // pageNum++;
+
+        console.log(pageNum);
+      }
+      // console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={naviAlarmHandler}>
+            <View>
+              <WithLocalSvg asset={Home} />
+            </View>
+          </Pressable>
+        );
+      },
+    });
+  }, [naviAlarmHandler]);
+
+  function naviAlarmHandler() {
+    navigation.navigate("alarm");
+  }
 
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });
@@ -75,6 +89,8 @@ function NoticeScreen({ navigation }) {
         data={data}
         renderItem={Item}
         keyExtractor={(item) => item.id}
+        onEndReached={notiHandler}
+        onEndReachedThreshold={0.5}
       />
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable onPress={naviAddHandler}>

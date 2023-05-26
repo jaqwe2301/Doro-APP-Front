@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   Pressable,
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
@@ -77,7 +78,12 @@ function MyPageScreen({ navigation }) {
 
   function UserScreen() {
     function logoutHandler() {
-      authCtx.logout();
+      Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
+        {
+          text: "취소",
+        },
+        { text: "확인", onPress: () => authCtx.logout() },
+      ]);
     }
 
     // if (Object.keys(data).length === 0) {
