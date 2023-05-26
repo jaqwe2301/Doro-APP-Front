@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { useState, useContext } from "react";
 
 import InputText from "../../components/ui/InputText";
-
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "../../components/ui/ButtonBig";
 import { useNavigation } from "@react-navigation/native";
@@ -14,8 +14,33 @@ function Name() {
   const [inputBirth, setInputBirth] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
-
   const { signData, setSignData } = useContext(SignContext);
+
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(false);
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    if (Platform.OS === "android") {
+      setShow(false);
+      // for iOS, add a button that closes the picker
+    }
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
+  };
 
   const handleNameChange = (text) => {
     setInputName(text);

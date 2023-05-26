@@ -28,6 +28,7 @@ function LoginScreen({ navigation }) {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   const authCtx = useContext(AuthContext);
 
   const handleId = (text) => {
@@ -49,6 +50,7 @@ function LoginScreen({ navigation }) {
 
       setHeaderRole(decoded.roles[0].authority);
       setHeaderId(decoded.id);
+      setHeaderAccount(decoded.sub);
     } catch (error) {
       setBorderColor1(GlobalStyles.colors.red);
       setIsVisible(true);

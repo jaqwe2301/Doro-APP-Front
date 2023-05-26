@@ -135,7 +135,7 @@ function ProfileEdit({ navigation, route }) {
         if (success) {
           setCount(0);
           setAuthVisible(false);
-          Alert.alert("번호 변경", "휴대폰 번호 변경 완료");
+          Alert.alert("알림", "휴대전화번호 변경이 완료되었습니다");
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
         }
