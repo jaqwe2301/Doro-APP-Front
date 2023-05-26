@@ -7,52 +7,70 @@ import {
   FlatList,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
+import { useContext, useEffect, useState } from "react";
+import { getNotification } from "../utill/http";
+import { AuthContext } from "../store/auth-context";
+import { HeaderContext } from "../store/header-context";
+import moment from "moment";
 
 function AlarmScreen() {
-  const data = [
-    { title: "공지사항", content: "hi", date: "2023.04.02 오후 12:00", id: 3 },
-    { id: 2, title: "알림", content: "hihi", date: "2023.04.02 오후 12:00" },
-  ];
+  const { headerId, setHeaderId } = useContext(HeaderContext);
+  const [data, setData] = useState([]);
+  const [pageNum, setPageNum] = useState(0);
 
   useEffect(() => {
-    async function notiHandler() {
-      try {
-        const response = await getAnnouncement({ page: 0, size: 10 });
-        setData(response);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
     notiHandler();
   }, []);
 
+  async function notiHandler() {
+    try {
+      const response = await getNotification({
+        userId: headerId,
+        page: pageNum,
+        size: 10,
+      });
+      if (response.success) {
+        setData((prev) => [...prev, ...response.data]);
+        setPageNum((prev) => prev + 1);
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const Item = ({ item }) => (
-    <View style={styles.contentContainer}>
-      <View style={styles.textTopContainer}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.title}>{item.title}</Text>
-          <View style={styles.circle}></View>
+    <Pressable>
+      <View style={styles.contentContainer}>
+        <View style={styles.textTopContainer}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.title}>{item.title}</Text>
+            {!item.isRead && <View style={styles.circle}></View>}
+          </View>
+          <Text style={styles.date}>
+            {moment(item.createdAt).format("YYYY-MM-DD A h:mm")}
+          </Text>
         </View>
-        <Text style={styles.date}>{item.date}</Text>
+        <Text style={styles.content}>{item.body}</Text>
+        <View style={styles.linkConainer}>
+          <Text style={styles.date}>자세히 보기 &gt;</Text>
+        </View>
       </View>
-      <Text style={styles.content}>{item.content}</Text>
-      <View style={styles.linkConainer}>
-        <Text style={styles.date}>자세히 보기 &gt;</Text>
-      </View>
-    </View>
+    </Pressable>
   );
 
   return (
     <View style={styles.container}>
-      <View style={{ marginTop: 40, marginBottom: 20 }}>
-        <FlatList
-          data={data}
-          renderItem={Item}
-          keyExtractor={(item) => item.id}
-        />
-      </View>
+      {/* <View style={{ marginTop: 40, marginBottom: 20 }}> */}
+      <FlatList
+        data={data}
+        renderItem={Item}
+        keyExtractor={(item) => item.id}
+        onEndReached={notiHandler}
+        onEndReachedThreshold={0.5}
+        ListHeaderComponent={<View />}
+        ListHeaderComponentStyle={{ marginTop: 40 }}
+      />
+      {/* </View> */}
     </View>
   );
 }
