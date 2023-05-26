@@ -456,7 +456,8 @@ function BottomTabNavigator() {
             if (
               routeName === "noticeDetail" ||
               routeName === "noticeAdd" ||
-              routeName === "noticeEdit"
+              routeName === "noticeEdit" ||
+              routeName === "alarm"
             ) {
               return { display: "none" };
             }

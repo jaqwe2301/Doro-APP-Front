@@ -92,10 +92,18 @@ export async function checkAccount({ account }) {
   return data;
 }
 
-export async function getNotification({ userId }) {
+export async function getNotification({ userId, page, size }) {
   try {
-    const response = await instance.get(URL + "/notifications/" + `${userId}`);
-    return response;
+    const response = await instance.get(
+      URL +
+        "/notifications/" +
+        `${userId}` +
+        "?page=" +
+        `${page}` +
+        "&size=" +
+        `${size}`
+    );
+    return response.data;
   } catch (error) {
     console.log(error);
 
