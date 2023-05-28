@@ -89,7 +89,6 @@ export async function reToken({ accessToken, refreshToken }) {
 
   // const token = response.headers.authorization;
   console.log(response);
-  I;
 
   // console.log("hihi\t");
   // console.log(token);
