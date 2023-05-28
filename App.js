@@ -56,6 +56,7 @@ import Profile from "./assets/profile.svg";
 import ProfileFill from "./assets/profile_fill.svg";
 import FinishPw from "./components/signUp/FinishPw";
 import DeleteUser from "./screens/DeleteUser";
+import AgreeInfo2 from "./components/signUp/AgreeInfo2";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -173,6 +174,13 @@ function AuthStack() {
           component={AgreeInfo}
           options={{
             title: "이용약관",
+          }}
+        />
+        <Stack.Screen
+          name="agreeInfo2"
+          component={AgreeInfo2}
+          options={{
+            title: "개인정보 수집 및 이용 동의",
           }}
         />
         <Stack.Screen
