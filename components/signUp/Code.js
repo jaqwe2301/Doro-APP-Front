@@ -285,7 +285,10 @@ function Code() {
                   [필수] 이용약관
                 </Text>
               </View>
-              <Pressable style={{ marginRight: 35 }} onPress={naviAgreeInfo}>
+              <Pressable
+                style={{ marginRight: 35 }}
+                onPress={() => navigation.navigate("agreeInfo")}
+              >
                 <WithLocalSvg asset={Right} />
               </Pressable>
             </View>
@@ -315,7 +318,10 @@ function Code() {
                   [필수] 개인정보 수집 및 이용
                 </Text>
               </View>
-              <Pressable style={{ marginRight: 35 }} onPress={naviAgreeInfo}>
+              <Pressable
+                style={{ marginRight: 35 }}
+                onPress={() => navigation.navigate("agreeInfo2")}
+              >
                 <WithLocalSvg asset={Right} />
               </Pressable>
             </View>
