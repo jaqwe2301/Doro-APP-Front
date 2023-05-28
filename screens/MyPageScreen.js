@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
+import axios from "axios";
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -53,22 +54,44 @@ function MyPageScreen({ navigation }) {
   }
 
   async function tokenHandler() {
+    // const token = await AsyncStorage.getItem("token");
+    // const refreshToken = await AsyncStorage.getItem("refreshToken");
+
+    // console.log("전 토큰" + token);
+    // console.log("리프레쉬 토큰" + refreshToken);
+
+    // try {
+    //   const response = await reToken({
+    //     accessToken: `Bearer ${token}`,
+    //     refreshToken: refreshToken,
+    //   });
+    //   console.log("되는듯" + response.headers.authorization);
+    //   await AsyncStorage.setItem("token", response.headers.authorization);
+    // } catch (error) {
+    //   console.log("error발생" + error);
+    //   // console.log(error)
+    // }
+
     const token = await AsyncStorage.getItem("token");
     const refreshToken = await AsyncStorage.getItem("refreshToken");
-
-    console.log("전 토큰" + token);
-    console.log("리프레쉬 토큰" + refreshToken);
+    console.log("hi refresh 할꺼염 \t");
+    console.log(token);
+    console.log(refreshToken);
 
     try {
-      const response = await reToken({
+      const response = await axios.post("http://10.0.2.2:8080/reissue", {
         accessToken: `Bearer ${token}`,
         refreshToken: refreshToken,
       });
-      console.log("되는듯" + response);
-      authCtx.authenticate(response, refreshToken);
+      const newToken = response.headers.authorization;
+      console.log("새로운 토큰이얌" + newToken);
+      await AsyncStorage.setItem("token", newToken);
+      if (newToken) {
+        originalConfig.headers["Authorization"] = `Bearer ${newToken}`;
+      }
+      return axios(originalConfig);
     } catch (error) {
       console.log("error발생" + error);
-      // console.log(error)
     }
   }
 
