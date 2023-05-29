@@ -9,8 +9,9 @@ import {
   Pressable,
   Text,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
-import { TabView, SceneMap } from "react-native-tab-view";
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
 
 import axios from "axios";
@@ -37,6 +38,7 @@ const HomeScreen = ({ lectureIdProps }) => {
   useEffect(() => {
     axios
       .get("http://10.0.2.2:8080/lectures", {
+      // .get("https://api.doroapp.com/lectures", {
         params: {
           city: "",
           endDate: "",
@@ -49,6 +51,7 @@ const HomeScreen = ({ lectureIdProps }) => {
       })
       .then((res) => {
         setLectureData(res.data.data);
+        // console.log(res.data.data);
         // console.log("성공");
       })
       .catch((error) => {
@@ -63,9 +66,9 @@ const HomeScreen = ({ lectureIdProps }) => {
     (item) => item.status === "RECRUITING"
   );
 
-  const underwayDate = lectureData.filter(
-    (item) => item.status === "RECRUITING"
-  );
+  // const underwayDate = lectureData.filter(
+  //   (item) => item.status === "RECRUITING"
+  // );
 
   const allTitleArray = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
@@ -153,101 +156,75 @@ const HomeScreen = ({ lectureIdProps }) => {
     lectureIdProps(id);
   };
 
-  const FirstRoute = () => (
-    <ScrollView style={styles.lectureListContainer}>
-      {LectureElements}
-    </ScrollView>
-  );
-  const SecondRoute = () => (
-    <View style={styles.lectureListContainer}>
-      <Text>진행중</Text>
-    </View>
-  );
+  const layout = useWindowDimensions();
 
-  let underwayCount = 20;
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: "first", title: "모집중" },
+    { key: "second", title: "진행중" },
+  ]);
 
-  let fristTapState = {
-    index: 0,
-    routes: [
-      { key: "first", title: `모집중 (${recruitingData.length})` },
-      { key: "second", title: `진행중 (${underwayCount})` },
-    ],
-  };
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case "first":
+        return (
+          <ScrollView style={styles.lectureListContainer}>
+            {LectureElements}
+          </ScrollView>
+        );
+      case "second":
+        return (
+          <View style={styles.lectureListContainer}>
+            <Text>진행중</Text>
+          </View>
+        );
 
-  const [firstTapUse, setFirstTapUse] = useState(true);
-
-  const [tapState, setTapState] = useState({
-    index: 0,
-    routes: [
-      { key: "first", title: `모집중 (${recruitingData.length})` },
-      { key: "second", title: `진행중 (${underwayCount})` },
-    ],
-  });
-
-  const indexChange = (index) => {
-    firstTapUse
-      ? setTapState({ ...fristTapState, index })
-      : setTapState({ ...tapState, index });
-    setFirstTapUse(false);
-  };
-
-  _tabBar = (props) => {
-    const inputRange = props.navigationState.routes.map((x, i) => i);
-
-    return (
-      <>
-        <View style={styles.tabBar}>
-          {props.navigationState.routes.map((route, i) => {
-            const opacity = props.position.interpolate({
-              inputRange,
-              outputRange: inputRange.map((inputIndex) =>
-                inputIndex === i ? 1 : 0.5
-              ),
-            });
-
-            return (
-              <TouchableOpacity
-                key={route.key}
-                style={styles.tabItem}
-                onPress={() => props.jumpTo(route.key)}
-              >
-                <Animated.Text
-                  style={{
-                    opacity,
-                    borderBottomColor: GlobalStyles.colors.primaryAccent,
-                    borderBottomWidth: 1,
-                    paddingBottom: 10,
-                    fontSize: 15,
-                  }}
-                >
-                  {route.title}
-                </Animated.Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </>
-    );
+      default:
+        return <View />;
+    }
   };
 
   return (
     <>
       <TabView
-        navigationState={firstTapUse ? fristTapState : tapState}
-        renderScene={SceneMap({
-          first: FirstRoute,
-          second: SecondRoute,
-        })}
-        renderTabBar={_tabBar}
-        onIndexChange={(index) => indexChange(index)}
-        initialLayout={{ width: Dimensions.get("window").width }}
-        style={styles.container}
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={(props) => (
+          <TabBar
+            {...props}
+            indicatorStyle={{
+              // Style to apply to the container view for the indicator.
+              backgroundColor: GlobalStyles.colors.primaryDefault,
+              height: 2,
+              border: "none",
+            }}
+            style={{
+              backgroundColor: "white",
+              shadowOffset: { height: 0, width: 0 },
+              shadowColor: "transparent",
+              height: 30,
+              borderBottomWidth: 0.5,
+              borderBottomColor: GlobalStyles.colors.gray04,
+            }}
+            labelStyle={{
+              // 폰트 스타일
+              margin: 0,
+              fontSize: 15,
+            }}
+            tabStyle={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+              padding: 0,
+            }}
+            pressColor={"transparent"}
+          />
+        )}
       />
       {/* {data.role === "ROLE_ADMIN" ? ( */}
       <Pressable
-        onPress={() =>
-          navigation.navigate("UpdateLectureScreen", { data: "" })
-        }
+        onPress={() => navigation.navigate("UpdateLectureScreen", { data: "" })}
       >
         <View style={styles.BottomButton}></View>
       </Pressable>
