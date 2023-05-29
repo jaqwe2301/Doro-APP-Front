@@ -5,30 +5,50 @@ import {
   ScrollView,
   TextInput,
   Pressable,
+  Image,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { editAnnouncement } from "../utill/http";
+import { WithLocalSvg } from "react-native-svg";
+import Camera from "../assets/camera.svg";
+
+import * as ImagePicker from "expo-image-picker";
 
 function EditNoticeScreen({ navigation, route }) {
   const data = route.params.data;
   const [body, setBody] = useState(data.body);
   const [title, setTitle] = useState(data.title);
+  // const [formData, setFormData] = useState(new FormData());
 
   async function completeHandler() {
-    try {
-      const response = await editAnnouncement({
+    const formData = new FormData();
+    const value = [
+      {
         title: title,
         body: body,
-        picture: "",
+      },
+    ];
+
+    const blob = new Blob([JSON.stringify(value)], {
+      type: "application/json",
+    });
+    console.log(blob);
+    formData.append("announcementReq", blob);
+    // console.log(formData.get("announcementReq"));
+    if (imageUrl) {
+      formData.append("picture", null);
+    }
+    try {
+      const response = await editAnnouncement({
+        formData: formData,
         id: data.id,
       });
-
       console.log(response);
-      if (response.success) {
-        navigation.replace("noticeScreen");
-      }
+      // if (response.success) {
+      //   navigation.replace("noticeScreen");
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -45,6 +65,42 @@ function EditNoticeScreen({ navigation, route }) {
       },
     });
   }, [completeHandler]);
+
+  //camera
+  const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
+  const [imageUrl, setImageUrl] = useState("");
+
+  const cameraHandler = async () => {
+    if (!statusCamera?.granted) {
+      const permission = await requestPermission();
+      if (!permission.granted) {
+        return null;
+      }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      // aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+    console.log(!result.canceled);
+
+    if (!result.canceled) {
+      const filename = result.assets[0].uri.split("/").pop();
+      console.log(filename);
+      formData.append("picture", {
+        uri: result.assets[0].uri,
+        type: "multipart/form-data",
+        name: filename,
+      });
+      setImageUrl(result.assets[0].uri);
+    } else {
+      return null;
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -70,7 +126,30 @@ function EditNoticeScreen({ navigation, route }) {
             multiline
           />
         </View>
+        <View style={{ marginHorizontal: 20 }}>
+          {imageUrl && (
+            <Image
+              source={{ uri: imageUrl }}
+              style={{
+                width: "100%",
+                height: 500,
+                resizeMode: "contain",
+              }}
+            />
+          )}
+        </View>
       </ScrollView>
+      <View
+        style={{
+          height: 42,
+          borderTopWidth: 0.8,
+          borderTopColor: GlobalStyles.colors.gray04,
+          justifyContent: "center",
+          paddingLeft: 16,
+        }}
+      >
+        <WithLocalSvg asset={Camera} onPress={cameraHandler} />
+      </View>
     </View>
   );
 }
