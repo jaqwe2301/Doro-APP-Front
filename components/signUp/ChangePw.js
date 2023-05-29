@@ -3,9 +3,10 @@ import InputData from "../ui/InputData";
 import PwBtn from "../ui/PwBtn";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { changePassword } from "../../utill/auth";
 import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../store/auth-context";
 
 function ChangePw({ route }) {
   const [pw, setPw] = useState("");
@@ -17,7 +18,7 @@ function ChangePw({ route }) {
   const [num, setNum] = useState(GlobalStyles.colors.gray05);
   const [mark, setMark] = useState(GlobalStyles.colors.gray05);
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
-
+  const authCtx = useContext(AuthContext);
   const id = route.params.id;
   const phoneNum = route.params.phone;
   const navigation = useNavigation();
@@ -33,7 +34,9 @@ function ChangePw({ route }) {
 
         if (response.success) {
           Alert.alert("성공", "비밀번호 변경");
-          navigation.replace("login");
+          authCtx.isAuthenticated
+            ? authCtx.logout()
+            : navigation.replace("login");
         } else {
           Alert.alert("Error", "일치하는 아이디가 없습니다. ");
         }
@@ -96,28 +99,33 @@ function ChangePw({ route }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerShadow}></View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.textTitle}>신규 비밀번호</Text>
-        <InputData
-          hint="영문, 숫자, 특수문자 포함 8~20자"
-          onChangeText={handlePwChange}
-          value={pw}
-        />
-      </View>
-      <View style={styles.pwBtn}>
-        <PwBtn text="영문" btnColor={eng} />
-        <PwBtn text="숫자" btnColor={num} />
-        <PwBtn text="특수문자" btnColor={mark} />
-        <PwBtn text="8~20자" btnColor={len} />
-      </View>
-      <View style={[styles.inputContainer, { marginTop: 8 }]}>
-        <Text style={styles.textTitle}>신규 비밀번호 재확인</Text>
-        <InputData
-          hint="비밀번호 재입력"
-          onChangeText={handleRePwChange}
-          value={repw}
-        />
+      <View>
+        <View style={styles.headerShadow}></View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.textTitle}>신규 비밀번호</Text>
+          <InputData
+            hint="영문, 숫자, 특수문자 포함 8~20자"
+            onChangeText={handlePwChange}
+            value={pw}
+            secureTextEntry={true}
+          />
+        </View>
+        <View style={styles.pwBtn}>
+          <PwBtn text="영문" btnColor={eng} />
+          <PwBtn text="숫자" btnColor={num} />
+          <PwBtn text="특수문자" btnColor={mark} />
+          <PwBtn text="8~20자" btnColor={len} />
+        </View>
+        <View style={[styles.inputContainer, { marginTop: 8 }]}>
+          <Text style={styles.textTitle}>신규 비밀번호 재확인</Text>
+          <InputData
+            hint="비밀번호 재입력"
+            onChangeText={handleRePwChange}
+            value={repw}
+            secureTextEntry={true}
+          />
+        </View>
       </View>
       <View style={styles.buttonContainer}>
         <ButtonBig
@@ -136,6 +144,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    justifyContent: "space-between",
   },
   headerShadow: {
     borderBottomColor: GlobalStyles.colors.gray05,
@@ -154,7 +163,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-    marginTop: 36,
+
+    marginBottom: 34,
   },
   inputContainer: {
     marginHorizontal: 20,

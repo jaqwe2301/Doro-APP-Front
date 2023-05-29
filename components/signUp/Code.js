@@ -6,7 +6,7 @@ import {
   ScrollView,
   Modal,
 } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import InputText from "../../components/ui/InputText";
 
@@ -18,15 +18,32 @@ import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
 import { signUp } from "../../utill/auth";
+
+import { WithLocalSvg } from "react-native-svg";
+import Checkmark from "../../assets/checkmark.svg";
+import Checkbox from "../../assets/checkbox.svg";
+import CheckmarkAfter from "../../assets/checkmark_after.svg";
+import CheckboxAfter from "../../assets/checkbox_after.svg";
+import Right from "../../assets/right.svg";
+import Down from "../../assets/down.svg";
+
 function Code() {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
+  const [inputGeneration, setInputGeneration] = useState(0);
 
   const [visible, setVisible] = useState(false);
+  const [visibleCode, setVisibleCode] = useState(false);
   const [display1, setDispaly1] = useState("none");
   const [display2, setDispaly2] = useState("none");
-  const [select, setSelect] = useState("가입 유형을 선택해주세요");
+  const [cdisplay3, setCDisplay3] = useState("none");
+  const [cdisplay4, setCDisplay4] = useState("none");
+  const [cdisplay1, setCDisplay1] = useState("none");
+  const [cdisplay2, setCDisplay2] = useState("none");
+  const [select, setSelect] = useState("가입 유형을 선택하세요");
+  const [selectCode, setSelectCode] = useState("기수를 선택하세요");
   const [statusStyle, setStatusStyle] = useState(styles.textModal);
+  const [statusGStyle, setStatusGStyle] = useState(styles.textModal);
 
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
@@ -34,33 +51,39 @@ function Code() {
   const [flex1, setFlex1] = useState(9);
   const flex2 = 10 - flex1;
 
+  const [accept1, setAccept1] = useState(false);
+  const [accept2, setAccept2] = useState(false);
+
   const handleCodeChange = (text) => {
     setInputCode(text);
+  };
 
+  useEffect(() => {
     setlbtnColor(
-      text !== "" && inputRole !== ""
+      inputRole !== "" &&
+        inputCode !== "" &&
+        accept1 &&
+        accept2 &&
+        inputGeneration
         ? GlobalStyles.colors.primaryDefault
         : GlobalStyles.colors.gray05
     );
-  };
-
-  const handleRoleChange = (text) => {
-    setInputRole(text);
-    setlbtnColor(
-      text !== "" && inputCode !== ""
-        ? GlobalStyles.colors.primaryDefault
-        : GlobalStyles.colors.gray05
-    );
-  };
+  }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
 
   function navigateId() {
-    if (inputRole !== "" && inputCode !== "") {
+    if (
+      inputRole !== "" &&
+      inputCode !== "" &&
+      accept1 &&
+      accept2 &&
+      inputGeneration
+    ) {
       signUp({
         account: signData.account,
         birth: signData.birth,
         doroAuth: inputCode,
         gender: "FEMALE",
-        generation: 1,
+        generation: inputGeneration,
         major: signData.major,
         name: signData.name,
         password: signData.password,
@@ -90,20 +113,69 @@ function Code() {
     }
   }
 
+  function generationSelect1() {
+    setCDisplay1("flex");
+    setCDisplay2("none");
+    setCDisplay3("none");
+    setCDisplay4("none");
+  }
+  function generationSelect2() {
+    setCDisplay1("none");
+    setCDisplay2("flex");
+    setCDisplay3("none");
+    setCDisplay4("none");
+  }
+  function generationSelect3() {
+    setCDisplay1("none");
+    setCDisplay2("none");
+    setCDisplay3("flex");
+    setCDisplay4("none");
+  }
+  function generationSelect4() {
+    setCDisplay1("none");
+    setCDisplay2("none");
+    setCDisplay3("none");
+    setCDisplay4("flex");
+  }
+
   function okayBtn() {
     if (display1 === "flex" || display2 === "flex") {
       setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
       setSelect(display1 === "none" ? "매니저" : "강사");
       setStatusStyle(styles.textInputText);
       setFlex1(9);
-      setlbtnColor(
-        inputCode !== ""
-          ? GlobalStyles.colors.primaryDefault
-          : GlobalStyles.colors.gray05
-      );
+
       setVisible(!visible);
     } else {
       setVisible(!visible);
+    }
+  }
+  function okayBtn2() {
+    if (
+      cdisplay1 === "flex" ||
+      cdisplay2 === "flex" ||
+      cdisplay3 === "flex" ||
+      cdisplay4 === "flex"
+    ) {
+      if (cdisplay1 === "flex") {
+        setInputGeneration(0);
+        setSelectCode("0기");
+      } else if (cdisplay2 === "flex") {
+        setInputGeneration(1);
+        setSelectCode("1기");
+      } else if (cdisplay3 === "flex") {
+        setInputGeneration(2);
+        setSelectCode("2기");
+      } else {
+        setInputGeneration(3);
+        setSelectCode("3기");
+      }
+      setStatusGStyle(styles.textInputText);
+      setFlex1(9);
+
+      setVisibleCode(!visibleCode);
+    } else {
+      setVisibleCode(!visibleCode);
     }
   }
 
@@ -112,6 +184,19 @@ function Code() {
       <Bar flex1={flex1} flex2={flex2} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <ScrollView>
+          <View style={styles.textContainer}>
+            <InputText text="기수를 입력해 주세요." />
+          </View>
+          <View style={styles.inputContainer}>
+            <Pressable onPress={() => setVisibleCode(!visibleCode)}>
+              <View style={styles.textInput}>
+                <Text style={statusGStyle}>{selectCode}</Text>
+                <View style={{ marginRight: 13 }}>
+                  <WithLocalSvg asset={Down} />
+                </View>
+              </View>
+            </Pressable>
+          </View>
           <View style={styles.textContainer}>
             <InputText text="가입코드를 입력해 주세요." />
           </View>
@@ -125,11 +210,7 @@ function Code() {
               <View style={styles.textInput}>
                 <Text style={statusStyle}>{select}</Text>
                 <View style={{ marginRight: 13 }}>
-                  <Ionicons
-                    name="chevron-down"
-                    size={25}
-                    color={GlobalStyles.colors.gray05}
-                  />
+                  <WithLocalSvg asset={Down} />
                 </View>
               </View>
             </Pressable>
@@ -147,50 +228,97 @@ function Code() {
           </View>
           <View>
             <View
-              style={{ flexDirection: "row", marginTop: 21, marginLeft: 22.57 }}
+              style={{
+                flexDirection: "row",
+                marginTop: 21,
+                marginLeft: 20,
+              }}
             >
-              <Ionicons
-                name="checkbox"
-                color={GlobalStyles.colors.gray05}
-                size={23}
-              />
-              <Text style={styles.acceptText}>전체동의</Text>
+              <Pressable
+                onPress={() => {
+                  setAccept1(!accept1);
+                  setAccept2(!accept2);
+                }}
+              >
+                <View style={{ marginTop: -3 }}>
+                  <WithLocalSvg
+                    asset={accept1 && accept2 ? CheckboxAfter : Checkbox}
+                  />
+                </View>
+              </Pressable>
+              <Text
+                style={[
+                  styles.acceptText,
+                  {
+                    color:
+                      accept1 && accept2
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                  },
+                ]}
+              >
+                전체동의
+              </Text>
             </View>
             <View style={styles.acceptContentContainer}>
               <View style={{ flexDirection: "row" }}>
-                <Ionicons
-                  name="checkmark"
-                  color={GlobalStyles.colors.gray05}
-                  size={15}
-                />
+                <Pressable
+                  onPress={() => {
+                    setAccept1(!accept1);
+                  }}
+                >
+                  <View style={{ marginTop: 4 }}>
+                    <WithLocalSvg
+                      asset={!accept1 ? Checkmark : CheckmarkAfter}
+                    />
+                  </View>
+                </Pressable>
 
-                <Text style={styles.acceptContentText}>[필수] 이용약관</Text>
+                <Text
+                  style={[
+                    styles.acceptContentText,
+                    {
+                      color: accept1
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                    },
+                  ]}
+                >
+                  [필수] 이용약관
+                </Text>
               </View>
-              <Pressable style={{ marginRight: 42 }} onPress={naviAgreeInfo}>
-                <Ionicons
-                  name="chevron-forward"
-                  color={GlobalStyles.colors.gray05}
-                  size={20}
-                />
+              <Pressable style={{ marginRight: 35 }} onPress={naviAgreeInfo}>
+                <WithLocalSvg asset={Right} />
               </Pressable>
             </View>
             <View style={styles.acceptContentContainer}>
               <View style={{ flexDirection: "row", marginBottom: 40 }}>
-                <Ionicons
-                  name="checkmark"
-                  color={GlobalStyles.colors.gray05}
-                  size={15}
-                />
-                <Text style={styles.acceptContentText}>
+                <Pressable
+                  onPress={() => {
+                    setAccept2(!accept2);
+                  }}
+                >
+                  <View style={{ marginTop: 4 }}>
+                    <WithLocalSvg
+                      asset={!accept2 ? Checkmark : CheckmarkAfter}
+                    />
+                  </View>
+                </Pressable>
+                <Text
+                  style={[
+                    styles.acceptContentText,
+                    {
+                      color: accept2
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                    },
+                  ]}
+                >
                   [필수] 개인정보 수집 및 이용
                 </Text>
               </View>
-              <Pressable style={{ marginRight: 42 }} onPress={naviAgreeInfo}>
-                <Ionicons
-                  name="chevron-forward"
-                  color={GlobalStyles.colors.gray05}
-                  size={20}
-                />
+              <Pressable style={{ marginRight: 35 }} onPress={naviAgreeInfo}>
+                <WithLocalSvg asset={Right} />
               </Pressable>
             </View>
           </View>
@@ -260,6 +388,85 @@ function Code() {
           </Pressable>
         </Pressable>
       </Modal>
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={visibleCode}
+        statusBarTranslucent={true}
+        onRequestClose={() => setVisibleCode(!visibleCode)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setVisibleCode(!visibleCode)}
+        >
+          <Pressable>
+            <View
+              style={{
+                backgroundColor: "white",
+                height: 357,
+                justifyContent: "space-between",
+
+                borderTopEndRadius: 5.41,
+                borderTopStartRadius: 5.41,
+              }}
+            >
+              <View>
+                <View style={styles.statusTitleContainer}>
+                  <View style={styles.iconContainer}>
+                    <Pressable onPress={() => setVisibleCode(!visibleCode)}>
+                      <Ionicons name="close-outline" size={40} />
+                    </Pressable>
+                  </View>
+                  <Text style={styles.statusTitle}>가입 유형</Text>
+                </View>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={generationSelect1}
+                >
+                  <Text style={styles.statusText}>0기</Text>
+                  <View style={[styles.iconContainer2, { display: cdisplay1 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={generationSelect2}
+                >
+                  <Text style={styles.statusText}>1기</Text>
+                  <View style={[styles.iconContainer2, { display: cdisplay2 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={generationSelect3}
+                >
+                  <Text style={styles.statusText}>2기</Text>
+                  <View style={[styles.iconContainer2, { display: cdisplay3 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.statusTextContainer}
+                  onPress={generationSelect4}
+                >
+                  <Text style={styles.statusText}>3기</Text>
+                  <View style={[styles.iconContainer2, { display: cdisplay4 }]}>
+                    <Ionicons name="checkmark" size={30} />
+                  </View>
+                </Pressable>
+              </View>
+              <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                <ButtonBig
+                  text="확인"
+                  style={GlobalStyles.colors.primaryDefault}
+                  onPress={okayBtn2}
+                />
+              </View>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -306,7 +513,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 600,
     lineHeight: 22,
-    marginLeft: 21,
+    marginLeft: 19,
     color: GlobalStyles.colors.gray05,
   },
   acceptContentText: {

@@ -17,6 +17,7 @@ function Id() {
   const navigation = useNavigation();
   const [flex1, setFlex1] = useState(1);
   const flex2 = 10 - flex1;
+  const [isVisible, setIsVisible] = useState(false);
 
   const { signData, setSignData } = useContext(SignContext);
 
@@ -50,6 +51,7 @@ function Id() {
           navigation.navigate("pw");
         } else {
           Alert.alert("Error", "이미 존재하는 아이디입니다.");
+          setIsVisible(true);
         }
       } catch (error) {
         console.log(error);
@@ -76,6 +78,11 @@ function Id() {
               onChangeText={handleIdChange}
               value={inputId}
             />
+            {isVisible && (
+              <Text style={styles.failText}>
+                해당 아이디는 이미 존재합니다.
+              </Text>
+            )}
           </View>
         </View>
         <View style={styles.buttonContainer}>
@@ -124,5 +131,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
+  },
+  failText: {
+    color: GlobalStyles.colors.red,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 17,
+    marginLeft: 10,
+    marginTop: 3,
   },
 });

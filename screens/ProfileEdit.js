@@ -6,30 +6,44 @@ import {
   Image,
   Pressable,
   Alert,
+  Modal,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import InputLine from "../components/ui/InputLine";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { getProfile2, updateProfile } from "../utill/http";
+import { getProfile2, updateProfile, updateUserImage } from "../utill/http";
+import { Ionicons } from "@expo/vector-icons";
+import ButtonBig from "../components/ui/ButtonBig";
+import { HeaderContext } from "../store/header-context";
+import Timer from "../components/feat/Timer";
+import * as ImagePicker from "expo-image-picker";
 
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
+  const { headerId, setHeaderId } = useContext(HeaderContext);
+  console.log(headerId);
   const [phoneNum, setphoneNum] = useState(data.phone);
   const [authNum, setauthNum] = useState("");
-
+  const [visible, setVisible] = useState(false);
+  const [display1, setDispaly1] = useState("none");
+  const [display2, setDispaly2] = useState("none");
+  const [count, setCount] = useState(0);
+  const [authVisible, setAuthVisible] = useState(false);
+  const [imageUrl, setImageUrl] = useState(data.profileImg);
   const [birth, setBirth] = useState(data.birth);
   const [generation, setGeneration] = useState(data.generation);
-  const [major, setMajor] = useState(data.major);
+  const [major, setMajor] = useState(data.degree.major);
   const [name, setName] = useState(data.name);
 
-  const [school, setSchool] = useState(data.school);
-  const [studentId, setStudentId] = useState(data.studentId);
-  const [studentStatus, setStudentStatus] = useState(data.studentStatus);
+  const [school, setSchool] = useState(data.degree.school);
+  const [studentId, setStudentId] = useState(data.degree.studentId);
+  const [studentStatus, setStudentStatus] = useState(data.degree.studentStatus);
   // const navigation = useNavigation();
 
-  const status = data.studentStatus === "ATTENDING" ? "재학" : "휴학";
+  const status1 = studentStatus === "ATTENDING" ? "재학" : "휴학";
+  const formData = new FormData();
 
   const handlePhoneChange = (text) => {
     setphoneNum(text);
@@ -38,8 +52,26 @@ function ProfileEdit({ navigation, route }) {
     setauthNum(text);
   };
 
+  function statusSelect() {
+    if (display1 === "none") {
+      setDispaly1("flex");
+      setDispaly2("none");
+    } else {
+      setDispaly1("none");
+      setDispaly2("flex");
+    }
+  }
+
   async function completeHandler() {
     try {
+      if (imageUrl !== "") {
+        try {
+          const response = await updateUserImage({ formData: formData });
+          console.log(response);
+        } catch (error) {
+          console.log(error + "사진 못보냄");
+        }
+      }
       const success = await updateProfile({
         generation: generation,
         major: major,
@@ -47,7 +79,7 @@ function ProfileEdit({ navigation, route }) {
         school: school,
         studentId: studentId,
         studentStatus: studentStatus,
-        id: "1",
+        id: headerId,
       });
       console.log(success);
       if (success.success) {
@@ -81,6 +113,8 @@ function ProfileEdit({ navigation, route }) {
   function requestNumber() {
     try {
       authPhoneNum({ messageType: "UPDATE", phone: phoneNum });
+      setCount(179);
+      setAuthVisible(true);
     } catch (error) {
       Alert.alert("ERROR", "다시 시도해주세요");
     }
@@ -97,6 +131,8 @@ function ProfileEdit({ navigation, route }) {
 
         console.log(success);
         if (success) {
+          setCount(0);
+          setAuthVisible(false);
           Alert.alert("번호 변경", "휴대폰 번호 변경 완료");
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
@@ -105,6 +141,16 @@ function ProfileEdit({ navigation, route }) {
         Alert.alert("ERROR", "Network Error");
       }
     } else {
+    }
+  }
+
+  function okayBtn() {
+    if (display1 === "flex" || display2 === "flex") {
+      setStudentStatus(display1 === "none" ? "ABSENCE" : "ATTENDING");
+
+      setVisible(!visible);
+    } else {
+      setVisible(!visible);
     }
   }
 
@@ -121,23 +167,65 @@ function ProfileEdit({ navigation, route }) {
   const handleStudentIdChange = (text) => {
     setStudentId(text);
   };
-  const handleStatusChange = (text) => {
-    setStudentStatus(text);
-  };
+
   const handleGenerationChange = (text) => {
     setGeneration(text);
+  };
+
+  //camera
+  const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
+
+  const uploadImage = async () => {
+    if (!statusCamera?.granted) {
+      const permission = await requestPermission();
+      if (!permission.granted) {
+        return null;
+      }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+    console.log(!result.canceled);
+
+    if (!result.canceled) {
+      const filename = result.assets[0].uri.split("/").pop();
+      console.log(filename);
+      formData.append("images", {
+        uri: result.assets[0].uri,
+        type: "multipart/form-data",
+        name: filename,
+      });
+      setImageUrl(result.assets[0].uri);
+    } else {
+      return null;
+    }
   };
 
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={require("../assets/profile.png")}
-          />
-          <View style={{ marginTop: 8 }}>
-            <Pressable>
+          {imageUrl !== "" ? (
+            <Image
+              style={styles.image}
+              source={{
+                uri: imageUrl,
+              }}
+            />
+          ) : (
+            <Image
+              style={styles.image}
+              source={require("../assets/profile.png")}
+            />
+          )}
+          <View style={{ marginTop: 4 }}>
+            <Pressable onPress={uploadImage}>
               <Text style={styles.imgEditText}>사진 수정</Text>
             </Pressable>
           </View>
@@ -171,6 +259,15 @@ function ProfileEdit({ navigation, route }) {
               value={authNum}
               keyboardType="numeric"
             />
+            {authVisible && (
+              <View style={{ marginTop: 0 }}>
+                <Timer
+                  count={count}
+                  setCount={setCount}
+                  smallStyle={styles.timer2}
+                />
+              </View>
+            )}
             <Pressable onPress={verifyAuthNum}>
               <Text style={styles.auth}>인증확인</Text>
             </Pressable>
@@ -189,10 +286,11 @@ function ProfileEdit({ navigation, route }) {
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>재학 유무</Text>
-            <InputLine
-              onChangeText={handleStatusChange}
-              value={studentStatus}
-            />
+            <Pressable onPress={() => setVisible(!visible)}>
+              <View style={styles.statusContainer2}>
+                <Text style={styles.statusText2}>{status1}</Text>
+              </View>
+            </Pressable>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>기수</Text>
@@ -214,7 +312,7 @@ function ProfileEdit({ navigation, route }) {
                 { color: GlobalStyles.colors.gray01 },
               ]}
             >
-              hynnk0
+              {data.name}
             </Text>
           </View>
           <View style={styles.contentContainer}>
@@ -232,6 +330,72 @@ function ProfileEdit({ navigation, route }) {
           </View>
         </View>
         <View style={styles.border}></View>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={visible}
+          statusBarTranslucent={true}
+          onRequestClose={() => setVisible(!visible)}
+        >
+          <Pressable
+            style={styles.modalOverlay}
+            onPress={() => setVisible(!visible)}
+          >
+            <Pressable>
+              <View
+                style={{
+                  backgroundColor: "white",
+
+                  height: 273,
+                  justifyContent: "space-between",
+
+                  borderTopEndRadius: 5.41,
+                  borderTopStartRadius: 5.41,
+                }}
+              >
+                <View>
+                  <View style={styles.statusTitleContainer}>
+                    <View style={styles.iconContainer}>
+                      <Pressable onPress={() => setVisible(!visible)}>
+                        <Ionicons name="close-outline" size={40} />
+                      </Pressable>
+                    </View>
+                    <Text style={styles.statusTitle}>재학 유무</Text>
+                  </View>
+                  <Pressable
+                    style={styles.statusTextContainer}
+                    onPress={statusSelect}
+                  >
+                    <Text style={styles.statusText}>재학</Text>
+                    <View
+                      style={[styles.iconContainer2, { display: display1 }]}
+                    >
+                      <Ionicons name="checkmark" size={30} />
+                    </View>
+                  </Pressable>
+                  <Pressable
+                    style={styles.statusTextContainer}
+                    onPress={statusSelect}
+                  >
+                    <Text style={styles.statusText}>휴학</Text>
+                    <View
+                      style={[styles.iconContainer2, { display: display2 }]}
+                    >
+                      <Ionicons name="checkmark" size={30} />
+                    </View>
+                  </Pressable>
+                </View>
+                <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                  <ButtonBig
+                    text="확인"
+                    style={GlobalStyles.colors.primaryDefault}
+                    onPress={okayBtn}
+                  />
+                </View>
+              </View>
+            </Pressable>
+          </Pressable>
+        </Modal>
       </ScrollView>
     </View>
   );
@@ -249,8 +413,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   image: {
-    width: 99,
-    height: 99,
+    width: 78,
+    margin: 11,
+    height: 78,
+
+    borderRadius: 50,
   },
   imgEditText: {
     color: GlobalStyles.colors.primaryDefault,
@@ -314,5 +481,70 @@ const styles = StyleSheet.create({
     // lineHeight: 20,
     color: GlobalStyles.colors.primaryDefault,
     marginRight: 10,
+  },
+  statusContainer2: {
+    flex: 1,
+    marginLeft: 45,
+    borderBottomColor: GlobalStyles.colors.gray06,
+    borderBottomWidth: 0.5,
+    height: 17,
+  },
+  statusText2: {
+    fontSize: 12,
+    fontWeight: "400",
+    color: GlobalStyles.colors.gray01,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+  },
+  statusTitleContainer: {
+    flexDirection: "row",
+    borderBottomColor: GlobalStyles.colors.gray05,
+    borderBottomWidth: 1,
+    height: 53,
+    alignItems: "center",
+  },
+  statusTitle: {
+    fontSize: 17,
+    fontWeight: 600,
+    lineHeight: 22,
+    marginTop: 3,
+    flex: 1,
+
+    marginRight: 50,
+    textAlign: "center",
+  },
+  statusText: {
+    fontSize: 15,
+    fontWeight: 400,
+    lineHeight: 20,
+    marginLeft: 20,
+  },
+  statusTextContainer: {
+    borderBottomColor: GlobalStyles.colors.gray05,
+    borderBottomWidth: 0.5,
+    height: 42,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconContainer: {
+    marginLeft: 10,
+    marginTop: 3,
+  },
+  iconContainer2: {
+    marginRight: 10,
+    marginTop: 2,
+  },
+  timer2: {
+    color: GlobalStyles.colors.red,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 17,
+    position: "absolute",
+    top: 0,
+    right: 9,
   },
 });
