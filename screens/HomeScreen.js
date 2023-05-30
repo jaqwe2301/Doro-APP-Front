@@ -13,10 +13,12 @@ import {
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
-
 import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
+import { WithLocalSvg } from "react-native-svg";
+import CreactingLecture from "../assets/creatingLecture.svg";
+
 import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
 import { getProfile } from "../utill/http";
@@ -170,7 +172,14 @@ const HomeScreen = ({ lectureIdProps }) => {
       case "first":
         return (
           <ScrollView style={styles.lectureListContainer}>
-            <View style={{ flexDirection: "row", gap: 7, marginTop: 15, marginBottom: 5 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 7,
+                marginTop: 15,
+                marginBottom: 5,
+              }}
+            >
               <FilterBox text="교육 지역" />
               <FilterBox text="교육 날짜" />
             </View>
@@ -232,7 +241,9 @@ const HomeScreen = ({ lectureIdProps }) => {
       <Pressable
         onPress={() => navigation.navigate("UpdateLectureScreen", { data: "" })}
       >
-        <View style={styles.BottomButton}></View>
+        <View style={styles.BottomButton}>
+          <WithLocalSvg asset={CreactingLecture} />
+        </View>
       </Pressable>
       {/* ) : (
         ""
@@ -266,11 +277,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: 56,
     width: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: GlobalStyles.colors.primaryDefault,
     bottom: 27,
     right: 20,
   },
   mainTitle: {
+    marginTop: 15,
     fontSize: 17,
     fontWeight: "bold",
   },

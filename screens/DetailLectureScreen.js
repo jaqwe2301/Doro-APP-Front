@@ -212,7 +212,9 @@ function DetailLectureScreen({ route }) {
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <LectureTop
         subTitle={lectureBasicInfo.subTitle}
-        payment={lectureBasicInfo.mainPayment}
+        mainPayment={lectureBasicInfo.mainPayment}
+        subPayment={lectureBasicInfo.subPayment}
+        staffPayment={lectureBasicInfo.staffPayment}
         city={lectureBasicInfo.city}
         date={lectureBasicInfo.lectureDates}
         time={lectureBasicInfo.time}
