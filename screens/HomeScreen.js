@@ -18,6 +18,7 @@ import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
 import LectureBox from "./../components/ui/LectureBox";
+import FilterBox from "../components/ui/FilterBox";
 import { getProfile } from "../utill/http";
 
 const HomeScreen = ({ lectureIdProps }) => {
@@ -38,7 +39,7 @@ const HomeScreen = ({ lectureIdProps }) => {
   useEffect(() => {
     axios
       .get("http://10.0.2.2:8080/lectures", {
-      // .get("https://api.doroapp.com/lectures", {
+        // .get("https://api.doroapp.com/lectures", {
         params: {
           city: "",
           endDate: "",
@@ -169,6 +170,10 @@ const HomeScreen = ({ lectureIdProps }) => {
       case "first":
         return (
           <ScrollView style={styles.lectureListContainer}>
+            <View style={{ flexDirection: "row", gap: 7, marginTop: 15, marginBottom: 5 }}>
+              <FilterBox text="교육 지역" />
+              <FilterBox text="교육 날짜" />
+            </View>
             {LectureElements}
           </ScrollView>
         );
@@ -212,6 +217,7 @@ const HomeScreen = ({ lectureIdProps }) => {
               // 폰트 스타일
               margin: 0,
               fontSize: 15,
+              color: "black",
             }}
             tabStyle={{
               flexDirection: "row",
