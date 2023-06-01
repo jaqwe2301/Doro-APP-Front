@@ -2,11 +2,13 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
 import { useNavigation } from "@react-navigation/native";
-
-function FindId() {
+import { useContext } from "react";
+import { AuthContext } from "../../store/auth-context";
+function FinishPw() {
+  const authCtx = useContext(AuthContext);
   const navigation = useNavigation();
   function naviLogin() {
-    navigation.navigate("signUp");
+    authCtx.isAuthenticated ? authCtx.logout() : navigation.replace("login");
   }
   return (
     <View
@@ -18,12 +20,13 @@ function FindId() {
     >
       <View>
         <View style={styles.headerShadow}></View>
-        <Text style={[styles.text, { marginTop: 60 }]}>해당 아이디가</Text>
-        <Text style={styles.text}>조회되지 않습니다.</Text>
+        <Text style={[styles.text, { marginTop: 45 }]}>
+          비밀번호 변경이 완료되었습니다.
+        </Text>
       </View>
       <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
         <ButtonBig
-          text="회원 가입"
+          text="로그인"
           style={GlobalStyles.colors.primaryDefault}
           onPress={naviLogin}
         />
@@ -32,7 +35,7 @@ function FindId() {
   );
 }
 
-export default FindId;
+export default FinishPw;
 
 const styles = StyleSheet.create({
   text: {
