@@ -19,6 +19,8 @@ import ButtonBig from "../components/ui/ButtonBig";
 import { HeaderContext } from "../store/header-context";
 import Timer from "../components/feat/Timer";
 import * as ImagePicker from "expo-image-picker";
+import { WithLocalSvg } from "react-native-svg";
+import Down from "../assets/down.svg";
 
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
@@ -64,7 +66,7 @@ function ProfileEdit({ navigation, route }) {
 
   async function completeHandler() {
     try {
-      if (imageUrl !== "") {
+      if (imageUrl !== null) {
         try {
           const response = await updateUserImage({ formData: formData });
           console.log(response);
@@ -133,7 +135,7 @@ function ProfileEdit({ navigation, route }) {
         if (success) {
           setCount(0);
           setAuthVisible(false);
-          Alert.alert("번호 변경", "휴대폰 번호 변경 완료");
+          Alert.alert("알림", "휴대전화번호 변경이 완료되었습니다");
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
         }
@@ -211,7 +213,7 @@ function ProfileEdit({ navigation, route }) {
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.imageContainer}>
-          {imageUrl !== "" ? (
+          {imageUrl !== null ? (
             <Image
               style={styles.image}
               source={{
@@ -286,11 +288,21 @@ function ProfileEdit({ navigation, route }) {
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>재학 유무</Text>
-            <Pressable onPress={() => setVisible(!visible)}>
-              <View style={styles.statusContainer2}>
+            <View style={styles.statusContainer2}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Text style={styles.statusText2}>{status1}</Text>
+                <Pressable onPress={() => setVisible(!visible)}>
+                  {/* <View style={{ paddingBottom: 3 }}> */}
+                  <WithLocalSvg asset={Down} width={20} height={20} />
+                  {/* </View> */}
+                </Pressable>
               </View>
-            </Pressable>
+            </View>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>기수</Text>
@@ -483,7 +495,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   statusContainer2: {
+    // width: "100%",
     flex: 1,
+    // paddingRight: 20,
     marginLeft: 45,
     borderBottomColor: GlobalStyles.colors.gray06,
     borderBottomWidth: 0.5,
@@ -491,6 +505,7 @@ const styles = StyleSheet.create({
   },
   statusText2: {
     fontSize: 12,
+
     fontWeight: "400",
     color: GlobalStyles.colors.gray01,
   },

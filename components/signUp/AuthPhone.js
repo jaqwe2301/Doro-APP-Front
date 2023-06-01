@@ -20,8 +20,7 @@ function AuthPhone() {
   const [btnTitle, setBtnTitle] = useState("인증 요청");
   const { signData, setSignData } = useContext(SignContext);
   const navigation = useNavigation();
-  const [flex1, setFlex1] = useState(0);
-  const flex2 = 10 - flex1;
+
   const [count, setCount] = useState(0);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -38,10 +37,8 @@ function AuthPhone() {
   const handleAuthChange = (text) => {
     setauthNum(text);
     if (text.length === 6) {
-      setFlex1(1);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
-      setFlex1(0);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
   };
@@ -78,7 +75,7 @@ function AuthPhone() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={1} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
@@ -132,7 +129,7 @@ export default AuthPhone;
 const styles = StyleSheet.create({
   textContainer: {
     marginHorizontal: 20,
-    marginTop: 45,
+    marginTop: 35,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -140,7 +137,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 20,
     flexDirection: "row",
   },
   lInputContainer: {
@@ -156,15 +153,15 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     color: GlobalStyles.colors.gray04,
     marginHorizontal: 20,
-    marginTop: 6,
-    marginBottom: 18,
+    marginTop: 3,
+
     lineHeight: 20,
   },
   textSend: {
     fontSize: 12,
     fontWeight: 400,
-    marginHorizontal: 20,
-    marginTop: 8,
+    marginLeft: 23,
+    marginTop: 3,
     marginBottom: 66,
   },
   timer: {
