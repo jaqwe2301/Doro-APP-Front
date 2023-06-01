@@ -26,6 +26,8 @@ import CheckmarkAfter from "../../assets/checkmark_after.svg";
 import CheckboxAfter from "../../assets/checkbox_after.svg";
 import Right from "../../assets/right.svg";
 import Down from "../../assets/down.svg";
+import Modalx from "../../assets/modalx.svg";
+import ModalCheck from "../../assets/modalcheck.svg";
 
 function Code() {
   const [inputCode, setInputCode] = useState("");
@@ -48,8 +50,6 @@ function Code() {
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
-  const [flex1, setFlex1] = useState(9);
-  const flex2 = 10 - flex1;
 
   const [accept1, setAccept1] = useState(false);
   const [accept2, setAccept2] = useState(false);
@@ -143,7 +143,6 @@ function Code() {
       setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
       setSelect(display1 === "none" ? "매니저" : "강사");
       setStatusStyle(styles.textInputText);
-      setFlex1(9);
 
       setVisible(!visible);
     } else {
@@ -171,7 +170,6 @@ function Code() {
         setSelectCode("3기");
       }
       setStatusGStyle(styles.textInputText);
-      setFlex1(9);
 
       setVisibleCode(!visibleCode);
     } else {
@@ -181,10 +179,10 @@ function Code() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={3} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <ScrollView>
-          <View style={styles.textContainer}>
+          <View style={[styles.textContainer, { marginTop: 35 }]}>
             <InputText text="기수를 입력해 주세요." />
           </View>
           <View style={styles.inputContainer}>
@@ -216,7 +214,7 @@ function Code() {
             </Pressable>
           </View>
 
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { marginTop: 10 }]}>
             <InputData
               hint="가입 코드를 입력해주세요"
               onChangeText={handleCodeChange}
@@ -287,7 +285,10 @@ function Code() {
                   [필수] 이용약관
                 </Text>
               </View>
-              <Pressable style={{ marginRight: 35 }} onPress={naviAgreeInfo}>
+              <Pressable
+                style={{ marginRight: 35 }}
+                onPress={() => navigation.navigate("agreeInfo")}
+              >
                 <WithLocalSvg asset={Right} />
               </Pressable>
             </View>
@@ -317,7 +318,10 @@ function Code() {
                   [필수] 개인정보 수집 및 이용
                 </Text>
               </View>
-              <Pressable style={{ marginRight: 35 }} onPress={naviAgreeInfo}>
+              <Pressable
+                style={{ marginRight: 35 }}
+                onPress={() => navigation.navigate("agreeInfo2")}
+              >
                 <WithLocalSvg asset={Right} />
               </Pressable>
             </View>
@@ -353,7 +357,7 @@ function Code() {
                 <View style={styles.statusTitleContainer}>
                   <View style={styles.iconContainer}>
                     <Pressable onPress={() => setVisible(!visible)}>
-                      <Ionicons name="close-outline" size={40} />
+                      <WithLocalSvg asset={Modalx} />
                     </Pressable>
                   </View>
                   <Text style={styles.statusTitle}>가입 유형</Text>
@@ -364,7 +368,7 @@ function Code() {
                 >
                   <Text style={styles.statusText}>강사</Text>
                   <View style={[styles.iconContainer2, { display: display1 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
                 <Pressable
@@ -373,7 +377,7 @@ function Code() {
                 >
                   <Text style={styles.statusText}>매니저</Text>
                   <View style={[styles.iconContainer2, { display: display2 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
               </View>
@@ -414,7 +418,7 @@ function Code() {
                 <View style={styles.statusTitleContainer}>
                   <View style={styles.iconContainer}>
                     <Pressable onPress={() => setVisibleCode(!visibleCode)}>
-                      <Ionicons name="close-outline" size={40} />
+                      <WithLocalSvg asset={Modalx} />
                     </Pressable>
                   </View>
                   <Text style={styles.statusTitle}>가입 유형</Text>
@@ -425,7 +429,7 @@ function Code() {
                 >
                   <Text style={styles.statusText}>0기</Text>
                   <View style={[styles.iconContainer2, { display: cdisplay1 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
                 <Pressable
@@ -434,7 +438,7 @@ function Code() {
                 >
                   <Text style={styles.statusText}>1기</Text>
                   <View style={[styles.iconContainer2, { display: cdisplay2 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
                 <Pressable
@@ -443,7 +447,7 @@ function Code() {
                 >
                   <Text style={styles.statusText}>2기</Text>
                   <View style={[styles.iconContainer2, { display: cdisplay3 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
                 <Pressable
@@ -452,7 +456,7 @@ function Code() {
                 >
                   <Text style={styles.statusText}>3기</Text>
                   <View style={[styles.iconContainer2, { display: cdisplay4 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
               </View>
@@ -475,8 +479,8 @@ export default Code;
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginHorizontal: 20,
-    marginTop: 44,
+    marginHorizontal: 23,
+    marginTop: 50,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -533,7 +537,7 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(84, 84, 86, 0.3)",
   },
   textInput: {
     height: 40,
@@ -573,7 +577,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
     flex: 1,
 
-    marginRight: 50,
+    marginRight: 48,
     textAlign: "center",
   },
   statusText: {
@@ -591,11 +595,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   iconContainer: {
-    marginLeft: 10,
+    marginLeft: 20,
     marginTop: 3,
   },
   iconContainer2: {
-    marginRight: 10,
+    marginRight: 22,
     marginTop: 2,
   },
 });

@@ -22,8 +22,7 @@ function Pw() {
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
-  const [flex1, setFlex1] = useState(2);
-  const flex2 = 10 - flex1;
+
   const handlePwChange = (text) => {
     let hasEng = /[a-zA-Z]+/g.test(text);
     let hasNum = /[0-9]+/g.test(text);
@@ -75,11 +74,9 @@ function Pw() {
       /[0-9]+/g.test(text) &&
       /[~!@#$%^&*()_+|<>?:{}]+/g.test(text)
     ) {
-      setFlex1(3);
       setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
-      setFlex1(2);
       setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
@@ -96,7 +93,7 @@ function Pw() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={1} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
@@ -141,8 +138,8 @@ export default Pw;
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginHorizontal: 20,
-    marginTop: 45,
+    marginHorizontal: 23,
+    marginTop: 35,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -150,7 +147,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 25,
   },
   lInputContainer: {
     marginHorizontal: 20,
@@ -169,21 +166,24 @@ const styles = StyleSheet.create({
   },
   pwBtn: {
     flexDirection: "row",
-    marginHorizontal: 20,
+    marginHorizontal: 16,
   },
   text: {
     fontSize: 15,
     fontWeight: 400,
     color: GlobalStyles.colors.gray04,
     marginRight: 20,
+
+    lineHeight: 20,
     textAlign: "center",
   },
   id: {
     fontSize: 15,
     fontWeight: 600,
-    marginLeft: 20,
+    marginLeft: 23,
     marginRight: 4,
     flex: 0,
+    lineHeight: 20,
     color: GlobalStyles.colors.gray01,
     textAlign: "center",
   },

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   Pressable,
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
@@ -16,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
+import axios from "axios";
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -32,6 +34,7 @@ function MyPageScreen({ navigation }) {
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
 
   useEffect(() => {
     profileHandler();
@@ -51,22 +54,44 @@ function MyPageScreen({ navigation }) {
   }
 
   async function tokenHandler() {
+    // const token = await AsyncStorage.getItem("token");
+    // const refreshToken = await AsyncStorage.getItem("refreshToken");
+
+    // console.log("전 토큰" + token);
+    // console.log("리프레쉬 토큰" + refreshToken);
+
+    // try {
+    //   const response = await reToken({
+    //     accessToken: `Bearer ${token}`,
+    //     refreshToken: refreshToken,
+    //   });
+    //   console.log("되는듯" + response.headers.authorization);
+    //   await AsyncStorage.setItem("token", response.headers.authorization);
+    // } catch (error) {
+    //   console.log("error발생" + error);
+    //   // console.log(error)
+    // }
+
     const token = await AsyncStorage.getItem("token");
     const refreshToken = await AsyncStorage.getItem("refreshToken");
-
-    console.log("전 토큰" + token);
-    console.log("리프레쉬 토큰" + refreshToken);
+    console.log("hi refresh 할꺼염 \t");
+    console.log(token);
+    console.log(refreshToken);
 
     try {
-      const response = await reToken({
+      const response = await axios.post("http://10.0.2.2:8080/reissue", {
         accessToken: `Bearer ${token}`,
         refreshToken: refreshToken,
       });
-      console.log("되는듯" + response);
-      authCtx.authenticate(response, refreshToken);
+      const newToken = response.headers.authorization;
+      console.log("새로운 토큰이얌" + newToken);
+      await AsyncStorage.setItem("token", newToken);
+      if (newToken) {
+        originalConfig.headers["Authorization"] = `Bearer ${newToken}`;
+      }
+      return axios(originalConfig);
     } catch (error) {
       console.log("error발생" + error);
-      // console.log(error)
     }
   }
 
@@ -76,21 +101,12 @@ function MyPageScreen({ navigation }) {
 
   function UserScreen() {
     function logoutHandler() {
-      authCtx.logout();
-    }
-
-    async function deleteHandler() {
-      try {
-        const response = await deleteUser();
-        console.log("삭제?" + response);
-      } catch (error) {
-        console.log("error발생" + error);
-        // console.log(error)
-      }
-    }
-
-    function navi() {
-      navigation.navigate("searchPw");
+      Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
+        {
+          text: "취소",
+        },
+        { text: "확인", onPress: () => authCtx.logout() },
+      ]);
     }
 
     // if (Object.keys(data).length === 0) {
@@ -114,7 +130,7 @@ function MyPageScreen({ navigation }) {
         <View style={styles.container}>
           <ScrollView>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {data.profileImg !== "" ? (
+              {data.profileImg !== null ? (
                 <Image
                   style={styles.image}
                   source={{
@@ -165,10 +181,11 @@ function MyPageScreen({ navigation }) {
                   <Text style={styles.btn}>프로필 편집</Text>
                 </Pressable>
               </View>
-              <View style={styles.btnContainer}>
-                <Pressable onPress={tokenHandler}>
+              {/* <View style={styles.btnContainer}> */}
+              <View style={{ flex: 1 }}>
+                {/* <Pressable onPress={tokenHandler}>
                   <Text style={styles.btn}>강의신청내역</Text>
-                </Pressable>
+                </Pressable> */}
               </View>
             </View>
             <View>
@@ -205,11 +222,11 @@ function MyPageScreen({ navigation }) {
               <Text style={styles.contentTitle}>로그인 정보</Text>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>아이디</Text>
-                <Text style={styles.contentText}>{data.name}</Text>
+                <Text style={styles.contentText}>{headerAccount}</Text>
               </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>비밀번호</Text>
-                <Pressable onPress={navi}>
+                <Pressable onPress={() => navigation.navigate("searchPw")}>
                   <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
                     비밀번호 수정
                   </Text>
@@ -231,7 +248,11 @@ function MyPageScreen({ navigation }) {
               <View style={styles.border}></View>
             </View>
             <View style={{ marginBottom: 33 }}>
-              <Pressable onPress={deleteHandler}>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("deleteUser", { account: headerAccount })
+                }
+              >
                 <Text
                   style={[
                     styles.contentTitle,
