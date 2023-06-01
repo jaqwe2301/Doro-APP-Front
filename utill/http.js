@@ -4,7 +4,8 @@ import { AuthContext } from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Interceptor from "./Interceptor";
 
-const URL = "http://10.0.2.2:8080";
+// const URL = "http://10.0.2.2:8080";
+const URL = "https://api.doroapp.com";
 const instance = Interceptor();
 
 // id를 넣어주면 header 필요없고 id없으면 header 필요하다
