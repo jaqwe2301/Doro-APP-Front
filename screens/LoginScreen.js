@@ -65,6 +65,8 @@ function LoginScreen({ navigation }) {
         notificationListener.current
       );
       Notifications.removeNotificationSubscription(responseListener.current);
+      console.log(expoPushToken);
+      console.log("ㅗㅑㅗㅑ");
     };
   }, []);
 
@@ -72,7 +74,8 @@ function LoginScreen({ navigation }) {
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "You've got mail! 📬",
-        body: "Here is the notification body",
+        // body: `${expoPushToken}`,
+        body: "seee",
         data: { data: "goes here" },
       },
       trigger: { seconds: 2 },
@@ -145,12 +148,12 @@ function LoginScreen({ navigation }) {
         }}
       />
       <ScrollView>
-        {/* <Button
+        <Button
           title="Press to schedule a notification"
           onPress={async () => {
             await schedulePushNotification();
           }}
-        /> */}
+        />
         <View style={styles.content}>
           <View>
             <Input

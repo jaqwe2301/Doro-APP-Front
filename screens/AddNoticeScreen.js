@@ -38,20 +38,23 @@ function AddNoticeScreen({ navigation }) {
       },
     ];
 
-    // var json = JSON.stringify([{ title: title, body: body }]);
+    var json = JSON.stringify({ title: title, body: body });
     // var json = JSON.stringify(value);
 
     // // // Blob 객체로 JSON 데이터 생성
-    // var blob = new Blob([json], { type: "application/json" });
+    var blob = new Blob([json], { type: "application/json" });
 
     // FormData에 Blob 객체 추가
     formData.append(
       "announcementReq",
-      { title: title, body: body },
-      {
-        contentType: "application/json",
-      }
+      // blob
+      json
+      // // { title: title, body: body }
+      // {
+      //   contentType: "application/json",
+      // }
     );
+    console.log(formData);
     // formData.append(
     //   "announcementReq",
     //   new Blob([JSON.stringify(value)], { type: "application/json" })
@@ -69,19 +72,19 @@ function AddNoticeScreen({ navigation }) {
     //   console.log(value); // 각 값(value)을 출력
     // }
 
-    if (imageUrl) {
-      formData.append("picture", {
-        uri: imageUrl,
-        type: type,
-        name: filename,
-      });
-      // const response = await fetch(imageUrl);
-      // const blob = await response.blob();
-      // formData.append("picture", json);
-    } else {
-      formData.append("picture", "");
-    }
-    console.log(formData);
+    // if (imageUrl) {
+    //   formData.append("picture", {
+    //     uri: imageUrl,
+    //     type: type,
+    //     name: filename,
+    //   });
+    //   // const response = await fetch(imageUrl);
+    //   // const blob = await response.blob();
+    //   // formData.append("picture", json);
+    // } else {
+    //   formData.append("picture", "");
+    // }
+    // console.log(formData);
 
     // console.log(formData.get("announcementReq"));
     // console.log(formData.keys);
@@ -91,10 +94,10 @@ function AddNoticeScreen({ navigation }) {
     //   title: title,
     //   body: body,
     // });
-    const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
+    // const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
     try {
       const response = await axios.post(
-        "http://10.0.2.2:8080/announcements/",
+        "http://10.0.2.2:8080/announcements",
         // {
         //   announcementReq: [
         //     {
@@ -110,7 +113,8 @@ function AddNoticeScreen({ navigation }) {
         //     },
         //   ],
         // },
-        formData,
+        // formData,
+        { announcementReq: json },
         {
           headers: {
             "Content-Type": `multipart/form-data`,
@@ -178,25 +182,25 @@ function AddNoticeScreen({ navigation }) {
     }
   }
 
-  async function completeHandler() {
-    var formdata = new FormData();
-    formdata.append(
-      "announcementReq",
-      '{"title":"되냐 안되 ","body":"진아 모르겠나"}'
-    );
-    formdata.append("picture", fileInput.files[0], "/path/to/file");
+  // async function completeHandler() {
+  //   var formdata = new FormData();
+  //   formdata.append(
+  //     "announcementReq",
+  //     '{"title":"되냐 안되 ","body":"진아 모르겠나"}'
+  //   );
+  //   formdata.append("picture", fileInput.files[0], "/path/to/file");
 
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-      redirect: "follow",
-    };
+  //   var requestOptions = {
+  //     method: "POST",
+  //     body: formdata,
+  //     redirect: "follow",
+  //   };
 
-    fetch("http://localhost:8080/announcements", requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
-  }
+  //   fetch("http://localhost:8080/announcements", requestOptions)
+  //     .then((response) => response.text())
+  //     .then((result) => console.log(result))
+  //     .catch((error) => console.log("error", error));
+  // }
 
   //camera
 
@@ -232,13 +236,13 @@ function AddNoticeScreen({ navigation }) {
     navigation.setOptions({
       headerRight: () => {
         return (
-          <Pressable onPress={completeHandler}>
+          <Pressable onPress={completeHandler2}>
             <Text style={styles.completeText}>완료</Text>
           </Pressable>
         );
       },
     });
-  }, [completeHandler]);
+  }, [completeHandler2]);
 
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
