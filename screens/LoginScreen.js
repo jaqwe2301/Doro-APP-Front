@@ -20,13 +20,13 @@ import { HeaderContext } from "../store/header-context";
 import jwtDecode from "jwt-decode";
 import ButtonBig from "../components/ui/ButtonBig";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: false,
+//     shouldSetBadge: false,
+//   }),
+// });
 
 // 여기가 push토큰 전달하는 api
 async function sendPushNotification(expoPushToken) {
@@ -95,10 +95,10 @@ function LoginScreen({ navigation }) {
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   const authCtx = useContext(AuthContext);
 
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  // const [expoPushToken, setExpoPushToken] = useState("");
+  // const [notification, setNotification] = useState(false);
+  // const notificationListener = useRef();
+  // const responseListener = useRef();
 
   const handleId = (text) => {
     setId(text);
@@ -107,30 +107,30 @@ function LoginScreen({ navigation }) {
     setPw(text);
   };
 
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then((token) =>
+  //     setExpoPushToken(token)
+  //   );
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+  //   notificationListener.current =
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       setNotification(notification);
+  //     });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+  //   responseListener.current =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log(response);
+  //     });
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-      console.log(expoPushToken);
-      console.log("ㅗㅑㅗㅑ");
-    };
-  }, []);
+  //   return () => {
+  //     Notifications.removeNotificationSubscription(
+  //       notificationListener.current
+  //     );
+  //     Notifications.removeNotificationSubscription(responseListener.current);
+  //     console.log(expoPushToken);
+  //     console.log("ㅗㅑㅗㅑ");
+  //   };
+  // }, []);
 
   async function schedulePushNotification() {
     await Notifications.scheduleNotificationAsync({
