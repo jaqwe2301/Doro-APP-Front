@@ -18,6 +18,18 @@ import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
+// import * as Notifications from "expo-notifications";
+
+// export async function requestPermissionsAsync() {
+//   return await Notifications.requestPermissionsAsync({
+//     ios: {
+//       allowAlert: true,
+//       allowBadge: true,
+//       allowSound: true,
+//       allowAnnouncements: true,
+//     },
+//   });
+// }
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -93,6 +105,53 @@ function MyPageScreen({ navigation }) {
     } catch (error) {
       console.log("error발생" + error);
     }
+  }
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    return token;
+  }
+
+  function alarmHandler() {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
   }
 
   function ManagerScreen() {
@@ -181,11 +240,11 @@ function MyPageScreen({ navigation }) {
                   <Text style={styles.btn}>프로필 편집</Text>
                 </Pressable>
               </View>
-              {/* <View style={styles.btnContainer}> */}
-              <View style={{ flex: 1 }}>
-                {/* <Pressable onPress={tokenHandler}>
-                  <Text style={styles.btn}>강의신청내역</Text>
-                </Pressable> */}
+              <View style={styles.btnContainer}>
+                {/* <View style={{ flex: 1 }}> */}
+                <Pressable onPress={alarmHandler}>
+                  <Text style={styles.btn}>알림 설정</Text>
+                </Pressable>
               </View>
             </View>
             <View>
