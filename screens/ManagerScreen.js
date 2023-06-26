@@ -1,11 +1,41 @@
-import { useState, useEffect } from "react";
-import { useWindowDimensions, StyleSheet, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  useWindowDimensions,
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  FlatList,
+} from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 import { GlobalStyles } from "./../constants/styles";
+import FilterBox from "../components/ui/FilterBox";
+import TutorBox from "../components/ui/TutorBox";
 
 function ManagerScreen() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://10.0.2.2:8080/users", {
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data.data);
+        setUsers(res.data.data);
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+      });
+  }, []);
+
   const navigation = useNavigation();
 
   const layout = useWindowDimensions();
@@ -21,18 +51,30 @@ function ManagerScreen() {
     switch (route.key) {
       case "first":
         return (
-          <View></View>
+          <View>
+            <FilterBox text="기수 선택" />
+            <FlatList
+              data={users}
+              renderItem={(itemData) => {
+                const item = itemData.item
+                return (
+                  <TutorBox
+                    name={item.name}
+                    generation={item.generation}
+                    school={item.degree.school}
+                    major={item.degree.major}
+                  />
+                );
+              }}
+            />
+          </View>
         );
 
       case "second":
-        return (
-          <View></View>
-        );
-      
+        return <View></View>;
+
       case "third":
-        return (
-          <View></View>
-        );
+        return <View></View>;
       default:
         return <View />;
     }
@@ -81,4 +123,4 @@ function ManagerScreen() {
   );
 }
 
-export default ManagerScreen;
+export default React.memo(ManagerScreen);
