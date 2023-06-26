@@ -1,7 +1,11 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
-function ButtonBig({ text, style= GlobalStyles.colors.primaryDefault, onPress }) {
+function ButtonBig({
+  text,
+  style = GlobalStyles.colors.primaryDefault,
+  onPress,
+}) {
   return (
     <Pressable onPress={onPress}>
       <View style={[styles.container, { backgroundColor: style }]}>
