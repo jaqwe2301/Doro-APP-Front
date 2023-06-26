@@ -163,7 +163,7 @@ const HomeScreen = ({ lectureIdProps }) => {
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "first", title: "모집중" },
+    { key: "first", title: `모집중` },
     { key: "second", title: "진행중" },
   ]);
 

@@ -12,13 +12,18 @@ import {
   useWindowDimensions,
   Modal,
   FlatList,
+  Alert,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+// import { format } from "date-fns";
+// import ko from "date-fns/esm/locale/ko/index.js";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { GlobalStyles } from "./../constants/styles";
+import ButtonBig from "../components/ui/ButtonBig";
 
 function UpdateLectureScreen({ route }) {
   const navigation = useNavigation();
@@ -58,6 +63,11 @@ function UpdateLectureScreen({ route }) {
   });
 
   const [option, setOption] = useState("create");
+
+  // 일자 - 달력 팝업
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  // 시간 - 시간 선택 팝업
+  const [timePickerVisible, setTimePickerVisible] = useState(false);
 
   useEffect(() => {
     axios
@@ -114,57 +124,87 @@ function UpdateLectureScreen({ route }) {
     return dateArray;
   };
 
+  /** 확인 버튼 누를 때 실행 */
   const updateLecture = () => {
     typeof lecturedata.lectureDate.enrollEndDate === "string"
       ? handleSingeInputChange(singleToDateType(), "enrollEndDate")
       : "";
 
-    handleSingeInputChange(arrayToDateType(), "lectureDates");
+    handleSingeInputChange(tmpDate, "lectureDates");
 
-    axios
-      .patch(
-        `http://10.0.2.2:8080/lectures/${route.params.data.lectureDto.id}`,
-        lecturedata,
-        {
-          headers: {
-            // 헤더에 필요한 데이터를 여기에 추가
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        console.log("강의 수정 완료");
-      })
-      .catch((error) => {
-        console.log("에러");
-        console.log(error);
-      });
+    const times = tmpTime[0] + tmpTime[1];
+
+    handleSingeInputChange(times, "time");
+
+    // handleSingeInputChange(arrayToDateType(), "lectureDates");
+
+    for (let i = 0; i < Object.keys(lecturedata).length; i++) {
+      if (!lecturedata[i]) {
+        Alert.alert("경고", "빈 칸이 있는지 확인 해주세요.");
+      }
+      break;
+      // return 0;
+    }
+
+    // axios
+    //   .patch(
+    //     `http://10.0.2.2:8080/lectures/${route.params.data.lectureDto.id}`,
+    //     lecturedata,
+    //     {
+    //       headers: {
+    //         // 헤더에 필요한 데이터를 여기에 추가
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   )
+    //   .then((res) => {
+    //     console.log("강의 수정 완료");
+    //   })
+    //   .catch((error) => {
+    //     console.log("에러");
+    //     console.log(error);
+    //   });
   };
 
+  /** 확인 버튼 누를 때 실행 */
   const creatingLecture = () => {
     typeof lecturedata.lectureDate.enrollEndDate === "string"
       ? handleSingeInputChange(singleToDateType(), "enrollEndDate")
       : "";
     // 신청 마감 input을 수정 안 하면 타입이 date일 거니까...
 
-    handleSingeInputChange(arrayToDateType(), "lectureDates");
+    // handleSingeInputChange(arrayToDateType(), "lectureDates");
+    handleSingeInputChange(tmpDate, "lectureDates");
 
-    console.log(lecturedata);
+    const times = tmpTime[0] + "," + tmpTime[1];
+    console.log(times);
 
-    axios
-      .post("http://10.0.2.2:8080/lectures/", lecturedata, {
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log("에러");
-        console.log(error);
-      });
+    // console.log(lecturedata);
+
+    for (let i = 0; i < Object.keys(lecturedata).length; i++) {
+      if (!lecturedata[i]) {
+        Alert.alert("경고", "빈 칸이 있는지 확인 해주세요.");
+      }
+      break
+      // return 0;
+    }
+
+    // console.log(lecturedata);
+
+    // axios
+    //   .post("http://10.0.2.2:8080/lectures/", lecturedata, {
+    //     headers: {
+    //       // 헤더에 필요한 데이터를 여기에 추가
+    //       "Content-Type": "application/json",
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((error) => {
+    //     console.log("에러");
+    //     console.log(error);
+    //   });
   };
 
   const enrollEndDateStateChange = (text) => {
@@ -176,24 +216,22 @@ function UpdateLectureScreen({ route }) {
   };
 
   const handleSingeInputChange = (text, item) => {
-    // let prevData = lecturedata;
-    // if (item === "enrollEndDate") {
-    //   prevData["lectureDate"][item] = text;
-    // } else {
-    //   prevData[item] = text;
-    // }
-    // SingeInputStateChange(prevData);
     setLecturedata((prevState) => ({
       ...prevState,
       [item]: text,
     }));
   };
 
+  const savingDate = () => {};
+
+  /** 일자 -> 2013.06.20 (화) 형식만 저장 */
   const handleDateInputChange = (text, index) => {
     const newList = [...inputList];
     newList[index].text = text;
     setInputList(newList);
   };
+
+  /** 일자 -> date 형식 날짜 저장 */
 
   const handleAddInput = () => {
     const newList = [...inputList, { text: "" }];
@@ -231,6 +269,72 @@ function UpdateLectureScreen({ route }) {
     setLecturedata(writingData);
     setSelectedLectureContents(lectureContentsData[0]);
     modalHandler(false);
+  };
+
+  /** 날짜 포맷 형식 ex) "2023.06.21 (수)" */
+  const dateFormat = (date) => {
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    const month =
+      date.getMonth() >= 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1);
+    const dates = date.getDate() >= 9 ? date.getDate() : "0" + date.getDate();
+    const day = days[date.getDay()];
+    return `${date.getFullYear()}.${month}.${dates} (${day})`;
+  };
+
+  const [inputIdx, setInputIdex] = useState();
+  // 일자, 시간 중 선택
+  const [mode, setMode] = useState();
+
+  const datePickerhandler = () => {
+    setDatePickerVisible(true);
+  };
+
+  /** 일자 시간 input 클릭 시 실행 함수 */
+  const onPressDateInput = (idx, mode) => {
+    if (mode === "date") {
+      setInputIdex(idx);
+    }
+    setMode(mode);
+    datePickerhandler();
+  };
+
+  const [tmpDate, setTmpDate] = useState([]);
+  const [tmpTime, setTmpTime] = useState([]);
+  const [startTime, setStartTime] = useState(true);
+
+  /** datePicker(날짜 선택기)에서
+   * 날짜 선택 후 OK 클릭시 실행 함수 */
+  const onConfirm = (pickedDate) => {
+    if (mode === "date") {
+      handleDateInputChange(dateFormat(pickedDate), inputIdx);
+      // date 타입 데이터 임시 저장
+      setTmpDate((prev) => {
+        let dates = [...prev];
+        dates[inputIdx] = pickedDate;
+        return dates;
+      });
+    } else if (mode === "time") {
+      setTmpTime((prev) => {
+        let times = [...prev];
+        const hours =
+          pickedDate.getHours() <= 9
+            ? "0" + pickedDate.getHours()
+            : String(pickedDate.getHours());
+        const minute =
+          pickedDate.getMinutes() <= 9
+            ? "0" + pickedDate.getMinutes()
+            : String(pickedDate.getMinutes());
+        if (startTime) {
+          times[0] = `${hours}시 ${minute}분`;
+          return times;
+        } else {
+          times[1] = `${hours}시 ${minute}분`;
+          return times;
+        }
+      });
+    }
+    setDatePickerVisible(false);
+    console.log(tmpTime);
   };
 
   // Use a custom renderScene function instead
@@ -343,41 +447,82 @@ function UpdateLectureScreen({ route }) {
               <Text>일자</Text>
               <View>
                 {inputList.map((item, index) => (
-                  <View
+                  <Pressable
                     key={index}
-                    style={[
-                      styles.inputBox,
-                      styles.dateBox,
-                      index > 0 ? { marginTop: 8 } : "",
-                    ]}
+                    onPress={() => onPressDateInput(index, "date")}
                   >
-                    <TextInput
-                      value={item.text}
-                      style={{ flex: 1 }}
-                      onChangeText={(text) =>
-                        handleDateInputChange(text, index)
-                      }
-                    />
-                    {index === 0 ? (
-                      <Pressable onPress={handleAddInput}>
-                        <Text style={{ marginRight: 8.03 }}>+</Text>
-                      </Pressable>
-                    ) : (
-                      ""
-                    )}
-                  </View>
+                    <View
+                      style={[
+                        styles.inputBox,
+                        styles.dateBox,
+                        index > 0 ? { marginTop: 8 } : "",
+                      ]}
+                    >
+                      <TextInput
+                        value={item.text}
+                        style={{ flex: 1, color: "black" }}
+                        onChangeText={(text) =>
+                          handleDateInputChange(text, index)
+                        }
+                        editable={false}
+                        // selectTextOnFocus={false}
+                      />
+                      {index === 0 ? (
+                        <Pressable onPress={handleAddInput}>
+                          <Text style={{ marginRight: 8.03, zIndex: 0 }}>
+                            +
+                          </Text>
+                        </Pressable>
+                      ) : (
+                        ""
+                      )}
+                    </View>
+                  </Pressable>
                 ))}
               </View>
             </View>
             <View style={styles.lectureInfoContainer}>
               <Text>시간</Text>
-              <TextInput
-                style={styles.inputBox}
-                value={lecturedata.time}
-                onChangeText={(text) => {
-                  handleSingeInputChange(text, "time");
-                }}
-              />
+              <View style={styles.timeContainer}>
+                <Pressable
+                  onPress={() => {
+                    onPressDateInput(-1, "time");
+                    setStartTime(true);
+                  }}
+                >
+                  <TextInput
+                    style={styles.timeInputBox}
+                    // value={lecturedata.time}
+                    // onChangeText={(text) => {
+                    //   handleSingeInputChange(text, "time");
+                    // }}
+                    value={String(tmpTime[0])}
+                    onChangeText={(time) => {
+                      setStartTime(time);
+                    }}
+                    editable={false}
+                  />
+                </Pressable>
+                <Text>~</Text>
+                <Pressable
+                  onPress={() => {
+                    onPressDateInput(-1, "time");
+                    setStartTime(false);
+                  }}
+                >
+                  <TextInput
+                    style={styles.timeInputBox}
+                    // onChangeText={(text) => {
+                    //   handleSingeInputChange(text, "time");
+                    // }}
+                    value={tmpTime[1]}
+                    onChangeText={(time) => {
+                      setEndTime(time);
+                    }}
+                    editable={false}
+                  />
+                </Pressable>
+              </View>
             </View>
             <View style={styles.lectureInfoContainer}>
               <Text>지역</Text>
@@ -462,6 +607,7 @@ function UpdateLectureScreen({ route }) {
                   style={[styles.multiLineInputBox]}
                   value={lecturedata.mainPayment}
                   multiline={true}
+                  editable={false}
                   onChangeText={(text) => {
                     handleSingeInputChange(text, "mainPayment");
                   }}
@@ -482,12 +628,34 @@ function UpdateLectureScreen({ route }) {
                   /> */}
               </View>
             </View>
-            <Pressable
+            <ButtonBig
+              text="확인"
+              onPress={option === "create" ? creatingLecture : updateLecture}
+            />
+            {/* <Pressable
               // onPress={creatingLecture}
               onPress={option === "create" ? creatingLecture : updateLecture}
               // onPress={choiceOption}
               style={{ backgroundColor: "blue", height: 20, width: 20 }}
+            /> */}
+
+            {/* 일자 - 달력 팝업 */}
+            <DateTimePickerModal
+              isVisible={datePickerVisible}
+              mode={mode}
+              onConfirm={onConfirm}
+              onCancel={() => setDatePickerVisible(false)}
+              date={new Date()}
             />
+
+            {/* 시간 - 시간 선택 팝업 */}
+            {/* <DateTimePickerModal
+              isVisible={timePickerVisible}
+              mode={"time"}
+              onConfirm={onConfirm}
+              onCancel={() => setTimePickerVisible(false)}
+              date={new Date()}
+            /> */}
           </ScrollView>
         );
 
@@ -504,7 +672,7 @@ function UpdateLectureScreen({ route }) {
           onChangeText={(text) => {
             handleSingeInputChange(text, "mainTitle");
           }}
-          value={lecturedata.mainTitle}
+          value={lecturedata.mainTitle ? lecturedata.mainTitle : ""}
         />
         <Text>서브타이틀</Text>
         <TextInput
@@ -512,7 +680,7 @@ function UpdateLectureScreen({ route }) {
           onChangeText={(text) => {
             handleSingeInputChange(text, "subTitle");
           }}
-          value={lecturedata.subTitle}
+          value={lecturedata.subTitle ? lecturedata.subTitle : ""}
         />
       </View>
       <TabView
@@ -586,6 +754,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignContent: "space-between",
   },
+  timeContainer: {
+    flexDirection: "row",
+    width: 221,
+    justifyContent: "space-between",
+  },
   inputBox: {
     width: 221,
     backgroundColor: GlobalStyles.colors.gray07,
@@ -594,6 +767,11 @@ const styles = StyleSheet.create({
   multiLineInputBox: {
     width: 221,
     height: 62,
+    backgroundColor: GlobalStyles.colors.gray07,
+    textAlignVertical: "top",
+  },
+  timeInputBox: {
+    width: 100,
     backgroundColor: GlobalStyles.colors.gray07,
     textAlignVertical: "top",
   },
