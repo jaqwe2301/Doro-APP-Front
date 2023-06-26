@@ -15,6 +15,7 @@ import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
+import ManagerScreen from "./ManagerScreen";
 import { deleteUser, reToken } from "../utill/auth";
 
 function MyPageScreen({ navigation }) {
@@ -70,9 +71,10 @@ function MyPageScreen({ navigation }) {
     }
   }
 
-  function ManagerScreen() {
-    return <ManagerSend />;
-  }
+  // function ManagerScreen() {
+  //   // return <ManagerSend />;
+  //   return <ManagerScreen />;
+  // }
 
   function UserScreen() {
     function logoutHandler() {

@@ -264,7 +264,7 @@ function HomeNavigator() {
       <Stack.Screen
         name="DetailLecture"
         component={DetailLectureScreen}
-        options={{ title: "강의 상세" }}
+        options={{ title: "" }}
       />
       <Stack.Screen
         name="NewLecture"
@@ -398,23 +398,23 @@ function NoticeNavigator() {
 function BottomTabNavigator() {
   const [headerVisible, setHeaderVisible] = useState(true);
   const [homeScreenState, setHomeScreenState] = useState("home");
-  const [lectureIdState, setLectureIdState] = useState([0,"home"]);
+  const [lectureIdState, setLectureIdState] = useState([0, "home"]);
 
   const detailLectureVisibleHandler = (id) => {
     console.log("아이디", id);
-    setLectureIdState([id,"detailLecture"]);
+    setLectureIdState([id, "detailLecture"]);
     // setHomeScreenState("detailLecture");
     setHeaderVisible(false);
   };
 
   const createLectureVisibleHandler = () => {
-    setLectureIdState([0,"createLecture"]);
+    setLectureIdState([0, "createLecture"]);
     // setHomeScreenState("createLecture");
     setHeaderVisible(false);
   };
 
   const screenBackHandler = () => {
-    setLectureIdState([0,"home"]);
+    setLectureIdState([0, "home"]);
     setHomeScreenState("home");
     setHeaderVisible(true);
   };

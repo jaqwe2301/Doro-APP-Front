@@ -2,10 +2,10 @@
 
 buildscript {
     ext {
-        buildToolsVersion = findProperty('android.buildToolsVersion') ?: '29.0.3'
+        buildToolsVersion = findProperty('android.buildToolsVersion') ?: '33.0.0'
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '21')
-        compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '30')
-        targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '30')
+        compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '33')
+        targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '33')
         if (findProperty('android.kotlinVersion')) {
             kotlinVersion = findProperty('android.kotlinVersion')
         }
@@ -19,10 +19,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath('com.google.gms:google-services:4.3.3')
+        classpath 'com.google.gms:google-services:4.3.3'
         classpath('com.android.tools.build:gradle:7.4.1')
         classpath('com.facebook.react:react-native-gradle-plugin')
-        // classpath('com.google.prefab:cli:2.0.0')
     }
 }
 

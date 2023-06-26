@@ -15,6 +15,8 @@ import axios from "axios";
 import ButtonOneThird from "../components/ui/ButtonOneThird";
 import { getProfile } from "../utill/http";
 import { GlobalStyles } from "../constants/styles";
+import { WithLocalSvg } from "react-native-svg";
+import CreactingLecture from "../assets/creatingLecture.svg";
 import LectureTop from "../components/ui/LectureTop";
 
 function DetailLectureScreen({ route }) {
@@ -73,12 +75,13 @@ function DetailLectureScreen({ route }) {
         setLectureBasicInfo(nonSaveId);
         setLectureContent(res.data.data.lectureContentDto);
         // console.log("성공");
+        console.log(res.data.data.lectureDto);
       })
       .catch((error) => {
         console.log("에러");
         console.log(error);
       });
-    console.log(route.params.data);
+    // console.log(route.params.data);
 
     axios
       .get(
@@ -92,7 +95,7 @@ function DetailLectureScreen({ route }) {
       )
       .then((res) => {
         setTutor(res.data.data);
-        console.log(res.data.data);
+        // console.log(res.data.data);
       })
       .catch((error) => {
         console.log("에러");
@@ -155,12 +158,14 @@ function DetailLectureScreen({ route }) {
     );
   };
 
+  const day = ["일", "월", "화", "수", "목", "금", "토"];
+
   const layout = useWindowDimensions();
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "second", title: "기본정보" },
-    { key: "first", title: "강의 관련 정보" },
+    { key: "first", title: "기본정보" },
+    { key: "second", title: "강의 관련 정보" },
     { key: "third", title: "신청 강사" },
   ]);
 
@@ -169,15 +174,106 @@ function DetailLectureScreen({ route }) {
     switch (route.key) {
       case "first":
         return (
-          <View>
-            <View></View>
+          <View style={{ marginTop: 40, flex: 1 }}>
+            <View style={{ paddingHorizontal: 20 }}>
+              <Text
+                style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
+              >
+                기본정보
+              </Text>
+              <View style={styles.infoContatiner}>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>주최 및 주관</Text>
+                  <Text style={styles.infoText}>
+                    {lectureBasicInfo.institution}
+                  </Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>일자</Text>
+                  {lectureBasicInfo.lectureDates.map((item) => {
+                    const date = new Date(item);
+                    const month =
+                      date.getMonth() >= 9
+                        ? date.getMonth() + 1
+                        : "0" + (date.getMonth() + 1);
+
+                    return (
+                      <Text key={item} style={styles.infoText}>
+                        {date.getFullYear()}.{month}.{date.getDate()} (
+                        {day[date.getDay()]})
+                      </Text>
+                    );
+                  })}
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>시간</Text>
+                  <Text style={styles.infoText}>{lectureBasicInfo.time}</Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>지역</Text>
+                  <Text style={styles.infoText}>{lectureBasicInfo.city}</Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>장소</Text>
+                  <Text style={styles.infoText}>{lectureBasicInfo.place}</Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>강의 대상</Text>
+                  <Text style={styles.infoText}>
+                    {lectureBasicInfo.studentGrade}
+                  </Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>인원수</Text>
+                  <Text style={styles.infoText}>
+                    {lectureBasicInfo.studentNumber}명
+                  </Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>모집 인원</Text>
+                  <Text style={styles.infoText}>
+                    {lectureBasicInfo.mainTutor}
+                  </Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>강사 급여</Text>
+                  <View>
+                    <Text style={styles.infoText}>
+                      주 강사 : {lectureBasicInfo.mainPayment}원
+                    </Text>
+                    {lectureBasicInfo.subPayment ? (
+                      <Text style={styles.infoText}>
+                        보조 강사 : {lectureBasicInfo.subPayment}원
+                      </Text>
+                    ) : (
+                      ""
+                    )}
+                    {lectureBasicInfo.staffPayment ? (
+                      <Text style={styles.infoText}>
+                        스태프 : {lectureBasicInfo.staffPayment}
+                      </Text>
+                    ) : (
+                      ""
+                    )}
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              style={{
+                height: 0.5,
+                width: layout.width,
+                backgroundColor: GlobalStyles.colors.gray04,
+                marginBottom: 9,
+              }}
+            />
           </View>
         );
       case "second":
-        return <></>;
+        return <View style={{ flex: 1 }}></View>;
       case "third":
         return (
-          <View>
+          <View style={{ flex: 1 }}>
             <Text>신청 강사</Text>
             {tutor.map((item, i) => {
               return (
@@ -209,7 +305,12 @@ function DetailLectureScreen({ route }) {
   };
 
   return (
-    <View style={{ backgroundColor: "white", flex: 1 }}>
+    // <View style={{ flex: 1 }}>
+    // <ScrollView
+    //   style={{ backgroundColor: "white", flex: 1 }}
+    //   contentContainerStyle={{ flexGrow: 1 }}
+    // >
+    <>
       <LectureTop
         subTitle={lectureBasicInfo.subTitle}
         mainPayment={lectureBasicInfo.mainPayment}
@@ -221,6 +322,7 @@ function DetailLectureScreen({ route }) {
       />
 
       <TabView
+        style={{ marginTop: 50, flex: 1 }}
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
@@ -236,34 +338,43 @@ function DetailLectureScreen({ route }) {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
+              height: 30,
+              borderBottomWidth: 0.5,
+              borderBottomColor: GlobalStyles.colors.gray04,
             }}
             labelStyle={{
-              // 폰트 컬러
+              // 폰트 스타일
+              margin: 0,
               color: "black",
+            }}
+            tabStyle={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+              padding: 0,
             }}
             pressColor={"transparent"}
           />
         )}
       />
 
-      <View style={styles.buttonContainer}>
-        {/* 튜터 역할 [MAIN_TUTOR, SUB_TUTOR, STAFF] */}
+      {/* <View style={styles.buttonContainer}>
+        튜터 역할 [MAIN_TUTOR, SUB_TUTOR, STAFF]
         <ButtonOneThird
-          onPress={() => applyingTutor("MAIN_TUTOR")}
-          text="주 강사 신청"
+        onPress={() => applyingTutor("MAIN_TUTOR")}
+        text="주 강사 신청"
         />
         <ButtonOneThird
-          onPress={() => applyingTutor("SUB_TUTOR")}
-          text="보조 강사 신청"
+        onPress={() => applyingTutor("SUB_TUTOR")}
+        text="보조 강사 신청"
         />
         <ButtonOneThird
-          onPress={() => applyingTutor("STAFF")}
-          text="스태프 신청"
+        onPress={() => applyingTutor("STAFF")}
+        text="스태프 신청"
         />
-      </View>
+      </View> */}
 
-      {/* {data.role === "ROLE_ADMIN" ? ( */}
-      <Pressable
+      {/* {data.role === "ROLE_ADMIN" ? (
+        <Pressable
         onPress={() =>
           navigation.navigate("UpdateLectureScreen", {
             data: {
@@ -273,13 +384,17 @@ function DetailLectureScreen({ route }) {
             option: "update",
           })
         }
-      >
-        <View style={styles.BottomButton}></View>
-      </Pressable>
-      {/* ) : (
-        ""
-      )} */}
-    </View>
+        >
+        <View style={styles.BottomButton}>
+        <WithLocalSvg asset={CreactingLecture} />
+        </View>
+        </Pressable>
+        ) : (
+          ""
+        )} */}
+    </>
+    // </ScrollView>
+    // </View>
   );
 }
 
@@ -288,17 +403,39 @@ export default DetailLectureScreen;
 const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
+    marginBottom: 14,
     height: 40,
     justifyContent: "space-between",
     paddingHorizontal: 20,
     flexDirection: "row",
   },
   BottomButton: {
-    position: "absolute",
+    position: "relative",
     height: 56,
     width: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: GlobalStyles.colors.primaryDefault,
     bottom: 27,
     right: 20,
+  },
+  infoContatiner: {
+    gap: 18,
+    marginBottom: 56,
+    // paddingBottom: 56,
+    // borderBottomColor: GlobalStyles.colors.gray04,
+    // borderBottomWidth: 0.5,
+  },
+  infoTextContatiner: {
+    flexDirection: "row",
+  },
+  infoTitle: {
+    width: 114,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray03,
+  },
+  infoText: {
+    fontSize: 15,
   },
 });
