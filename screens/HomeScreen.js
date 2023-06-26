@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -21,22 +21,24 @@ import CreactingLecture from "../assets/creatingLecture.svg";
 
 import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
+import { HeaderContext } from "../store/header-context";
 import { getProfile } from "../utill/http";
 
 const HomeScreen = ({ lectureIdProps }) => {
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [data, setData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
   const navigation = useNavigation();
 
-  async function profileHandler() {
-    try {
-      const response = await getProfile({ id: 18 });
-      setData(response);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async function profileHandler() {
+  //   try {
+  //     const response = await getProfile({ id: 18 });
+  //     setData(response);
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   useEffect(() => {
     axios
@@ -237,17 +239,19 @@ const HomeScreen = ({ lectureIdProps }) => {
           />
         )}
       />
-      {/* {data.role === "ROLE_ADMIN" ? ( */}
-      <Pressable
-        onPress={() => navigation.navigate("UpdateLectureScreen", { data: "" })}
-      >
-        <View style={styles.BottomButton}>
-          <WithLocalSvg asset={CreactingLecture} />
-        </View>
-      </Pressable>
-      {/* ) : (
+      {headerRole === "ROLE_ADMIN" ? (
+        <Pressable
+          onPress={() =>
+            navigation.navigate("UpdateLectureScreen", { data: "" })
+          }
+        >
+          <View style={styles.BottomButton}>
+            <WithLocalSvg asset={CreactingLecture} />
+          </View>
+        </Pressable>
+      ) : (
         ""
-      )} */}
+      )}
     </>
   );
 };
