@@ -24,6 +24,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { GlobalStyles } from "./../constants/styles";
 import ButtonBig from "../components/ui/ButtonBig";
+import ButtonSmall from "../components/ui/ButtonSmall";
 
 function UpdateLectureScreen({ route }) {
   const navigation = useNavigation();
@@ -131,9 +132,11 @@ function UpdateLectureScreen({ route }) {
       : "";
 
     handleSingeInputChange(tmpDate, "lectureDates");
+    handleSingeInputChange(String(mainPayment), "mainPayment");
+    handleSingeInputChange(String(subPayment), "subPayment");
+    handleSingeInputChange(String(staffPayment), "staffPayment");
 
     const times = tmpTime[0] + tmpTime[1];
-
     handleSingeInputChange(times, "time");
 
     // handleSingeInputChange(arrayToDateType(), "lectureDates");
@@ -174,18 +177,20 @@ function UpdateLectureScreen({ route }) {
     // 신청 마감 input을 수정 안 하면 타입이 date일 거니까...
 
     // handleSingeInputChange(arrayToDateType(), "lectureDates");
+
     handleSingeInputChange(tmpDate, "lectureDates");
+    handleSingeInputChange(String(mainPayment), "mainPayment");
+    handleSingeInputChange(String(subPayment), "subPayment");
+    handleSingeInputChange(String(staffPayment), "staffPayment");
 
     const times = tmpTime[0] + "," + tmpTime[1];
-    console.log(times);
-
-    // console.log(lecturedata);
+    handleSingeInputChange(times, "lectureDates");
 
     for (let i = 0; i < Object.keys(lecturedata).length; i++) {
       if (!lecturedata[i]) {
         Alert.alert("경고", "빈 칸이 있는지 확인 해주세요.");
       }
-      break
+      break;
       // return 0;
     }
 
@@ -248,6 +253,8 @@ function UpdateLectureScreen({ route }) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [addContentsModal, setAddContentsModal] = useState(false);
+  const [paymentModal, setPaymentModal] = useState(false);
+  const [tutorModal, setTutorModal] = useState(false);
 
   const modalHandler = (visible) => {
     setModalVisible(visible);
@@ -334,7 +341,68 @@ function UpdateLectureScreen({ route }) {
       });
     }
     setDatePickerVisible(false);
-    console.log(tmpTime);
+  };
+
+  const [mainTutor, setMainTutor] = useState();
+  const [subTutor, setSubTutor] = useState();
+  const [staff, setStaff] = useState();
+
+  const tutorStateHandler = (value, role) => {
+    role === "main"
+      ? setMainTutor(value)
+      : role === "sub"
+      ? setSubTutor(value)
+      : setStaff(value);
+  };
+
+  const formatPeople = (input, role) => {
+    let value = input.replace(/\D/g, ""); // Remove non-digits
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Insert commas
+    value += "명";
+    tutorStateHandler(value, role);
+  };
+
+  const mainTutorHandler = (input) => {
+    formatPeople(input, "main");
+  };
+
+  const subTutorHandler = (input) => {
+    formatPeople(input, "sub");
+  };
+
+  const staffHandler = (input) => {
+    formatPeople(input, "staff");
+  };
+
+  const [mainPayment, setMainPayment] = useState();
+  const [subPayment, setSubPayment] = useState();
+  const [staffPayment, setStaffPayment] = useState();
+
+  const paymentStateHandler = (value, role) => {
+    role === "main"
+      ? setMainPayment(value)
+      : role === "sub"
+      ? setSubPayment(value)
+      : setStaffPayment(value);
+  };
+
+  const mainPaymentHandler = (input) => {
+    formatMoney(input, "main");
+  };
+
+  const subPaymentHandler = (input) => {
+    formatMoney(input, "sub");
+  };
+
+  const staffPaymentHandler = (input) => {
+    formatMoney(input, "staff");
+  };
+
+  /** 10000 => 10,000으로 바꿔줌 + 문자열X */
+  const formatMoney = (input, role) => {
+    let value = input.replace(/\D/g, ""); // Remove non-digits
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Insert commas
+    paymentStateHandler(value, role);
   };
 
   // Use a custom renderScene function instead
@@ -567,27 +635,17 @@ function UpdateLectureScreen({ route }) {
             <View style={styles.lectureInfoContainer}>
               <Text>모집 인원</Text>
               <View>
-                <TextInput
-                  style={styles.inputBox}
-                  value={lecturedata.mainTutor}
-                  onChangeText={(text) => {
-                    handleSingeInputChange(text, "mainTutor");
-                  }}
-                />
-                {/* <TextInput
-                    style={[styles.inputBox, { marginBottom: 8 }]}
-                    value={inputList.institution}
-                    onChangeText={(text) => {
-                      handleSingeInputChange(text, "institution");
-                    }}
-                    />
-                    <TextInput
-                    style={styles.inputBox}
-                    value={inputList.institution}
-                    onChangeText={(text) => {
-                      handleSingeInputChange(text, "institution");
-                    }}
-                  /> */}
+                <Pressable onPress={() => setTutorModal(true)}>
+                  <TextInput
+                    style={styles.multiLineInputBox}
+                    value={`주강사 : ${mainTutor}\n보조강사 : ${subTutor}\n스태프 : ${staff}`}
+                    multiline={true}
+                    editable={false}
+                    // onChangeText={(text) => {
+                    //   handleSingeInputChange(text, "mainTutor");
+                    // }}
+                  />
+                </Pressable>
               </View>
             </View>
             <View style={styles.lectureInfoContainer}>
@@ -602,31 +660,19 @@ function UpdateLectureScreen({ route }) {
             </View>
             <View style={styles.lectureInfoContainer}>
               <Text>강사 급여</Text>
-              <View>
-                <TextInput
-                  style={[styles.multiLineInputBox]}
-                  value={lecturedata.mainPayment}
-                  multiline={true}
-                  editable={false}
-                  onChangeText={(text) => {
-                    handleSingeInputChange(text, "mainPayment");
-                  }}
-                />
-                {/* <TextInput
-                    style={[styles.inputBox, { marginBottom: 8 }]}
-                    value={inputList.institution}
-                    onChangeText={(text) => {
-                      handleSingeInputChange(text, "institution");
-                    }}
-                  />
+              <Pressable onPress={() => setPaymentModal(true)}>
+                <View>
                   <TextInput
-                    style={styles.inputBox}
-                    value={inputList.institution}
-                    onChangeText={(text) => {
-                      handleSingeInputChange(text, "institution");
-                    }}
-                  /> */}
-              </View>
+                    style={[styles.multiLineInputBox]}
+                    value={`주강사 : ${mainPayment}원\n보조강사 : ${subPayment}원\n스태프 : ${staffPayment}원`}
+                    multiline={true}
+                    editable={false}
+                    // onChangeText={(text) => {
+                    //   handleSingeInputChange(text, "mainPayment");
+                    // }}
+                  />
+                </View>
+              </Pressable>
             </View>
             <ButtonBig
               text="확인"
@@ -639,7 +685,7 @@ function UpdateLectureScreen({ route }) {
               style={{ backgroundColor: "blue", height: 20, width: 20 }}
             /> */}
 
-            {/* 일자 - 달력 팝업 */}
+            {/* 일자, 시간 - 달력, 시간 선택 팝업 */}
             <DateTimePickerModal
               isVisible={datePickerVisible}
               mode={mode}
@@ -647,15 +693,80 @@ function UpdateLectureScreen({ route }) {
               onCancel={() => setDatePickerVisible(false)}
               date={new Date()}
             />
+            {/* 모집인원 input 클릭 시 나오는 모달 */}
+            <Modal transparent={true} visible={tutorModal}>
+              <View style={styles.paymentModal}>
+                <View style={{ backgroundColor: "white", padding: 20 }}>
+                  <Text>모집대상 아니라면 칸을 비워주세요.</Text>
+                  <Text>(숫자만 입력 가능)</Text>
+                  <Text></Text>
 
-            {/* 시간 - 시간 선택 팝업 */}
-            {/* <DateTimePickerModal
-              isVisible={timePickerVisible}
-              mode={"time"}
-              onConfirm={onConfirm}
-              onCancel={() => setTimePickerVisible(false)}
-              date={new Date()}
-            /> */}
+                  <Text>주강사</Text>
+                  <TextInput
+                    style={styles.paymentInput}
+                    keyboardType="number-pad"
+                    onChangeText={mainTutorHandler}
+                    value={mainTutor}
+                  />
+                  <Text>보조강사</Text>
+                  <TextInput
+                    style={styles.paymentInput}
+                    keyboardType="number-pad"
+                    onChangeText={subTutorHandler}
+                    value={subTutor}
+                  />
+                  <Text>스태프</Text>
+                  <TextInput
+                    style={styles.paymentInput}
+                    keyboardType="number-pad"
+                    onChangeText={staffHandler}
+                    value={staff}
+                  />
+                  <Text></Text>
+                  <ButtonSmall
+                    title="확인"
+                    onPress={() => setTutorModal(false)}
+                  />
+                </View>
+              </View>
+            </Modal>
+            {/* 강사 급여 input 클릭 시 나오는 모달 */}
+            <Modal transparent={true} visible={paymentModal}>
+              <View style={styles.paymentModal}>
+                <View style={{ backgroundColor: "white", padding: 20 }}>
+                  <Text>급여가 없다면 칸을 비워주세요.</Text>
+                  <Text>(숫자만 입력 가능)</Text>
+                  <Text></Text>
+
+                  <Text>주강사</Text>
+                  <TextInput
+                    style={styles.paymentInput}
+                    keyboardType="number-pad"
+                    onChangeText={mainPaymentHandler}
+                    value={mainPayment}
+                  />
+                  <Text>보조강사</Text>
+                  <TextInput
+                    style={styles.paymentInput}
+                    keyboardType="number-pad"
+                    onChangeText={subPaymentHandler}
+                    value={subPayment}
+                  />
+                  <Text>스태프</Text>
+                  <TextInput
+                    style={styles.paymentInput}
+                    keyboardType="number-pad"
+                    onChangeText={staffPaymentHandler}
+                    value={staffPayment}
+                  />
+                  <Text></Text>
+                  <ButtonSmall
+                    title="확인"
+                    onPress={() => setPaymentModal(false)}
+                  />
+                </View>
+              </View>
+            </Modal>
           </ScrollView>
         );
 
@@ -819,5 +930,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: GlobalStyles.colors.primaryDefault,
     borderRadius: 5.41,
+  },
+  paymentModal: {
+    flex: 1,
+    // flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.6)",
+  },
+  paymentInput: {
+    backgroundColor: GlobalStyles.colors.gray07,
+    height: 40,
+    width: 200,
   },
 });
