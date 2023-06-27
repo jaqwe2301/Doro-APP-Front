@@ -18,6 +18,18 @@ import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
+// import * as Notifications from "expo-notifications";
+
+// export async function requestPermissionsAsync() {
+//   return await Notifications.requestPermissionsAsync({
+//     ios: {
+//       allowAlert: true,
+//       allowBadge: true,
+//       allowSound: true,
+//       allowAnnouncements: true,
+//     },
+//   });
+// }
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -93,6 +105,53 @@ function MyPageScreen({ navigation }) {
     } catch (error) {
       console.log("error발생" + error);
     }
+  }
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    return token;
+  }
+
+  function alarmHandler() {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
   }
 
   function ManagerScreen() {
@@ -181,11 +240,11 @@ function MyPageScreen({ navigation }) {
                   <Text style={styles.btn}>프로필 편집</Text>
                 </Pressable>
               </View>
-              {/* <View style={styles.btnContainer}> */}
-              <View style={{ flex: 1 }}>
-                {/* <Pressable onPress={tokenHandler}>
-                  <Text style={styles.btn}>강의신청내역</Text>
-                </Pressable> */}
+              <View style={styles.btnContainer}>
+                {/* <View style={{ flex: 1 }}> */}
+                <Pressable onPress={alarmHandler}>
+                  <Text style={styles.btn}>알림 설정</Text>
+                </Pressable>
               </View>
             </View>
             <View>
@@ -227,40 +286,36 @@ function MyPageScreen({ navigation }) {
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>비밀번호</Text>
                 <Pressable onPress={() => navigation.navigate("searchPw")}>
-                  <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
-                    비밀번호 수정
-                  </Text>
+                  <View style={styles.contentView}>
+                    <Text style={[styles.contentText, { marginLeft: 0 }]}>
+                      비밀번호 수정
+                    </Text>
+                  </View>
                 </Pressable>
               </View>
               <View style={styles.border}></View>
             </View>
-            <View>
+            <View style={{ flexDirection: "row" }}>
               <Pressable onPress={logoutHandler}>
-                <Text
-                  style={[
-                    styles.contentTitle,
-                    { borderBottomWidth: 1, width: 57 },
-                  ]}
-                >
-                  로그아웃
-                </Text>
+                <View style={styles.contentTitleView}>
+                  <Text style={[styles.contentTitle, { marginHorizontal: 0 }]}>
+                    로그아웃
+                  </Text>
+                </View>
               </Pressable>
-              <View style={styles.border}></View>
             </View>
-            <View style={{ marginBottom: 33 }}>
+            <View style={styles.border}></View>
+            <View style={{ marginBottom: 33, flexDirection: "row" }}>
               <Pressable
                 onPress={() =>
                   navigation.navigate("deleteUser", { account: headerAccount })
                 }
               >
-                <Text
-                  style={[
-                    styles.contentTitle,
-                    { borderBottomWidth: 1, width: 61 },
-                  ]}
-                >
-                  회원 탈퇴
-                </Text>
+                <View style={styles.contentTitleView}>
+                  <Text style={[styles.contentTitle, { marginHorizontal: 0 }]}>
+                    회원 탈퇴
+                  </Text>
+                </View>
               </Pressable>
             </View>
           </ScrollView>
@@ -326,6 +381,10 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     backgroundColor: "white",
     elevation: 3,
+    shadowColor: GlobalStyles.colors.gray03,
+    shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    shadowOpacity: 0.6, // 그림자의 투명도
+    shadowRadius: 1, // 그
   },
   btn: {
     fontSize: 10,
@@ -343,11 +402,21 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     lineHeight: 17,
   },
+  contentView: {
+    marginLeft: 45,
+    borderBottomColor: GlobalStyles.colors.gray01,
+    borderBottomWidth: 0.8,
+  },
   contentTitle: {
     marginHorizontal: 20,
     fontSize: 15,
     fontWeight: 600,
     lineHeight: 20,
+  },
+  contentTitleView: {
+    marginHorizontal: 20,
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
   },
   border: {
     borderBottomColor: GlobalStyles.colors.gray05,

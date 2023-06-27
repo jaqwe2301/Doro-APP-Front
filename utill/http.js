@@ -111,6 +111,18 @@ export async function getNotification({ userId, page, size }) {
     throw error;
   }
 }
+export async function readNotification({ notificationId }) {
+  try {
+    const response = await axios.post(
+      URL + "/notifications/" + `${notificationId}` + "/doRead"
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
 export async function pushNotification({ body, title }) {
   try {
     const token = await AsyncStorage.getItem("token");

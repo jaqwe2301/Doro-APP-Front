@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  NativeModules,
+  ScrollView,
+} from "react-native";
 import InputData from "../ui/InputData";
 import PwBtn from "../ui/PwBtn";
 import ButtonBig from "../ui/ButtonBig";
@@ -8,7 +17,7 @@ import { changePassword } from "../../utill/auth";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../store/auth-context";
 
-function ChangePw({ route }) {
+function ChangePw({ navigation, route }) {
   const [pw, setPw] = useState("");
   const [repw, setRePw] = useState("");
   const [isNavi, setIsNavi] = useState(false);
@@ -21,7 +30,8 @@ function ChangePw({ route }) {
 
   const id = route.params.id;
   const phoneNum = route.params.phone;
-  const navigation = useNavigation();
+  // const statusBarHeight = route.params.h;
+
   async function handlerPwchange() {
     if (isNavi) {
       try {
@@ -103,46 +113,62 @@ function ChangePw({ route }) {
       setlbtnColor(GlobalStyles.colors.gray05);
     }
   };
-
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
-    <View style={styles.container}>
-      <View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={styles.container}>
         <View style={styles.headerShadow}></View>
+        <ScrollView>
+          <View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.textTitle}>신규 비밀번호</Text>
+              <InputData
+                hint="영문, 숫자, 특수문자 포함 8~20자"
+                onChangeText={handlePwChange}
+                value={pw}
+                secureTextEntry={true}
+              />
+            </View>
+            <View style={styles.pwBtn}>
+              <PwBtn text="영문" btnColor={eng} />
+              <PwBtn text="숫자" btnColor={num} />
+              <PwBtn text="특수문자" btnColor={mark} />
+              <PwBtn text="8~20자" btnColor={len} />
+            </View>
+            <View style={[styles.inputContainer, { marginTop: 21 }]}>
+              <Text style={styles.textTitle}>신규 비밀번호 재확인</Text>
+              <InputData
+                hint="비밀번호 재입력"
+                onChangeText={handleRePwChange}
+                value={repw}
+                secureTextEntry={true}
+              />
+            </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.textTitle}>신규 비밀번호</Text>
-          <InputData
-            hint="영문, 숫자, 특수문자 포함 8~20자"
-            onChangeText={handlePwChange}
-            value={pw}
-            secureTextEntry={true}
+            {/* <Text style={styles.textSend}>비밀번호가 틀립니다.</Text> */}
+          </View>
+        </ScrollView>
+        <View style={styles.buttonContainer}>
+          <ButtonBig
+            text="변경 하기"
+            style={lbtnColor}
+            onPress={handlerPwchange}
           />
         </View>
-        <View style={styles.pwBtn}>
-          <PwBtn text="영문" btnColor={eng} />
-          <PwBtn text="숫자" btnColor={num} />
-          <PwBtn text="특수문자" btnColor={mark} />
-          <PwBtn text="8~20자" btnColor={len} />
-        </View>
-        <View style={[styles.inputContainer, { marginTop: 21 }]}>
-          <Text style={styles.textTitle}>신규 비밀번호 재확인</Text>
-          <InputData
-            hint="비밀번호 재입력"
-            onChangeText={handleRePwChange}
-            value={repw}
-            secureTextEntry={true}
-          />
-        </View>
-        {/* <Text style={styles.textSend}>비밀번호가 틀립니다.</Text> */}
       </View>
-      <View style={styles.buttonContainer}>
-        <ButtonBig
-          text="변경 하기"
-          style={lbtnColor}
-          onPress={handlerPwchange}
-        />
-      </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
