@@ -20,7 +20,8 @@ function ManagerScreen() {
 
   useEffect(() => {
     axios
-      .get("http://10.0.2.2:8080/users", {
+      // .get("http://10.0.2.2:8080/users", {
+      .get("https://api.doroapp.com/users", {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -56,7 +57,7 @@ function ManagerScreen() {
             <FlatList
               data={users}
               renderItem={(itemData) => {
-                const item = itemData.item
+                const item = itemData.item;
                 return (
                   <TutorBox
                     name={item.name}
