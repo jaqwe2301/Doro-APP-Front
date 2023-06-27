@@ -18,11 +18,11 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { checkAccount } from "../../utill/auth";
-function Id({ navigation, route }) {
+function Id({ navigation }) {
   const [inputId, setInputId] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [isNavi, setIsNavi] = useState(false);
-  const statusBarHeight = route.params.h;
+  // const statusBarHeight = route.params.h;
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -53,7 +53,7 @@ function Id({ navigation, route }) {
 
         if (response.success) {
           setSignData({ ...signData, account: inputId });
-          navigation.navigate("pw", { h: statusBarHeight });
+          navigation.navigate("pw");
         } else {
           setIsVisible(true);
         }
@@ -64,6 +64,16 @@ function Id({ navigation, route }) {
       // Alert.alert("Input Error", "아이디를 제대로 입력해주세요");
     }
   }
+
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

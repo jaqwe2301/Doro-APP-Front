@@ -4,8 +4,9 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  NativeModules,
 } from "react-native";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GlobalStyles } from "../../constants/styles";
 
 import ButtonBig from "../ui/ButtonBig";
@@ -17,7 +18,7 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 
-function Pw({ navigation, route }) {
+function Pw({ navigation }) {
   const [inputPw, setInputPw] = useState("");
   const [inputRePw, setInputRePw] = useState("");
   const [isNavi, setIsNavi] = useState(false);
@@ -28,7 +29,7 @@ function Pw({ navigation, route }) {
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
 
   const { signData, setSignData } = useContext(SignContext);
-  const statusBarHeight = route.params.h;
+
   const handlePwChange = (text) => {
     let hasEng = /[a-zA-Z]+/g.test(text);
     let hasNum = /[0-9]+/g.test(text);
@@ -92,21 +93,27 @@ function Pw({ navigation, route }) {
     if (isNavi) {
       setSignData({ ...signData, password: inputPw, passwordCheck: inputRePw });
 
-      navigation.navigate("name", { h: statusBarHeight });
+      navigation.navigate("name");
     } else {
     }
   }
-
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar num={1} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={
-          Platform.OS === "ios" ? 44 + statusBarHeight : 0
-        }
-      >
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Bar num={1} />
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
             <View style={styles.textContainer}>
@@ -143,8 +150,8 @@ function Pw({ navigation, route }) {
             <ButtonBig text="다음" style={lbtnColor} onPress={navigatePw} />
           </View>
         </View>
-      </KeyboardAvoidingView>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
