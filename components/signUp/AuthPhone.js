@@ -28,7 +28,8 @@ function AuthPhone() {
   const [btnTitle, setBtnTitle] = useState("인증 요청");
   const { signData, setSignData } = useContext(SignContext);
   const navigation = useNavigation();
-
+  const [flex1, setFlex1] = useState(0);
+  const flex2 = 10 - flex1;
   const [count, setCount] = useState(0);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -58,96 +59,119 @@ function AuthPhone() {
       setIsVisible(true);
       // setTimer(true);
       setCount(179);
+      // setTimer(true);
+      setCount(179);
     } else {
     }
   }
   async function verifyAuthNum() {
-    if (authNum.length === 6) {
-      try {
-        const success = await verifyauthPhoneNum({
-          authNum: authNum,
-          messageType: "JOIN",
-          phone: phoneNum,
+    async function verifyAuthNum() {
+      if (authNum.length === 6) {
+        try {
+          const success = await verifyauthPhoneNum({
+            authNum: authNum,
+            messageType: "JOIN",
+            phone: phoneNum,
+          });
+          if (success) {
+            setSignData({ ...signData, phone: phoneNum });
+            navigation.navigate("id", { h: statusBarHeight });
+            setCount(0);
+          } else {
+            Alert.alert("인증번호 불일치");
+          }
+        } catch (error) {}
+        // Alert.alert("ERROR", "Network Error");
+        try {
+          const success = await verifyauthPhoneNum({
+            authNum: authNum,
+            messageType: "JOIN",
+            phone: phoneNum,
+          });
+          if (success) {
+            setSignData({ ...signData, phone: phoneNum });
+            navigation.navigate("id");
+            setCount(0);
+          } else {
+            Alert.alert("인증번호 불일치");
+          }
+        } catch (error) {}
+        // Alert.alert("ERROR", "Network Error");
+      }
+    }
+
+    const { StatusBarManager } = NativeModules;
+    const [statusBarHeight, setStatusBarHeight] = useState(0);
+    useEffect(() => {
+      if (Platform.OS === "ios") {
+        StatusBarManager.getHeight((statusBarFrameData) => {
+          setStatusBarHeight(statusBarFrameData.height);
         });
-        if (success) {
-          setSignData({ ...signData, phone: phoneNum });
-          navigation.navigate("id", { h: statusBarHeight });
-          setCount(0);
-        } else {
-          Alert.alert("인증번호 불일치");
-        }
-      } catch (error) {}
-      // Alert.alert("ERROR", "Network Error");
-    }
-  }
+      }
+    }, []);
 
-  const { StatusBarManager } = NativeModules;
-  const [statusBarHeight, setStatusBarHeight] = useState(0);
-  useEffect(() => {
-    if (Platform.OS === "ios") {
-      StatusBarManager.getHeight((statusBarFrameData) => {
-        setStatusBarHeight(statusBarFrameData.height);
-      });
-    }
-  }, []);
-
-  return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar num={1} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={
-          Platform.OS === "ios" ? 44 + statusBarHeight : 0
-        }
-      >
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <View>
-            <View style={styles.textContainer}>
-              <InputText text="휴대폰 번호를 알려주세요." />
-            </View>
-            <Text style={styles.text}>
-              입력하신 번호로 인증번호가 전송됩니다.
-            </Text>
-            <View style={styles.inputContainer}>
-              <View style={styles.input}>
-                <InputData
-                  hint="휴대폰 번호"
-                  onChangeText={handlePhoneChange}
-                  value={phoneNum}
-                  keyboardType="numeric"
-                />
+    return (
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Bar num={1} />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
+          keyboardVerticalOffset={
+            Platform.OS === "ios" ? 44 + statusBarHeight : 0
+          }
+        >
+          <View style={{ flex: 1, justifyContent: "space-between" }}>
+            <View>
+              <View style={styles.textContainer}>
+                <InputText text="휴대폰 번호를 알려주세요." />
               </View>
-              <View>
-                <ButtonSmall
-                  title={btnTitle}
-                  onPress={requestNumber}
-                  style={sbtnColor}
-                />
-              </View>
-            </View>
-            {isVisible && (
-              <>
-                <View style={styles.lInputContainer}>
+              <Text style={styles.text}>
+                입력하신 번호로 인증번호가 전송됩니다.
+              </Text>
+              <View style={styles.inputContainer}>
+                <View style={styles.input}>
                   <InputData
-                    hint="인증번호"
-                    value={authNum}
-                    onChangeText={handleAuthChange}
+                    hint="휴대폰 번호"
+                    onChangeText={handlePhoneChange}
+                    value={phoneNum}
                     keyboardType="numeric"
                   />
-                  <Timer count={count} setCount={setCount} />
                 </View>
-                <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
-              </>
-            )}
+                <View>
+                  <ButtonSmall
+                    title={btnTitle}
+                    onPress={requestNumber}
+                    style={sbtnColor}
+                  />
+                </View>
+              </View>
+              {isVisible && (
+                <>
+                  <View style={styles.lInputContainer}>
+                    <InputData
+                      hint="인증번호"
+                      value={authNum}
+                      onChangeText={handleAuthChange}
+                      keyboardType="numeric"
+                    />
+                    <Timer count={count} setCount={setCount} />
+                  </View>
+                  <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
+                </>
+              )}
+            </View>
+            <View style={styles.buttonContainer}>
+              <ButtonBig
+                text="다음"
+                style={lbtnColor}
+                onPress={verifyAuthNum}
+              />
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <ButtonBig text="다음" style={lbtnColor} onPress={verifyAuthNum} />
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    </View>
-  );
+        </KeyboardAvoidingView>
+      </View>
+    );
+  }
 }
 
 export default AuthPhone;
@@ -189,6 +213,15 @@ const styles = StyleSheet.create({
     marginLeft: 23,
     marginTop: 3,
     marginBottom: 66,
+  },
+  timer: {
+    color: GlobalStyles.colors.red,
+    fontSize: 15,
+    fontWeight: 400,
+    lineHeight: 20,
+    position: "absolute",
+    top: 10,
+    right: 12,
   },
   timer: {
     color: GlobalStyles.colors.red,

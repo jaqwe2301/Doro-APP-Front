@@ -3,16 +3,6 @@ import { GlobalStyles } from "../../constants/styles";
 import { useState } from "react";
 
 function LectureBox(props) {
-  const recruitingData = props.LectureData.filter(
-    (item) => item.status === "RECRUITING"
-  );
-
-  const allTitleArray = [
-    ...new Set(recruitingData.map((item) => item.mainTitle)),
-  ];
-
-  let LectureElements = [];
-
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
     return new Date(stringDate);
@@ -40,99 +30,55 @@ function LectureBox(props) {
     "토요일",
   ];
 
-  for (let i = 0; i < allTitleArray.length; i++) {
-    let SelectedColor = GlobalStyles.indicationColors[i % 4];
-
-    LectureElements.push(
-      <View key={i}>
-        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-          {allTitleArray[i]}
-        </Text>
-
-        {recruitingData
-          .filter((item) => item.mainTitle === allTitleArray[i])
-          .map((filteringItem, i) => {
-            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-
-            let dateHours =
-              dateControl(filteringItem.lectureDates[0]).getHours() > 10
-                ? dateControl(filteringItem.lectureDates[0]).getHours()
-                : "0" + dateControl(filteringItem.lectureDates[0]).getHours();
-
-            let dateMinutes =
-              dateControl(filteringItem.lectureDates[0]).getMinutes().length >
-              10
-                ? dateControl(filteringItem.lectureDates[0]).getMinutes()
-                : "0" + dateControl(filteringItem.lectureDates[0]).getMinutes();
-
-            let EndTime =
-              Number(dateHours) + Number(filteringItem.time) >= 10
-                ? Number(dateHours) + Number(filteringItem.time)
-                : "0" + (Number(dateHours) + Number(filteringItem.time));
-
-            let dateText =
-              // 날짜 텍스트
-              filteringItem.lectureDates.length > 1
-                ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
-                  `${lectureDateControl(
-                    filteringItem.lectureDates
-                    // )} ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`
-                  )} ${filteringItem.time}`
-                : `${
-                    dateControl(filteringItem.lectureDates[0]).getMonth() + 1
-                  }월 ${dateControl(
-                    filteringItem.lectureDates[0]
-                  ).getDate()}일 (${
-                    days[dateControl(filteringItem.lectureDates[0]).getDay()]
-                    // }) ${dateHours}:${dateMinutes} - ${EndTime}:${dateMinutes}`;
-                  }) ${filteringItem.time}`;
-
-            const lectureIdHandler = () => {
-              props.onPresslectureId(filteringItem.id);
-            };
-
-            return (
-              <Pressable key={filteringItem.id} onPress={lectureIdHandler}>
-                <View
-                  style={[
-                    styles.colorCover,
-                    { backgroundColor: SelectedColor },
-                  ]}
-                >
-                  <View style={styles.whieBox}>
-                    <View style={styles.titleContainer}>
-                      <Text style={styles.SubTitle}>
-                        {filteringItem.subTitle}
-                      </Text>
-                      <Text style={styles.enrollEndDate}>
-                        신청마감 {dateTypeValue.getMonth() + 1}월{" "}
-                        {dateTypeValue.getDate()}일{" "}
-                      </Text>
-                    </View>
-                    {/* <Text style={styles.tutor}>
-                      주강사 {filteringItem.mainTutor}명 · 보조강사{" "}
-                      {filteringItem.subTutor}명
-                    </Text> */}
-                    <Text style={styles.tutor}>{filteringItem.mainTutor}</Text>
-                    <View style={styles.placeDateContainer}>
-                      <Text style={styles.place}>{filteringItem.place}</Text>
-                      <Text style={[styles.date, { color: SelectedColor }]}>
-                        {dateText}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </Pressable>
-            );
-          })}
-      </View>
-    );
-  }
+  const dateText = props.date
+    ? props.date?.length > 1
+      ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
+        `${lectureDateControl(props.date)} ${props.time}`
+      : `${dateControl(props.date[0]).getMonth() + 1}월 ${dateControl(
+          props.date[0]
+        ).getDate()}일 (${days[dateControl(props.date[0]).getDay()]}) ${
+          props.time
+        }`
+    : "";
 
   return (
-    <ScrollView style={styles.lectureListContainer}>
-      {LectureElements}
-    </ScrollView>
+    <Pressable key={props.id} onPress={props.lectureIdHandler}>
+      <View style={[styles.colorCover, { backgroundColor: props.colors }]}>
+        <View style={[styles.whiteBox, {backgroundColor : props.boxColor === undefined ? "white" : props.boxColor }]}>
+
+          <View style={styles.titleContainer}>
+            <Text style={styles.SubTitle}>{props.subTitle}</Text>
+            <Text style={styles.enrollEndDate}>
+              {typeof props.dateTypeValue === "object"
+                ? `신청마감 ${
+                    props.dateTypeValue?.getMonth() + 1
+                  }월 ${props.dateTypeValue?.getDate()}일`
+                : props.dateTypeValue}
+            </Text>
+          </View>
+          <Text style={styles.tutor}>{props.mainTutor}</Text>
+          <View style={styles.placeContainer}>
+            <Text style={styles.place}>{props.place}</Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={{ fontSize: 12 }}>
+              {props.tutorRole === "MAIN_TUTOR"
+                ? "주강사 신청중"
+                : props.tutorRole === "SUB_TUTOR"
+                ? "보조강사 신청중"
+                : props.tutorRole === "STAFF"
+                ? "스태프 신청중"
+                : props.tutorRole}
+            </Text>
+            <Text style={[styles.date, { color: props.colors }]}>
+              {dateText}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </Pressable>
   );
 }
 
@@ -148,20 +94,16 @@ const styles = StyleSheet.create({
   },
   colorCover: {
     marginTop: 8,
-    // marginBottom: 8,
     paddingLeft: 5,
     overflow: "hidden",
     height: 120,
-    // width: 335,
-    // backgroundColor: GlobalStyles.colors.green,
     borderRadius: 5.41,
     shadowColor: "Black",
     elevation: 2,
   },
-  whieBox: {
+  whiteBox: {
     paddingLeft: 15,
     paddingRight: 11,
-    backgroundColor: "white",
     height: 120,
   },
   titleContainer: {
@@ -183,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: GlobalStyles.colors.gray03,
   },
-  placeDateContainer: {
+  placeContainer: {
     marginTop: 7.61,
     alignItems: "flex-end",
   },
@@ -192,7 +134,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   date: {
-    // color: GlobalStyles.colors.green,
     fontSize: 12,
   },
 });
