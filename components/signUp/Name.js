@@ -4,8 +4,9 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  NativeModules,
 } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import InputText from "../../components/ui/InputText";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -15,11 +16,11 @@ import { useNavigation } from "@react-navigation/native";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
-function Name({ navigation, route }) {
+function Name({ navigation }) {
   const [inputName, setInputName] = useState("");
   const [inputBirth, setInputBirth] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
-  const statusBarHeight = route.params.h;
+
   const { signData, setSignData } = useContext(SignContext);
 
   const [date, setDate] = useState(new Date(1598051730000));
@@ -72,10 +73,20 @@ function Name({ navigation, route }) {
     if (inputName !== "" && inputBirth !== "") {
       setSignData({ ...signData, name: inputName, birth: inputBirth });
 
-      navigation.navigate("school", { h: statusBarHeight });
+      navigation.navigate("school");
     } else {
     }
   }
+
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

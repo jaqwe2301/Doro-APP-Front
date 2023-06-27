@@ -6,8 +6,9 @@ import {
   Pressable,
   Modal,
   Platform,
+  NativeModules,
 } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import InputText from "../../components/ui/InputText";
 import { WithLocalSvg } from "react-native-svg";
@@ -23,14 +24,14 @@ import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
 import { KeyboardAvoidingView } from "react-native";
-function School({ navigation, route }) {
+function School({ navigation }) {
   const [inputSchool, setInputSchool] = useState("");
   const [inputMajor, setInputMajor] = useState("");
   const [inputStudentId, setInputStudentId] = useState("");
   const [inputStatus, setInputStatus] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [isNavi, setIsNavi] = useState(false);
-  const statusBarHeight = route.params.h;
+
   const { signData, setSignData } = useContext(SignContext);
 
   const [visible, setVisible] = useState(false);
@@ -102,7 +103,7 @@ function School({ navigation, route }) {
       inputStudentId !== "" &&
       inputStatus !== ""
     ) {
-      navigation.navigate("code", { h: statusBarHeight });
+      navigation.navigate("code");
     } else {
     }
   }
@@ -133,6 +134,16 @@ function School({ navigation, route }) {
       setVisible(!visible);
     }
   }
+
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

@@ -6,6 +6,7 @@ import {
   ScrollView,
   Modal,
   Platform,
+  NativeModules,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 
@@ -31,7 +32,7 @@ import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
 
-function Code({ navigation, route }) {
+function Code({ navigation }) {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
   const [inputGeneration, setInputGeneration] = useState(0);
@@ -50,7 +51,7 @@ function Code({ navigation, route }) {
   const [statusGStyle, setStatusGStyle] = useState(styles.textModal);
 
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
-  const statusBarHeight = route.params.h;
+
   const { signData, setSignData } = useContext(SignContext);
 
   const [accept1, setAccept1] = useState(false);
@@ -178,7 +179,15 @@ function Code({ navigation, route }) {
       setVisibleCode(!visibleCode);
     }
   }
-
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar num={3} />
