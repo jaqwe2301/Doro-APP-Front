@@ -25,7 +25,8 @@ import Down from "../assets/down.svg";
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
   const { headerId, setHeaderId } = useContext(HeaderContext);
-  console.log(headerId);
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
+
   const [phoneNum, setphoneNum] = useState(data.phone);
   const [authNum, setauthNum] = useState("");
   const [visible, setVisible] = useState(false);
@@ -251,7 +252,9 @@ function ProfileEdit({ navigation, route }) {
               keyboardType="numeric"
             />
             <Pressable onPress={requestNumber}>
-              <Text style={styles.auth}>인증요청</Text>
+              <View style={styles.authView}>
+                <Text style={styles.auth}>인증요청</Text>
+              </View>
             </Pressable>
           </View>
           <View style={styles.contentContainer}>
@@ -271,7 +274,9 @@ function ProfileEdit({ navigation, route }) {
               </View>
             )}
             <Pressable onPress={verifyAuthNum}>
-              <Text style={styles.auth}>인증확인</Text>
+              <View style={styles.authView}>
+                <Text style={styles.auth}>인증확인</Text>
+              </View>
             </Pressable>
           </View>
           <View style={styles.contentContainer}>
@@ -304,14 +309,14 @@ function ProfileEdit({ navigation, route }) {
               </View>
             </View>
           </View>
-          <View style={styles.contentContainer}>
+          {/* <View style={styles.contentContainer}>
             <Text style={styles.title}>기수</Text>
             <InputLine
               onChangeText={handleGenerationChange}
               value={String(generation)}
               keyboardType="numeric"
             />
-          </View>
+          </View> */}
           <View style={styles.border}></View>
         </View>
         <View>
@@ -324,20 +329,22 @@ function ProfileEdit({ navigation, route }) {
                 { color: GlobalStyles.colors.gray01 },
               ]}
             >
-              {data.name}
+              {headerAccount}
             </Text>
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>비밀번호</Text>
             <Pressable onPress={navi}>
-              <Text
-                style={[
-                  styles.contentText,
-                  { borderBottomWidth: 1, color: GlobalStyles.colors.gray01 },
-                ]}
-              >
-                비밀번호 수정
-              </Text>
+              <View style={styles.contentTextView}>
+                <Text
+                  style={[
+                    styles.contentText,
+                    { marginLeft: 0, color: GlobalStyles.colors.gray01 },
+                  ]}
+                >
+                  비밀번호 수정
+                </Text>
+              </View>
             </Pressable>
           </View>
         </View>
@@ -461,6 +468,11 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: GlobalStyles.colors.gray03,
   },
+  contentTextView: {
+    marginLeft: 45,
+    borderBottomWidth: 0.5,
+    borderBottomColor: GlobalStyles.colors.gray01,
+  },
   contentTitle: {
     marginHorizontal: 20,
     fontSize: 15,
@@ -470,15 +482,17 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginLeft: 45,
   },
+  authView: {
+    color: GlobalStyles.colors.gray01,
+    borderBottomWidth: 0.5,
+    borderBottomColor: GlobalStyles.colors.gray01,
+    marginLeft: 10,
+  },
   auth: {
     fontSize: 12,
     fontWeight: 400,
     lineHeight: 17,
-    color: GlobalStyles.colors.gray01,
-    borderBottomWidth: 1,
-    borderBottomColor: GlobalStyles.colors.gray01,
-    marginLeft: 10,
-    width: 50,
+
     textAlign: "center",
   },
   cancelText: {

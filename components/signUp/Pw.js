@@ -1,5 +1,12 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useContext, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  NativeModules,
+} from "react-native";
+import { useContext, useEffect, useState } from "react";
 import { GlobalStyles } from "../../constants/styles";
 
 import ButtonBig from "../ui/ButtonBig";
@@ -11,7 +18,7 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 
-function Pw() {
+function Pw({ navigation }) {
   const [inputPw, setInputPw] = useState("");
   const [inputRePw, setInputRePw] = useState("");
   const [isNavi, setIsNavi] = useState(false);
@@ -20,7 +27,7 @@ function Pw() {
   const [num, setNum] = useState(GlobalStyles.colors.gray05);
   const [mark, setMark] = useState(GlobalStyles.colors.gray05);
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
-  const navigation = useNavigation();
+
   const { signData, setSignData } = useContext(SignContext);
 
   const handlePwChange = (text) => {
@@ -90,47 +97,61 @@ function Pw() {
     } else {
     }
   }
-
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar num={1} />
-      <View style={{ flex: 1, justifyContent: "space-between" }}>
-        <View>
-          <View style={styles.textContainer}>
-            <InputText text="비밀번호를 입력해 주세요." />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Bar num={1} />
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <View>
+            <View style={styles.textContainer}>
+              <InputText text="비밀번호를 입력해 주세요." />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.id}>{signData.account}</Text>
+              <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
+            </View>
+            <View style={styles.inputContainer}>
+              <InputData
+                hint="영문, 숫자, 특수문자 포함 8~20자"
+                onChangeText={handlePwChange}
+                value={inputPw}
+                secureTextEntry={true}
+              />
+            </View>
+            <View style={styles.pwBtn}>
+              <PwBtn text="영문" btnColor={eng} />
+              <PwBtn text="숫자" btnColor={num} />
+              <PwBtn text="특수문자" btnColor={mark} />
+              <PwBtn text="8~20자" btnColor={len} />
+            </View>
+            <View style={[styles.inputContainer, { marginTop: 0 }]}>
+              <InputData
+                hint="비밀번호 재입력"
+                onChangeText={handleRePwChange}
+                value={inputRePw}
+                secureTextEntry={true}
+              />
+            </View>
           </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.id}>{signData.account}</Text>
-            <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
+          <View style={styles.buttonContainer}>
+            <ButtonBig text="다음" style={lbtnColor} onPress={navigatePw} />
           </View>
-          <View style={styles.inputContainer}>
-            <InputData
-              hint="영문, 숫자, 특수문자 포함 8~20자"
-              onChangeText={handlePwChange}
-              value={inputPw}
-              secureTextEntry={true}
-            />
-          </View>
-          <View style={styles.pwBtn}>
-            <PwBtn text="영문" btnColor={eng} />
-            <PwBtn text="숫자" btnColor={num} />
-            <PwBtn text="특수문자" btnColor={mark} />
-            <PwBtn text="8~20자" btnColor={len} />
-          </View>
-          <View style={[styles.inputContainer, { marginTop: 0 }]}>
-            <InputData
-              hint="비밀번호 재입력"
-              onChangeText={handleRePwChange}
-              value={inputRePw}
-              secureTextEntry={true}
-            />
-          </View>
-        </View>
-        <View style={styles.buttonContainer}>
-          <ButtonBig text="다음" style={lbtnColor} onPress={navigatePw} />
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
