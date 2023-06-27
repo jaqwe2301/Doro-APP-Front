@@ -11,8 +11,10 @@ import {
 } from "react-native";
 import Input from "../components/ui/Input";
 import { GlobalStyles } from "../constants/styles";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { login } from "../utill/auth";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 import jwtDecode from "jwt-decode";
@@ -28,7 +30,16 @@ function LoginScreen({ navigation }) {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+<<<<<<< HEAD
+=======
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
   const authCtx = useContext(AuthContext);
+
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   const handleId = (text) => {
     setId(text);
@@ -36,6 +47,76 @@ function LoginScreen({ navigation }) {
   const handlePw = (text) => {
     setPw(text);
   };
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+      console.log(expoPushToken);
+      console.log("ㅗㅑㅗㅑ");
+    };
+  }, []);
+
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "You've got mail! 📬",
+        // body: `${expoPushToken}`,
+        body: "seee",
+        data: { data: "goes here" },
+      },
+      trigger: { seconds: 2 },
+    });
+  }
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("실 기기로 해야함");
+    }
+
+    return token;
+  }
 
   async function loginHandler() {
     setIsAuthenticating(true);
@@ -49,6 +130,10 @@ function LoginScreen({ navigation }) {
 
       setHeaderRole(decoded.roles[0].authority);
       setHeaderId(decoded.id);
+<<<<<<< HEAD
+=======
+      setHeaderAccount(decoded.sub);
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     } catch (error) {
       setBorderColor1(GlobalStyles.colors.red);
       setIsVisible(true);
@@ -69,6 +154,15 @@ function LoginScreen({ navigation }) {
         }}
       />
       <ScrollView>
+<<<<<<< HEAD
+=======
+        <Button
+          title="Press to schedule a notification"
+          onPress={async () => {
+            await schedulePushNotification();
+          }}
+        />
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
         <View style={styles.content}>
           <View>
             <Input

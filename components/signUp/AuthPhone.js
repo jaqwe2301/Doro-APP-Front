@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, Alert } from "react-native";
 import { useState, useContext, useEffect } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import { useState, useContext, useEffect } from "react";
 import InputText from "../../components/ui/InputText";
 import ButtonSmall from "../../components/ui/ButtonSmall";
 import { GlobalStyles } from "../../constants/styles";
@@ -10,6 +12,7 @@ import { authPhoneNum, verifyauthPhoneNum } from "../../utill/auth";
 import InputData from "../ui/InputData";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
+import Timer from "../feat/Timer";
 import Timer from "../feat/Timer";
 
 function AuthPhone() {
@@ -38,10 +41,8 @@ function AuthPhone() {
   const handleAuthChange = (text) => {
     setauthNum(text);
     if (text.length === 6) {
-      setFlex1(1);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
-      setFlex1(0);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
   };
@@ -53,11 +54,29 @@ function AuthPhone() {
       setIsVisible(true);
       // setTimer(true);
       setCount(179);
+      // setTimer(true);
+      setCount(179);
     } else {
     }
   }
   async function verifyAuthNum() {
+  async function verifyAuthNum() {
     if (authNum.length === 6) {
+      try {
+        const success = await verifyauthPhoneNum({
+          authNum: authNum,
+          messageType: "JOIN",
+          phone: phoneNum,
+        });
+        if (success) {
+          setSignData({ ...signData, phone: phoneNum });
+          navigation.navigate("id");
+          setCount(0);
+        } else {
+          Alert.alert("인증번호 불일치");
+        }
+      } catch (error) {}
+      // Alert.alert("ERROR", "Network Error");
       try {
         const success = await verifyauthPhoneNum({
           authNum: authNum,
@@ -78,7 +97,7 @@ function AuthPhone() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={1} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
@@ -114,6 +133,7 @@ function AuthPhone() {
                   keyboardType="numeric"
                 />
                 <Timer count={count} setCount={setCount} />
+                <Timer count={count} setCount={setCount} />
               </View>
               <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
             </>
@@ -132,7 +152,7 @@ export default AuthPhone;
 const styles = StyleSheet.create({
   textContainer: {
     marginHorizontal: 20,
-    marginTop: 45,
+    marginTop: 35,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -140,7 +160,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 20,
     flexDirection: "row",
   },
   lInputContainer: {
@@ -156,16 +176,25 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     color: GlobalStyles.colors.gray04,
     marginHorizontal: 20,
-    marginTop: 6,
-    marginBottom: 18,
+    marginTop: 3,
+
     lineHeight: 20,
   },
   textSend: {
     fontSize: 12,
     fontWeight: 400,
-    marginHorizontal: 20,
-    marginTop: 8,
+    marginLeft: 23,
+    marginTop: 3,
     marginBottom: 66,
+  },
+  timer: {
+    color: GlobalStyles.colors.red,
+    fontSize: 15,
+    fontWeight: 400,
+    lineHeight: 20,
+    position: "absolute",
+    top: 10,
+    right: 12,
   },
   timer: {
     color: GlobalStyles.colors.red,

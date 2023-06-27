@@ -7,6 +7,7 @@ import { useContext, useState } from "react";
 import { changePassword } from "../../utill/auth";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../store/auth-context";
+import { AuthContext } from "../../store/auth-context";
 
 function ChangePw({ route }) {
   const [pw, setPw] = useState("");
@@ -46,17 +47,27 @@ function ChangePw({ route }) {
     }
   }
 
+  // useEffect(() => {}, [pw, repw]);
+
   const handlePwChange = (text) => {
     let hasEng = /[a-zA-Z]+/g.test(text);
     let hasNum = /[0-9]+/g.test(text);
     let hasMark = /[~!@#$%^&*()_+|<>?:{}]+/g.test(text);
     let hasValidLen = text.length >= 8 && text.length <= 20;
 
-    setEng(hasEng ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
-    setNum(hasNum ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
-    setMark(hasMark ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05);
+    setEng(
+      hasEng ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
+    setNum(
+      hasNum ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
+    setMark(
+      hasMark ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
+    );
     setLen(
-      hasValidLen ? GlobalStyles.colors.gray01 : GlobalStyles.colors.gray05
+      hasValidLen
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
     );
     setPw(text);
 
@@ -145,13 +156,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     justifyContent: "space-between",
+    justifyContent: "space-between",
   },
   headerShadow: {
     borderBottomColor: GlobalStyles.colors.gray05,
     borderBottomWidth: 0.5,
   },
   textTitle: {
-    marginLeft: 6,
+    marginLeft: 3,
     marginBottom: 5,
     fontSize: 15,
     fontWeight: 400,
@@ -165,10 +177,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
 
     marginBottom: 34,
+
+    marginBottom: 34,
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 23,
+    marginTop: 35,
   },
   lInputContainer: {
     marginHorizontal: 20,
@@ -188,7 +202,6 @@ const styles = StyleSheet.create({
   pwBtn: {
     flexDirection: "row",
     marginHorizontal: 20,
-    marginTop: 4,
   },
   text: {
     fontSize: 15,
@@ -209,8 +222,7 @@ const styles = StyleSheet.create({
   textSend: {
     fontSize: 12,
     fontWeight: 400,
-    marginHorizontal: 20,
-    marginTop: 8,
-    marginBottom: 66,
+    marginHorizontal: 26,
+    marginTop: 3,
   },
 });

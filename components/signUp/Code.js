@@ -7,6 +7,7 @@ import {
   Modal,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import InputText from "../../components/ui/InputText";
 
@@ -31,8 +32,10 @@ function Code() {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
   const [inputGeneration, setInputGeneration] = useState(0);
+  const [inputGeneration, setInputGeneration] = useState(0);
 
   const [visible, setVisible] = useState(false);
+  const [visibleCode, setVisibleCode] = useState(false);
   const [visibleCode, setVisibleCode] = useState(false);
   const [display1, setDispaly1] = useState("none");
   const [display2, setDispaly2] = useState("none");
@@ -42,7 +45,14 @@ function Code() {
   const [cdisplay2, setCDisplay2] = useState("none");
   const [select, setSelect] = useState("가입 유형을 선택하세요");
   const [selectCode, setSelectCode] = useState("기수를 선택하세요");
+  const [cdisplay3, setCDisplay3] = useState("none");
+  const [cdisplay4, setCDisplay4] = useState("none");
+  const [cdisplay1, setCDisplay1] = useState("none");
+  const [cdisplay2, setCDisplay2] = useState("none");
+  const [select, setSelect] = useState("가입 유형을 선택하세요");
+  const [selectCode, setSelectCode] = useState("기수를 선택하세요");
   const [statusStyle, setStatusStyle] = useState(styles.textModal);
+  const [statusGStyle, setStatusGStyle] = useState(styles.textModal);
   const [statusGStyle, setStatusGStyle] = useState(styles.textModal);
 
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
@@ -59,7 +69,13 @@ function Code() {
   };
 
   useEffect(() => {
+  useEffect(() => {
     setlbtnColor(
+      inputRole !== "" &&
+        inputCode !== "" &&
+        accept1 &&
+        accept2 &&
+        inputGeneration
       inputRole !== "" &&
         inputCode !== "" &&
         accept1 &&
@@ -69,8 +85,16 @@ function Code() {
         : GlobalStyles.colors.gray05
     );
   }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
+  }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
 
   function navigateId() {
+    if (
+      inputRole !== "" &&
+      inputCode !== "" &&
+      accept1 &&
+      accept2 &&
+      inputGeneration
+    ) {
     if (
       inputRole !== "" &&
       inputCode !== "" &&
@@ -83,6 +107,7 @@ function Code() {
         birth: signData.birth,
         doroAuth: inputCode,
         gender: "FEMALE",
+        generation: inputGeneration,
         generation: inputGeneration,
         major: signData.major,
         name: signData.name,
@@ -111,6 +136,31 @@ function Code() {
       setDispaly1("none");
       setDispaly2("flex");
     }
+  }
+
+  function generationSelect1() {
+    setCDisplay1("flex");
+    setCDisplay2("none");
+    setCDisplay3("none");
+    setCDisplay4("none");
+  }
+  function generationSelect2() {
+    setCDisplay1("none");
+    setCDisplay2("flex");
+    setCDisplay3("none");
+    setCDisplay4("none");
+  }
+  function generationSelect3() {
+    setCDisplay1("none");
+    setCDisplay2("none");
+    setCDisplay3("flex");
+    setCDisplay4("none");
+  }
+  function generationSelect4() {
+    setCDisplay1("none");
+    setCDisplay2("none");
+    setCDisplay3("none");
+    setCDisplay4("flex");
   }
 
   function generationSelect1() {
@@ -181,7 +231,7 @@ function Code() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={3} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <ScrollView>
           <View style={styles.textContainer}>
@@ -211,12 +261,13 @@ function Code() {
                 <Text style={statusStyle}>{select}</Text>
                 <View style={{ marginRight: 13 }}>
                   <WithLocalSvg asset={Down} />
+                  <WithLocalSvg asset={Down} />
                 </View>
               </View>
             </Pressable>
           </View>
 
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { marginTop: 10 }]}>
             <InputData
               hint="가입 코드를 입력해주세요"
               onChangeText={handleCodeChange}
@@ -233,7 +284,37 @@ function Code() {
                 marginTop: 21,
                 marginLeft: 20,
               }}
+              style={{
+                flexDirection: "row",
+                marginTop: 21,
+                marginLeft: 20,
+              }}
             >
+              <Pressable
+                onPress={() => {
+                  setAccept1(!accept1);
+                  setAccept2(!accept2);
+                }}
+              >
+                <View style={{ marginTop: -3 }}>
+                  <WithLocalSvg
+                    asset={accept1 && accept2 ? CheckboxAfter : Checkbox}
+                  />
+                </View>
+              </Pressable>
+              <Text
+                style={[
+                  styles.acceptText,
+                  {
+                    color:
+                      accept1 && accept2
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                  },
+                ]}
+              >
+                전체동의
+              </Text>
               <Pressable
                 onPress={() => {
                   setAccept1(!accept1);
@@ -273,7 +354,30 @@ function Code() {
                     />
                   </View>
                 </Pressable>
+                <Pressable
+                  onPress={() => {
+                    setAccept1(!accept1);
+                  }}
+                >
+                  <View style={{ marginTop: 4 }}>
+                    <WithLocalSvg
+                      asset={!accept1 ? Checkmark : CheckmarkAfter}
+                    />
+                  </View>
+                </Pressable>
 
+                <Text
+                  style={[
+                    styles.acceptContentText,
+                    {
+                      color: accept1
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                    },
+                  ]}
+                >
+                  [필수] 이용약관
+                </Text>
                 <Text
                   style={[
                     styles.acceptContentText,
@@ -293,6 +397,27 @@ function Code() {
             </View>
             <View style={styles.acceptContentContainer}>
               <View style={{ flexDirection: "row", marginBottom: 40 }}>
+                <Pressable
+                  onPress={() => {
+                    setAccept2(!accept2);
+                  }}
+                >
+                  <View style={{ marginTop: 4 }}>
+                    <WithLocalSvg
+                      asset={!accept2 ? Checkmark : CheckmarkAfter}
+                    />
+                  </View>
+                </Pressable>
+                <Text
+                  style={[
+                    styles.acceptContentText,
+                    {
+                      color: accept2
+                        ? GlobalStyles.colors.gray01
+                        : GlobalStyles.colors.gray05,
+                    },
+                  ]}
+                >
                 <Pressable
                   onPress={() => {
                     setAccept2(!accept2);
@@ -353,7 +478,7 @@ function Code() {
                 <View style={styles.statusTitleContainer}>
                   <View style={styles.iconContainer}>
                     <Pressable onPress={() => setVisible(!visible)}>
-                      <Ionicons name="close-outline" size={40} />
+                      <WithLocalSvg asset={Modalx} />
                     </Pressable>
                   </View>
                   <Text style={styles.statusTitle}>가입 유형</Text>
@@ -364,7 +489,7 @@ function Code() {
                 >
                   <Text style={styles.statusText}>강사</Text>
                   <View style={[styles.iconContainer2, { display: display1 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
                 <Pressable
@@ -373,7 +498,7 @@ function Code() {
                 >
                   <Text style={styles.statusText}>매니저</Text>
                   <View style={[styles.iconContainer2, { display: display2 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
               </View>
@@ -475,8 +600,8 @@ export default Code;
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginHorizontal: 20,
-    marginTop: 44,
+    marginHorizontal: 23,
+    marginTop: 50,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -514,6 +639,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     lineHeight: 22,
     marginLeft: 19,
+    marginLeft: 19,
     color: GlobalStyles.colors.gray05,
   },
   acceptContentText: {
@@ -533,7 +659,7 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(84, 84, 86, 0.3)",
   },
   textInput: {
     height: 40,
@@ -573,7 +699,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
     flex: 1,
 
-    marginRight: 50,
+    marginRight: 48,
     textAlign: "center",
   },
   statusText: {
@@ -591,11 +717,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   iconContainer: {
-    marginLeft: 10,
+    marginLeft: 20,
     marginTop: 3,
   },
   iconContainer2: {
-    marginRight: 10,
+    marginRight: 22,
     marginTop: 2,
   },
 });
