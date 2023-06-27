@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image } from "react-native";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import {
   NavigationContainer,
   getFocusedRouteNameFromRoute,
@@ -60,6 +60,18 @@ import ProfileFill from "./assets/profile_fill.svg";
 import FinishPw from "./components/signUp/FinishPw";
 import DeleteUser from "./screens/DeleteUser";
 import AgreeInfo2 from "./components/signUp/AgreeInfo2";
+// import { useState, useEffect, useRef } from 'react';
+// import { Text, View, Button, Platform } from 'react-native';
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -447,7 +459,7 @@ function BottomTabNavigator() {
       screenOptions={{
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
-        tabBarStyle: { height: 60 },
+        // tabBarStyle: { height: 60 },
         tabBarHideOnKeyboard: true,
         headerShown: false,
       }}
@@ -471,51 +483,18 @@ function BottomTabNavigator() {
         //   )
         // }
         options={{
-          headerShown: headerVisible,	
-          header: () => {	
-            return (	
-              <View style={styles.HomeHeader}>	
-                <View style={styles.headerTopContainer}>	
-                  <Image	
-                    source={require("./assets/doroLogoMain.png")}	
-                    style={styles.Logo}	
-                  />	
-                  <Image	
-                    source={require("./assets/icons/alarm_after.png")}	
-                    style={styles.iconSize}	
-                  />	
-                </View>	
-                <View style={styles.noticeContainer}>	
-                  <Image	
-                    source={require("./assets/icons/megaphone.png")}	
-                    style={styles.iconSize}	
-                  />	
-                  <Text	
-                    style={{	
-                      marginLeft: 16,	
-                      fontStyle: GlobalStyles.gray01,	
-                      fontSize: 15,	
-                      fontWeight: "bold",	
-                    }}	
-                  >	
-                    메이커 스페이스 사용 안내	
-                  </Text>	
-                </View>	
-              </View>	
-            );	
-          },	
-          // title: "홈",	
-          tabBarIcon: ({ color }) =>	
-            color === GlobalStyles.colors.gray04 ? (	
-              <WithLocalSvg asset={Main} />	
-            ) : (	
-              <WithLocalSvg asset={MainFill} />	
+          headerShown: false,
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Main} />
+            ) : (
+              <WithLocalSvg asset={MainFill} />
             ),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            // marginTop: -10,
           },
         }}
       />
@@ -530,31 +509,24 @@ function BottomTabNavigator() {
             ) : (
               <WithLocalSvg asset={MegaphoneFill} />
             ),
-          // tabBarLabelStyle: {
-          //   marginBottom: 9,
-          //   fontSize: 10,
-          //   fontWeight: 600,
-          //   marginTop: -10,
-          // },
-
           tabBarStyle: ((route) => {
             const routeName = getFocusedRouteNameFromRoute(route) ?? "";
 
             if (
               routeName === "noticeDetail" ||
               routeName === "noticeAdd" ||
-              routeName === "noticeEdit" ||	
+              routeName === "noticeEdit" ||
               routeName === "alarm"
             ) {
               return { display: "none" };
             }
-            return { height: 60 };
+            return;
           })(route),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: "600",
-            marginTop: -10,
+            // marginTop: -10,
           },
         })}
       />
@@ -571,10 +543,10 @@ function BottomTabNavigator() {
               <WithLocalSvg asset={TrayFill} />
             ),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            // marginTop: -10,
           },
         }}
       />
@@ -582,7 +554,7 @@ function BottomTabNavigator() {
         name="MyPage"
         component={MyPageNavigator}
         options={{
-          // title: "마이 페이지",
+          title: "마이 페이지",
           header: () => {
             return (
               <View
@@ -605,10 +577,10 @@ function BottomTabNavigator() {
             ),
           tabBarLabelStyle: {
             justifyContent: "center",
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            // marginTop: -10,
           },
         }}
       />
@@ -637,7 +609,7 @@ function Navigation() {
         console.log(decoded);
         setHeaderRole(decoded.roles[0].authority);
         setHeaderId(decoded.id);
-        setHeaderAccount(decoded.sub);	
+        setHeaderAccount(decoded.sub);
       }
 
       // setIsTryingLogin(false);
@@ -655,6 +627,34 @@ function Navigation() {
 }
 
 export default function App() {
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
@@ -667,10 +667,47 @@ export default function App() {
   );
 }
 
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    // 프로젝트 ID 바꿔야 함
+    token = (
+      await Notifications.getExpoPushTokenAsync({ projectId: "doro/doro" })
+    ).data;
+    console.log(token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  return token;
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingTop: getStatusBarHeight(),
+    backgroundColor: "white",
   },
 
   bottomtab: {

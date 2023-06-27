@@ -4,60 +4,20 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
+  Image,
   FlatList,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
-<<<<<<< HEAD
-
-function AlarmScreen() {
-  const data = [
-    { title: "공지사항", content: "hi", date: "2023.04.02 오후 12:00", id: 3 },
-    { id: 2, title: "알림", content: "hihi", date: "2023.04.02 오후 12:00" },
-  ];
-
-  useEffect(() => {
-    async function notiHandler() {
-      try {
-        const response = await getAnnouncement({ page: 0, size: 10 });
-        setData(response);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    notiHandler();
-  }, []);
-
-  const Item = ({ item }) => (
-    <View style={styles.contentContainer}>
-      <View style={styles.textTopContainer}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.title}>{item.title}</Text>
-          <View style={styles.circle}></View>
-        </View>
-        <Text style={styles.date}>{item.date}</Text>
-      </View>
-      <Text style={styles.content}>{item.content}</Text>
-      <View style={styles.linkConainer}>
-        <Text style={styles.date}>자세히 보기 &gt;</Text>
-      </View>
-    </View>
-=======
 import { useContext, useEffect, useState } from "react";
-import { getNotification } from "../utill/http";
+import { getNotification, readNotification } from "../utill/http";
 import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
-import moment from "moment";
 
-function AlarmScreen() {
+function AlarmScreen({ navigation }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const [data, setData] = useState([]);
   const [pageNum, setPageNum] = useState(0);
-
-  useEffect(() => {
-    notiHandler();
-  }, []);
+  const [expandedItems, setExpandedItems] = useState([]);
 
   async function notiHandler() {
     try {
@@ -75,50 +35,155 @@ function AlarmScreen() {
       console.log(error);
     }
   }
-  const Item = ({ item }) => (
-    <Pressable>
-      <View style={styles.contentContainer}>
-        <View style={styles.textTopContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.title}>{item.title}</Text>
-            {!item.isRead && <View style={styles.circle}></View>}
+
+  async function readHandler(notificationId) {
+    try {
+      const response = await readNotification({
+        notificationId: notificationId,
+      });
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function formatDateTime(timestamp) {
+    const dateObj = new Date(timestamp);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    let hour = dateObj.getHours();
+    const period = hour >= 12 ? "오후" : "오전";
+
+    // 12시간 형식으로 변환
+    if (hour > 12) {
+      hour -= 12;
+    } else if (hour === 0) {
+      hour = 12;
+    }
+
+    const minute = String(dateObj.getMinutes()).padStart(2, "0");
+    const formattedTime = `${year}.${month}.${day} ${period} ${hour}:${minute}`;
+
+    return formattedTime;
+  }
+
+  const Item = ({ item, expandedItems, setExpandedItems }) => {
+    const isExpanded = expandedItems.includes(item.id);
+    return item.notificationType === "NOTIFICATION" ? (
+      <Pressable>
+        <View
+          style={
+            item.isRead
+              ? [styles.contentContainer, { backgroundColor: "#F6F6F6" }]
+              : styles.contentContainer
+          }
+        >
+          <View style={styles.textTopContainer}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.title}>알림</Text>
+              {!item.isRead && <View style={styles.circle}></View>}
+            </View>
+            <Text style={styles.date}>
+              {/* {moment(item.createdAt).format("YYYY-MM-DD A h:mm")} */}
+              {formatDateTime(item.createdAt)}
+            </Text>
           </View>
-          <Text style={styles.date}>
-            {moment(item.createdAt).format("YYYY-MM-DD A h:mm")}
-          </Text>
+          <Text style={styles.content}>{item.title}</Text>
+          {isExpanded && <Text style={styles.content2}>{item.body}</Text>}
+          <Pressable
+            onPress={() => {
+              if (isExpanded) {
+                setExpandedItems(expandedItems.filter((id) => id !== item.id));
+              } else {
+                setExpandedItems([...expandedItems, item.id]);
+              }
+              if (!item.isRead) {
+                readHandler(item.id);
+              }
+            }}
+          >
+            <View style={styles.linkConainer}>
+              <Text style={styles.date}>
+                {isExpanded ? "닫기" : "자세히 보기"}{" "}
+              </Text>
+              <View style={styles.svg}>
+                {/* <WithLocalSvg asset={Down} /> */}
+                <Image
+                  source={
+                    isExpanded
+                      ? require("../assets/smallup.png")
+                      : require("../assets/smalldown.png")
+                  }
+                />
+              </View>
+            </View>
+          </Pressable>
         </View>
-        <Text style={styles.content}>{item.body}</Text>
-        <View style={styles.linkConainer}>
-          <Text style={styles.date}>자세히 보기 &gt;</Text>
+      </Pressable>
+    ) : (
+      <Pressable>
+        <View
+          style={
+            item.isRead
+              ? [styles.contentContainer, { backgroundColor: "#F6F6F6" }]
+              : styles.contentContainer
+          }
+        >
+          <View style={styles.textTopContainer}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.title}>공지사항</Text>
+              {!item.isRead && <View style={styles.circle}></View>}
+            </View>
+            <Text style={styles.date}>
+              {/* {moment(item.createdAt).format("YYYY-MM-DD A h:mm")} */}
+              {formatDateTime(item.createdAt)}
+            </Text>
+          </View>
+          <Text style={styles.content}>{item.body}</Text>
+
+          <Pressable
+            onPress={() => {
+              navigation.navigate("noticeScreen");
+              if (!item.isRead) {
+                readHandler(item.id);
+              }
+            }}
+          >
+            <View style={styles.linkConainer}>
+              <Text style={styles.date}>자세히 보기 </Text>
+              <View>
+                <Image source={require("../assets/smallright.png")} />
+              </View>
+            </View>
+          </Pressable>
         </View>
-      </View>
-    </Pressable>
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
-  );
+      </Pressable>
+    );
+  };
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
-      <View style={{ marginTop: 40, marginBottom: 20 }}>
-        <FlatList
-          data={data}
-          renderItem={Item}
-          keyExtractor={(item) => item.id}
-        />
-      </View>
-=======
       {/* <View style={{ marginTop: 40, marginBottom: 20 }}> */}
       <FlatList
         data={data}
-        renderItem={Item}
+        renderItem={({ item }) => (
+          <Item
+            item={item}
+            expandedItems={expandedItems}
+            setExpandedItems={setExpandedItems}
+          />
+        )}
         keyExtractor={(item) => item.id}
         onEndReached={notiHandler}
         onEndReachedThreshold={0.5}
         ListHeaderComponent={<View />}
         ListHeaderComponentStyle={{ marginTop: 40 }}
+        ListFooterComponent={<View />}
+        ListFooterComponentStyle={{ marginBottom: 40 }}
       />
       {/* </View> */}
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     </View>
   );
 }
@@ -163,12 +228,22 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: GlobalStyles.colors.gray01,
   },
+  content2: {
+    marginTop: 7,
+    marginHorizontal: 16,
+    fontWeight: 400,
+    fontSize: 10,
+    lineHeight: 15,
+    color: GlobalStyles.colors.gray01,
+  },
   linkText: {},
   linkConainer: {
-    alignItems: "flex-end",
+    alignItems: "center",
     marginRight: 16,
     marginBottom: 15,
     marginTop: 8,
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   circle: {
     backgroundColor: GlobalStyles.colors.primaryAccent,
@@ -177,5 +252,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginTop: 7,
     marginLeft: 3,
+  },
+  svg: {
+    marginLeft: 2,
   },
 });

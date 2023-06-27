@@ -5,8 +5,10 @@ import {
   ScrollView,
   Pressable,
   Modal,
+  Platform,
+  NativeModules,
 } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import InputText from "../../components/ui/InputText";
 import { WithLocalSvg } from "react-native-svg";
@@ -19,14 +21,15 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
-function School() {
+import { KeyboardAvoidingView } from "react-native";
+function School({ navigation }) {
   const [inputSchool, setInputSchool] = useState("");
   const [inputMajor, setInputMajor] = useState("");
   const [inputStudentId, setInputStudentId] = useState("");
   const [inputStatus, setInputStatus] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [isNavi, setIsNavi] = useState(false);
-  const navigation = useNavigation();
+
   const { signData, setSignData } = useContext(SignContext);
 
   const [visible, setVisible] = useState(false);
@@ -130,70 +133,85 @@ function School() {
     }
   }
 
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Bar num={3} />
-      <View style={{ flex: 1, justifyContent: "space-between" }}>
-        <ScrollView>
-          <View style={[styles.textContainer, { marginTop: 35 }]}>
-            <InputText text="학교를 입력해 주세요." />
-          </View>
-          <View style={styles.inputContainer}>
-            <InputData
-              hint="학교를 입력하세요"
-              onChangeText={handleSchoolChange}
-              value={inputSchool}
-            />
-          </View>
-          <View style={styles.textContainer}>
-            <InputText text="전공을 입력해 주세요." />
-          </View>
-          <View style={styles.inputContainer}>
-            <InputData
-              hint="전공을 입력하세요"
-              onChangeText={handleMajorChange}
-              value={inputMajor}
-            />
-          </View>
-          <View style={styles.textContainer}>
-            <InputText text="학년을 입력해 주세요." />
-            <InputText text="학년을 입력해 주세요." />
-          </View>
-          <View style={styles.inputContainer}>
-            <InputData
-              hint="학년을 입력하세요"
-              hint="학년을 입력하세요"
-              onChangeText={handleStudentIdChange}
-              value={inputStudentId}
-            />
-          </View>
-          <View style={styles.textContainer}>
-            <InputText text="재학유무를 선택해 주세요." />
-          </View>
-          <Text style={styles.text}>
-            재학중인 아닌 경우 모두 휴학으로 선택해 주세요.
-          </Text>
-          <View style={[styles.inputContainer, { marginBottom: 78 }]}>
-            {/* <InputData
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={
+          Platform.OS === "ios" ? 44 + statusBarHeight : 0
+        }
+      >
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <ScrollView>
+            <View style={[styles.textContainer, { marginTop: 35 }]}>
+              <InputText text="학교를 입력해 주세요." />
+            </View>
+            <View style={styles.inputContainer}>
+              <InputData
+                hint="학교를 입력하세요"
+                onChangeText={handleSchoolChange}
+                value={inputSchool}
+              />
+            </View>
+            <View style={styles.textContainer}>
+              <InputText text="전공을 입력해 주세요." />
+            </View>
+            <View style={styles.inputContainer}>
+              <InputData
+                hint="전공을 입력하세요"
+                onChangeText={handleMajorChange}
+                value={inputMajor}
+              />
+            </View>
+            <View style={styles.textContainer}>
+              <InputText text="학년을 입력해 주세요." />
+            </View>
+            <View style={styles.inputContainer}>
+              <InputData
+                hint="학년을 입력하세요"
+                onChangeText={handleStudentIdChange}
+                value={inputStudentId}
+              />
+            </View>
+            <View style={styles.textContainer}>
+              <InputText text="재학유무를 선택해 주세요." />
+            </View>
+            <Text style={styles.text}>
+              재학중인 아닌 경우 모두 휴학으로 선택해 주세요.
+            </Text>
+            <View style={[styles.inputContainer, { marginBottom: 78 }]}>
+              {/* <InputData
               hint="재학유무를 선택하세요"
               onChangeText={handleStatusChange}
               value={inputStatus}
             /> */}
-            <Pressable onPress={() => setVisible(!visible)}>
-              <View style={styles.textInput}>
-                <Text style={statusStyle}>{select}</Text>
-                <View style={{ marginRight: 13 }}>
-                  <WithLocalSvg asset={Down} />
-                  <WithLocalSvg asset={Down} />
+              <Pressable onPress={() => setVisible(!visible)}>
+                <View style={styles.textInput}>
+                  <Text style={statusStyle}>{select}</Text>
+                  <View style={{ marginRight: 13 }}>
+                    <WithLocalSvg asset={Down} />
+                  </View>
                 </View>
-              </View>
-            </Pressable>
+              </Pressable>
+            </View>
+          </ScrollView>
+          <View style={styles.buttonContainer}>
+            <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
           </View>
-        </ScrollView>
-        <View style={styles.buttonContainer}>
-          <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
         </View>
-      </View>
+      </KeyboardAvoidingView>
       <Modal
         animationType="none"
         transparent={true}

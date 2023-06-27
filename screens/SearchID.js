@@ -1,11 +1,19 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  NativeModules,
+} from "react-native";
 
 import { GlobalStyles } from "../constants/styles";
 import InputSmall from "../components/ui/InputData";
 import ButtonSmall from "../components/ui/ButtonSmall";
 import InputData from "../components/ui/InputData";
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { authPhoneNum, findAccount } from "../utill/auth";
 import ButtonBig from "../components/ui/ButtonBig";
 import { verifyauthPhoneNum } from "../utill/auth";
@@ -91,57 +99,77 @@ function SearchID({ navigation }) {
       }
     }
   }
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={styles.container}>
         <View>
-          <Text style={styles.numberText}>휴대폰 번호인증</Text>
-        </View>
-        <View style={styles.viewBorder}></View>
-        <Text style={styles.text}>가입 시 입력한 휴대폰 번호</Text>
-        <View>
-          <View style={styles.inputContainer}>
-            <View style={styles.input}>
-              <InputData
-                hint="휴대폰 번호"
-                onChangeText={handlePhoneChange}
-                value={phoneNum}
-                keyboardType="numeric"
-              />
-            </View>
-            <View>
-              <ButtonSmall
-                title={btnTitle}
-                onPress={requestNumber}
-                style={sbtnColor}
-              />
-            </View>
+          <View
+            style={{
+              borderBottomColor: GlobalStyles.colors.gray05,
+              borderBottomWidth: 0.5,
+            }}
+          >
+            <Text style={styles.numberText}>휴대폰 인증</Text>
+            <View style={styles.viewBorder}></View>
           </View>
-          {isVisible && (
-            <>
-              <View style={styles.lInputContainer}>
+          <Text style={styles.text}>가입 시 입력한 휴대폰 번호</Text>
+          <View>
+            <View style={styles.inputContainer}>
+              <View style={styles.input}>
                 <InputData
-                  hint="인증번호"
-                  value={authNum}
-                  onChangeText={handleAuthChange}
+                  hint="휴대폰 번호"
+                  onChangeText={handlePhoneChange}
+                  value={phoneNum}
                   keyboardType="numeric"
                 />
-                <Timer count={count} setCount={setCount} />
               </View>
-              <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
-            </>
-          )}
+              <View>
+                <ButtonSmall
+                  title={btnTitle}
+                  onPress={requestNumber}
+                  style={sbtnColor}
+                />
+              </View>
+            </View>
+            {isVisible && (
+              <>
+                <View style={styles.lInputContainer}>
+                  <InputData
+                    hint="인증번호"
+                    value={authNum}
+                    onChangeText={handleAuthChange}
+                    keyboardType="numeric"
+                  />
+                  <Timer count={count} setCount={setCount} />
+                </View>
+                <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
+              </>
+            )}
+          </View>
+        </View>
+        <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+          <ButtonBig
+            text="아이디 확인 "
+            style={lbtnColor}
+            onPress={verifyAuthNum}
+          />
         </View>
       </View>
-      <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-        <ButtonBig
-          text="아이디 확인 "
-          style={lbtnColor}
-          onPress={verifyAuthNum}
-        />
-      </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -156,19 +184,22 @@ const styles = StyleSheet.create({
   numberText: {
     width: 107,
     textAlign: "center",
+    // justifyContent: "flex-start",
+    // alignItems: "flex-start",
     fontSize: 15,
     fontWeight: 600,
     color: GlobalStyles.colors.gray01,
-    borderBottomColor: GlobalStyles.colors.primaryDefault,
-    borderBottomWidth: 3,
+    // borderBottomColor: GlobalStyles.colors.primaryDefault,
+    // borderBottomWidth: 3,
     paddingBottom: 9,
     marginTop: 12,
     marginLeft: 20,
   },
   viewBorder: {
-    height: 0.5,
-    width: "100%",
-    backgroundColor: GlobalStyles.colors.gray05,
+    height: 3,
+    width: 107,
+    marginLeft: 20,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
   },
   text: {
     marginTop: 35,
