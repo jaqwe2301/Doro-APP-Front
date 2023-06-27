@@ -17,52 +17,11 @@ import Camera from "../assets/camera.svg";
 
 import * as ImagePicker from "expo-image-picker";
 import NoticeScreen from "./NoticeScreen";
-<<<<<<< HEAD
-=======
 import axios from "axios";
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 
 function AddNoticeScreen({ navigation }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-<<<<<<< HEAD
-  const formData = new FormData();
-  const [filename, setFileName] = useState("");
-
-  const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
-  const [imageUrl, setImageUrl] = useState("");
-
-  async function completeHandler() {
-    try {
-      const value = [
-        {
-          title: title,
-          body: body,
-        },
-      ];
-      // console.log(value[0]);
-
-      const blob = new Blob([JSON.stringify(value)], {
-        type: "application/json",
-      });
-      formData.append("announcementReq", blob);
-      if (imageUrl) {
-        formData.append("picture", {
-          uri: imageUrl,
-          type: "multipart/form-data",
-          name: filename,
-        });
-      }
-
-      const response = await createAnnouncement({
-        formData: formData,
-      });
-
-      console.log(response);
-      // if (response.success) {
-      //   navigation.replace("noticeScreen");
-      // }
-=======
   const [filename, setFileName] = useState("");
   const [result, setResult] = useState();
 
@@ -218,14 +177,11 @@ function AddNoticeScreen({ navigation }) {
       //   .catch((error) => {
       //     console.log(error);
       //   });
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     } catch (error) {
       console.log(error + "여기");
     }
   }
 
-<<<<<<< HEAD
-=======
   // async function completeHandler() {
   //   var formdata = new FormData();
   //   formdata.append(
@@ -246,7 +202,6 @@ function AddNoticeScreen({ navigation }) {
   //     .catch((error) => console.log("error", error));
   // }
 
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
   //camera
 
   const cameraHandler = async () => {
@@ -269,12 +224,9 @@ function AddNoticeScreen({ navigation }) {
     if (!result.canceled) {
       setFileName(result.assets[0].uri.split("/").pop());
       setImageUrl(result.assets[0].uri);
-<<<<<<< HEAD
-=======
       let match = /\.(\w+)$/.exec(result.assets[0].uri.split("/").pop());
       let imageType = match ? `image/${match[1]}` : `image`;
       setType(imageType);
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     } else {
       return null;
     }
@@ -291,8 +243,6 @@ function AddNoticeScreen({ navigation }) {
       },
     });
   }, [completeHandler2]);
-
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 

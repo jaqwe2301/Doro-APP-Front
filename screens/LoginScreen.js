@@ -20,6 +20,68 @@ import { HeaderContext } from "../store/header-context";
 import jwtDecode from "jwt-decode";
 import ButtonBig from "../components/ui/ButtonBig";
 
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: false,
+//     shouldSetBadge: false,
+//   }),
+// });
+
+// 여기가 push토큰 전달하는 api
+async function sendPushNotification(expoPushToken) {
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title: "Original Title",
+    body: "And here is the body!",
+    data: { someData: "goes here" },
+  };
+
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-encoding": "gzip, deflate",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert("실 기기로 해야함");
+  }
+
+  return token;
+}
+
 function LoginScreen({ navigation }) {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
@@ -30,16 +92,13 @@ function LoginScreen({ navigation }) {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
-<<<<<<< HEAD
-=======
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
   const authCtx = useContext(AuthContext);
 
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  // const [expoPushToken, setExpoPushToken] = useState("");
+  // const [notification, setNotification] = useState(false);
+  // const notificationListener = useRef();
+  // const responseListener = useRef();
 
   const handleId = (text) => {
     setId(text);
@@ -48,30 +107,30 @@ function LoginScreen({ navigation }) {
     setPw(text);
   };
 
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then((token) =>
+  //     setExpoPushToken(token)
+  //   );
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+  //   notificationListener.current =
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       setNotification(notification);
+  //     });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+  //   responseListener.current =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log(response);
+  //     });
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-      console.log(expoPushToken);
-      console.log("ㅗㅑㅗㅑ");
-    };
-  }, []);
+  //   return () => {
+  //     Notifications.removeNotificationSubscription(
+  //       notificationListener.current
+  //     );
+  //     Notifications.removeNotificationSubscription(responseListener.current);
+  //     console.log(expoPushToken);
+  //     console.log("ㅗㅑㅗㅑ");
+  //   };
+  // }, []);
 
   async function schedulePushNotification() {
     await Notifications.scheduleNotificationAsync({
@@ -83,39 +142,6 @@ function LoginScreen({ navigation }) {
       },
       trigger: { seconds: 2 },
     });
-  }
-
-  async function registerForPushNotificationsAsync() {
-    let token;
-
-    if (Platform.OS === "android") {
-      await Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-
-    if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      alert("실 기기로 해야함");
-    }
-
-    return token;
   }
 
   async function loginHandler() {
@@ -130,10 +156,7 @@ function LoginScreen({ navigation }) {
 
       setHeaderRole(decoded.roles[0].authority);
       setHeaderId(decoded.id);
-<<<<<<< HEAD
-=======
       setHeaderAccount(decoded.sub);
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     } catch (error) {
       setBorderColor1(GlobalStyles.colors.red);
       setIsVisible(true);
@@ -154,15 +177,12 @@ function LoginScreen({ navigation }) {
         }}
       />
       <ScrollView>
-<<<<<<< HEAD
-=======
         <Button
           title="Press to schedule a notification"
           onPress={async () => {
             await schedulePushNotification();
           }}
         />
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
         <View style={styles.content}>
           <View>
             <Input

@@ -16,13 +16,9 @@ import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
-<<<<<<< HEAD
 import ManagerScreen from "./ManagerScreen";
 import { deleteUser, reToken } from "../utill/auth";
-=======
-import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -39,10 +35,6 @@ function MyPageScreen({ navigation }) {
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
-<<<<<<< HEAD
-=======
-  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 
   useEffect(() => {
     profileHandler();
@@ -58,8 +50,6 @@ function MyPageScreen({ navigation }) {
     } catch (error) {
       console.log(error);
       setIsLoading(true);
-<<<<<<< HEAD
-=======
     }
   }
 
@@ -102,8 +92,54 @@ function MyPageScreen({ navigation }) {
       return axios(originalConfig);
     } catch (error) {
       console.log("error발생" + error);
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     }
+  }
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    return token;
+  }
+
+  function alarmHandler() {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
   }
 
   async function tokenHandler() {
@@ -141,23 +177,6 @@ function MyPageScreen({ navigation }) {
       ]);
     }
 
-<<<<<<< HEAD
-    async function deleteHandler() {
-      try {
-        const response = await deleteUser();
-        console.log("삭제?" + response);
-      } catch (error) {
-        console.log("error발생" + error);
-        // console.log(error)
-      }
-    }
-
-    function navi() {
-      navigation.navigate("searchPw");
-    }
-
-=======
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     // if (Object.keys(data).length === 0) {
     if (isLoading) {
       return (
@@ -179,11 +198,7 @@ function MyPageScreen({ navigation }) {
         <View style={styles.container}>
           <ScrollView>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-<<<<<<< HEAD
-              {data.profileImg !== "" ? (
-=======
               {data.profileImg !== null ? (
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
                 <Image
                   style={styles.image}
                   source={{
@@ -234,18 +249,11 @@ function MyPageScreen({ navigation }) {
                   <Text style={styles.btn}>프로필 편집</Text>
                 </Pressable>
               </View>
-<<<<<<< HEAD
+
               <View style={styles.btnContainer}>
                 <Pressable onPress={tokenHandler}>
                   <Text style={styles.btn}>강의신청내역</Text>
                 </Pressable>
-=======
-              {/* <View style={styles.btnContainer}> */}
-              <View style={{ flex: 1 }}>
-                {/* <Pressable onPress={tokenHandler}>
-                  <Text style={styles.btn}>강의신청내역</Text>
-                </Pressable> */}
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
               </View>
             </View>
             <View>
@@ -282,19 +290,11 @@ function MyPageScreen({ navigation }) {
               <Text style={styles.contentTitle}>로그인 정보</Text>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>아이디</Text>
-<<<<<<< HEAD
-                <Text style={styles.contentText}>{data.name}</Text>
-              </View>
-              <View style={styles.contentContainer}>
-                <Text style={styles.title}>비밀번호</Text>
-                <Pressable onPress={navi}>
-=======
                 <Text style={styles.contentText}>{headerAccount}</Text>
               </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>비밀번호</Text>
                 <Pressable onPress={() => navigation.navigate("searchPw")}>
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
                   <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
                     비밀번호 수정
                   </Text>
@@ -302,37 +302,27 @@ function MyPageScreen({ navigation }) {
               </View>
               <View style={styles.border}></View>
             </View>
-            <View>
+            <View style={{ flexDirection: "row" }}>
               <Pressable onPress={logoutHandler}>
-                <Text
-                  style={[
-                    styles.contentTitle,
-                    { borderBottomWidth: 1, width: 57 },
-                  ]}
-                >
-                  로그아웃
-                </Text>
+                <View style={styles.contentTitleView}>
+                  <Text style={[styles.contentTitle, { marginHorizontal: 0 }]}>
+                    로그아웃
+                  </Text>
+                </View>
               </Pressable>
-              <View style={styles.border}></View>
             </View>
-            <View style={{ marginBottom: 33 }}>
-<<<<<<< HEAD
-              <Pressable onPress={deleteHandler}>
-=======
+            <View style={styles.border}></View>
+            <View style={{ marginBottom: 33, flexDirection: "row" }}>
               <Pressable
                 onPress={() =>
                   navigation.navigate("deleteUser", { account: headerAccount })
                 }
               >
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
-                <Text
-                  style={[
-                    styles.contentTitle,
-                    { borderBottomWidth: 1, width: 61 },
-                  ]}
-                >
-                  회원 탈퇴
-                </Text>
+                <View style={styles.contentTitleView}>
+                  <Text style={[styles.contentTitle, { marginHorizontal: 0 }]}>
+                    회원 탈퇴
+                  </Text>
+                </View>
               </Pressable>
             </View>
           </ScrollView>
@@ -398,6 +388,10 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     backgroundColor: "white",
     elevation: 3,
+    shadowColor: GlobalStyles.colors.gray03,
+    shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    shadowOpacity: 0.6, // 그림자의 투명도
+    shadowRadius: 1, // 그
   },
   btn: {
     fontSize: 10,
@@ -415,11 +409,21 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     lineHeight: 17,
   },
+  contentView: {
+    marginLeft: 45,
+    borderBottomColor: GlobalStyles.colors.gray01,
+    borderBottomWidth: 0.8,
+  },
   contentTitle: {
     marginHorizontal: 20,
     fontSize: 15,
     fontWeight: 600,
     lineHeight: 20,
+  },
+  contentTitleView: {
+    marginHorizontal: 20,
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
   },
   border: {
     borderBottomColor: GlobalStyles.colors.gray05,
