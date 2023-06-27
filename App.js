@@ -651,7 +651,8 @@ async function registerForPushNotificationsAsync() {
       alert("Failed to get push token for push notification!");
       return;
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
+    // 프로젝트 ID 바꿔야 함
+    token = (await Notifications.getExpoPushTokenAsync({projectId:'doro/doro'})).data;
     console.log(token);
   } else {
     alert("Must use physical device for Push Notifications");
