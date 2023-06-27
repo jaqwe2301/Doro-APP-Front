@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -6,24 +6,44 @@ import {
   Dimensions,
   TouchableOpacity,
   Animated,
-  Image,
   Pressable,
   Text,
-  Modal,
+  ScrollView,
+  useWindowDimensions,
 } from "react-native";
-import { TabView, SceneMap } from "react-native-tab-view";
-
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
-import LectureBox from "./../components/ui/LectureBox";
+import { WithLocalSvg } from "react-native-svg";
+import CreactingLecture from "../assets/creatingLecture.svg";
 
-const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
+import LectureBox from "./../components/ui/LectureBox";
+import FilterBox from "../components/ui/FilterBox";
+import { HeaderContext } from "../store/header-context";
+import { getProfile } from "../utill/http";
+
+const HomeScreen = ({ lectureIdProps }) => {
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const [data, setData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
+  const navigation = useNavigation();
+
+  // async function profileHandler() {
+  //   try {
+  //     const response = await getProfile({ id: 18 });
+  //     setData(response);
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   useEffect(() => {
     axios
       .get("http://10.0.2.2:8080/lectures", {
+        // .get("https://api.doroapp.com/lectures", {
         params: {
           city: "",
           endDate: "",
@@ -36,117 +56,202 @@ const HomeScreen = ({ lectureIdProps, createLectureVisibleProps }) => {
       })
       .then((res) => {
         setLectureData(res.data.data);
+        // console.log(res.data.data);
         // console.log("성공");
       })
       .catch((error) => {
         console.log("에러");
         console.log(error);
       });
+
+    // profileHandler();
   }, []);
 
-  let recruitingData = lectureData.filter(
+  const recruitingData = lectureData.filter(
     (item) => item.status === "RECRUITING"
   );
+
+  // const underwayDate = lectureData.filter(
+  //   (item) => item.status === "RECRUITING"
+  // );
+
+  const allTitleArray = [
+    ...new Set(recruitingData.map((item) => item.mainTitle)),
+  ];
+
+  let LectureElements = [];
+
+  const dateControl = (stringDate) => {
+    // string에서 date 타입으로 전환하기 위해 만듬
+    return new Date(stringDate);
+  };
+
+  for (let i = 0; i < allTitleArray.length; i++) {
+    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+
+    LectureElements.push(
+      <View key={i}>
+        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+          {allTitleArray[i]}
+        </Text>
+
+        {recruitingData
+          .filter((item) => item.mainTitle === allTitleArray[i])
+          .map((filteringItem, i) => {
+            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+
+            // let dateHours =
+            //   dateControl(filteringItem.lectureDates[0]).getHours() > 10
+            //     ? dateControl(filteringItem.lectureDates[0]).getHours()
+            //     : "0" + dateControl(filteringItem.lectureDates[0]).getHours();
+
+            // let dateMinutes =
+            //   dateControl(filteringItem.lectureDates[0]).getMinutes().length >
+            //   10
+            //     ? dateControl(filteringItem.lectureDates[0]).getMinutes()
+            //     : "0" + dateControl(filteringItem.lectureDates[0]).getMinutes();
+
+            // let EndTime =
+            //   Number(dateHours) + Number(filteringItem.time) >= 10
+            //     ? Number(dateHours) + Number(filteringItem.time)
+            //     : "0" + (Number(dateHours) + Number(filteringItem.time));
+
+            // let dateText =
+            //   // 날짜 텍스트
+            //   filteringItem.lectureDates.length > 1
+            //     ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
+            //       `${lectureDateControl(filteringItem.lectureDates)} ${
+            //         filteringItem.time
+            //       }`
+            //     : `${
+            //         dateControl(filteringItem.lectureDates[0]).getMonth() + 1
+            //       }월 ${dateControl(
+            //         filteringItem.lectureDates[0]
+            //       ).getDate()}일 (${
+            //         days[dateControl(filteringItem.lectureDates[0]).getDay()]
+            //       }) ${filteringItem.time}`;
+
+            return (
+              <LectureBox
+                key={filteringItem.id}
+                colors={SelectedColor}
+                subTitle={filteringItem.subTitle}
+                date={filteringItem.lectureDates}
+                time={filteringItem.time}
+                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+                lectureIdHandler={() =>
+                  navigation.navigate("DetailLecture", {
+                    data: filteringItem.id,
+                  })
+                }
+                id={filteringItem.id}
+                dateTypeValue={dateTypeValue}
+                mainTutor={filteringItem.mainTutor}
+                place={filteringItem.place}
+                // date={dateText}
+              />
+            );
+          })}
+      </View>
+    );
+  }
 
   const lectureIdHomeScreen = (id) => {
     // 강의 클릭하면 id 값 state로 넘어옴
     lectureIdProps(id);
   };
 
-  const FirstRoute = () => (
-    <LectureBox
-      LectureData={lectureData}
-      onPresslectureId={lectureIdHomeScreen}
-    />
-  );
-  const SecondRoute = () => (
-    <View style={styles.lectureListContainer}>
-      <Text>진행중</Text>
-    </View>
-  );
+  const layout = useWindowDimensions();
 
-  let underwayCount = 20;
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: "first", title: `모집중` },
+    { key: "second", title: "진행중" },
+  ]);
 
-  let fristTapState = {
-    index: 0,
-    routes: [
-      { key: "first", title: `모집중 (${recruitingData.length})` },
-      { key: "second", title: `진행중 (${underwayCount})` },
-    ],
-  };
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case "first":
+        return (
+          <ScrollView style={styles.lectureListContainer}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 7,
+                marginTop: 15,
+                marginBottom: 5,
+              }}
+            >
+              <FilterBox text="교육 지역" />
+              <FilterBox text="교육 날짜" />
+            </View>
+            {LectureElements}
+          </ScrollView>
+        );
+      case "second":
+        return (
+          <View style={styles.lectureListContainer}>
+            <Text>진행중</Text>
+          </View>
+        );
 
-  const [firstTapUse, setFirstTapUse] = useState(true);
-
-  const [tapState, setTapState] = useState({
-    index: 0,
-    routes: [
-      { key: "first", title: `모집중 (${recruitingData.length})` },
-      { key: "second", title: `진행중 (${underwayCount})` },
-    ],
-  });
-
-  const indexChange = (index) => {
-    firstTapUse
-      ? setTapState({ ...fristTapState, index })
-      : setTapState({ ...tapState, index });
-    setFirstTapUse(false);
-  };
-
-  _tabBar = (props) => {
-    const inputRange = props.navigationState.routes.map((x, i) => i);
-
-    return (
-      <>
-        <View style={styles.tabBar}>
-          {props.navigationState.routes.map((route, i) => {
-            const opacity = props.position.interpolate({
-              inputRange,
-              outputRange: inputRange.map((inputIndex) =>
-                inputIndex === i ? 1 : 0.5
-              ),
-            });
-
-            return (
-              <TouchableOpacity
-                key={route.key}
-                style={styles.tabItem}
-                onPress={() => props.jumpTo(route.key)}
-              >
-                <Animated.Text
-                  style={{
-                    opacity,
-                    borderBottomColor: GlobalStyles.colors.primaryAccent,
-                    borderBottomWidth: 1,
-                    paddingBottom: 10,
-                    fontSize: 15,
-                  }}
-                >
-                  {route.title}
-                </Animated.Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </>
-    );
+      default:
+        return <View />;
+    }
   };
 
   return (
     <>
       <TabView
-        navigationState={firstTapUse ? fristTapState : tapState}
-        renderScene={SceneMap({
-          first: FirstRoute,
-          second: SecondRoute,
-        })}
-        renderTabBar={_tabBar}
-        onIndexChange={(index) => indexChange(index)}
-        initialLayout={{ width: Dimensions.get("window").width }}
-        style={styles.container}
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={(props) => (
+          <TabBar
+            {...props}
+            indicatorStyle={{
+              // Style to apply to the container view for the indicator.
+              backgroundColor: GlobalStyles.colors.primaryDefault,
+              height: 2,
+              border: "none",
+            }}
+            style={{
+              backgroundColor: "white",
+              shadowOffset: { height: 0, width: 0 },
+              shadowColor: "transparent",
+              height: 30,
+              borderBottomWidth: 0.5,
+              borderBottomColor: GlobalStyles.colors.gray04,
+            }}
+            labelStyle={{
+              // 폰트 스타일
+              margin: 0,
+              fontSize: 15,
+              color: "black",
+            }}
+            tabStyle={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+              padding: 0,
+            }}
+            pressColor={"transparent"}
+          />
+        )}
       />
-      <Pressable onPress={createLectureVisibleProps}>
-        <View style={styles.BottomButton}></View>
-      </Pressable>
+      {headerRole === "ROLE_ADMIN" ? (
+        <Pressable
+          onPress={() =>
+            navigation.navigate("UpdateLectureScreen", { data: "" })
+          }
+        >
+          <View style={styles.BottomButton}>
+            <WithLocalSvg asset={CreactingLecture} />
+          </View>
+        </Pressable>
+      ) : (
+        ""
+      )}
     </>
   );
 };
@@ -172,59 +277,23 @@ const styles = StyleSheet.create({
   lectureListContainer: {
     paddingHorizontal: 20,
   },
-  colorCover: {
-    marginTop: 8,
-    paddingLeft: 5,
-    overflow: "hidden",
-    height: 120,
-    backgroundColor: "#41C19F",
-    borderRadius: 5.41,
-    shadowColor: "Black",
-    elevation: 2,
-  },
-  whieBox: {
-    paddingLeft: 15,
-    paddingRight: 11,
-    backgroundColor: "white",
-    height: 120,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  SubTitle: {
-    marginTop: 10,
-    fontSize: 15,
-    fontWeight: "bold",
-    color: GlobalStyles.gray01,
-  },
-  enrollEndDate: {
-    marginTop: 10,
-    color: "#7C7C80",
-    fontSize: 10,
-  },
-  tutor: {
-    fontSize: 10,
-    color: GlobalStyles.gray03,
-  },
-  placeDateContainer: {
-    marginTop: 7.61,
-    alignItems: "flex-end",
-  },
-  place: {
-    color: GlobalStyles.gray03,
-    fontSize: 10,
-  },
-  date: {
-    color: "#41C19F",
-    fontSize: 12,
-  },
   BottomButton: {
     position: "absolute",
     height: 56,
     width: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: GlobalStyles.colors.primaryDefault,
     bottom: 27,
     right: 20,
+  },
+  mainTitle: {
+    marginTop: 15,
+    fontSize: 17,
+    fontWeight: "bold",
+  },
+  lectureListContainer: {
+    paddingHorizontal: 20,
   },
 });

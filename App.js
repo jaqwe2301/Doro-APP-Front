@@ -37,6 +37,9 @@ import FindId from "./components/signUp/FindId";
 import NotFindId from "./components/signUp/NotFindId";
 import ChangePw from "./components/signUp/ChangePw";
 import ProfileEdit from "./screens/ProfileEdit";
+import ApplicationDetails from "./screens/ApplicationDetails";
+import UpdateLectureScreen from "./screens/UpdateLectureScreen";
+import ManagerScreen from "./screens/ManagerScreen";
 import NoticeDetailScreen from "./screens/NoticeDetailScreen";
 import AddNoticeScreen from "./screens/AddNoticeScreen";
 import jwtDecode from "jwt-decode";
@@ -235,6 +238,77 @@ function AuthStack() {
   );
 }
 
+function HomeNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        // headerShown: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+          // lineHeight: 22,
+        },
+      }}
+    >
+      <Stack.Screen
+        name="HomePage"
+        component={HomeScreen}
+        options={{
+          header: () => {
+            return (
+              <View style={styles.HomeHeader}>
+                <View style={styles.headerTopContainer}>
+                  <Image
+                    source={require("./assets/doroLogoMain.png")}
+                    style={styles.Logo}
+                  />
+                  <Image
+                    source={require("./assets/icons/alarm_after.png")}
+                    style={styles.iconSize}
+                  />
+                </View>
+                <View style={styles.noticeContainer}>
+                  <Image
+                    source={require("./assets/icons/megaphone.png")}
+                    style={styles.iconSize}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 16,
+                      fontStyle: GlobalStyles.gray01,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    메이커 스페이스 사용 안내
+                  </Text>
+                </View>
+              </View>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="DetailLecture"
+        component={DetailLectureScreen}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="NewLecture"
+        component={NewLectureScreen}
+        options={{ title: "강의 생성" }}
+      />
+      <Stack.Screen
+        name="UpdateLectureScreen"
+        component={UpdateLectureScreen}
+        options={{ title: "강의 생성 및 수정" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function MyPageNavigator() {
   return (
     <Stack.Navigator
@@ -244,10 +318,14 @@ function MyPageNavigator() {
         headerTitleStyle: {
           fontWeight: "600",
           fontSize: 17,
-          // lineHeight: 22,
         },
       }}
     >
+      {/* <Stack.Screen
+        name="ManagerPage"
+        component={ManagerScreen}
+        options={{ title: "매니저 페이지" }}
+      /> */}
       <Stack.Screen
         name="myPage"
         component={MyPageScreen}
@@ -388,56 +466,24 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Home"
-        children={() =>
-          lectureIdState[1] === "home" ? (
-            <HomeScreen
-              lectureIdProps={detailLectureVisibleHandler}
-              createLectureVisibleProps={createLectureVisibleHandler}
-            />
-          ) : lectureIdState[1] === "detailLecture" ? (
-            <DetailLectureScreen
-              screenBackButton={screenBackHandler}
-              lectureId={lectureIdState[0]}
-            />
-          ) : (
-            <NewLectureScreen screenBackButton={screenBackHandler} />
-          )
-        }
+        component={HomeNavigator}
+        // children={() =>
+        //   lectureIdState[1] === "home" ? (
+        //     <HomeScreen
+        //       lectureIdProps={detailLectureVisibleHandler}
+        //       createLectureVisibleProps={createLectureVisibleHandler}
+        //     />
+        //   ) : lectureIdState[1] === "detailLecture" ? (
+        //     <DetailLectureScreen
+        //       screenBackButton={screenBackHandler}
+        //       lectureId={lectureIdState[0]}
+        //     />
+        //   ) : (
+        //     <NewLectureScreen screenBackButton={screenBackHandler} />
+        //   )
+        // }
         options={{
-          headerShown: headerVisible,
-          header: () => {
-            return (
-              <View style={styles.HomeHeader}>
-                <View style={styles.headerTopContainer}>
-                  <Image
-                    source={require("./assets/doroLogoMain.png")}
-                    style={styles.Logo}
-                  />
-                  <Image
-                    source={require("./assets/icons/alarm_after.png")}
-                    style={styles.iconSize}
-                  />
-                </View>
-                <View style={styles.noticeContainer}>
-                  <Image
-                    source={require("./assets/icons/megaphone.png")}
-                    style={styles.iconSize}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 16,
-                      fontStyle: GlobalStyles.gray01,
-                      fontSize: 15,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    메이커 스페이스 사용 안내
-                  </Text>
-                </View>
-              </View>
-            );
-          },
-          title: "홈",
+          headerShown: false,
           tabBarIcon: ({ color }) =>
             color === GlobalStyles.colors.gray04 ? (
               <WithLocalSvg asset={Main} />
@@ -486,7 +532,8 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="History"
-        component={HistoryScreen}
+        children={() => <ApplicationDetails header={true} />}
+        // component={ApplicationDetails}
         options={{
           title: "신청 내역",
           tabBarIcon: ({ color }) =>

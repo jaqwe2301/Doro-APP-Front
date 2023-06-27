@@ -61,6 +61,18 @@ function NoticeScreen({ navigation }) {
     navigation.navigate("alarm");
   }
 
+  navigation.setOptions({
+    headerRight: () => {
+      return (
+        <Pressable onPress={() => navigation.navigate("alarm")}>
+          <View>
+            <WithLocalSvg asset={Home} />
+          </View>
+        </Pressable>
+      );
+    },
+  });
+
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });
   };
