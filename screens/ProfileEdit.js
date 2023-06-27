@@ -519,7 +519,6 @@ const styles = StyleSheet.create({
   },
   statusText2: {
     fontSize: 12,
-
     fontWeight: "400",
     color: GlobalStyles.colors.gray01,
   },

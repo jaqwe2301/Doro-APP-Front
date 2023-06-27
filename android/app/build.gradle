@@ -113,7 +113,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.doro"
+    namespace 'com.doro.android'
     defaultConfig {
         applicationId 'com.doro.android'
         minSdkVersion rootProject.ext.minSdkVersion
