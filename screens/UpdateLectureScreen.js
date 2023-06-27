@@ -80,7 +80,6 @@ function UpdateLectureScreen({ route }) {
       })
       .then((res) => {
         setLectureContents(res.data.data);
-        // console.log(res.data.data);
       })
       .catch((error) => {
         console.log("에러");
@@ -221,10 +220,18 @@ function UpdateLectureScreen({ route }) {
   };
 
   const handleSingeInputChange = (text, item) => {
-    setLecturedata((prevState) => ({
-      ...prevState,
-      [item]: text,
-    }));
+    if (item === "studentNumber") {
+      let value = text.replace(/\D/g, "");
+      setLecturedata((prevState) => ({
+        ...prevState,
+        [item]: value,
+      }));
+    } else {
+      setLecturedata((prevState) => ({
+        ...prevState,
+        [item]: text,
+      }));
+    }
   };
 
   const savingDate = () => {};
@@ -405,6 +412,80 @@ function UpdateLectureScreen({ route }) {
     paymentStateHandler(value, role);
   };
 
+  const contentsForm = {
+    content: "교육 내용",
+    kit: "교육 키트",
+    detail: "기본 강의 구성",
+    remark: "기타 특이사항",
+    requirement: "자격 요건",
+  };
+
+  const [contentsData, setContentsData] = useState({
+    content: "",
+    kit: "",
+    detail: "",
+    remark: "",
+    requirement: "",
+  });
+
+  const creatingContents = (text, item) => {
+    setContentsData((prev) => ({
+      ...prev,
+      [item]: text,
+    }));
+    // console.log(contentsData)
+  };
+
+  const onConfirmContents = async () => {
+    for (let i = 0; i < Object.keys(contentsData).length; i++) {
+      const key = Object.keys(contentsData)[i];
+      if (!contentsData[key]) {
+        Alert.alert("경고", "빈 칸이 있는지 확인 해주세요.");
+        return 0;
+      }
+    }
+
+    await axios
+      .post("http://10.0.2.2:8080/lecture-contents/", contentsData, {
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+      });
+
+    Alert.alert(contentsData["content"], "교육 콘텐츠가 생성되었습니다.", [
+      {
+        text: "확인",
+        onPress: () => {
+          addContentsModalHandler(false);
+          axios
+            .get("http://10.0.2.2:8080/lecture-contents", {
+              headers: {
+                // 헤더에 필요한 데이터를 여기에 추가
+                "Content-Type": "application/json",
+              },
+            })
+            .then((res) => {
+              setLectureContents(res.data.data);
+            })
+            .catch((error) => {
+              console.log("에러");
+              console.log(error);
+            });
+        },
+      },
+    ]);
+
+    // addContentsModalHandler(false);
+  };
+
   // Use a custom renderScene function instead
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -458,6 +539,13 @@ function UpdateLectureScreen({ route }) {
                     <Pressable
                       onPress={() => {
                         addContentsModalHandler(true);
+                        setContentsData({
+                          content: "",
+                          kit: "",
+                          detail: "",
+                          remark: "",
+                          requirement: "",
+                        });
                       }}
                     >
                       <Text>+</Text>
@@ -479,6 +567,7 @@ function UpdateLectureScreen({ route }) {
                         </Pressable>
                       );
                     }}
+                    extraData={lectureContents}
                   />
                   <View style={styles.modalButtonContainer}>
                     <Pressable
@@ -491,10 +580,37 @@ function UpdateLectureScreen({ route }) {
                 </View>
               </View>
             </Modal>
-            <Modal visible={addContentsModal}>
-              <Pressable onPress={() => addContentsModalHandler(false)}>
-                <Text>모다아아아ㅏㅇㄹ</Text>
-              </Pressable>
+            {/* 교육 목록 추가 */}
+            <Modal transparent={true} visible={addContentsModal}>
+              <View style={styles.paymentModal}>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    width: layout.width - 20,
+                    height: 300,
+                    padding: 16,
+                  }}
+                >
+                  {Object.keys(contentsForm).map((item) => {
+                    return (
+                      <View key={item} style={styles.lectureInfoContainer}>
+                        <Text>{contentsForm[item]}</Text>
+                        <TextInput
+                          style={styles.inputBox}
+                          onChangeText={(text) => creatingContents(text, item)}
+                        />
+                      </View>
+                    );
+                  })}
+                  <ButtonSmall title="확인" onPress={onConfirmContents} />
+                  <ButtonSmall
+                    title="취소"
+                    onPress={() => {
+                      addContentsModalHandler(false);
+                    }}
+                  />
+                </View>
+              </View>
             </Modal>
           </View>
         );
