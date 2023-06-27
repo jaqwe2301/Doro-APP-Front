@@ -64,7 +64,7 @@ const HomeScreen = ({ lectureIdProps }) => {
         console.log(error);
       });
 
-    profileHandler();
+    // profileHandler();
   }, []);
 
   const recruitingData = lectureData.filter(
