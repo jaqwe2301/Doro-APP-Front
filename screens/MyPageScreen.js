@@ -16,25 +16,17 @@ import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
-import ManagerScreen from "./ManagerScreen";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
 
 function MyPageScreen({ navigation }) {
-  // const [birth, setBirth] = useState("");
-  // const [generation, setGeneration] = useState("");
-  // const [major, setMajor] = useState("");
-  // const [name, setName] = useState("");
-  // const [phone, setPhone] = useState("");
-  // const [school, setSchool] = useState("");
-  // const [studentId, setStudentId] = useState("");
-  // const [studentStatus, setStudentStatus] = useState("");
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const authCtx = useContext(AuthContext);
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
 
   useEffect(() => {
     profileHandler();
@@ -53,119 +45,11 @@ function MyPageScreen({ navigation }) {
     }
   }
 
-  async function tokenHandler() {
-    // const token = await AsyncStorage.getItem("token");
-    // const refreshToken = await AsyncStorage.getItem("refreshToken");
+  function alarmHandler() {}
 
-    // console.log("전 토큰" + token);
-    // console.log("리프레쉬 토큰" + refreshToken);
-
-    // try {
-    //   const response = await reToken({
-    //     accessToken: `Bearer ${token}`,
-    //     refreshToken: refreshToken,
-    //   });
-    //   console.log("되는듯" + response.headers.authorization);
-    //   await AsyncStorage.setItem("token", response.headers.authorization);
-    // } catch (error) {
-    //   console.log("error발생" + error);
-    //   // console.log(error)
-    // }
-
-    const token = await AsyncStorage.getItem("token");
-    const refreshToken = await AsyncStorage.getItem("refreshToken");
-    console.log("hi refresh 할꺼염 \t");
-    console.log(token);
-    console.log(refreshToken);
-
-    try {
-      const response = await axios.post("http://10.0.2.2:8080/reissue", {
-        accessToken: `Bearer ${token}`,
-        refreshToken: refreshToken,
-      });
-      const newToken = response.headers.authorization;
-      console.log("새로운 토큰이얌" + newToken);
-      await AsyncStorage.setItem("token", newToken);
-      if (newToken) {
-        originalConfig.headers["Authorization"] = `Bearer ${newToken}`;
-      }
-      return axios(originalConfig);
-    } catch (error) {
-      console.log("error발생" + error);
-    }
+  function ManagerScreen() {
+    return <ManagerScreen />;
   }
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      alert("Must use physical device for Push Notifications");
-    }
-
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-
-    return token;
-  }
-
-  function alarmHandler() {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-  }
-
-  async function tokenHandler() {
-    const token = await AsyncStorage.getItem("token");
-    const refreshToken = await AsyncStorage.getItem("refreshToken");
-
-    console.log("전 토큰" + token);
-    console.log("리프레쉬 토큰" + refreshToken);
-
-    try {
-      const response = await reToken({
-        accessToken: `Bearer ${token}`,
-        refreshToken: refreshToken,
-      });
-      console.log("되는듯" + response);
-      authCtx.authenticate(response, refreshToken);
-    } catch (error) {
-      console.log("error발생" + error);
-      // console.log(error)
-    }
-  }
-
-  // function ManagerScreen() {
-  //   // return <ManagerSend />;
-  //   return <ManagerScreen />;
-  // }
 
   function UserScreen() {
     function logoutHandler() {
@@ -238,23 +122,24 @@ function MyPageScreen({ navigation }) {
                 justifyContent: "space-between",
               }}
             >
-              <View style={[styles.btnContainer, { marginRight: 10 }]}>
-                <Pressable
-                  onPress={() =>
-                    navigation.navigate("profileEdit", {
-                      data: data,
-                    })
-                  }
-                >
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("profileEdit", {
+                    data: data,
+                  })
+                }
+                style={{ flex: 1 }}
+              >
+                <View style={[styles.btnContainer, { marginRight: 10 }]}>
                   <Text style={styles.btn}>프로필 편집</Text>
-                </Pressable>
-              </View>
-
-              <View style={styles.btnContainer}>
-                <Pressable onPress={tokenHandler}>
-                  <Text style={styles.btn}>강의신청내역</Text>
-                </Pressable>
-              </View>
+                </View>
+              </Pressable>
+              {/* <View style={{ flex: 1 }}> */}
+              <Pressable onPress={alarmHandler} style={{ flex: 1 }}>
+                <View style={styles.btnContainer}>
+                  <Text style={styles.btn}>알림 설정</Text>
+                </View>
+              </Pressable>
             </View>
             <View>
               <Text style={[styles.contentTitle, { marginTop: 45 }]}>
@@ -295,9 +180,11 @@ function MyPageScreen({ navigation }) {
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>비밀번호</Text>
                 <Pressable onPress={() => navigation.navigate("searchPw")}>
-                  <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
-                    비밀번호 수정
-                  </Text>
+                  <View style={styles.contentView}>
+                    <Text style={[styles.contentText, { marginLeft: 0 }]}>
+                      비밀번호 수정
+                    </Text>
+                  </View>
                 </Pressable>
               </View>
               <View style={styles.border}></View>
