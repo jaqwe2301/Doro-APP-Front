@@ -93,12 +93,6 @@ export async function checkAccount({ account }) {
   return data;
 }
 
-<<<<<<< HEAD
-export async function getNotification({ userId }) {
-  try {
-    const response = await instance.get(URL + "/notifications/" + `${userId}`);
-    return response;
-=======
 export async function getNotification({ userId, page, size }) {
   try {
     const response = await instance.get(
@@ -111,7 +105,18 @@ export async function getNotification({ userId, page, size }) {
         `${size}`
     );
     return response.data;
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
+export async function readNotification({ notificationId }) {
+  try {
+    const response = await axios.post(
+      URL + "/notifications/" + `${notificationId}` + "/doRead"
+    );
+    return response;
   } catch (error) {
     console.log(error);
 
@@ -158,17 +163,6 @@ export async function getAnnouncement({ page, size }) {
   }
 }
 
-<<<<<<< HEAD
-export async function createAnnouncement({ formData }) {
-  try {
-    const token = AsyncStorage.getItem("token");
-    const response = await axios.post(URL + "/announcements", formData, {
-      headers: {
-        // Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-=======
 export async function createAnnouncement({ formData, title, body }) {
   try {
     const token = await AsyncStorage.getItem("token");
@@ -188,7 +182,6 @@ export async function createAnnouncement({ formData, title, body }) {
       }
     );
     console.log(response);
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     return response;
   } catch (error) {
     console.log(error + "여기여기");

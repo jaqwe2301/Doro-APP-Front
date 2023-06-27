@@ -22,21 +22,6 @@ function NoticeScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [pageNum, setPageNum] = useState(0);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    async function notiHandler() {
-      try {
-        const response = await getAnnouncement({ page: 0, size: 10 });
-        setData(response);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    notiHandler();
-  }, []);
-=======
   useEffect(() => {
     notiHandler();
   }, []);
@@ -75,7 +60,6 @@ function NoticeScreen({ navigation }) {
   function naviAlarmHandler() {
     navigation.navigate("alarm");
   }
->>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 
   navigation.setOptions({
     headerRight: () => {
