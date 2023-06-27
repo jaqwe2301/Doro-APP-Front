@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Platform } from "react-native";
 import { useState, useContext, useEffect, useRef } from "react";
 import {
   NavigationContainer,
@@ -459,7 +459,7 @@ function BottomTabNavigator() {
       screenOptions={{
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
-        // tabBarStyle: { height: 60 },
+        ...(Platform.OS === "android" && { tabBarStyle: { height: 60 } }),
         tabBarHideOnKeyboard: true,
         headerShown: false,
       }}
@@ -491,10 +491,10 @@ function BottomTabNavigator() {
               <WithLocalSvg asset={MainFill} />
             ),
           tabBarLabelStyle: {
-            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            // marginTop: -10,
+            marginBottom: Platform.OS === "android" ? 9 : 0,
+            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />
@@ -520,13 +520,15 @@ function BottomTabNavigator() {
             ) {
               return { display: "none" };
             }
-            return;
+            return Platform.OS === "android" && { height: 60 };
           })(route),
           tabBarLabelStyle: {
             // marginBottom: 9,
             fontSize: 10,
             fontWeight: "600",
             // marginTop: -10,
+            marginBottom: Platform.OS === "android" ? 9 : 0,
+            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         })}
       />
@@ -547,6 +549,8 @@ function BottomTabNavigator() {
             fontSize: 10,
             fontWeight: 600,
             // marginTop: -10,
+            marginBottom: Platform.OS === "android" ? 9 : 0,
+            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />
@@ -581,6 +585,8 @@ function BottomTabNavigator() {
             fontSize: 10,
             fontWeight: 600,
             // marginTop: -10,
+            marginBottom: Platform.OS === "android" ? 9 : 0,
+            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />
