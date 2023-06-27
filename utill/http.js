@@ -4,7 +4,8 @@ import { AuthContext } from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Interceptor from "./Interceptor";
 
-const URL = "http://10.0.2.2:8080";
+// const URL = "http://10.0.2.2:8080";
+const URL = "https://api.doroapp.com";
 const instance = Interceptor();
 
 // id를 넣어주면 header 필요없고 id없으면 header 필요하다
@@ -48,7 +49,6 @@ export async function getProfile2({
   }
 }
 
-
 export async function updateProfile({
   generation,
   major,
@@ -59,7 +59,6 @@ export async function updateProfile({
   id,
 }) {
   try {
-    const token = await AsyncStorage.getItem("token");
     const response = await instance.patch("/users/" + `${parseInt(id)}`, {
       generation: parseInt(generation),
       major: major,
@@ -94,10 +93,25 @@ export async function checkAccount({ account }) {
   return data;
 }
 
+<<<<<<< HEAD
 export async function getNotification({ userId }) {
   try {
     const response = await instance.get(URL + "/notifications/" + `${userId}`);
     return response;
+=======
+export async function getNotification({ userId, page, size }) {
+  try {
+    const response = await instance.get(
+      URL +
+        "/notifications/" +
+        `${userId}` +
+        "?page=" +
+        `${page}` +
+        "&size=" +
+        `${size}`
+    );
+    return response.data;
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
   } catch (error) {
     console.log(error);
 
@@ -144,6 +158,7 @@ export async function getAnnouncement({ page, size }) {
   }
 }
 
+<<<<<<< HEAD
 export async function createAnnouncement({ formData }) {
   try {
     const token = AsyncStorage.getItem("token");
@@ -153,9 +168,30 @@ export async function createAnnouncement({ formData }) {
         "Content-Type": "multipart/form-data",
       },
     });
+=======
+export async function createAnnouncement({ formData, title, body }) {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+    const announcementReq = new Blob(
+      [JSON.stringify({ title: title, body: body })],
+      { type: "application/json" }
+    );
+    const response = await axios.post(
+      URL + "/announcements/",
+      { announcementReq: announcementReq, picture: formData },
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(response);
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     return response;
   } catch (error) {
-    console.log(error);
+    console.log(error + "여기여기");
 
     throw error;
   }

@@ -4,19 +4,18 @@ import { reToken } from "./auth";
 
 function Interceptor() {
   const instance = axios.create({
-    baseURL: "http://10.0.2.2:8080",
+    // baseURL: "http://10.0.2.2:8080",
+    baseURL: "https://api.doroapp.com",
+
     timeout: 1000,
   });
 
   instance.interceptors.request.use(
     async function (config) {
-      // const authCtx = useContext(AuthContext);
-
       const token = await AsyncStorage.getItem("token");
       console.log(token);
 
       if (token) {
-        //   config.headers["Content-Type"] = "application/json; charset=utf-8";
         config.headers["Authorization"] = `Bearer ${token}`;
       }
       return config;
@@ -29,6 +28,7 @@ function Interceptor() {
 
   instance.interceptors.response.use(
     async function (response) {
+<<<<<<< HEAD
       // console.log(response + "hihi");
       // if (response.status === 401) {
       //   const token = await AsyncStorage.getItem("token");
@@ -47,10 +47,17 @@ function Interceptor() {
       return response;
     },
     async function (error) {
+=======
+      return response;
+    },
+    async function (error) {
+      const originalConfig = error.config;
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
       if (error.response.status === 401) {
         const token = await AsyncStorage.getItem("token");
         const refreshToken = await AsyncStorage.getItem("refreshToken");
         console.log("hi refresh 할꺼염 \t");
+<<<<<<< HEAD
         console.log(token);
         console.log(refreshToken);
 
@@ -68,6 +75,25 @@ function Interceptor() {
         }
 
         // console.log(reToken);
+=======
+
+        try {
+          // const response = await axios.post("http://10.0.2.2:8080/reissue", {
+          const response = await axios.post("https://api.doroapp.com/reissue", {
+            accessToken: `Bearer ${token}`,
+            refreshToken: refreshToken,
+          });
+          const newToken = response.headers.authorization;
+          console.log("새로운 토큰이얌" + newToken);
+          await AsyncStorage.setItem("token", newToken);
+          if (newToken) {
+            originalConfig.headers["Authorization"] = `Bearer ${newToken}`;
+          }
+          return axios(originalConfig);
+        } catch (error) {
+          console.log("error발생" + error);
+        }
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
       }
       return Promise.reject(error);
     }

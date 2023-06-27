@@ -31,8 +31,15 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     marginLeft: 6,
     marginRight: 10,
+<<<<<<< HEAD
     marginTop: 4,
     marginBottom: 5,
   },
   icon: { marginTop: 8, marginBottom: 8.6, marginLeft: 7 },
+=======
+    marginTop: 3,
+    marginBottom: 10,
+  },
+  icon: { marginTop: 7, marginBottom: 13.6, marginLeft: 7 },
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 });

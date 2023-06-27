@@ -654,6 +654,16 @@ function AgreeInfo() {
         >
           본 약관은 2023.05.22부터 적용합니다.
         </Text>
+        <Text style={styles.title}>부칙</Text>
+        <Text style={styles.title}>제1조(시행일)</Text>
+        <Text
+          style={[
+            styles.content,
+            { marginTop: 14, marginHorizontal: 20, marginBottom: 20 },
+          ]}
+        >
+          본 약관은 2023.05.22부터 적용합니다.
+        </Text>
       </ScrollView>
     </View>
   );

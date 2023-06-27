@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   Pressable,
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
@@ -15,8 +16,13 @@ import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
+<<<<<<< HEAD
 import ManagerScreen from "./ManagerScreen";
 import { deleteUser, reToken } from "../utill/auth";
+=======
+import { deleteUser, reToken } from "../utill/auth";
+import axios from "axios";
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -33,6 +39,10 @@ function MyPageScreen({ navigation }) {
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+<<<<<<< HEAD
+=======
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 
   useEffect(() => {
     profileHandler();
@@ -48,6 +58,51 @@ function MyPageScreen({ navigation }) {
     } catch (error) {
       console.log(error);
       setIsLoading(true);
+<<<<<<< HEAD
+=======
+    }
+  }
+
+  async function tokenHandler() {
+    // const token = await AsyncStorage.getItem("token");
+    // const refreshToken = await AsyncStorage.getItem("refreshToken");
+
+    // console.log("전 토큰" + token);
+    // console.log("리프레쉬 토큰" + refreshToken);
+
+    // try {
+    //   const response = await reToken({
+    //     accessToken: `Bearer ${token}`,
+    //     refreshToken: refreshToken,
+    //   });
+    //   console.log("되는듯" + response.headers.authorization);
+    //   await AsyncStorage.setItem("token", response.headers.authorization);
+    // } catch (error) {
+    //   console.log("error발생" + error);
+    //   // console.log(error)
+    // }
+
+    const token = await AsyncStorage.getItem("token");
+    const refreshToken = await AsyncStorage.getItem("refreshToken");
+    console.log("hi refresh 할꺼염 \t");
+    console.log(token);
+    console.log(refreshToken);
+
+    try {
+      const response = await axios.post("http://10.0.2.2:8080/reissue", {
+        accessToken: `Bearer ${token}`,
+        refreshToken: refreshToken,
+      });
+      const newToken = response.headers.authorization;
+      console.log("새로운 토큰이얌" + newToken);
+      await AsyncStorage.setItem("token", newToken);
+      if (newToken) {
+        originalConfig.headers["Authorization"] = `Bearer ${newToken}`;
+      }
+      return axios(originalConfig);
+    } catch (error) {
+      console.log("error발생" + error);
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     }
   }
 
@@ -78,9 +133,15 @@ function MyPageScreen({ navigation }) {
 
   function UserScreen() {
     function logoutHandler() {
-      authCtx.logout();
+      Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
+        {
+          text: "취소",
+        },
+        { text: "확인", onPress: () => authCtx.logout() },
+      ]);
     }
 
+<<<<<<< HEAD
     async function deleteHandler() {
       try {
         const response = await deleteUser();
@@ -95,6 +156,8 @@ function MyPageScreen({ navigation }) {
       navigation.navigate("searchPw");
     }
 
+=======
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     // if (Object.keys(data).length === 0) {
     if (isLoading) {
       return (
@@ -116,7 +179,11 @@ function MyPageScreen({ navigation }) {
         <View style={styles.container}>
           <ScrollView>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
+<<<<<<< HEAD
               {data.profileImg !== "" ? (
+=======
+              {data.profileImg !== null ? (
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
                 <Image
                   style={styles.image}
                   source={{
@@ -167,10 +234,18 @@ function MyPageScreen({ navigation }) {
                   <Text style={styles.btn}>프로필 편집</Text>
                 </Pressable>
               </View>
+<<<<<<< HEAD
               <View style={styles.btnContainer}>
                 <Pressable onPress={tokenHandler}>
                   <Text style={styles.btn}>강의신청내역</Text>
                 </Pressable>
+=======
+              {/* <View style={styles.btnContainer}> */}
+              <View style={{ flex: 1 }}>
+                {/* <Pressable onPress={tokenHandler}>
+                  <Text style={styles.btn}>강의신청내역</Text>
+                </Pressable> */}
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
               </View>
             </View>
             <View>
@@ -207,11 +282,19 @@ function MyPageScreen({ navigation }) {
               <Text style={styles.contentTitle}>로그인 정보</Text>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>아이디</Text>
+<<<<<<< HEAD
                 <Text style={styles.contentText}>{data.name}</Text>
               </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>비밀번호</Text>
                 <Pressable onPress={navi}>
+=======
+                <Text style={styles.contentText}>{headerAccount}</Text>
+              </View>
+              <View style={styles.contentContainer}>
+                <Text style={styles.title}>비밀번호</Text>
+                <Pressable onPress={() => navigation.navigate("searchPw")}>
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
                   <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
                     비밀번호 수정
                   </Text>
@@ -233,7 +316,15 @@ function MyPageScreen({ navigation }) {
               <View style={styles.border}></View>
             </View>
             <View style={{ marginBottom: 33 }}>
+<<<<<<< HEAD
               <Pressable onPress={deleteHandler}>
+=======
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("deleteUser", { account: headerAccount })
+                }
+              >
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
                 <Text
                   style={[
                     styles.contentTitle,

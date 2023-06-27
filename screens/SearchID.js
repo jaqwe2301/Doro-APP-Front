@@ -82,13 +82,10 @@ function SearchID({ navigation }) {
     }
   }
 
-  function requestNumber() {
+  async function requestNumber() {
     if (phoneNum.length === 11) {
       try {
         authPhoneNum({ messageType: "ACCOUNT", phone: phoneNum });
-        setBtnTitle("다시 요청");
-        setCount(179);
-        setIsVisible(true);
       } catch (error) {
         Alert.alert("ERROR", "다시 시도해주세요");
       }
@@ -175,7 +172,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 35,
-    marginLeft: 20,
+    marginLeft: 23,
     fontSize: 15,
     fontWeight: 400,
     lineHeight: 20,
@@ -196,7 +193,7 @@ const styles = StyleSheet.create({
   textSend: {
     fontSize: 12,
     fontWeight: 400,
-    marginHorizontal: 20,
+    marginLeft: 26,
     marginTop: 8,
     marginBottom: 66,
   },

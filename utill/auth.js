@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const URL = "http://10.0.2.2:8080";
+const URL = "https://api.doroapp.com";
+// const URL = "http://10.0.2.2:8080";
 
 export function authPhoneNum({ messageType, phone }) {
   axios
@@ -93,6 +94,21 @@ export async function reToken({ accessToken, refreshToken }) {
   // console.log(token);
 
   return token;
+}
+
+export async function reToken({ accessToken, refreshToken }) {
+  const response = await axios.post(URL + "/reissue", {
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  });
+
+  // const token = response.headers.authorization;
+  console.log(response);
+
+  // console.log("hihi\t");
+  // console.log(token);
+
+  return response;
 }
 
 export async function signUp({
