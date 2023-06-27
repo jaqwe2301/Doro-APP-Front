@@ -309,14 +309,14 @@ function ProfileEdit({ navigation, route }) {
               </View>
             </View>
           </View>
-          <View style={styles.contentContainer}>
+          {/* <View style={styles.contentContainer}>
             <Text style={styles.title}>기수</Text>
             <InputLine
               onChangeText={handleGenerationChange}
               value={String(generation)}
               keyboardType="numeric"
             />
-          </View>
+          </View> */}
           <View style={styles.border}></View>
         </View>
         <View>
