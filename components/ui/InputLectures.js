@@ -160,9 +160,17 @@ function InputLectures() {
   ]);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [addContentsModal, setAddContentsModal] = useState(false);
 
   const modalHandler = (visible) => {
     setModalVisible(visible);
+  };
+
+  const addContentsModalHandler = (visible) => {
+    setAddContentsModal(visible);
+    if (visible === false) {
+      setModalVisible(true);
+    }
   };
 
   const selectingLectureContents = (id) => {
@@ -226,7 +234,13 @@ function InputLectures() {
                       <Text>X</Text>
                     </Pressable>
                     <Text>교육 목록</Text>
-                    <Text>+</Text>
+                    <Pressable
+                      onPress={() => {
+                        addContentsModalHandler(true);
+                      }}
+                    >
+                      <Text>+</Text>
+                    </Pressable>
                   </View>
                   <FlatList
                     style={styles.modalList}
@@ -255,6 +269,11 @@ function InputLectures() {
                   </View>
                 </View>
               </View>
+            </Modal>
+            <Modal visible={addContentsModal}>
+              <Pressable onPress={() => addContentsModalHandler(false)}>
+                <Text>모다아아아ㅏㅇㄹ</Text>
+              </Pressable>
             </Modal>
           </View>
         );
@@ -416,8 +435,6 @@ function InputLectures() {
             </View>
             <Pressable
               onPress={creatingLecture}
-              // onPress={consoleTest}
-              // onPress={(text) => handleSingeInputChange(text)}
               style={{ backgroundColor: "blue", height: 20, width: 20 }}
             />
           </ScrollView>
