@@ -16,20 +16,9 @@ import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
+import ManagerScreen from "./ManagerScreen";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
-// import * as Notifications from "expo-notifications";
-
-// export async function requestPermissionsAsync() {
-//   return await Notifications.requestPermissionsAsync({
-//     ios: {
-//       allowAlert: true,
-//       allowBadge: true,
-//       allowSound: true,
-//       allowAnnouncements: true,
-//     },
-//   });
-// }
 
 function MyPageScreen({ navigation }) {
   // const [birth, setBirth] = useState("");
@@ -46,7 +35,6 @@ function MyPageScreen({ navigation }) {
 
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
-  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
 
   useEffect(() => {
     profileHandler();
@@ -154,9 +142,30 @@ function MyPageScreen({ navigation }) {
       });
   }
 
-  function ManagerScreen() {
-    return <ManagerSend />;
+  async function tokenHandler() {
+    const token = await AsyncStorage.getItem("token");
+    const refreshToken = await AsyncStorage.getItem("refreshToken");
+
+    console.log("전 토큰" + token);
+    console.log("리프레쉬 토큰" + refreshToken);
+
+    try {
+      const response = await reToken({
+        accessToken: `Bearer ${token}`,
+        refreshToken: refreshToken,
+      });
+      console.log("되는듯" + response);
+      authCtx.authenticate(response, refreshToken);
+    } catch (error) {
+      console.log("error발생" + error);
+      // console.log(error)
+    }
   }
+
+  // function ManagerScreen() {
+  //   // return <ManagerSend />;
+  //   return <ManagerScreen />;
+  // }
 
   function UserScreen() {
     function logoutHandler() {
@@ -240,10 +249,10 @@ function MyPageScreen({ navigation }) {
                   <Text style={styles.btn}>프로필 편집</Text>
                 </Pressable>
               </View>
+
               <View style={styles.btnContainer}>
-                {/* <View style={{ flex: 1 }}> */}
-                <Pressable onPress={alarmHandler}>
-                  <Text style={styles.btn}>알림 설정</Text>
+                <Pressable onPress={tokenHandler}>
+                  <Text style={styles.btn}>강의신청내역</Text>
                 </Pressable>
               </View>
             </View>
@@ -286,11 +295,9 @@ function MyPageScreen({ navigation }) {
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>비밀번호</Text>
                 <Pressable onPress={() => navigation.navigate("searchPw")}>
-                  <View style={styles.contentView}>
-                    <Text style={[styles.contentText, { marginLeft: 0 }]}>
-                      비밀번호 수정
-                    </Text>
-                  </View>
+                  <Text style={[styles.contentText, { borderBottomWidth: 1 }]}>
+                    비밀번호 수정
+                  </Text>
                 </Pressable>
               </View>
               <View style={styles.border}></View>
