@@ -381,7 +381,7 @@ function BottomTabNavigator() {
       screenOptions={{
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
-        tabBarStyle: { height: 60 },
+        // tabBarStyle: { height: 60 },
         tabBarHideOnKeyboard: true,
         headerShown: false,
       }}
@@ -437,7 +437,7 @@ function BottomTabNavigator() {
               </View>
             );
           },
-          // title: "홈",
+          title: "홈",
           tabBarIcon: ({ color }) =>
             color === GlobalStyles.colors.gray04 ? (
               <WithLocalSvg asset={Main} />
@@ -445,10 +445,10 @@ function BottomTabNavigator() {
               <WithLocalSvg asset={MainFill} />
             ),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            // marginTop: -10,
           },
         }}
       />
@@ -463,13 +463,6 @@ function BottomTabNavigator() {
             ) : (
               <WithLocalSvg asset={MegaphoneFill} />
             ),
-          // tabBarLabelStyle: {
-          //   marginBottom: 9,
-          //   fontSize: 10,
-          //   fontWeight: 600,
-          //   marginTop: -10,
-          // },
-
           tabBarStyle: ((route) => {
             const routeName = getFocusedRouteNameFromRoute(route) ?? "";
 
@@ -481,13 +474,13 @@ function BottomTabNavigator() {
             ) {
               return { display: "none" };
             }
-            return { height: 60 };
+            return;
           })(route),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: "600",
-            marginTop: -10,
+            // marginTop: -10,
           },
         })}
       />
@@ -503,10 +496,10 @@ function BottomTabNavigator() {
               <WithLocalSvg asset={TrayFill} />
             ),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            // marginTop: -10,
           },
         }}
       />
@@ -514,7 +507,7 @@ function BottomTabNavigator() {
         name="MyPage"
         component={MyPageNavigator}
         options={{
-          // title: "마이 페이지",
+          title: "마이 페이지",
           header: () => {
             return (
               <View
@@ -537,10 +530,10 @@ function BottomTabNavigator() {
             ),
           tabBarLabelStyle: {
             justifyContent: "center",
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            // marginTop: -10,
           },
         }}
       />
@@ -652,7 +645,9 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     // 프로젝트 ID 바꿔야 함
-    token = (await Notifications.getExpoPushTokenAsync({projectId:'doro/doro'})).data;
+    token = (
+      await Notifications.getExpoPushTokenAsync({ projectId: "doro/doro" })
+    ).data;
     console.log(token);
   } else {
     alert("Must use physical device for Push Notifications");
@@ -665,6 +660,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingTop: getStatusBarHeight(),
+    backgroundColor: "white",
   },
 
   bottomtab: {
