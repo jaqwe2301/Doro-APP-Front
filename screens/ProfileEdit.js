@@ -19,6 +19,11 @@ import ButtonBig from "../components/ui/ButtonBig";
 import { HeaderContext } from "../store/header-context";
 import Timer from "../components/feat/Timer";
 import * as ImagePicker from "expo-image-picker";
+<<<<<<< HEAD
+=======
+import { WithLocalSvg } from "react-native-svg";
+import Down from "../assets/down.svg";
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
@@ -64,7 +69,11 @@ function ProfileEdit({ navigation, route }) {
 
   async function completeHandler() {
     try {
+<<<<<<< HEAD
       if (imageUrl !== "") {
+=======
+      if (imageUrl !== null) {
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
         try {
           const response = await updateUserImage({ formData: formData });
           console.log(response);
@@ -133,7 +142,11 @@ function ProfileEdit({ navigation, route }) {
         if (success) {
           setCount(0);
           setAuthVisible(false);
+<<<<<<< HEAD
           Alert.alert("번호 변경", "휴대폰 번호 변경 완료");
+=======
+          Alert.alert("알림", "휴대전화번호 변경이 완료되었습니다");
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
         }
@@ -211,7 +224,11 @@ function ProfileEdit({ navigation, route }) {
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.imageContainer}>
+<<<<<<< HEAD
           {imageUrl !== "" ? (
+=======
+          {imageUrl !== null ? (
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
             <Image
               style={styles.image}
               source={{
@@ -286,11 +303,29 @@ function ProfileEdit({ navigation, route }) {
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>재학 유무</Text>
+<<<<<<< HEAD
             <Pressable onPress={() => setVisible(!visible)}>
               <View style={styles.statusContainer2}>
                 <Text style={styles.statusText2}>{status1}</Text>
               </View>
             </Pressable>
+=======
+            <View style={styles.statusContainer2}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={styles.statusText2}>{status1}</Text>
+                <Pressable onPress={() => setVisible(!visible)}>
+                  {/* <View style={{ paddingBottom: 3 }}> */}
+                  <WithLocalSvg asset={Down} width={20} height={20} />
+                  {/* </View> */}
+                </Pressable>
+              </View>
+            </View>
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>기수</Text>
@@ -483,7 +518,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   statusContainer2: {
+<<<<<<< HEAD
     flex: 1,
+=======
+    // width: "100%",
+    flex: 1,
+    // paddingRight: 20,
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     marginLeft: 45,
     borderBottomColor: GlobalStyles.colors.gray06,
     borderBottomWidth: 0.5,
@@ -491,6 +532,10 @@ const styles = StyleSheet.create({
   },
   statusText2: {
     fontSize: 12,
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     fontWeight: "400",
     color: GlobalStyles.colors.gray01,
   },

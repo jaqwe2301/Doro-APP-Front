@@ -28,8 +28,7 @@ function School() {
   const [isNavi, setIsNavi] = useState(false);
   const navigation = useNavigation();
   const { signData, setSignData } = useContext(SignContext);
-  const [flex1, setFlex1] = useState(5);
-  const flex2 = 10 - flex1;
+
   const [visible, setVisible] = useState(false);
   const [display1, setDispaly1] = useState("none");
   const [display2, setDispaly2] = useState("none");
@@ -37,7 +36,7 @@ function School() {
   const [statusStyle, setStatusStyle] = useState(styles.textModal);
   const handleSchoolChange = (text) => {
     setInputSchool(text);
-    setFlex1(6);
+
     setlbtnColor(
       text !== "" &&
         inputMajor !== "" &&
@@ -50,7 +49,7 @@ function School() {
 
   const handleMajorChange = (text) => {
     setInputMajor(text);
-    setFlex1(7);
+
     setlbtnColor(
       text !== "" &&
         inputSchool !== "" &&
@@ -62,7 +61,7 @@ function School() {
   };
   const handleStudentIdChange = (text) => {
     setInputStudentId(text);
-    setFlex1(8);
+
     setlbtnColor(
       text !== "" &&
         inputMajor !== "" &&
@@ -119,7 +118,7 @@ function School() {
       setInputStatus(display1 === "none" ? "ABSENCE" : "ATTENDING");
       setSelect(display1 === "none" ? "휴학" : "재학");
       setStatusStyle(styles.textInputText);
-      setFlex1(9);
+
       setVisible(!visible);
       setlbtnColor(
         inputMajor !== "" && inputStudentId !== "" && inputSchool !== ""
@@ -133,10 +132,10 @@ function School() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={3} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <ScrollView>
-          <View style={styles.textContainer}>
+          <View style={[styles.textContainer, { marginTop: 35 }]}>
             <InputText text="학교를 입력해 주세요." />
           </View>
           <View style={styles.inputContainer}>
@@ -158,9 +157,11 @@ function School() {
           </View>
           <View style={styles.textContainer}>
             <InputText text="학년을 입력해 주세요." />
+            <InputText text="학년을 입력해 주세요." />
           </View>
           <View style={styles.inputContainer}>
             <InputData
+              hint="학년을 입력하세요"
               hint="학년을 입력하세요"
               onChangeText={handleStudentIdChange}
               value={inputStudentId}
@@ -182,6 +183,7 @@ function School() {
               <View style={styles.textInput}>
                 <Text style={statusStyle}>{select}</Text>
                 <View style={{ marginRight: 13 }}>
+                  <WithLocalSvg asset={Down} />
                   <WithLocalSvg asset={Down} />
                 </View>
               </View>
@@ -216,11 +218,11 @@ function School() {
             >
               <View>
                 <View style={styles.statusTitleContainer}>
-                  <View style={styles.iconContainer}>
-                    <Pressable onPress={() => setVisible(!visible)}>
-                      <Ionicons name="close-outline" size={40} />
-                    </Pressable>
-                  </View>
+                  <Pressable onPress={() => setVisible(!visible)}>
+                    <View style={styles.iconContainer}>
+                      <WithLocalSvg asset={Modalx} />
+                    </View>
+                  </Pressable>
                   <Text style={styles.statusTitle}>재학 유무</Text>
                 </View>
                 <Pressable
@@ -229,7 +231,7 @@ function School() {
                 >
                   <Text style={styles.statusText}>재학</Text>
                   <View style={[styles.iconContainer2, { display: display1 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
                 <Pressable
@@ -238,7 +240,7 @@ function School() {
                 >
                   <Text style={styles.statusText}>휴학</Text>
                   <View style={[styles.iconContainer2, { display: display2 }]}>
-                    <Ionicons name="checkmark" size={30} />
+                    <WithLocalSvg asset={ModalCheck} />
                   </View>
                 </Pressable>
               </View>
@@ -261,8 +263,8 @@ export default School;
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginHorizontal: 20,
-    marginTop: 45,
+    marginHorizontal: 23,
+    marginTop: 50,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -270,7 +272,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 13,
   },
   lInputContainer: {
     marginHorizontal: 20,
@@ -284,8 +286,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 400,
     color: GlobalStyles.colors.gray04,
-    marginHorizontal: 20,
-    marginTop: 6,
+    marginHorizontal: 23,
+    marginTop: 3,
     lineHeight: 20,
   },
   textInput: {
@@ -322,7 +324,7 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(84, 84, 86, 0.3)",
   },
   statusTitleContainer: {
     flexDirection: "row",
@@ -338,7 +340,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
     flex: 1,
 
-    marginRight: 50,
+    marginRight: 48,
     textAlign: "center",
   },
   statusText: {
@@ -356,11 +358,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   iconContainer: {
-    marginLeft: 10,
+    marginLeft: 20,
     marginTop: 3,
   },
   iconContainer2: {
-    marginRight: 10,
+    marginRight: 22,
     marginTop: 2,
   },
 });

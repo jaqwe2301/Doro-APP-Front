@@ -1,11 +1,33 @@
 import { View, StyleSheet } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
-function Bar({ flex1, flex2 }) {
+function Bar({ num }) {
   return (
-    <View style={{ flexDirection: "row" }}>
-      <View style={[styles.bar1, { flex: flex1 }]}></View>
-      <View style={[styles.bar2, { flex: flex2 }]}></View>
+    <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
+      <View
+        style={[
+          styles.bar1,
+          num >= 1 && { backgroundColor: GlobalStyles.colors.primaryDefault },
+        ]}
+      ></View>
+      <View
+        style={[
+          styles.bar1,
+          num >= 2 && { backgroundColor: GlobalStyles.colors.primaryDefault },
+        ]}
+      ></View>
+      <View
+        style={[
+          styles.bar1,
+          num >= 3 && { backgroundColor: GlobalStyles.colors.primaryDefault },
+        ]}
+      ></View>
+      <View
+        style={[
+          styles.bar1,
+          num >= 4 && { backgroundColor: GlobalStyles.colors.primaryDefault },
+        ]}
+      ></View>
     </View>
   );
 }
@@ -14,12 +36,8 @@ export default Bar;
 
 const styles = StyleSheet.create({
   bar1: {
-    marginLeft: 20,
-    height: 3,
-    backgroundColor: GlobalStyles.colors.primaryDefault,
-  },
-  bar2: {
-    marginRight: 20,
+    marginLeft: 1,
+    flex: 1,
     height: 3,
     backgroundColor: GlobalStyles.colors.gray05,
   },

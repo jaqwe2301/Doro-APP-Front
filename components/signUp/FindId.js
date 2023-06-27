@@ -16,7 +16,6 @@ function FindId({ route }) {
     navigation.navigate("searchPw");
   }
 
-  
   //   const id = route.params.id;
   return (
     <View style={styles.container}>
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
   },
   text: {
-    marginHorizontal: 20,
+    marginHorizontal: 23,
     marginTop: 45,
   },
   idContainer: {

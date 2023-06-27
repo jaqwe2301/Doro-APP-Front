@@ -29,11 +29,9 @@ function Id() {
       text.length <= 20 &&
       text.search(/[a-zA-Z0-9]+/g) >= 0
     ) {
-      setFlex1(2);
       setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
     } else {
-      setFlex1(1);
       setIsNavi(false);
       setlbtnColor(GlobalStyles.colors.gray05);
     }
@@ -63,7 +61,7 @@ function Id() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar flex1={flex1} flex2={flex2} />
+      <Bar num={1} />
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
           <View style={styles.textContainer}>
@@ -83,6 +81,11 @@ function Id() {
                 해당 아이디는 이미 존재합니다.
               </Text>
             )}
+            {isVisible && (
+              <Text style={styles.failText}>
+                해당 아이디는 이미 존재합니다.
+              </Text>
+            )}
           </View>
         </View>
         <View style={styles.buttonContainer}>
@@ -97,8 +100,8 @@ export default Id;
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginHorizontal: 20,
-    marginTop: 45,
+    marginHorizontal: 23,
+    marginTop: 35,
   },
   buttonContainer: {
     marginHorizontal: 20,
@@ -106,7 +109,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
-    marginTop: 18,
+    marginTop: 20,
   },
   lInputContainer: {
     marginHorizontal: 20,
@@ -120,9 +123,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 400,
     color: GlobalStyles.colors.gray04,
-    marginHorizontal: 20,
+    marginLeft: 23,
     marginTop: 6,
-    marginBottom: 18,
+
     lineHeight: 20,
   },
   textSend: {
@@ -131,6 +134,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
+  },
+  failText: {
+    color: GlobalStyles.colors.red,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 17,
+    marginLeft: 10,
+    marginTop: 3,
   },
   failText: {
     color: GlobalStyles.colors.red,

@@ -20,7 +20,9 @@ import Home from "../assets/home.svg";
 function NoticeScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [data, setData] = useState([]);
+  const [pageNum, setPageNum] = useState(0);
 
+<<<<<<< HEAD
   useEffect(() => {
     async function notiHandler() {
       try {
@@ -34,6 +36,46 @@ function NoticeScreen({ navigation }) {
 
     notiHandler();
   }, []);
+=======
+  useEffect(() => {
+    notiHandler();
+  }, []);
+
+  // let pageNum = 0;
+  async function notiHandler() {
+    try {
+      const response = await getAnnouncement({ page: pageNum, size: 10 });
+      if (response) {
+        setData((prev) => [...prev, ...response]);
+        setPageNum((prev) => prev + 1);
+        // pageNum++;
+
+        console.log(pageNum);
+      }
+      // console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={naviAlarmHandler}>
+            <View>
+              <WithLocalSvg asset={Home} />
+            </View>
+          </Pressable>
+        );
+      },
+    });
+  }, [naviAlarmHandler]);
+
+  function naviAlarmHandler() {
+    navigation.navigate("alarm");
+  }
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
 
   navigation.setOptions({
     headerRight: () => {
@@ -75,6 +117,8 @@ function NoticeScreen({ navigation }) {
         data={data}
         renderItem={Item}
         keyExtractor={(item) => item.id}
+        onEndReached={notiHandler}
+        onEndReachedThreshold={0.5}
       />
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable onPress={naviAddHandler}>

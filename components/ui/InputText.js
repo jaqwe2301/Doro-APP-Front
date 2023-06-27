@@ -3,7 +3,7 @@ import { GlobalStyles } from "../../constants/styles";
 
 function InputText({ text, type }) {
   return (
-    <View style={{ justifyContent: "center" }}>
+    <View>
       <Text style={styles.text}>{text}</Text>
     </View>
   );
@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 22,
     fontWeight: 600,
-
     lineHeight: 28,
   },
 });

@@ -7,6 +7,7 @@ import {
   FlatList,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
+<<<<<<< HEAD
 
 function AlarmScreen() {
   const data = [
@@ -42,10 +43,62 @@ function AlarmScreen() {
         <Text style={styles.date}>자세히 보기 &gt;</Text>
       </View>
     </View>
+=======
+import { useContext, useEffect, useState } from "react";
+import { getNotification } from "../utill/http";
+import { AuthContext } from "../store/auth-context";
+import { HeaderContext } from "../store/header-context";
+import moment from "moment";
+
+function AlarmScreen() {
+  const { headerId, setHeaderId } = useContext(HeaderContext);
+  const [data, setData] = useState([]);
+  const [pageNum, setPageNum] = useState(0);
+
+  useEffect(() => {
+    notiHandler();
+  }, []);
+
+  async function notiHandler() {
+    try {
+      const response = await getNotification({
+        userId: headerId,
+        page: pageNum,
+        size: 10,
+      });
+      if (response.success) {
+        setData((prev) => [...prev, ...response.data]);
+        setPageNum((prev) => prev + 1);
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const Item = ({ item }) => (
+    <Pressable>
+      <View style={styles.contentContainer}>
+        <View style={styles.textTopContainer}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.title}>{item.title}</Text>
+            {!item.isRead && <View style={styles.circle}></View>}
+          </View>
+          <Text style={styles.date}>
+            {moment(item.createdAt).format("YYYY-MM-DD A h:mm")}
+          </Text>
+        </View>
+        <Text style={styles.content}>{item.body}</Text>
+        <View style={styles.linkConainer}>
+          <Text style={styles.date}>자세히 보기 &gt;</Text>
+        </View>
+      </View>
+    </Pressable>
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
   );
 
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
       <View style={{ marginTop: 40, marginBottom: 20 }}>
         <FlatList
           data={data}
@@ -53,6 +106,19 @@ function AlarmScreen() {
           keyExtractor={(item) => item.id}
         />
       </View>
+=======
+      {/* <View style={{ marginTop: 40, marginBottom: 20 }}> */}
+      <FlatList
+        data={data}
+        renderItem={Item}
+        keyExtractor={(item) => item.id}
+        onEndReached={notiHandler}
+        onEndReachedThreshold={0.5}
+        ListHeaderComponent={<View />}
+        ListHeaderComponentStyle={{ marginTop: 40 }}
+      />
+      {/* </View> */}
+>>>>>>> 9667fdc25c17b3ddb35a71ae88735986e127726c
     </View>
   );
 }

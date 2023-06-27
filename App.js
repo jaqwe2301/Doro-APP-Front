@@ -57,6 +57,9 @@ import Tray from "./assets/tray.svg";
 import TrayFill from "./assets/tray_fill.svg";
 import Profile from "./assets/profile.svg";
 import ProfileFill from "./assets/profile_fill.svg";
+import FinishPw from "./components/signUp/FinishPw";
+import DeleteUser from "./screens/DeleteUser";
+import AgreeInfo2 from "./components/signUp/AgreeInfo2";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -173,7 +176,14 @@ function AuthStack() {
           name="agreeInfo"
           component={AgreeInfo}
           options={{
-            title: "회원가입",
+            title: "이용약관",
+          }}
+        />
+        <Stack.Screen
+          name="agreeInfo2"
+          component={AgreeInfo2}
+          options={{
+            title: "개인정보 수집 및 이용 동의",
           }}
         />
         <Stack.Screen
@@ -200,6 +210,13 @@ function AuthStack() {
         <Stack.Screen
           name="changePw"
           component={ChangePw}
+          options={{
+            title: "비밀번호 변경",
+          }}
+        />
+        <Stack.Screen
+          name="finishPw"
+          component={FinishPw}
           options={{
             title: "비밀번호 변경",
           }}
@@ -329,10 +346,16 @@ function MyPageNavigator() {
           title: "비밀번호 변경",
         }}
       />
+      <Stack.Screen
+        name="deleteUser"
+        component={DeleteUser}
+        options={{
+          title: "회원탈퇴",
+        }}
+      />
     </Stack.Navigator>
   );
 }
-
 function NoticeNavigator() {
   return (
     <Stack.Navigator
@@ -448,10 +471,46 @@ function BottomTabNavigator() {
         //   )
         // }
         options={{
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home" color={color} size={24} />
-          ),
+          headerShown: headerVisible,	
+          header: () => {	
+            return (	
+              <View style={styles.HomeHeader}>	
+                <View style={styles.headerTopContainer}>	
+                  <Image	
+                    source={require("./assets/doroLogoMain.png")}	
+                    style={styles.Logo}	
+                  />	
+                  <Image	
+                    source={require("./assets/icons/alarm_after.png")}	
+                    style={styles.iconSize}	
+                  />	
+                </View>	
+                <View style={styles.noticeContainer}>	
+                  <Image	
+                    source={require("./assets/icons/megaphone.png")}	
+                    style={styles.iconSize}	
+                  />	
+                  <Text	
+                    style={{	
+                      marginLeft: 16,	
+                      fontStyle: GlobalStyles.gray01,	
+                      fontSize: 15,	
+                      fontWeight: "bold",	
+                    }}	
+                  >	
+                    메이커 스페이스 사용 안내	
+                  </Text>	
+                </View>	
+              </View>	
+            );	
+          },	
+          // title: "홈",	
+          tabBarIcon: ({ color }) =>	
+            color === GlobalStyles.colors.gray04 ? (	
+              <WithLocalSvg asset={Main} />	
+            ) : (	
+              <WithLocalSvg asset={MainFill} />	
+            ),
           tabBarLabelStyle: {
             marginBottom: 9,
             fontSize: 10,
@@ -484,7 +543,8 @@ function BottomTabNavigator() {
             if (
               routeName === "noticeDetail" ||
               routeName === "noticeAdd" ||
-              routeName === "noticeEdit"
+              routeName === "noticeEdit" ||	
+              routeName === "alarm"
             ) {
               return { display: "none" };
             }
@@ -560,6 +620,7 @@ function Navigation() {
   const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   // 자동로그인
@@ -576,6 +637,7 @@ function Navigation() {
         console.log(decoded);
         setHeaderRole(decoded.roles[0].authority);
         setHeaderId(decoded.id);
+        setHeaderAccount(decoded.sub);	
       }
 
       // setIsTryingLogin(false);
