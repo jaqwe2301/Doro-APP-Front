@@ -226,6 +226,7 @@ export async function deleteUser() {
 
 export async function updateUserImage({ formData }) {
   try {
+    // const boundary = "----WebKitFormBoundaryABC123";
     const response = await instance.patch("/users/profile", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
