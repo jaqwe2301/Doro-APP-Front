@@ -22,7 +22,7 @@ import CreactingLecture from "../assets/creatingLecture.svg";
 import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
 import { HeaderContext } from "../store/header-context";
-import { getProfile } from "../utill/http";
+import { URL } from "../utill/config";
 
 const HomeScreen = ({ lectureIdProps }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
@@ -42,8 +42,7 @@ const HomeScreen = ({ lectureIdProps }) => {
 
   useEffect(() => {
     axios
-      .get("http://10.0.2.2:8080/lectures", {
-        // .get("https://api.doroapp.com/lectures", {
+      .get(URL + "lectures", {
         params: {
           city: "",
           endDate: "",
@@ -99,38 +98,7 @@ const HomeScreen = ({ lectureIdProps }) => {
           .filter((item) => item.mainTitle === allTitleArray[i])
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-
-            // let dateHours =
-            //   dateControl(filteringItem.lectureDates[0]).getHours() > 10
-            //     ? dateControl(filteringItem.lectureDates[0]).getHours()
-            //     : "0" + dateControl(filteringItem.lectureDates[0]).getHours();
-
-            // let dateMinutes =
-            //   dateControl(filteringItem.lectureDates[0]).getMinutes().length >
-            //   10
-            //     ? dateControl(filteringItem.lectureDates[0]).getMinutes()
-            //     : "0" + dateControl(filteringItem.lectureDates[0]).getMinutes();
-
-            // let EndTime =
-            //   Number(dateHours) + Number(filteringItem.time) >= 10
-            //     ? Number(dateHours) + Number(filteringItem.time)
-            //     : "0" + (Number(dateHours) + Number(filteringItem.time));
-
-            // let dateText =
-            //   // 날짜 텍스트
-            //   filteringItem.lectureDates.length > 1
-            //     ? // 날짜가 하나 혹은 여러 개에 따라 다르게 주기
-            //       `${lectureDateControl(filteringItem.lectureDates)} ${
-            //         filteringItem.time
-            //       }`
-            //     : `${
-            //         dateControl(filteringItem.lectureDates[0]).getMonth() + 1
-            //       }월 ${dateControl(
-            //         filteringItem.lectureDates[0]
-            //       ).getDate()}일 (${
-            //         days[dateControl(filteringItem.lectureDates[0]).getDay()]
-            //       }) ${filteringItem.time}`;
-
+            console.log(filteringItem.staff)
             return (
               <LectureBox
                 key={filteringItem.id}
@@ -139,15 +107,17 @@ const HomeScreen = ({ lectureIdProps }) => {
                 date={filteringItem.lectureDates}
                 time={filteringItem.time}
                 // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+                id={filteringItem.id}
+                dateTypeValue={dateTypeValue}
+                mainTutor={filteringItem.mainTutor}
+                subTutor={filteringItem.subTutor}
+                staff={filteringItem.staff}
+                place={filteringItem.place}
                 lectureIdHandler={() =>
                   navigation.navigate("DetailLecture", {
                     data: filteringItem.id,
                   })
                 }
-                id={filteringItem.id}
-                dateTypeValue={dateTypeValue}
-                mainTutor={filteringItem.mainTutor}
-                place={filteringItem.place}
                 // date={dateText}
               />
             );
