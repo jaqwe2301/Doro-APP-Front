@@ -4,7 +4,7 @@ import { GlobalStyles } from "../../constants/styles";
 import Won from "../../assets/won.svg";
 import Location from "../../assets/location.svg";
 import Calendar from "../../assets/calendar.svg";
-import Clock from "../../assets/Clock.svg";
+import Clock from "../../assets/clock.svg";
 
 function LectureTop({
   subTitle,
