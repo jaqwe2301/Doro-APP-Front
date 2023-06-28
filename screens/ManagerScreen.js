@@ -52,22 +52,32 @@ function ManagerScreen() {
     switch (route.key) {
       case "first":
         return (
-          <View>
-            <FilterBox text="기수 선택" />
-            <FlatList
-              data={users}
-              renderItem={(itemData) => {
-                const item = itemData.item;
-                return (
-                  <TutorBox
-                    name={item.name}
-                    generation={item.generation}
-                    school={item.degree.school}
-                    major={item.degree.major}
-                  />
-                );
+          <View style={{ flex: 1 }}>
+            <View style={{ marginTop: 15, marginLeft: 20 }}>
+              <FilterBox text="기수 선택" />
+            </View>
+            <View
+              style={{
+                marginTop: 27,
+                flex: 1,
               }}
-            />
+            >
+              <FlatList
+                data={users}
+                renderItem={(itemData) => {
+                  const item = itemData.item;
+                  console.log(item);
+                  return (
+                    <TutorBox
+                      name={item.name}
+                      generation={item.generation}
+                      school={item.degree.school}
+                      major={item.degree.major}
+                    />
+                  );
+                }}
+              />
+            </View>
           </View>
         );
 
