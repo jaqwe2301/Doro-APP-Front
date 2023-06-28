@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Text,
   Pressable,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   useWindowDimensions,
   Alert,
+  LayoutChangeEvent,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
@@ -18,10 +19,12 @@ import { GlobalStyles } from "../constants/styles";
 import { WithLocalSvg } from "react-native-svg";
 import CreactingLecture from "../assets/creatingLecture.svg";
 import LectureTop from "../components/ui/LectureTop";
+import { URL } from "../utill/config";
+import { HeaderContext } from "../store/header-context";
 
 function DetailLectureScreen({ route }) {
   const navigation = useNavigation();
-  const [data, setData] = useState([]);
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [lectureBasicInfo, setLectureBasicInfo] = useState({
     city: "",
     enrollEndDate: "",
@@ -62,8 +65,9 @@ function DetailLectureScreen({ route }) {
   // }
 
   useEffect(() => {
+    // 기본 정보
     axios
-      .get(`http://10.0.2.2:8080/lectures/${route.params.data}`, {
+      .get(`${URL}lectures/${route.params.data}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -75,27 +79,21 @@ function DetailLectureScreen({ route }) {
         setLectureBasicInfo(nonSaveId);
         setLectureContent(res.data.data.lectureContentDto);
         // console.log("성공");
-        console.log(res.data.data.lectureDto);
       })
       .catch((error) => {
         console.log("에러");
         console.log(error);
       });
-    // console.log(route.params.data);
 
     axios
-      .get(
-        `http://10.0.2.2:8080/users-lectures/lectures/${route.params.data}`,
-        {
-          headers: {
-            // 헤더에 필요한 데이터를 여기에 추가
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      .get(`${URL}users-lectures/lectures/${route.params.data}`, {
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
       .then((res) => {
         setTutor(res.data.data);
-        // console.log(res.data.data);
       })
       .catch((error) => {
         console.log("에러");
@@ -107,7 +105,7 @@ function DetailLectureScreen({ route }) {
   const applyingTutor = (role) => {
     axios
       .post(
-        `http://10.0.2.2:8080/users-lectures/lectures/${route.params.data}`,
+        `${URL}users-lectures/lectures/${route.params.data}`,
         {
           tutorRole: role,
           userId: 1,
@@ -169,12 +167,24 @@ function DetailLectureScreen({ route }) {
     { key: "third", title: "신청 강사" },
   ]);
 
+  const [tab1Height, setTab1Height] = useState();
+
+  const onLayout = (e) => {
+    const { layout } = e.nativeEvent; // layout 추출
+    // console.log("onLayout", layout); // layout 출력
+    setTab1Height(layout["height"]);
+  };
+
+  useEffect(() => {
+    setTab1Height(layout["height"]);
+  }, []);
+
   // Use a custom renderScene function instead
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
         return (
-          <View style={{ marginTop: 40, flex: 1 }}>
+          <View style={{ marginTop: 40, flex: 1 }} onLayout={onLayout}>
             <View style={{ paddingHorizontal: 20 }}>
               <Text
                 style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
@@ -190,20 +200,26 @@ function DetailLectureScreen({ route }) {
                 </View>
                 <View style={styles.infoTextContatiner}>
                   <Text style={styles.infoTitle}>일자</Text>
-                  {lectureBasicInfo.lectureDates.map((item) => {
-                    const date = new Date(item);
-                    const month =
-                      date.getMonth() >= 9
-                        ? date.getMonth() + 1
-                        : "0" + (date.getMonth() + 1);
+                  <View>
+                    {lectureBasicInfo.lectureDates.map((item) => {
+                      const date = new Date(item);
+                      const month =
+                        date.getMonth() >= 9
+                          ? date.getMonth() + 1
+                          : "0" + (date.getMonth() + 1);
+                      const days =
+                        date.getDate() > 9
+                          ? date.getDate()
+                          : "0" + date.getDate();
 
-                    return (
-                      <Text key={item} style={styles.infoText}>
-                        {date.getFullYear()}.{month}.{date.getDate()} (
-                        {day[date.getDay()]})
-                      </Text>
-                    );
-                  })}
+                      return (
+                        <Text key={item} style={styles.infoText}>
+                          {date.getFullYear()}.{month}.{days} (
+                          {day[date.getDay()]})
+                        </Text>
+                      );
+                    })}
+                  </View>
                 </View>
                 <View style={styles.infoTextContatiner}>
                   <Text style={styles.infoTitle}>시간</Text>
@@ -232,7 +248,13 @@ function DetailLectureScreen({ route }) {
                 <View style={styles.infoTextContatiner}>
                   <Text style={styles.infoTitle}>모집 인원</Text>
                   <Text style={styles.infoText}>
-                    {lectureBasicInfo.mainTutor}
+                    주강사 {lectureBasicInfo.mainTutor}
+                    {lectureBasicInfo.subTutor === "0"
+                      ? ""
+                      : ", 보조강사 " + lectureBasicInfo.subTutor}
+                    {lectureBasicInfo.staff === "0"
+                      ? ""
+                      : ", 스태프 " + lectureBasicInfo.staff}
                   </Text>
                 </View>
                 <View style={styles.infoTextContatiner}>
@@ -241,19 +263,19 @@ function DetailLectureScreen({ route }) {
                     <Text style={styles.infoText}>
                       주 강사 : {lectureBasicInfo.mainPayment}원
                     </Text>
-                    {lectureBasicInfo.subPayment ? (
+                    {lectureBasicInfo.subPayment === "0" ? (
+                      ""
+                    ) : (
                       <Text style={styles.infoText}>
                         보조 강사 : {lectureBasicInfo.subPayment}원
                       </Text>
-                    ) : (
-                      ""
                     )}
-                    {lectureBasicInfo.staffPayment ? (
-                      <Text style={styles.infoText}>
-                        스태프 : {lectureBasicInfo.staffPayment}
-                      </Text>
-                    ) : (
+                    {lectureBasicInfo.staffPayment === "0" ? (
                       ""
+                    ) : (
+                      <Text style={styles.infoText}>
+                        스태프 : {lectureBasicInfo.staffPayment}원
+                      </Text>
                     )}
                   </View>
                 </View>
@@ -270,7 +292,41 @@ function DetailLectureScreen({ route }) {
           </View>
         );
       case "second":
-        return <View style={{ flex: 1 }}></View>;
+        return (
+          <View style={{ marginTop: 40, flex: 1 }}>
+            <View style={{ paddingHorizontal: 20 }}>
+              <Text
+                style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
+              >
+                강의 관련 정보
+              </Text>
+              <View style={styles.infoContatiner}>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>교육 내용</Text>
+                  <Text style={styles.infoText}>{lectureContent.content}</Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>키트</Text>
+                  <Text style={styles.infoText}>{lectureContent.kit}</Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>기본 강의 구성</Text>
+                  <Text style={styles.infoText}>{lectureContent.detail}</Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>기타 특이사항</Text>
+                  <Text style={styles.infoText}>{lectureContent.remark}</Text>
+                </View>
+                <View style={styles.infoTextContatiner}>
+                  <Text style={styles.infoTitle}>자격 요건</Text>
+                  <Text style={styles.infoText}>
+                    {lectureContent.requirement}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        );
       case "third":
         return (
           <View style={{ flex: 1 }}>
@@ -311,51 +367,56 @@ function DetailLectureScreen({ route }) {
     //   contentContainerStyle={{ flexGrow: 1 }}
     // >
     <>
-      <LectureTop
-        subTitle={lectureBasicInfo.subTitle}
-        mainPayment={lectureBasicInfo.mainPayment}
-        subPayment={lectureBasicInfo.subPayment}
-        staffPayment={lectureBasicInfo.staffPayment}
-        city={lectureBasicInfo.city}
-        date={lectureBasicInfo.lectureDates}
-        time={lectureBasicInfo.time}
-      />
+      <ScrollView
+        style={{ backgroundColor: "white", flex: 1 }}
+        // contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <LectureTop
+          subTitle={lectureBasicInfo.subTitle}
+          mainPayment={lectureBasicInfo.mainPayment}
+          subPayment={lectureBasicInfo.subPayment}
+          staffPayment={lectureBasicInfo.staffPayment}
+          city={lectureBasicInfo.city}
+          date={lectureBasicInfo.lectureDates}
+          time={lectureBasicInfo.time}
+        />
 
-      <TabView
-        style={{ marginTop: 50, flex: 1 }}
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        renderTabBar={(props) => (
-          <TabBar
-            {...props}
-            indicatorStyle={{
-              backgroundColor: GlobalStyles.colors.primaryDefault,
-              border: "none",
-            }}
-            style={{
-              backgroundColor: "white",
-              shadowOffset: { height: 0, width: 0 },
-              shadowColor: "transparent",
-              height: 30,
-              borderBottomWidth: 0.5,
-              borderBottomColor: GlobalStyles.colors.gray04,
-            }}
-            labelStyle={{
-              // 폰트 스타일
-              margin: 0,
-              color: "black",
-            }}
-            tabStyle={{
-              flexDirection: "row",
-              alignItems: "flex-start",
-              padding: 0,
-            }}
-            pressColor={"transparent"}
-          />
-        )}
-      />
+        <TabView
+          style={{ marginTop: 50, flex: 1, height: layout["height"] - 188 }}
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={(props) => (
+            <TabBar
+              {...props}
+              indicatorStyle={{
+                backgroundColor: GlobalStyles.colors.primaryDefault,
+                border: "none",
+              }}
+              style={{
+                backgroundColor: "white",
+                shadowOffset: { height: 0, width: 0 },
+                shadowColor: "transparent",
+                height: 30,
+                borderBottomWidth: 0.5,
+                borderBottomColor: GlobalStyles.colors.gray04,
+              }}
+              labelStyle={{
+                // 폰트 스타일
+                margin: 0,
+                color: "black",
+              }}
+              tabStyle={{
+                flexDirection: "row",
+                alignItems: "flex-start",
+                padding: 0,
+              }}
+              pressColor={"transparent"}
+            />
+          )}
+        />
+      </ScrollView>
 
       {/* <View style={styles.buttonContainer}>
         튜터 역할 [MAIN_TUTOR, SUB_TUTOR, STAFF]
@@ -373,27 +434,27 @@ function DetailLectureScreen({ route }) {
         />
       </View> */}
 
-      {/* {data.role === "ROLE_ADMIN" ? (
+      {headerRole === "ROLE_ADMIN" ? (
         <Pressable
-        onPress={() =>
-          navigation.navigate("UpdateLectureScreen", {
-            data: {
-              lectureContentDto: lectureContent,
-              lectureDto: lectureBasicInfo,
-            },
-            option: "update",
-          })
-        }
+          onPress={() =>
+            navigation.navigate("UpdateLectureScreen", {
+              data: {
+                lectureContentDto: lectureContent,
+                lectureDto: lectureBasicInfo,
+              },
+              option: "update",
+            })
+          }
         >
-        <View style={styles.BottomButton}>
-        <WithLocalSvg asset={CreactingLecture} />
-        </View>
+          <View style={styles.BottomButton}>
+            <WithLocalSvg asset={CreactingLecture} />
+          </View>
         </Pressable>
-        ) : (
-          ""
-        )} */}
+      ) : (
+        ""
+      )}
     </>
-    // </ScrollView>
+
     // </View>
   );
 }
@@ -410,7 +471,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   BottomButton: {
-    position: "relative",
+    position: "absolute",
     height: 56,
     width: 56,
     borderRadius: 28,
@@ -431,7 +492,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   infoTitle: {
-    width: 114,
+    width: 130,
     fontSize: 15,
     color: GlobalStyles.colors.gray03,
   },
