@@ -48,6 +48,7 @@ function ProfileEdit({ navigation, route }) {
   const status1 = studentStatus === "ATTENDING" ? "재학" : "휴학";
   const formData = new FormData();
 
+  const [profileImg, setProfileImg] = useState();
   const handlePhoneChange = (text) => {
     setphoneNum(text);
   };
@@ -69,10 +70,18 @@ function ProfileEdit({ navigation, route }) {
     try {
       if (imageUrl !== null) {
         try {
+          const filename = profileImg.assets[0].uri.split("/").pop();
+
+          formData.append("images", {
+            uri: profileImg.assets[0].uri,
+            type: "image/jpeg",
+            // type: "multipart/form-data",
+            name: filename,
+          });
           const response = await updateUserImage({ formData: formData });
           console.log(response);
         } catch (error) {
-          console.log(error + "사진 못보냄");
+          console.log(error.message + "사진 못보냄");
         }
       }
       const success = await updateProfile({
@@ -193,17 +202,19 @@ function ProfileEdit({ navigation, route }) {
       quality: 1,
     });
 
-    console.log(result);
-    console.log(!result.canceled);
-
     if (!result.canceled) {
-      const filename = result.assets[0].uri.split("/").pop();
-      console.log(filename);
-      formData.append("images", {
-        uri: result.assets[0].uri,
-        type: "multipart/form-data",
-        name: filename,
-      });
+      // const filename = result.assets[0].uri.split("/").pop();
+      setProfileImg(result);
+      // console.log(filename);
+      // formData.append("images", {
+      //   uri: result.assets[0].uri,
+      //   type: "image/jpeg",
+      //   // type: "multipart/form-data",
+      //   name: filename,
+      // });
+
+      console.log(formData);
+      console.log("hihi");
       setImageUrl(result.assets[0].uri);
     } else {
       return null;
