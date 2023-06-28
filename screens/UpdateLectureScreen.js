@@ -30,7 +30,6 @@ import { URL } from "../utill/config";
 function UpdateLectureScreen({ route }) {
   const navigation = useNavigation();
 
-  // console.log(route.params.data);
   const [lecturedata, setLecturedata] = useState({
     institution: "",
     city: "",
@@ -109,21 +108,6 @@ function UpdateLectureScreen({ route }) {
     return date;
   };
 
-  const arrayToDateType = () => {
-    const dateArray = [];
-    inputList.map((item) => {
-      const splitedDate = item.text.split(".");
-      dateArray.push(
-        new Date(
-          "20" + splitedDate[0],
-          splitedDate[1] === 1 ? 12 : splitedDate[1] - 1,
-          splitedDate[2]
-        )
-      );
-    });
-    return dateArray;
-  };
-
   /** state에 저장해둔 값을 객체에 옮김 */
   const inputStateHandler = () => {
     handleSingeInputChange(realDate, "lectureDates");
@@ -197,56 +181,11 @@ function UpdateLectureScreen({ route }) {
           });
   };
 
-
-  // /** 확인 버튼 누를 때 실행 */
-  // const creatingLecture = () => {
-  //   inputStateHandler();
-
-  //   // console.log(lecturedata);
-
-  //   for (const item in lecturedata) {
-  //     if (lecturedata[item] === "0") {
-  //       continue;
-  //     } else if (!lecturedata[item]) {
-  //       console.log(item);
-  //       Alert.alert("경고", "빈 칸이 있는지 확인 해주세요.");
-  //       return 0;
-  //     }
-  //   }
-
-  //   Alert.alert(
-  //     "강의 업데이트",
-  //     `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.`,
-  //     [
-  //       {
-  //         text: "확인",
-  //         onPress: () => {},
-  //       },
-  //     ]
-  //   );
-
-  //   axios
-  //     .post(`${URL}lectures/`, lecturedata, {
-  //       headers: {
-  //         // 헤더에 필요한 데이터를 여기에 추가
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //     })
-  //     .catch((error) => {
-  //       console.log("에러");
-  //       console.log(error);
-  //     });
-  // };
-
   const enrollEndDateStateChange = (text) => {
     setLecturedata((prevState) => ({
       ...prevState,
       lectureDate: { enrollEndDate: text },
     }));
-    // console.log(lecturedata);
   };
 
   const handleSingeInputChange = (text, item) => {
@@ -267,7 +206,6 @@ function UpdateLectureScreen({ route }) {
         ...prevState,
         [item]: text,
       }));
-      // console.log(text);
     }
   };
 
@@ -275,10 +213,6 @@ function UpdateLectureScreen({ route }) {
 
   /** 일자 -> 2013.06.20 (화) 형식만 저장 */
   const handleDateInputChange = (text, index) => {
-    // const newList = [...inputList];
-    // newList[index].text = text;
-    // let newList = [...inputList];
-    // newList[index] = text;
     setInputList((prev) => {
       let dates = prev;
       dates[index] = text;

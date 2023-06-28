@@ -17,7 +17,6 @@ import HistoryScreen from "./screens/HistoryScreen";
 import HomeScreen from "./screens/HomeScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import LoginScreen from "./screens/LoginScreen";
-import NewLectureScreen from "./screens/NewLectureScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
 import DetailLectureScreen from "./screens/DetailLectureScreen";
@@ -296,11 +295,6 @@ function HomeNavigator() {
         options={{ title: "" }}
       />
       <Stack.Screen
-        name="NewLecture"
-        component={NewLectureScreen}
-        options={{ title: "강의 생성" }}
-      />
-      <Stack.Screen
         name="UpdateLectureScreen"
         component={UpdateLectureScreen}
         options={{ title: "강의 생성 및 수정" }}
@@ -467,21 +461,6 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Home"
         component={HomeNavigator}
-        // children={() =>
-        //   lectureIdState[1] === "home" ? (
-        //     <HomeScreen
-        //       lectureIdProps={detailLectureVisibleHandler}
-        //       createLectureVisibleProps={createLectureVisibleHandler}
-        //     />
-        //   ) : lectureIdState[1] === "detailLecture" ? (
-        //     <DetailLectureScreen
-        //       screenBackButton={screenBackHandler}
-        //       lectureId={lectureIdState[0]}
-        //     />
-        //   ) : (
-        //     <NewLectureScreen screenBackButton={screenBackHandler} />
-        //   )
-        // }
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) =>
