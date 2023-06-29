@@ -32,7 +32,7 @@ import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
 
-function Code({ navigation }) {
+function Code({ navigation, route }) {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
   const [inputGeneration, setInputGeneration] = useState(0);
@@ -56,6 +56,7 @@ function Code({ navigation }) {
 
   const [accept1, setAccept1] = useState(false);
   const [accept2, setAccept2] = useState(false);
+  const notificationAgreement = route.params.notificationAgreement;
 
   const handleCodeChange = (text) => {
     setInputCode(text);
@@ -71,6 +72,7 @@ function Code({ navigation }) {
         ? GlobalStyles.colors.primaryDefault
         : GlobalStyles.colors.gray05
     );
+    console.log(notificationAgreement + " 여긴 code");
   }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
 
   function navigateId() {
@@ -89,6 +91,7 @@ function Code({ navigation }) {
         generation: inputGeneration,
         major: signData.major,
         name: signData.name,
+        notificationAgreement: notificationAgreement,
         password: signData.password,
         passwordCheck: signData.passwordCheck,
         phone: signData.phone,
