@@ -30,11 +30,11 @@ import { URL } from "../utill/config";
 function UpdateLectureScreen({ route }) {
   const navigation = useNavigation();
 
-  const [lecturedata, setLecturedata] = useState({
+  const [lecturedata, setLectureData] = useState({
     institution: "",
     city: "",
     lectureDate: {
-      enrollEndDate: "2023-05-15T11:00:00.519Z",
+      enrollEndDate: "",
       enrollStartDate: new Date(),
     },
     lectureContentId: null,
@@ -63,12 +63,6 @@ function UpdateLectureScreen({ route }) {
     constent: "",
   });
 
-  // 강의 생성, 수정 중 판단
-  const [option, setOption] = useState("create");
-
-  // 일자 - 달력 팝업
-  const [datePickerVisible, setDatePickerVisible] = useState(false);
-
   useEffect(() => {
     axios
       .get(`${URL}lecture-contents`, {
@@ -84,52 +78,76 @@ function UpdateLectureScreen({ route }) {
         console.log("에러");
         console.log(error);
       });
+    // 강의 수정
     if (route.params.data !== "") {
       let nonIdCheck = route.params.data.lectureDto;
       nonIdCheck["lectureContentId"] = route.params.data.lectureContentDto.id;
-      setLecturedata(nonIdCheck);
+      setLectureData(nonIdCheck);
       setSelectedLectureContents(route.params.data.lectureContentDto);
+      // [항목] - "일자" 동기화
+      const dates = nonIdCheck.lectureDates;
+      for (let i = 0; i < dates.length; i++) {
+        const date = new Date(dates[i]);
+        handleDateInputChange(dateFormat(date), i);
+      }
+      setRealDate(dates);
+      setTmpTime(nonIdCheck.time.split(" ~ "));
       setOption("update");
+      setMainTutor(nonIdCheck.mainTutor === "0" ? "" : nonIdCheck.mainTutor);
+      setSubTutor(nonIdCheck.subTutor === "0" ? "" : nonIdCheck.subTutor);
+      setStaff(nonIdCheck.staff === "0" ? "" : nonIdCheck.staff);
+
+      setMainPayment(nonIdCheck.mainPayment);
+      setSubPayment(nonIdCheck.subPayment);
+      setStaffPayment(nonIdCheck.staffPayment);
     } else {
       setOption("create");
     }
   }, []);
 
+  // 강의 생성, 수정 중 판단
+  const [option, setOption] = useState("create");
+
+  // 일자 - 달력 팝업
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+
+  // 일자
   const [inputList, setInputList] = useState([""]);
-
-  const singleToDateType = () => {
-    const splitedDate = lecturedata.lectureDate.enrollEndDate.split(".");
-    const date = new Date(
-      "20" + splitedDate[0],
-      splitedDate[1] === 1 ? 12 : splitedDate[1] - 1,
-      splitedDate[2]
-    );
-
-    return date;
-  };
 
   /** state에 저장해둔 값을 객체에 옮김 */
   const inputStateHandler = () => {
-    handleSingeInputChange(realDate, "lectureDates");
-    handleSingeInputChange(mainTutor, "mainTutor");
-    handleSingeInputChange(!subTutor ? "0" : subTutor, "subTutor");
-    handleSingeInputChange(!staff ? "0" : staff, "staff");
+    // handleSingleInputChange(realDate, "lectureDates");
+    // handleSingleInputChange(mainTutor, "mainTutor");
+    // handleSingleInputChange(!subTutor ? "0" : subTutor, "subTutor");
+    // handleSingleInputChange(!staff ? "0" : staff, "staff");
 
-    handleSingeInputChange(String(mainPayment), "mainPayment");
-    handleSingeInputChange(String(subPayment), "subPayment");
-    handleSingeInputChange(
-      !staffPayment ? "0" : String(staffPayment),
-      "staffPayment"
-    );
-    enrollEndDateStateChange(realEndDate);
+    // handleSingleInputChange(String(mainPayment), "mainPayment");
+    // handleSingleInputChange(String(subPayment), "subPayment");
+    // handleSingleInputChange(
+    //   !staffPayment ? "0" : String(staffPayment),
+    //   "staffPayment"
+    // );
+    // // enrollEndDateStateChange(endDate);
 
-    const times = tmpTime[0] + " ~ " + tmpTime[1];
-    handleSingeInputChange(times, "time");
+    // const times = tmpTime[0] + " ~ " + tmpTime[1];
+    // handleSingleInputChange(times, "time");
+    const inputs = [
+      [realDate, "lectureDates"],
+      [mainTutor, "mainTutor"],
+      [!subTutor ? "0" : subTutor, "subTutor"],
+      [!staff ? "0" : staff, "staff"],
+      [String(mainPayment), "mainPayment"],
+      [String(subPayment), "subPayment"],
+      [!staffPayment ? "0" : String(staffPayment), "staffPayment"],
+      [tmpTime[0] + " ~ " + tmpTime[1], "time"],
+    ];
+
+    inputs.forEach(([text, item]) => handleSingleInputChange(text, item));
   };
-  
+
   /** 확인 버튼 누를 때 실행 */
   const updateLecture = () => {
-    inputStateHandler();
+    // inputStateHandler();
 
     // console.log(lecturedata);
 
@@ -154,62 +172,86 @@ function UpdateLectureScreen({ route }) {
       ]
     );
 
-    option === "create"
-      ? axios.post(`${URL}lectures/`, lecturedata, {
+    if (option === "create") {
+      axios
+        .post(`${URL}lectures/`, lecturedata, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
             "Content-Type": "application/json",
           },
         })
-      : axios
-          .patch(
-            `${URL}lectures/${route.params.data.lectureDto.id}`,
-            lecturedata,
-            {
-              headers: {
-                // 헤더에 필요한 데이터를 여기에 추가
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then((res) => {
-            console.log("강의 수정 완료");
-          })
-          .catch((error) => {
-            console.log("에러");
-            console.log(error);
-          });
-  };
-
-  const enrollEndDateStateChange = (text) => {
-    setLecturedata((prevState) => ({
-      ...prevState,
-      lectureDate: { enrollEndDate: text },
-    }));
-  };
-
-  const handleSingeInputChange = (text, item) => {
-    item === "lectureDates"
-      ? setLecturedata((prevState) => ({
-          ...prevState,
-          ["lectureDates"]: [],
-        }))
-      : "";
-    if (item === "studentNumber") {
-      let value = text.replace(/\D/g, "");
-      setLecturedata((prevState) => ({
-        ...prevState,
-        [item]: value,
-      }));
-    } else {
-      setLecturedata((prevState) => ({
-        ...prevState,
-        [item]: text,
-      }));
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log("에러");
+          console.log(error);
+        });
+    } else if (option === "update") {
+      axios
+        .patch(
+          `${URL}lectures/${route.params.data.lectureDto.id}`,
+          lecturedata,
+          {
+            headers: {
+              // 헤더에 필요한 데이터를 여기에 추가
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          console.log("강의 수정 완료");
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log("에러");
+          console.log(error);
+        });
     }
   };
 
-  const savingDate = () => {};
+  const handleSingleInputChange = (text, item) => {
+    // item === "lectureDates"
+    //   ? setLectureData((prevState) => ({
+    //       ...prevState,
+    //       ["lectureDates"]: [],
+    //     }))
+    //   : "";
+    // if (item === "studentNumber") {
+    //   let value = text.replace(/\D/g, "");
+    //   setLectureData((prevState) => ({
+    //     ...prevState,
+    //     [item]: value,
+    //   }));
+    // } else if (item === "enrollEndDate") {
+    //   setLectureData((prev) => {
+    //     let data = prev;
+    //     data.lectureDate.enrollEndDate = text;
+    //     return data;
+    //   });
+    // } else {
+    //   setLectureData((prevState) => ({
+    //     ...prevState,
+    //     [item]: text,
+    //   }));
+    // }
+    const itemHandlers = {
+      lectureDates: () => ({ ["lectureDates"]: [] }),
+      studentNumber: () => ({ [item]: text.replace(/\D/g, "") }),
+      enrollEndDate: (prevState) => ({
+        ...prevState,
+        lectureDate: { ...prevState.lectureDate, enrollEndDate: text },
+      }),
+      default: () => ({ [item]: text }),
+    };
+
+    setLectureData((prevState) => ({
+      ...prevState,
+      ...(itemHandlers[item]
+        ? itemHandlers[item](prevState)
+        : itemHandlers.default()),
+    }));
+  };
 
   /** 일자 -> 2013.06.20 (화) 형식만 저장 */
   const handleDateInputChange = (text, index) => {
@@ -220,10 +262,9 @@ function UpdateLectureScreen({ route }) {
     });
   };
 
-  /** 일자 -> date 형식 날짜 저장 */
-
+  /** 일자 - 우측 "+" 버튼 누르면 input바 생성 */
   const handleAddInput = () => {
-    const newList = [...inputList, { text: "" }];
+    const newList = [...inputList, ""];
     setInputList(newList);
   };
 
@@ -257,7 +298,7 @@ function UpdateLectureScreen({ route }) {
     );
     const writingData = lecturedata;
     writingData["lectureContentId"] = id;
-    setLecturedata(writingData);
+    setLectureData(writingData);
     setSelectedLectureContents(lectureContentsData[0]);
     modalHandler(false);
   };
@@ -288,16 +329,11 @@ function UpdateLectureScreen({ route }) {
     setMode(mode);
     datePickerhandler();
   };
-  // 화면에 보이는 데이터 ex. 2023.06.12 (월)
-  const [tmpDate, setTmpDate] = useState([]);
   // 서버에 저장되는 데이터 데이터 (타입 : 배열 안에 date)
   const [realDate, setRealDate] = useState([]);
   // 시간
   const [tmpTime, setTmpTime] = useState([]);
-  // 화면에 보이는 데이터 ex. 2023.06.12 (월)
-  const [endDate, setEndDate] = useState();
-  // 서버에 저장되는 데이터 (타입 : date)
-  const [realEndDate, setRealEndDate] = useState();
+
   const [startTime, setStartTime] = useState(true);
 
   /** datePicker(날짜 선택기)에서
@@ -305,18 +341,25 @@ function UpdateLectureScreen({ route }) {
   const onConfirm = (pickedDate) => {
     // 신청 마감
     if (mode === "date" && inputIdx === -1) {
-      setEndDate(dateFormat(pickedDate));
-      setRealEndDate(pickedDate);
+      handleSingleInputChange(pickedDate, "enrollEndDate");
       // 일자
     } else if (mode === "date") {
       // 화면에 보이는 데이터
       handleDateInputChange(dateFormat(pickedDate), inputIdx);
-      // date 타입 데이터 임시 저장
-      setRealDate((prev) => {
-        let dates = [...prev];
-        dates[inputIdx] = pickedDate;
-        return dates;
+
+      setLectureData((prev) => {
+        let data = prev;
+        data.lectureDates[inputIdx] = pickedDate;
+        console.log(data);
+        return data;
       });
+
+      // date 타입 데이터 임시 저장
+      // setRealDate((prev) => {
+      //   let dates = [...prev];
+      //   dates[inputIdx] = pickedDate;
+      //   return dates;
+      // });
       // 시간
     } else if (mode === "time") {
       setTmpTime((prev) => {
@@ -341,6 +384,16 @@ function UpdateLectureScreen({ route }) {
     setDatePickerVisible(false);
   };
 
+  useEffect(() => {
+    if (tmpTime.length === 2) {
+      const times = tmpTime[0] + " ~ " + tmpTime[1];
+      setLectureData((prev) => ({
+        ...prev,
+        ["time"]: times,
+      }));
+    }
+  }, [tmpTime]);
+
   const [mainTutor, setMainTutor] = useState();
   const [subTutor, setSubTutor] = useState();
   const [staff, setStaff] = useState();
@@ -354,9 +407,25 @@ function UpdateLectureScreen({ route }) {
   };
 
   const formatPeople = (input, role) => {
-    let value = input.replace(/\D/g, ""); // Remove non-digits
+    let value = input;
+    if (
+      (role === "main" && input + "명" === mainTutor) ||
+      (role === "sub" && input + "명" === subTutor) ||
+      (role === "staff" && input + "명" === staff)
+    ) {
+      value = value.slice(0, -1);
+    }
+    if (value === "0") {
+      value === "";
+    }
+    value = value.replace(/\D/g, ""); // Remove non-digits
     value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Insert commas
-    value += "명";
+
+    // If the input is not empty, append "명" to the end
+    if (value !== "") {
+      value += "명";
+    }
+
     tutorStateHandler(value, role);
   };
 
@@ -370,6 +439,17 @@ function UpdateLectureScreen({ route }) {
 
   const staffHandler = (input) => {
     formatPeople(input, "staff");
+  };
+
+  /** 모집 인원 모달 확인 버튼 클릭 시 */
+  const tutorOnConfirm = () => {
+    setLectureData((prev) => ({
+      ...prev,
+      ["mainTutor"]: mainTutor,
+      ["subTutor"]: (!subTutor ? "0" : subTutor),
+      ["staff"]: (!staff ? "0" : staff),
+    }));
+    setTutorModal(false);
   };
 
   const [mainPayment, setMainPayment] = useState();
@@ -401,6 +481,16 @@ function UpdateLectureScreen({ route }) {
     let value = input.replace(/\D/g, ""); // Remove non-digits
     value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Insert commas
     paymentStateHandler(value, role);
+  };
+
+  const paymentOnConfirm = () => {
+    setLectureData((prev) => ({
+      ...prev,
+      ["mainPayment"]: !mainPayment ? "0" : String(mainPayment),
+      ["subPayment"]: !subPayment ? "0" : String(subPayment),
+      ["staffPayment"]: !staffPayment ? "0" : String(staffPayment),
+    }));
+    setPaymentModal(false);
   };
 
   const contentsForm = {
@@ -615,7 +705,7 @@ function UpdateLectureScreen({ route }) {
                 style={styles.inputBox}
                 value={lecturedata.institution}
                 onChangeText={(text) => {
-                  handleSingeInputChange(text, "institution");
+                  handleSingleInputChange(text, "institution");
                 }}
               />
             </View>
@@ -669,7 +759,7 @@ function UpdateLectureScreen({ route }) {
                     style={styles.timeInputBox}
                     // value={lecturedata.time}
                     // onChangeText={(text) => {
-                    //   handleSingeInputChange(text, "time");
+                    //   handleSingleInputChange(text, "time");
                     // }}
                     value={String(tmpTime[0])}
                     onChangeText={(time) => {
@@ -688,7 +778,7 @@ function UpdateLectureScreen({ route }) {
                   <TextInput
                     style={styles.timeInputBox}
                     // onChangeText={(text) => {
-                    //   handleSingeInputChange(text, "time");
+                    //   handleSingleInputChange(text, "time");
                     // }}
                     value={tmpTime[1]}
                     editable={false}
@@ -702,7 +792,7 @@ function UpdateLectureScreen({ route }) {
                 style={styles.inputBox}
                 value={lecturedata.city}
                 onChangeText={(text) => {
-                  handleSingeInputChange(text, "city");
+                  handleSingleInputChange(text, "city");
                 }}
               />
             </View>
@@ -712,7 +802,7 @@ function UpdateLectureScreen({ route }) {
                 style={styles.inputBox}
                 value={lecturedata.place}
                 onChangeText={(text) => {
-                  handleSingeInputChange(text, "place");
+                  handleSingleInputChange(text, "place");
                 }}
               />
             </View>
@@ -722,7 +812,7 @@ function UpdateLectureScreen({ route }) {
                 style={styles.inputBox}
                 value={lecturedata.studentGrade}
                 onChangeText={(text) => {
-                  handleSingeInputChange(text, "studentGrade");
+                  handleSingleInputChange(text, "studentGrade");
                 }}
               />
             </View>
@@ -732,7 +822,7 @@ function UpdateLectureScreen({ route }) {
                 style={styles.inputBox}
                 value={lecturedata.studentNumber}
                 onChangeText={(text) => {
-                  handleSingeInputChange(text, "studentNumber");
+                  handleSingleInputChange(text, "studentNumber");
                 }}
               />
             </View>
@@ -745,9 +835,6 @@ function UpdateLectureScreen({ route }) {
                     value={`주강사 : ${mainTutor}\n보조강사 : ${subTutor}\n스태프 : ${staff}`}
                     multiline={true}
                     editable={false}
-                    // onChangeText={(text) => {
-                    //   handleSingeInputChange(text, "mainTutor");
-                    // }}
                   />
                 </Pressable>
               </View>
@@ -761,10 +848,9 @@ function UpdateLectureScreen({ route }) {
                 <TextInput
                   style={styles.inputBox}
                   editable={false}
-                  value={endDate}
-                  // onChangeText={(text) => {
-                  //   enrollEndDateStateChange(text);
-                  // }}
+                  value={dateFormat(
+                    new Date(lecturedata.lectureDate.enrollEndDate)
+                  )}
                 />
               </Pressable>
             </View>
@@ -777,9 +863,6 @@ function UpdateLectureScreen({ route }) {
                     value={`주강사 : ${mainPayment}원\n보조강사 : ${subPayment}원\n스태프 : ${staffPayment}원`}
                     multiline={true}
                     editable={false}
-                    // onChangeText={(text) => {
-                    //   handleSingeInputChange(text, "mainPayment");
-                    // }}
                   />
                 </View>
               </Pressable>
@@ -802,7 +885,7 @@ function UpdateLectureScreen({ route }) {
             <Modal transparent={true} visible={tutorModal}>
               <View style={styles.paymentModal}>
                 <View style={{ backgroundColor: "white", padding: 20 }}>
-                  <Text>모집대상 아니라면 칸을 비워주세요.</Text>
+                  <Text>모집 대상이 아니라면 칸을 비워주세요.</Text>
                   <Text>(숫자만 입력 가능)</Text>
                   <Text></Text>
 
@@ -828,10 +911,7 @@ function UpdateLectureScreen({ route }) {
                     value={staff}
                   />
                   <Text></Text>
-                  <ButtonSmall
-                    title="확인"
-                    onPress={() => setTutorModal(false)}
-                  />
+                  <ButtonSmall title="확인" onPress={tutorOnConfirm} />
                 </View>
               </View>
             </Modal>
@@ -865,10 +945,7 @@ function UpdateLectureScreen({ route }) {
                     value={staffPayment}
                   />
                   <Text></Text>
-                  <ButtonSmall
-                    title="확인"
-                    onPress={() => setPaymentModal(false)}
-                  />
+                  <ButtonSmall title="확인" onPress={paymentOnConfirm} />
                 </View>
               </View>
             </Modal>
@@ -886,7 +963,7 @@ function UpdateLectureScreen({ route }) {
         <TextInput
           style={styles.titleInput}
           onChangeText={(text) => {
-            handleSingeInputChange(text, "mainTitle");
+            handleSingleInputChange(text, "mainTitle");
           }}
           value={lecturedata.mainTitle ? lecturedata.mainTitle : ""}
         />
@@ -894,7 +971,7 @@ function UpdateLectureScreen({ route }) {
         <TextInput
           style={styles.titleInput}
           onChangeText={(text) => {
-            handleSingeInputChange(text, "subTitle");
+            handleSingleInputChange(text, "subTitle");
           }}
           value={lecturedata.subTitle ? lecturedata.subTitle : ""}
         />
