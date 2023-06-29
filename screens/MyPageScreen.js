@@ -18,6 +18,7 @@ import { HeaderContext } from "../store/header-context";
 import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
+import ManagerScreen from "./ManagerScreen";
 
 function MyPageScreen({ navigation }) {
   const [data, setData] = useState({});
@@ -47,9 +48,9 @@ function MyPageScreen({ navigation }) {
 
   function alarmHandler() {}
 
-  function ManagerScreen() {
-    return <ManagerScreen />;
-  }
+  // function ManagerScreen() {
+  //   return <ManagerScreen />;
+  // }
 
   function UserScreen() {
     function logoutHandler() {
