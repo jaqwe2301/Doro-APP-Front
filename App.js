@@ -438,13 +438,13 @@ function NoticeNavigator({ navigation }) {
           },
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="alarm"
         component={AlarmScreen}
         options={{
           title: "알림",
         }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }
