@@ -4,8 +4,8 @@ import { reToken } from "./auth";
 
 function Interceptor() {
   const instance = axios.create({
-    // baseURL: "http://10.0.2.2:8080",
-    baseURL: "https://api.doroapp.com",
+    baseURL: "http://10.0.2.2:8080",
+    // baseURL: "https://api.doroapp.com",
 
     timeout: 1000,
   });
