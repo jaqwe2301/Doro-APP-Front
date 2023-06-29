@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   useWindowDimensions,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   Pressable,
   Keyboard,
   TextInput,
+  Alert,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
@@ -18,11 +19,13 @@ import { GlobalStyles } from "./../constants/styles";
 import FilterBox from "../components/ui/FilterBox";
 import TutorBox from "../components/ui/TutorBox";
 import ButtonBig from "../components/ui/ButtonBig";
+import { AuthContext } from "../store/auth-context";
 
 function ManagerScreen() {
   const [users, setUsers] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
     axios
@@ -55,6 +58,15 @@ function ManagerScreen() {
     { key: "second", title: "강의 목록" },
     { key: "third", title: "알림 발송" },
   ]);
+
+  function logoutHandler() {
+    Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
+      {
+        text: "취소",
+      },
+      { text: "확인", onPress: () => authCtx.logout() },
+    ]);
+  }
 
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -90,7 +102,13 @@ function ManagerScreen() {
         );
 
       case "second":
-        return <View></View>;
+        return (
+          <View>
+            <Pressable onPress={logoutHandler}>
+              <Text>로그아웃</Text>
+            </Pressable>
+          </View>
+        );
 
       case "third":
         return (
