@@ -13,18 +13,22 @@ import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
-import ButtonOneThird from "../components/ui/ButtonOneThird";
 import { getProfile } from "../utill/http";
 import { GlobalStyles } from "../constants/styles";
 import { WithLocalSvg } from "react-native-svg";
-import CreactingLecture from "../assets/creatingLecture.svg";
-import LectureTop from "../components/ui/LectureTop";
 import { URL } from "../utill/config";
 import { HeaderContext } from "../store/header-context";
+import ApplyingTutorBox from "../components/ui/ApplyingTutorBox";
+import ButtonOneThird from "../components/ui/ButtonOneThird";
+import FilterBox from "../components/ui/FilterBox";
+import LectureTop from "../components/ui/LectureTop";
+import CreactingLecture from "../assets/creatingLecture.svg";
 
 function DetailLectureScreen({ route }) {
   const navigation = useNavigation();
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const { headerId, setHeaderId } = useContext(HeaderContext);
+
   const [lectureBasicInfo, setLectureBasicInfo] = useState({
     city: "",
     enrollEndDate: "",
@@ -85,46 +89,94 @@ function DetailLectureScreen({ route }) {
         console.log(error);
       });
 
-    axios
-      .get(`${URL}users-lectures/lectures/${route.params.data}`, {
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        setTutor(res.data.data);
-      })
-      .catch((error) => {
-        console.log("에러");
-        console.log(error);
-      });
-    // profileHandler();
-  }, []);
-
-  const applyingTutor = (role) => {
-    axios
-      .post(
-        `${URL}users-lectures/lectures/${route.params.data}`,
-        {
-          tutorRole: role,
-          userId: 1,
-        },
-        {
+    if (headerRole === "ROLE_ADMIN") {
+      // 신청 강사 불러오기
+      axios
+        .get(`${URL}users-lectures/lectures/${route.params.data}`, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
             "Content-Type": "application/json",
           },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        // console.log("성공");
-      })
-      .catch((error) => {
-        console.log("에러");
-        console.log(error);
-      });
+        })
+        .then((res) => {
+          // console.log("신청 강사 불러옴");
+          setTutor(res.data.data);
+        })
+        .catch((error) => {
+          console.log("에러");
+          console.log("신청 강사 못 불러옴");
+          console.log(error);
+        });
+    }
+  }, []);
+
+  /** 강의 신청 */
+  const applyingTutor = (roles) => {
+    const role =
+      roles === "MAIN_TUTOR"
+        ? "주 강사"
+        : roles === "SUB_TUTOR"
+        ? "보조강사"
+        : "스태프";
+
+    Alert.alert(
+      lectureBasicInfo.subTitle,
+      `'${role}' 신청하시겠습니까?`,
+      [
+        { text: "취소", onPress: () => {}, style: "cancel" },
+        {
+          text: "확인",
+          onPress: () => {
+            console.log("강사 신청 완료");
+            axios
+              .post(
+                `${URL}users-lectures/lectures/${route.params.data}`,
+                {
+                  tutorRole: roles,
+                  userId: headerId,
+                },
+                {
+                  headers: {
+                    // 헤더에 필요한 데이터를 여기에 추가
+                    "Content-Type": "application/json",
+                  },
+                }
+              )
+              .then((res) => {
+                console.log(res);
+                // console.log("성공");
+              })
+              .catch((error) => {
+                console.log("에러");
+                console.log(error);
+              });
+
+            Alert.alert(
+              lectureBasicInfo.subTitle,
+              `${role} 신청이 완료되었습니다.`,
+              [
+                {
+                  text: "확인",
+                  onPress: () => {
+                    // console.log("강사 신청 완료");
+                  },
+                  style: "destructive",
+                },
+              ],
+              {
+                cancelable: true,
+                onDismiss: () => {},
+              }
+            );
+          },
+          style: "destructive",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      }
+    );
   };
 
   const choiceTutor = (value, name) => {
@@ -161,23 +213,86 @@ function DetailLectureScreen({ route }) {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: "first", title: "기본정보" },
-    { key: "second", title: "강의 관련 정보" },
-    { key: "third", title: "신청 강사" },
-  ]);
-
-  const [tab1Height, setTab1Height] = useState();
+  const [routes] = useState(
+    headerRole === "ROLE_ADMIN"
+      ? [
+          { key: "first", title: "기본정보" },
+          { key: "second", title: "강의 관련 정보" },
+          { key: "third", title: "신청 강사" },
+        ]
+      : [
+          { key: "first", title: "기본정보" },
+          { key: "second", title: "강의 관련 정보" },
+        ]
+  );
 
   const onLayout = (e) => {
     const { layout } = e.nativeEvent; // layout 추출
     // console.log("onLayout", layout); // layout 출력
-    setTab1Height(layout["height"]);
   };
 
-  useEffect(() => {
-    setTab1Height(layout["height"]);
-  }, []);
+  /** 강사 배정 */
+  const assignment = (roles, role, id, name) => {
+
+
+    Alert.alert(
+      lectureBasicInfo.subTitle,
+      `'${role}' 주 강사 ${name} 확정하겠습니까?`,
+      [
+        { text: "취소", onPress: () => {}, style: "cancel" },
+        {
+          text: "확인",
+          onPress: () => {
+            console.log("강사 신청 완료");
+            axios
+              .patch(
+                `${URL}users-lectures/lectures/${route.params.data}`,
+                {
+                  tutorRole: roles,
+                  userId: id,
+                },
+                {
+                  headers: {
+                    // 헤더에 필요한 데이터를 여기에 추가
+                    "Content-Type": "application/json",
+                  },
+                }
+              )
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((error) => {
+                console.log("에러");
+                console.log(error);
+              });
+
+            Alert.alert(
+              lectureBasicInfo.subTitle,
+              `${role} '${name}' 확정이 완료되었습니다.`,
+              [
+                {
+                  text: "확인",
+                  onPress: () => {
+                    // console.log("강사 신청 완료");
+                  },
+                  style: "destructive",
+                },
+              ],
+              {
+                cancelable: true,
+                onDismiss: () => {},
+              }
+            );
+          },
+          style: "destructive",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      }
+    );
+  };
 
   // Use a custom renderScene function instead
   const renderScene = ({ route }) => {
@@ -191,14 +306,14 @@ function DetailLectureScreen({ route }) {
               >
                 기본정보
               </Text>
-              <View style={styles.infoContatiner}>
-                <View style={styles.infoTextContatiner}>
+              <View style={styles.infoContainer}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>주최 및 주관</Text>
                   <Text style={styles.infoText}>
                     {lectureBasicInfo.institution}
                   </Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>일자</Text>
                   <View>
                     {lectureBasicInfo.lectureDates.map((item) => {
@@ -221,31 +336,31 @@ function DetailLectureScreen({ route }) {
                     })}
                   </View>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>시간</Text>
                   <Text style={styles.infoText}>{lectureBasicInfo.time}</Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>지역</Text>
                   <Text style={styles.infoText}>{lectureBasicInfo.city}</Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>장소</Text>
                   <Text style={styles.infoText}>{lectureBasicInfo.place}</Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>강의 대상</Text>
                   <Text style={styles.infoText}>
                     {lectureBasicInfo.studentGrade}
                   </Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>인원수</Text>
                   <Text style={styles.infoText}>
                     {lectureBasicInfo.studentNumber}명
                   </Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>모집 인원</Text>
                   <Text style={styles.infoText}>
                     주강사 {lectureBasicInfo.mainTutor}
@@ -257,7 +372,7 @@ function DetailLectureScreen({ route }) {
                       : ", 스태프 " + lectureBasicInfo.staff}
                   </Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>강사 급여</Text>
                   <View>
                     <Text style={styles.infoText}>
@@ -300,24 +415,24 @@ function DetailLectureScreen({ route }) {
               >
                 강의 관련 정보
               </Text>
-              <View style={styles.infoContatiner}>
-                <View style={styles.infoTextContatiner}>
+              <View style={styles.infoContainer}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>교육 내용</Text>
                   <Text style={styles.infoText}>{lectureContent.content}</Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>키트</Text>
                   <Text style={styles.infoText}>{lectureContent.kit}</Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>기본 강의 구성</Text>
                   <Text style={styles.infoText}>{lectureContent.detail}</Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>기타 특이사항</Text>
                   <Text style={styles.infoText}>{lectureContent.remark}</Text>
                 </View>
-                <View style={styles.infoTextContatiner}>
+                <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>자격 요건</Text>
                   <Text style={styles.infoText}>
                     {lectureContent.requirement}
@@ -327,45 +442,45 @@ function DetailLectureScreen({ route }) {
             </View>
           </View>
         );
+
       case "third":
         return (
-          <View style={{ flex: 1 }}>
-            <Text>신청 강사</Text>
-            {tutor.map((item, i) => {
-              return (
-                <Pressable
-                  key={i}
-                  onPress={() => choiceTutor(item.tutorRole, item.name)}
-                >
-                  <View>
-                    <Text>{item.name}</Text>
-                    <Text>
-                      {item.tutorRole === "MAIN_TUTOR"
-                        ? "주강사"
-                        : item.tutorRole === "SUB_TUTOR"
-                        ? "보조강사"
-                        : ""}
-                    </Text>
-                    <Text>{item.major}</Text>
-                  </View>
-                </Pressable>
-              );
-            })}
-            <View></View>
+          <View style={{ marginTop: 40, flex: 1 }}>
+            <View style={{ paddingHorizontal: 20 }}>
+              <Text
+                style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
+              >
+                신청 강사
+              </Text>
+              <View style={styles.flexDirectionRow}>
+                <FilterBox text="강사 타입" color="black" />
+                <FilterBox text="정렬 순서" color="black" />
+              </View>
+              {tutor.map((item) => {
+                console.log(item)
+                const role =
+                  item.tutorRole === "MAIN_TUTOR"
+                    ? "주강사"
+                    : item.tutorRole === "SUB_TUTOR"
+                    ? "보조강사"
+                    : "스태프";
+                return (
+                  <ApplyingTutorBox
+                    key={item.id}
+                    name={item.name}
+                    role={role}
+                    major={item.major}
+                    onPress={() => assignment(item.tutorRole, role)}
+                  />
+                );
+              })}
+            </View>
           </View>
         );
-
-      default:
-        return <View />;
     }
   };
 
   return (
-    // <View style={{ flex: 1 }}>
-    // <ScrollView
-    //   style={{ backgroundColor: "white", flex: 1 }}
-    //   contentContainerStyle={{ flexGrow: 1 }}
-    // >
     <>
       <ScrollView
         style={{ backgroundColor: "white", flex: 1 }}
@@ -382,7 +497,12 @@ function DetailLectureScreen({ route }) {
         />
 
         <TabView
-          style={{ marginTop: 50, flex: 1, height: layout["height"] - 188 }}
+          style={{
+            marginTop: 50,
+            flex: 1,
+            height:
+              layout["height"] - (headerRole === "ROLE_ADMIN" ? 188 : 174),
+          }}
           navigationState={{ index, routes }}
           renderScene={renderScene}
           onIndexChange={setIndex}
@@ -416,23 +536,38 @@ function DetailLectureScreen({ route }) {
             />
           )}
         />
+        {headerRole === "ROLE_ADMIN" ? (
+          ""
+        ) : (
+          <View style={styles.buttonContainer}>
+            {/* 강사 신청 [MAIN_TUTOR, SUB_TUTOR, STAFF] */}
+            {lectureBasicInfo.mainTutor === "0" ? (
+              ""
+            ) : (
+              <ButtonOneThird
+                onPress={() => applyingTutor("MAIN_TUTOR")}
+                text="주 강사 신청"
+              />
+            )}
+            {lectureBasicInfo.subTutor === "0" ? (
+              ""
+            ) : (
+              <ButtonOneThird
+                onPress={() => applyingTutor("SUB_TUTOR")}
+                text="보조 강사 신청"
+              />
+            )}
+            {lectureBasicInfo.staff === "0" ? (
+              ""
+            ) : (
+              <ButtonOneThird
+                onPress={() => applyingTutor("STAFF")}
+                text="스태프 신청"
+              />
+            )}
+          </View>
+        )}
       </ScrollView>
-
-      {/* <View style={styles.buttonContainer}>
-        튜터 역할 [MAIN_TUTOR, SUB_TUTOR, STAFF]
-        <ButtonOneThird
-        onPress={() => applyingTutor("MAIN_TUTOR")}
-        text="주 강사 신청"
-        />
-        <ButtonOneThird
-        onPress={() => applyingTutor("SUB_TUTOR")}
-        text="보조 강사 신청"
-        />
-        <ButtonOneThird
-        onPress={() => applyingTutor("STAFF")}
-        text="스태프 신청"
-        />
-      </View> */}
 
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable
@@ -481,14 +616,14 @@ const styles = StyleSheet.create({
     bottom: 27,
     right: 20,
   },
-  infoContatiner: {
+  infoContainer: {
     gap: 18,
     marginBottom: 56,
     // paddingBottom: 56,
     // borderBottomColor: GlobalStyles.colors.gray04,
     // borderBottomWidth: 0.5,
   },
-  infoTextContatiner: {
+  flexDirectionRow: {
     flexDirection: "row",
   },
   infoTitle: {
