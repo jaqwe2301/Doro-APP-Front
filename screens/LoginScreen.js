@@ -239,6 +239,7 @@ function LoginScreen({ navigation }) {
           <Text
             onPress={() => {
               navigationScreen({ title: "authPhone" });
+              // navigationScreen({ title: "code" });
             }}
             style={styles.searchText}
           >
