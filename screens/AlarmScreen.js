@@ -201,6 +201,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 10,
     elevation: 3,
+    shadowColor: GlobalStyles.colors.gray03,
+    shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    shadowOpacity: 0.6, // 그림자의 투명도
+    shadowRadius: 1, // 그
   },
   textTopContainer: {
     flexDirection: "row",
