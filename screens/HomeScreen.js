@@ -70,14 +70,14 @@ const HomeScreen = ({ lectureIdProps }) => {
     (item) => item.status === "RECRUITING"
   );
 
-  // const underwayDate = lectureData.filter(
-  //   (item) => item.status === "RECRUITING"
-  // );
-
   const allTitleArray = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
 
+  // const underwayDate = lectureData.filter(
+  //   (item) => item.status === "RECRUITING"
+  // );
+  
   let LectureElements = [];
 
   const dateControl = (stringDate) => {
@@ -98,7 +98,7 @@ const HomeScreen = ({ lectureIdProps }) => {
           .filter((item) => item.mainTitle === allTitleArray[i])
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            console.log(filteringItem.staff)
+            console.log(filteringItem.staff);
             return (
               <LectureBox
                 key={filteringItem.id}
@@ -160,9 +160,20 @@ const HomeScreen = ({ lectureIdProps }) => {
         );
       case "second":
         return (
-          <View style={styles.lectureListContainer}>
-            <Text>진행중</Text>
-          </View>
+          <ScrollView style={styles.lectureListContainer}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 7,
+                marginTop: 15,
+                marginBottom: 5,
+              }}
+            >
+              <FilterBox text="교육 지역" />
+              <FilterBox text="교육 날짜" />
+            </View>
+            {LectureElements}
+          </ScrollView>
         );
 
       default:
