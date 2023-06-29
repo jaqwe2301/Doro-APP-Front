@@ -11,7 +11,7 @@ import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
 
-import { getProfile } from "../utill/http";
+import { alarmEdit, getProfile } from "../utill/http";
 import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
@@ -28,7 +28,7 @@ function MyPageScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
-
+  const [notificationAgreement, setNotificationAgreement] = useState();
   useEffect(() => {
     profileHandler();
   }, []);
@@ -46,7 +46,33 @@ function MyPageScreen({ navigation }) {
     }
   }
 
-  function alarmHandler() {}
+  async function alarmEditHandler({ notificationAgreement }) {
+    try {
+      const response = await alarmEdit({
+        id: headerId,
+        notificationAgreement: notificationAgreement,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function alarmHandler() {
+    Alert.alert(
+      "'DORO'에서 알림을 보내고자 합니다.",
+      "경고, 사운드 및 아이콘 배지가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다.",
+      [
+        {
+          text: "허용             ",
+          onPress: () => alarmEditHandler({ notificationAgreement: true }),
+        },
+        {
+          text: "허용 안함            ",
+          onPress: () => alarmEditHandler({ notificationAgreement: false }),
+        },
+      ]
+    );
+  }
 
   // function ManagerScreen() {
   //   return <ManagerScreen />;

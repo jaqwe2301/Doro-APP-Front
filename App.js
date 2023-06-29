@@ -106,7 +106,7 @@ function HeaderStyle({ title }) {
 }
 
 //로그인 전 화면 -로그인,회원가입 등등
-function AuthStack() {
+function AuthStack({ notificationAgreement }) {
   return (
     <SignContextProvider>
       <Stack.Navigator
@@ -190,6 +190,7 @@ function AuthStack() {
           options={{
             title: "회원가입",
           }}
+          initialParams={{ notificationAgreement: true }}
         />
         <Stack.Screen
           name="agreeInfo"
@@ -614,7 +615,7 @@ function BottomTabNavigator() {
   );
 }
 
-function Navigation() {
+function Navigation({ notificationAgreement }) {
   const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
@@ -646,7 +647,9 @@ function Navigation() {
   return (
     // 로그인 여부에 따른 화면
     <NavigationContainer>
-      {!authCtx.isAuthenticated && <AuthStack />}
+      {!authCtx.isAuthenticated && (
+        <AuthStack notificationAgreement={notificationAgreement} />
+      )}
       {authCtx.isAuthenticated && <BottomTabNavigator />}
     </NavigationContainer>
   );
@@ -655,13 +658,15 @@ function Navigation() {
 export default function App() {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
+  const [noti, setNoti] = useState(true);
   const notificationListener = useRef();
   const responseListener = useRef();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    registerForPushNotificationsAsync().then(({ token, noti }) => {
+      setExpoPushToken(token);
+      setNoti(noti);
+    });
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
@@ -672,6 +677,7 @@ export default function App() {
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
       });
+    console.log(noti);
 
     return () => {
       Notifications.removeNotificationSubscription(
@@ -686,7 +692,7 @@ export default function App() {
       <StatusBar style="dark" />
       <AuthContextProvider>
         <HeaderContextProvider>
-          <Navigation />
+          <Navigation notificationAgreement={noti} />
         </HeaderContextProvider>
       </AuthContextProvider>
     </SafeAreaView>
@@ -695,6 +701,7 @@ export default function App() {
 
 async function registerForPushNotificationsAsync() {
   let token;
+  let noti;
 
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
@@ -702,6 +709,7 @@ async function registerForPushNotificationsAsync() {
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#FF231F7C",
+      ㅜ,
     });
   }
 
@@ -713,20 +721,24 @@ async function registerForPushNotificationsAsync() {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
+    noti = true;
     if (finalStatus !== "granted") {
       alert("Failed to get push token for push notification!");
-      return;
+      noti = false;
+      return { token: null, noti };
     }
     // 프로젝트 ID 바꿔야 함
     token = (
       await Notifications.getExpoPushTokenAsync({ projectId: "doro/doro" })
     ).data;
     console.log(token);
+    console.log(noti);
   } else {
     alert("Must use physical device for Push Notifications");
+    console.log(noti);
   }
 
-  return token;
+  return { token, noti };
 }
 
 const styles = StyleSheet.create({
