@@ -55,7 +55,6 @@ function Id({ navigation }) {
           setSignData({ ...signData, account: inputId });
           navigation.navigate("pw");
         } else {
-          Alert.alert("Error", "이미 존재하는 아이디입니다.");
           setIsVisible(true);
         }
       } catch (error) {
@@ -154,14 +153,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
-  },
-  failText: {
-    color: GlobalStyles.colors.red,
-    fontSize: 12,
-    fontWeight: 400,
-    lineHeight: 17,
-    marginLeft: 10,
-    marginTop: 3,
   },
   failText: {
     color: GlobalStyles.colors.red,
