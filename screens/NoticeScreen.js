@@ -43,35 +43,35 @@ function NoticeScreen({ navigation }) {
     }
   }
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => {
-        return (
-          <Pressable onPress={naviAlarmHandler}>
-            <View>
-              <WithLocalSvg asset={Home} />
-            </View>
-          </Pressable>
-        );
-      },
-    });
-  }, [naviAlarmHandler]);
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => {
+  //       return (
+  //         <Pressable onPress={naviAlarmHandler}>
+  //           <View>
+  //             <WithLocalSvg asset={Home} />
+  //           </View>
+  //         </Pressable>
+  //       );
+  //     },
+  //   });
+  // }, [naviAlarmHandler]);
 
-  function naviAlarmHandler() {
-    navigation.navigate("alarm");
-  }
+  // function naviAlarmHandler() {
+  //   navigation.navigate("alarm");
+  // }
 
-  navigation.setOptions({
-    headerRight: () => {
-      return (
-        <Pressable onPress={() => navigation.navigate("alarm")}>
-          <View>
-            <WithLocalSvg asset={Home} />
-          </View>
-        </Pressable>
-      );
-    },
-  });
+  // navigation.setOptions({
+  //   headerRight: () => {
+  //     return (
+  //       <Pressable onPress={() => navigation.navigate("alarm")}>
+  //         <View>
+  //           <WithLocalSvg asset={Home} />
+  //         </View>
+  //       </Pressable>
+  //     );
+  //   },
+  // });
 
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });
