@@ -20,6 +20,7 @@ import FilterBox from "../components/ui/FilterBox";
 import TutorBox from "../components/ui/TutorBox";
 import ButtonBig from "../components/ui/ButtonBig";
 import { AuthContext } from "../store/auth-context";
+import { pushNotification } from "../utill/http";
 
 function ManagerScreen() {
   const [users, setUsers] = useState([]);
@@ -46,9 +47,30 @@ function ManagerScreen() {
       });
   }, []);
 
-  function addAlarm() {}
+  async function addAlarm() {
+    try {
+      const response = await pushNotification({
+        body: body,
+        title: title,
+      });
+      if (response.success) {
+        setBody("");
+        setTitle("");
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  const navigation = useNavigation();
+  function addAlarmHandler() {
+    Alert.alert("알림을 발송 하시겠습니까 ?", undefined, [
+      {
+        text: "취소",
+      },
+      { text: "확인", onPress: addAlarm },
+    ]);
+  }
 
   const layout = useWindowDimensions();
 
@@ -138,7 +160,7 @@ function ManagerScreen() {
               </Pressable>
             </ScrollView>
             <View style={styles.buttonContainer}>
-              <ButtonBig text="알림 발송" onPress={addAlarm} />
+              <ButtonBig text="알림 발송" onPress={addAlarmHandler} />
             </View>
           </View>
         );
