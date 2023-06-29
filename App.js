@@ -1,5 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, Platform } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Platform,
+  Pressable,
+} from "react-native";
 import { useState, useContext, useEffect, useRef } from "react";
 import {
   NavigationContainer,
@@ -237,7 +244,7 @@ function AuthStack() {
   );
 }
 
-function HomeNavigator() {
+function HomeNavigator({ navigation }) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -263,10 +270,12 @@ function HomeNavigator() {
                     source={require("./assets/doroLogoMain.png")}
                     style={styles.Logo}
                   />
-                  <Image
-                    source={require("./assets/icons/alarm_after.png")}
-                    style={styles.iconSize}
-                  />
+                  <Pressable onPress={() => navigation.navigate("alarm")}>
+                    <Image
+                      source={require("./assets/icons/alarm_after.png")}
+                      style={styles.iconSize}
+                    />
+                  </Pressable>
                 </View>
                 <View style={styles.noticeContainer}>
                   <Image
@@ -298,6 +307,13 @@ function HomeNavigator() {
         name="UpdateLectureScreen"
         component={UpdateLectureScreen}
         options={{ title: "강의 생성 및 수정" }}
+      />
+      <Stack.Screen
+        name="alarm"
+        component={AlarmScreen}
+        options={{
+          title: "알림",
+        }}
       />
     </Stack.Navigator>
   );
@@ -362,7 +378,7 @@ function MyPageNavigator() {
     </Stack.Navigator>
   );
 }
-function NoticeNavigator() {
+function NoticeNavigator({ navigation }) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -381,7 +397,11 @@ function NoticeNavigator() {
         options={{
           title: "공지사항",
           headerRight: () => {
-            return <WithLocalSvg asset={Home} />;
+            return (
+              // <Pressable onPress={() => navigation.navigate("home")}>
+              <WithLocalSvg asset={Home} />
+              //</Pressable>
+            );
           },
           headerBackVisible: false,
         }}
