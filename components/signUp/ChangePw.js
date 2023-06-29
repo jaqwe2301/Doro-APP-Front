@@ -12,7 +12,7 @@ import InputData from "../ui/InputData";
 import PwBtn from "../ui/PwBtn";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { changePassword } from "../../utill/auth";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../store/auth-context";
@@ -27,7 +27,7 @@ function ChangePw({ navigation, route }) {
   const [num, setNum] = useState(GlobalStyles.colors.gray05);
   const [mark, setMark] = useState(GlobalStyles.colors.gray05);
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
-  const authCtx = useContext(AuthContext);
+
   const id = route.params.id;
   const phoneNum = route.params.phone;
   // const statusBarHeight = route.params.h;
@@ -43,10 +43,7 @@ function ChangePw({ navigation, route }) {
         });
 
         if (response.success) {
-          Alert.alert("성공", "비밀번호 변경");
-          authCtx.isAuthenticated
-            ? authCtx.logout()
-            : navigation.replace("login");
+          navigation.navigate("finishPw");
         } else {
           Alert.alert("Error", "일치하는 아이디가 없습니다. ");
         }
@@ -182,7 +179,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     justifyContent: "space-between",
-    justifyContent: "space-between",
   },
   headerShadow: {
     borderBottomColor: GlobalStyles.colors.gray05,
@@ -201,8 +197,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 20,
-
-    marginBottom: 34,
 
     marginBottom: 34,
   },
