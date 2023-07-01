@@ -234,11 +234,39 @@ function AddNoticeScreen({ navigation }) {
     }
   };
 
+  async function completeHandler3() {
+    const formData = new FormData();
+    const announcementReq = {
+      title: title,
+      body: body,
+      writer: "노세인",
+    };
+    formData.append(
+      "announcementReq",
+      // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
+      // new Blob([{ title: "title", body: "body", writer: "노세인" }])
+      announcementReq
+      // JSON.stringify(value)
+      // value
+    );
+    try {
+      const response = await createAnnouncement({
+        formData: formData,
+        title: title,
+        body: body,
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(JSON.stringify(formData));
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
         return (
-          <Pressable onPress={completeHandler2}>
+          <Pressable onPress={completeHandler3}>
             <View style={styles.completeContainer}>
               <Text style={styles.completeText}>완료</Text>
             </View>
@@ -246,7 +274,7 @@ function AddNoticeScreen({ navigation }) {
         );
       },
     });
-  }, [completeHandler2]);
+  }, []);
 
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const { StatusBarManager } = NativeModules;
