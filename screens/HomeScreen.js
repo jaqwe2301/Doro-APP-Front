@@ -77,7 +77,7 @@ const HomeScreen = ({ lectureIdProps }) => {
   // const underwayDate = lectureData.filter(
   //   (item) => item.status === "RECRUITING"
   // );
-  
+
   let LectureElements = [];
 
   const dateControl = (stringDate) => {
@@ -191,6 +191,7 @@ const HomeScreen = ({ lectureIdProps }) => {
         renderTabBar={(props) => (
           <TabBar
             {...props}
+            // 밑에 막대기(line) 스타일링
             indicatorStyle={{
               // Style to apply to the container view for the indicator.
               backgroundColor: GlobalStyles.colors.primaryDefault,
@@ -201,15 +202,9 @@ const HomeScreen = ({ lectureIdProps }) => {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
-              height: 30,
+              height: 34,
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
-            }}
-            labelStyle={{
-              // 폰트 스타일
-              margin: 0,
-              fontSize: 15,
-              color: "black",
             }}
             tabStyle={{
               flexDirection: "row",
@@ -217,6 +212,23 @@ const HomeScreen = ({ lectureIdProps }) => {
               padding: 0,
             }}
             pressColor={"transparent"}
+            // 탭바(tap bar) 텍스트 스타일링
+            renderLabel={({ route, focused, color }) => (
+              <Text
+                style={
+                  focused
+                    ? {
+                        margin: 0,
+                        fontSize: 15,
+                        color: "black",
+                        fontWeight: "bold",
+                      }
+                    : { margin: 0, fontSize: 15, color: "black" }
+                }
+              >
+                {route.title}
+              </Text>
+            )}
           />
         )}
       />
