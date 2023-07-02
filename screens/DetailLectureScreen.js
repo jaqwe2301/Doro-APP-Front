@@ -457,7 +457,7 @@ function DetailLectureScreen({ route }) {
                 <FilterBox text="정렬 순서" color="black" />
               </View>
               {tutor.map((item) => {
-                console.log(item)
+                // console.log(item)
                 const role =
                   item.tutorRole === "MAIN_TUTOR"
                     ? "주강사"
