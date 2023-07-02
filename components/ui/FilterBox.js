@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { WithLocalSvg } from "react-native-svg";
-import Down from "../../assets/down.svg";
+import DownGray from "../../assets/down.svg";
+import DownBlack from "../../assets/down_black.svg";
 import { GlobalStyles } from "../../constants/styles";
 
 function FilterBox({ text, color }) {
@@ -12,9 +13,13 @@ function FilterBox({ text, color }) {
         color ? { borderWidth: 2 } : "",
       ]}
     >
-      <Text style={[styles.text, color ? { color: color } : ""]}>{text}</Text>
+      <Text
+        style={[styles.text, color ? { color: color } : { fontWeight: 600 }]}
+      >
+        {text}
+      </Text>
       <WithLocalSvg
-        asset={Down}
+        asset={color ? DownBlack : DownGray}
         fill={color ? color : GlobalStyles.colors.gray03}
         // stroke={GlobalStyles.colors.gray03}
         height={26}
@@ -41,7 +46,6 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 3,
     fontSize: 15,
-    fontWeight: "600",
     color: GlobalStyles.colors.gray03,
   },
 });
