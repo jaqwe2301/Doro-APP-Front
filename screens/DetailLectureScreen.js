@@ -233,8 +233,6 @@ function DetailLectureScreen({ route }) {
 
   /** 강사 배정 */
   const assignment = (roles, role, id, name) => {
-
-
     Alert.alert(
       lectureBasicInfo.subTitle,
       `'${role}' 주 강사 ${name} 확정하겠습니까?`,
@@ -510,6 +508,7 @@ function DetailLectureScreen({ route }) {
           renderTabBar={(props) => (
             <TabBar
               {...props}
+              // 밑에 막대기(line) 스타일링
               indicatorStyle={{
                 backgroundColor: GlobalStyles.colors.primaryDefault,
                 border: "none",
@@ -518,15 +517,26 @@ function DetailLectureScreen({ route }) {
                 backgroundColor: "white",
                 shadowOffset: { height: 0, width: 0 },
                 shadowColor: "transparent",
-                height: 30,
+                height: 34,
                 borderBottomWidth: 0.5,
                 borderBottomColor: GlobalStyles.colors.gray04,
               }}
-              labelStyle={{
-                // 폰트 스타일
-                margin: 0,
-                color: "black",
-              }}
+              renderLabel={({ route, focused, color }) => (
+                <Text
+                  style={
+                    focused
+                      ? {
+                          margin: 0,
+                          fontSize: 15,
+                          color: "black",
+                          fontWeight: "bold",
+                        }
+                      : { margin: 0, fontSize: 15, color: "black" }
+                  }
+                >
+                  {route.title}
+                </Text>
+              )}
               tabStyle={{
                 flexDirection: "row",
                 alignItems: "flex-start",
