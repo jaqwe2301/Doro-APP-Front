@@ -446,8 +446,8 @@ function UpdateLectureScreen({ route }) {
     setLectureData((prev) => ({
       ...prev,
       ["mainTutor"]: mainTutor,
-      ["subTutor"]: (!subTutor ? "0" : subTutor),
-      ["staff"]: (!staff ? "0" : staff),
+      ["subTutor"]: !subTutor ? "0" : subTutor,
+      ["staff"]: !staff ? "0" : staff,
     }));
     setTutorModal(false);
   };
@@ -984,6 +984,7 @@ function UpdateLectureScreen({ route }) {
         renderTabBar={(props) => (
           <TabBar
             {...props}
+            // 밑에 막대기(line) 스타일링
             indicatorStyle={{
               backgroundColor: GlobalStyles.colors.primaryDefault,
               border: "none",
@@ -992,10 +993,30 @@ function UpdateLectureScreen({ route }) {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
+              height: 34,
+              borderBottomWidth: 0.5,
+              borderBottomColor: GlobalStyles.colors.gray04,
             }}
-            labelStyle={{
-              // 폰트 컬러
-              color: "black",
+            renderLabel={({ route, focused, color }) => (
+              <Text
+                style={
+                  focused
+                    ? {
+                        margin: 0,
+                        fontSize: 15,
+                        color: "black",
+                        fontWeight: "bold",
+                      }
+                    : { margin: 0, fontSize: 15, color: "black" }
+                }
+              >
+                {route.title}
+              </Text>
+            )}
+            tabStyle={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+              padding: 0,
             }}
             pressColor={"transparent"}
           />
