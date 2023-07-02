@@ -6,21 +6,24 @@ import {
   FlatList,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import { GlobalStyles } from "../constants/styles";
 import LectureBox from "../components/ui/LectureBox";
 import axios from "axios";
+import { URL } from "../utill/config";
+
 
 function ApplicationDetails({ route, header }) {
   console.log(route);
+  const { headerId, setHeaderId } = useContext(HeaderContext);
 
   const [userLecture, setUserLecture] = useState([]);
   const [finishedLecture, setFinishedLecture] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`http://10.0.2.2:8080/users-lectures/users/${8}`, {
+      .get(`${URL}users-lectures/users/${headerId}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
