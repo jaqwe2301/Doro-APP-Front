@@ -450,7 +450,9 @@ function DetailLectureScreen({ route }) {
               >
                 신청 강사
               </Text>
-              <View style={styles.flexDirectionRow}>
+              <View
+                style={[styles.flexDirectionRow, { gap: 8, marginBottom: 28 }]}
+              >
                 <FilterBox text="강사 타입" color="black" />
                 <FilterBox text="정렬 순서" color="black" />
               </View>
