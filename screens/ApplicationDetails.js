@@ -7,21 +7,23 @@ import {
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useEffect, useState, useContext } from "react";
+import { HeaderContext } from "../store/header-context";
+import { URL } from "../utill/config";
+import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
-import LectureBox from "../components/ui/LectureBox";
-import axios from "axios";
-import { URL } from "../utill/config";
+import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 
-
-function ApplicationDetails({ route, header }) {
-  console.log(route);
+function ApplicationDetails({ route }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
 
   const [userLecture, setUserLecture] = useState([]);
+  const [recruiting, setRecruiting] = useState([]);
+  const [allocation, setAllocation] = useState([]);
   const [finishedLecture, setFinishedLecture] = useState([]);
 
   useEffect(() => {
+    console.log(headerId);
     axios
       .get(`${URL}users-lectures/users/${headerId}`, {
         headers: {
@@ -30,8 +32,27 @@ function ApplicationDetails({ route, header }) {
         },
       })
       .then((res) => {
-        setUserLecture(res.data.data);
-        finishLectureHandler(res.data.data);
+        // console.log(res.data.data);
+        setRecruiting(() => {
+          const data = res.data.data.filter(
+            (item) => item.status === "RECRUITING"
+          );
+          return data;
+        });
+        setAllocation(() => {
+          const data = res.data.data.filter(
+            (item) => item.status === "ALLOCATION_COMP"
+          );
+          // console.log(data);
+          return data;
+        });
+        // finishLectureHandler(() => {
+        //   const data = res.data.data.filter(
+        //     (item) => item.status === "ALLOCATION_COMP"
+        //   );
+        //   console.log(data);
+        //   return data;
+        // });
         // console.log("성공");
       })
       .catch((error) => {
@@ -48,16 +69,16 @@ function ApplicationDetails({ route, header }) {
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
-    { key: "first", title: `0\n\n신청중` },
-    { key: "second", title: `0\n\n배정 완료` },
-    { key: "third", title: `0\n\n강의 완료` },
+    { key: "first", title: `신청중` },
+    { key: "second", title: `배정 완료` },
+    { key: "third", title: `강의 완료` },
   ]);
 
   useEffect(() => {
     setRoutes([
-      { key: "first", title: `${userLecture.length}\n\n신청중` },
-      { key: "second", title: `02\n\n배정 완료` },
-      { key: "third", title: `${finishedLecture.length}\n\n강의 완료` },
+      { key: "first", title: `신청중` },
+      { key: "second", title: `배정 완료` },
+      { key: "third", title: `강의 완료` },
     ]);
   }, [userLecture.length, finishedLecture.length]);
 
@@ -87,13 +108,14 @@ function ApplicationDetails({ route, header }) {
         return (
           <FlatList
             style={styles.container}
-            data={userLecture}
+            data={recruiting}
             renderItem={(data) => {
+              // console.log(data);
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
               return (
-                <LectureBox
+                <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
@@ -113,13 +135,13 @@ function ApplicationDetails({ route, header }) {
         return (
           <FlatList
             style={styles.container}
-            data={userLecture}
+            data={allocation}
             renderItem={(data) => {
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
               return (
-                <LectureBox
+                <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
@@ -142,7 +164,7 @@ function ApplicationDetails({ route, header }) {
             data={finishedLecture}
             renderItem={(data) => {
               return (
-                <LectureBox
+                <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
@@ -167,13 +189,7 @@ function ApplicationDetails({ route, header }) {
 
   return (
     <>
-      {header === true ? (
-        <View style={{ backgroundColor: "white", alignItems: "center" }}>
-          <Text>강의신청내역</Text>
-        </View>
-      ) : (
-        ""
-      )}
+      <View style={{ backgroundColor: "white", height: 40 }} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -182,6 +198,7 @@ function ApplicationDetails({ route, header }) {
         renderTabBar={(props) => (
           <TabBar
             {...props}
+            // 밑에 막대기(line) 스타일링
             indicatorStyle={{
               backgroundColor: GlobalStyles.colors.primaryDefault,
               border: "none",
@@ -190,10 +207,30 @@ function ApplicationDetails({ route, header }) {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
+              height: 34,
+              borderBottomWidth: 0.5,
+              borderBottomColor: GlobalStyles.colors.gray04,
             }}
-            labelStyle={{
-              // 폰트 컬러
-              color: "black",
+            renderLabel={({ route, focused, color }) => (
+              <Text
+                style={
+                  focused
+                    ? {
+                        margin: 0,
+                        fontSize: 15,
+                        color: "black",
+                        fontWeight: "bold",
+                      }
+                    : { margin: 0, fontSize: 15, color: "black" }
+                }
+              >
+                {route.title}
+              </Text>
+            )}
+            tabStyle={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+              padding: 0,
             }}
             pressColor={"transparent"}
           />
@@ -207,6 +244,7 @@ export default ApplicationDetails;
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 14,
     paddingHorizontal: 20,
   },
 });
