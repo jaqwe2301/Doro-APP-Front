@@ -533,10 +533,20 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="History"
-        children={() => <ApplicationDetails header={true} />}
-        // component={ApplicationDetails}
+        // children={() => <ApplicationDetails header={true} />}
+        component={ApplicationDetails}
         options={{
-          title: "신청 내역",
+          title: "강의 신청 내역",
+          headerShown: true,
+          headerTitleAlign: "center",
+          headerTitleAllowFontScaling: true,
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "bold",
+          },
+          headerStyle: {
+            height: 60,
+          },
           tabBarIcon: ({ color }) =>
             color === GlobalStyles.colors.gray04 ? (
               <WithLocalSvg asset={Tray} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   useWindowDimensions,
   StyleSheet,
@@ -14,6 +14,7 @@ import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { URL } from "../utill/config";
+import { AuthContext } from "../store/auth-context";
 
 import { GlobalStyles } from "./../constants/styles";
 import FilterBox from "../components/ui/FilterBox";
@@ -24,6 +25,7 @@ function ManagerScreen() {
   const [users, setUsers] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
     axios
@@ -86,6 +88,9 @@ function ManagerScreen() {
                 }}
               />
             </View>
+            <Pressable onPress={() => authCtx.logout()}>
+              <Text>매니저 로그아웃</Text>
+            </Pressable>
           </View>
         );
 
