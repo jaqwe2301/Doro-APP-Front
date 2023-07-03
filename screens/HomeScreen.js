@@ -55,7 +55,6 @@ const HomeScreen = ({ lectureIdProps }) => {
       })
       .then((res) => {
         setLectureData(res.data.data);
-        // console.log(res.data.data);
         // console.log("성공");
       })
       .catch((error) => {
@@ -69,33 +68,78 @@ const HomeScreen = ({ lectureIdProps }) => {
   const recruitingData = lectureData.filter(
     (item) => item.status === "RECRUITING"
   );
-
-  const allTitleArray = [
+  const recruitingTitle = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
 
-  // const underwayDate = lectureData.filter(
-  //   (item) => item.status === "RECRUITING"
-  // );
-
-  let LectureElements = [];
+  const allocationDate = lectureData.filter(
+    (item) => item.status === "ALLOCATION_COMP"
+  );
+  const allocationTitle = [
+    ...new Set(allocationDate.map((item) => item.mainTitle)),
+  ];
 
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
     return new Date(stringDate);
   };
 
-  for (let i = 0; i < allTitleArray.length; i++) {
+  let recruitingElements = [];
+
+  for (let i = 0; i < recruitingTitle.length; i++) {
     let SelectedColor = GlobalStyles.indicationColors[i % 4];
 
-    LectureElements.push(
+    recruitingElements.push(
       <View key={i}>
         <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-          {allTitleArray[i]}
+          {recruitingTitle[i]}
         </Text>
 
         {recruitingData
-          .filter((item) => item.mainTitle === allTitleArray[i])
+          .filter((item) => item.mainTitle === recruitingTitle[i])
+          .map((filteringItem, i) => {
+            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+            console.log(filteringItem.staff);
+            return (
+              <LectureBox
+                key={filteringItem.id}
+                colors={SelectedColor}
+                subTitle={filteringItem.subTitle}
+                date={filteringItem.lectureDates}
+                time={filteringItem.time}
+                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+                id={filteringItem.id}
+                dateTypeValue={dateTypeValue}
+                mainTutor={filteringItem.mainTutor}
+                subTutor={filteringItem.subTutor}
+                staff={filteringItem.staff}
+                place={filteringItem.place}
+                lectureIdHandler={() =>
+                  navigation.navigate("DetailLecture", {
+                    data: filteringItem.id,
+                  })
+                }
+                // date={dateText}
+              />
+            );
+          })}
+      </View>
+    );
+  }
+
+  let allocationElements = [];
+
+  for (let i = 0; i < allocationTitle.length; i++) {
+    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+
+    allocationElements.push(
+      <View key={i}>
+        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+          {allocationTitle[i]}
+        </Text>
+
+        {allocationDate
+          .filter((item) => item.mainTitle === allocationTitle[i])
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
             console.log(filteringItem.staff);
@@ -155,7 +199,7 @@ const HomeScreen = ({ lectureIdProps }) => {
               <FilterBox text="교육 지역" />
               <FilterBox text="교육 날짜" />
             </View>
-            {LectureElements}
+            {recruitingElements}
           </ScrollView>
         );
       case "second":
@@ -172,7 +216,7 @@ const HomeScreen = ({ lectureIdProps }) => {
               <FilterBox text="교육 지역" />
               <FilterBox text="교육 날짜" />
             </View>
-            {LectureElements}
+            {allocationElements}
           </ScrollView>
         );
 
