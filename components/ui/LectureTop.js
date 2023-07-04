@@ -1,100 +1,80 @@
 import { View, Text, StyleSheet } from "react-native";
 import { WithLocalSvg } from "react-native-svg";
 import { GlobalStyles } from "../../constants/styles";
-import Won from "../../assets/won.svg";
+
+// svg
+import Bus from "../../assets/directions_bus.svg";
 import Location from "../../assets/location.svg";
+import Won from "../../assets/won.svg";
 import Calendar from "../../assets/calendar.svg";
-import Clock from "../../assets/Clock.svg";
+import Clock from "../../assets/clock.svg";
+
+// 컴포넌트
+import SummaryBoxSmall from "./SummaryBoxSmall";
+import SummaryBoxBig from "./SummaryBoxBig";
 
 function LectureTop({
   subTitle,
   mainPayment,
   subPayment,
-  staffpayment,
+  staffPayment,
   city,
   date,
   time,
 }) {
-  // const subPaymentSplit = payment?.split("보");
-  // const staffPaymentSplit = subPaymentSplit[-1]?.split("스");
+  console.log(staffPayment);
+  const day = ["일", "월", "화", "수", "목", "금", "토"];
+
+  // ex. 05월 04일 (금) 09:30 ~ 12:30
+  const LectureDate = date.map((item) => {
+    const date = new Date(item);
+    const month =
+      date.getMonth() >= 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1);
+    const days = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
+
+    return `${month}월 ${days}일 (${day[date.getDay()]}) ${time}`;
+  });
+
+  // 강사 급여
+  let payment = [];
+  paymentCheck = false;
+  mainPayment !== "0" ? payment.push(`주강사: ${mainPayment}원`) : "";
+
+  if (subPayment !== "0") {
+    if (payment.length === 1) {
+      payment[0] += `        보조강사: ${subPayment}원`;
+      paymentCheck = true;
+    } else {
+      payment.push(`보조강사: ${subPayment}원`);
+    }
+  }
+
+  if (staffPayment !== "0") {
+    if (payment.length === 1) {
+      if (paymentCheck) {
+        payment.push(`스태프: ${staffPayment}원`);
+      } else if (!paymentCheck) {
+        payment[0] += `        스태프: ${staffPayment}원`;
+      }
+    } else {
+      payment.push(`스태프: ${staffPayment}원`);
+    }
+  }
 
   return (
     <View style={{ alignItems: "center", paddingHorizontal: 20 }}>
       <Text style={styles.Title}>{subTitle}</Text>
-      <View style={styles.boxContainter}>
-        <View style={styles.box}>
-          <View style={styles.svgContainer}>
-            <WithLocalSvg asset={Won} height={24} width={24} />
-          </View>
-          <View>
-            <Text style={styles.boxTitle}>강사급여</Text>
-            <Text style={styles.paymentText}>주강사 : {mainPayment}원</Text>
-            {!subPayment ? (
-              ""
-            ) : (
-              <Text style={styles.paymentText}>보조강사 : {subPayment}원</Text>
-            )}
-            {!staffpayment ? (
-              ""
-            ) : (
-              <Text style={styles.paymentText}>스태프 : {staffpayment}원</Text>
-            )}
-            {/* <Text>{subPaymentSplit[0]}</Text> */}
-            {/* <Text>
-            {subPaymentSplit.length === 2 && staffPaymentSplit.length === 2
-              ? "보" + staffPaymentSplit[0]
-              : subPaymentSplit.length === 2 && staffPaymentSplit.length === 1
-              ? "보" + subPaymentSplit[-1]
-              : ""}
-          </Text>
-          <Text>
-            {staffPaymentSplit?.length === 2
-              ? "스" + staffPaymentSplit[-1]
-              : ""}
-          </Text> */}
-          </View>
-        </View>
-        <View style={styles.box}>
-          <View style={styles.svgContainer}>
-            <WithLocalSvg asset={Location} height={24} width={24} />
-          </View>
-          <View>
-            <Text style={styles.boxTitle}>지역</Text>
-            <Text style={styles.boxText}>{city}</Text>
-          </View>
-        </View>
+      <View style={styles.boxContainer}>
+        <SummaryBoxSmall svg={Bus} title="교통비" text="" />
+        <SummaryBoxSmall svg={Location} title="지역" text={city} />
       </View>
 
-      <View style={styles.boxContainter}>
-        <View style={styles.box}>
-          <View style={styles.svgContainer}>
-            <WithLocalSvg asset={Calendar} height={24} width={24} />
-          </View>
-          <View>
-            <Text style={styles.boxTitle}>날짜</Text>
-            {date.map((item, i) => {
-              return (
-                <Text style={styles.boxText} key={i}>
-                  {new Date(item).getMonth() +
-                    1 +
-                    "월 " +
-                    new Date(item).getDate() +
-                    "일"}
-                </Text>
-              );
-            })}
-          </View>
-        </View>
+      <View style={styles.boxContainer}>
+        <SummaryBoxBig svg={Won} title="강사 급여" text={payment} />
+      </View>
 
-        <View style={styles.box}>
-          <View style={styles.svgContainer}>
-            <WithLocalSvg asset={Clock} height={24} width={24} />
-          </View>
-          <View>
-            <Text style={styles.boxTitle}>시간</Text>
-            <Text style={styles.boxText}>{time}</Text>
-          </View>
-        </View>
+      <View style={styles.boxContainer}>
+        <SummaryBoxBig svg={Calendar} title="날짜 및 시간" text={LectureDate} />
       </View>
     </View>
   );
@@ -110,7 +90,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     lineHeight: 28,
   },
-  boxContainter: {
+  boxContainer: {
     flexDirection: "row",
     gap: 7,
     marginBottom: 6.99,

@@ -4,8 +4,8 @@ import { reToken } from "./auth";
 
 function Interceptor() {
   const instance = axios.create({
-    // baseURL: "http://10.0.2.2:8080",
-    baseURL: "https://api.doroapp.com",
+    baseURL: "http://10.0.2.2:8080",
+    // baseURL: "https://api.doroapp.com",
 
     timeout: 1000,
   });
@@ -38,8 +38,8 @@ function Interceptor() {
         console.log("hi refresh 할꺼염 \t");
 
         try {
-          // const response = await axios.post("http://10.0.2.2:8080/reissue", {
-          const response = await axios.post("https://api.doroapp.com/reissue", {
+          const response = await axios.post("http://10.0.2.2:8080/reissue", {
+          // const response = await axios.post("https://api.doroapp.com/reissue", {
             accessToken: `Bearer ${token}`,
             refreshToken: refreshToken,
           });
