@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  NativeModules,
+  Platform,
+} from "react-native";
 import { useContext, useEffect, useState } from "react";
 
 import { useNavigation } from "@react-navigation/native";
@@ -67,45 +75,59 @@ function DeleteUser({ navigation, route }) {
       }
     }
   }
-
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={{ flex: 1, justifyContent: "space-between" }}>
-        <View>
-          <View style={styles.textContainer}>
-            <InputText text="비밀번호를 입력해 주세요." />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <View>
+            <View style={styles.textContainer}>
+              <InputText text="비밀번호를 입력해 주세요." />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.id}>{account}</Text>
+              <Text style={styles.text}>계정의 비밀번호를 입력해주세요.</Text>
+            </View>
+            <View style={styles.inputContainer}>
+              <InputData
+                hint="비밀번호를 입력해주세요"
+                onChangeText={handlePwChange}
+                value={inputPw}
+                secureTextEntry={true}
+              />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={[styles.text, { marginLeft: 23 }]}>
+                비밀번호를 한 번 더 입력해주세요
+              </Text>
+            </View>
+            <View style={styles.inputContainer}>
+              <InputData
+                hint="비밀번호 재입력"
+                onChangeText={handleRePwChange}
+                value={inputRePw}
+                secureTextEntry={true}
+              />
+            </View>
           </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.id}>{account}</Text>
-            <Text style={styles.text}>계정의 비밀번호를 입력해주세요.</Text>
+          <View style={styles.buttonContainer}>
+            <ButtonBig text="다음" style={lbtnColor} onPress={deleteHandler} />
           </View>
-          <View style={styles.inputContainer}>
-            <InputData
-              hint="비밀번호를 입력해주세요"
-              onChangeText={handlePwChange}
-              value={inputPw}
-              secureTextEntry={true}
-            />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={[styles.text, { marginLeft: 23 }]}>
-              비밀번호를 한 번 더 입력해주세요
-            </Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <InputData
-              hint="비밀번호 재입력"
-              onChangeText={handleRePwChange}
-              value={inputRePw}
-              secureTextEntry={true}
-            />
-          </View>
-        </View>
-        <View style={styles.buttonContainer}>
-          <ButtonBig text="다음" style={lbtnColor} onPress={deleteHandler} />
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
