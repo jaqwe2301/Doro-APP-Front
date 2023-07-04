@@ -319,10 +319,14 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     backgroundColor: "white",
     elevation: 3,
-    shadowColor: GlobalStyles.colors.gray03,
+    // shadowColor: GlobalStyles.colors.gray03,
+    // shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    // shadowOpacity: 0.6, // 그림자의 투명도
+    // shadowRadius: 1, // 그
+    shadowColor: "black",
     shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
-    shadowOpacity: 0.6, // 그림자의 투명도
-    shadowRadius: 1, // 그
+    shadowOpacity: 0.3, // 그림자의 투명도
+    shadowRadius: 1.5, // 그
   },
   btn: {
     fontSize: 10,
