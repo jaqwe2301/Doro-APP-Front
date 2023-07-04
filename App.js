@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import React, { useState, useContext, useEffect, useRef } from "react";
 import {
+  DefaultTheme,
   NavigationContainer,
   getFocusedRouteNameFromRoute,
 } from "@react-navigation/native";
@@ -404,16 +405,16 @@ function MyPageNavigator() {
     </Stack.Navigator>
   );
 }
-function NoticeNavigator({ navigation, route }) {
-  React.useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName !== "noticeScreen") {
-      //MyPage이외의 화면에 대해 tabBar none을 설정한다.
-      navigation.setOptions({ tabBarStyle: { display: "none" } });
-    } else {
-      navigation.setOptions({ tabBarStyle: { display: undefined } });
-    }
-  }, [navigation, route]);
+function NoticeNavigator({ navigation }) {
+  // React.useLayoutEffect(() => {
+  //   const routeName = getFocusedRouteNameFromRoute(route);
+  //   if (routeName !== "noticeScreen") {
+  //     //MyPage이외의 화면에 대해 tabBar none을 설정한다.
+  //     navigation.setOptions({ tabBarStyle: { display: "none" } });
+  //   } else {
+  //     navigation.setOptions({ tabBarStyle: { display: undefined } });
+  //   }
+  // }, [navigation, route]);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -546,19 +547,19 @@ function BottomTabNavigator() {
             ) : (
               <WithLocalSvg asset={MegaphoneFill} />
             ),
-          // tabBarStyle: ((route) => {
-          //   const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
 
-          //   if (
-          //     routeName === "noticeDetail" ||
-          //     routeName === "noticeAdd" ||
-          //     routeName === "noticeEdit" ||
-          //     routeName === "alarm"
-          //   ) {
-          //     return { display: "none" };
-          //   }
-          //   return Platform.OS === "android" && { height: 60 };
-          // })(route),
+            if (
+              routeName === "noticeDetail" ||
+              routeName === "noticeAdd" ||
+              routeName === "noticeEdit" ||
+              routeName === "alarm"
+            ) {
+              return { display: "none" };
+            }
+            return Platform.OS === "android" && { height: 60 };
+          })(route),
           tabBarLabelStyle: {
             // marginBottom: 9,
             fontSize: 10,
@@ -670,9 +671,16 @@ function Navigation({ notificationAgreement }) {
 
     fetchToken();
   }, []);
+  const navTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: "white",
+    },
+  };
   return (
     // 로그인 여부에 따른 화면
-    <NavigationContainer>
+    <NavigationContainer theme={navTheme}>
       {!authCtx.isAuthenticated && (
         <AuthStack notificationAgreement={notificationAgreement} />
       )}

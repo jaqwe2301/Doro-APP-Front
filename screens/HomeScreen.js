@@ -313,6 +313,7 @@ const styles = StyleSheet.create({
   },
   lectureListContainer: {
     paddingHorizontal: 20,
+    backgroundColor: GlobalStyles.colors.gray07,
   },
   BottomButton: {
     position: "absolute",
@@ -329,8 +330,5 @@ const styles = StyleSheet.create({
     marginTop: 15,
     fontSize: 17,
     fontWeight: "bold",
-  },
-  lectureListContainer: {
-    paddingHorizontal: 20,
   },
 });
