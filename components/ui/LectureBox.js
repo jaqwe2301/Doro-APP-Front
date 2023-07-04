@@ -44,8 +44,15 @@ function LectureBox(props) {
   return (
     <Pressable key={props.id} onPress={props.lectureIdHandler}>
       <View style={[styles.colorCover, { backgroundColor: props.colors }]}>
-        <View style={[styles.whiteBox, {backgroundColor : props.boxColor === undefined ? "white" : props.boxColor }]}>
-
+        <View
+          style={[
+            styles.whiteBox,
+            {
+              backgroundColor:
+                props.boxColor === undefined ? "white" : props.boxColor,
+            },
+          ]}
+        >
           <View style={styles.titleContainer}>
             <Text style={styles.SubTitle}>{props.subTitle}</Text>
             <Text style={styles.enrollEndDate}>
@@ -56,7 +63,11 @@ function LectureBox(props) {
                 : props.dateTypeValue}
             </Text>
           </View>
-          <Text style={styles.tutor}>{props.mainTutor}</Text>
+          <Text style={styles.tutor}>
+            주강사 {props.mainTutor}
+            {!props.subTutor ? "" : ", 보조강사 " + props.subTutor}
+            {!props.staff ? "" : ", 스태프 " + props.staff}
+          </Text>
           <View style={styles.placeContainer}>
             <Text style={styles.place}>{props.place}</Text>
           </View>

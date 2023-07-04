@@ -24,7 +24,6 @@ import HistoryScreen from "./screens/HistoryScreen";
 import HomeScreen from "./screens/HomeScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import LoginScreen from "./screens/LoginScreen";
-import NewLectureScreen from "./screens/NewLectureScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
 import DetailLectureScreen from "./screens/DetailLectureScreen";
@@ -305,11 +304,6 @@ function HomeNavigator({ navigation }) {
         options={{ title: "" }}
       />
       <Stack.Screen
-        name="NewLecture"
-        component={NewLectureScreen}
-        options={{ title: "강의 생성" }}
-      />
-      <Stack.Screen
         name="UpdateLectureScreen"
         component={UpdateLectureScreen}
         options={{ title: "강의 생성 및 수정" }}
@@ -487,21 +481,6 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Home"
         component={HomeNavigator}
-        // children={() =>
-        //   lectureIdState[1] === "home" ? (
-        //     <HomeScreen
-        //       lectureIdProps={detailLectureVisibleHandler}
-        //       createLectureVisibleProps={createLectureVisibleHandler}
-        //     />
-        //   ) : lectureIdState[1] === "detailLecture" ? (
-        //     <DetailLectureScreen
-        //       screenBackButton={screenBackHandler}
-        //       lectureId={lectureIdState[0]}
-        //     />
-        //   ) : (
-        //     <NewLectureScreen screenBackButton={screenBackHandler} />
-        //   )
-        // }
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) =>
@@ -554,10 +533,20 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="History"
-        children={() => <ApplicationDetails header={true} />}
-        // component={ApplicationDetails}
+        // children={() => <ApplicationDetails header={true} />}
+        component={ApplicationDetails}
         options={{
-          title: "신청 내역",
+          title: "강의 신청 내역",
+          headerShown: true,
+          headerTitleAlign: "center",
+          headerTitleAllowFontScaling: true,
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "bold",
+          },
+          headerStyle: {
+            height: 60,
+          },
           tabBarIcon: ({ color }) =>
             color === GlobalStyles.colors.gray04 ? (
               <WithLocalSvg asset={Tray} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   useWindowDimensions,
   StyleSheet,
@@ -13,6 +13,8 @@ import {
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import { URL } from "../utill/config";
+import { AuthContext } from "../store/auth-context";
 
 import { GlobalStyles } from "./../constants/styles";
 import FilterBox from "../components/ui/FilterBox";
@@ -23,11 +25,11 @@ function ManagerScreen() {
   const [users, setUsers] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
     axios
-      // .get("http://10.0.2.2:8080/users", {
-      .get("https://api.doroapp.com/users", {
+      .get(`${URL}users`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -86,6 +88,9 @@ function ManagerScreen() {
                 }}
               />
             </View>
+            <Pressable onPress={() => authCtx.logout()}>
+              <Text>매니저 로그아웃</Text>
+            </Pressable>
           </View>
         );
 
