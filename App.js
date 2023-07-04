@@ -7,7 +7,7 @@ import {
   Platform,
   Pressable,
 } from "react-native";
-import { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import {
   NavigationContainer,
   getFocusedRouteNameFromRoute,
@@ -117,6 +117,8 @@ function AuthStack({ notificationAgreement }) {
             fontWeight: "600",
             fontSize: 17,
           },
+          headerBackTitleVisible: false,
+          headerTintColor: "#000000",
         }}
       >
         <Stack.Screen
@@ -246,7 +248,16 @@ function AuthStack({ notificationAgreement }) {
   );
 }
 
-function HomeNavigator({ navigation }) {
+function HomeNavigator({ navigation, route }) {
+  React.useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName !== "alarm") {
+      //MyPage이외의 화면에 대해 tabBar none을 설정한다.
+      navigation.setOptions({ tabBarStyle: { display: undefined } });
+    } else {
+      navigation.setOptions({ tabBarStyle: { display: "none" } });
+    }
+  }, [navigation, route]);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -258,6 +269,9 @@ function HomeNavigator({ navigation }) {
           fontSize: 17,
           // lineHeight: 22,
         },
+        headerBackTitleVisible: false,
+
+        headerTintColor: "#000000",
       }}
     >
       <Stack.Screen
@@ -298,6 +312,8 @@ function HomeNavigator({ navigation }) {
               </View>
             );
           },
+
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -315,6 +331,7 @@ function HomeNavigator({ navigation }) {
         component={AlarmScreen}
         options={{
           title: "알림",
+          tabBarStyle: { display: "none" },
         }}
       />
     </Stack.Navigator>
@@ -331,6 +348,8 @@ function MyPageNavigator() {
           fontWeight: "600",
           fontSize: 17,
         },
+        headerBackTitleVisible: false,
+        headerTintColor: "#000000",
       }}
     >
       <Stack.Screen
@@ -385,7 +404,16 @@ function MyPageNavigator() {
     </Stack.Navigator>
   );
 }
-function NoticeNavigator({ navigation }) {
+function NoticeNavigator({ navigation, route }) {
+  React.useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName !== "noticeScreen") {
+      //MyPage이외의 화면에 대해 tabBar none을 설정한다.
+      navigation.setOptions({ tabBarStyle: { display: "none" } });
+    } else {
+      navigation.setOptions({ tabBarStyle: { display: undefined } });
+    }
+  }, [navigation, route]);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -396,6 +424,8 @@ function NoticeNavigator({ navigation }) {
           fontSize: 17,
           // lineHeight: 22,
         },
+        headerBackTitleVisible: false,
+        headerTintColor: "#000000",
       }}
     >
       <Stack.Screen
@@ -483,6 +513,7 @@ function BottomTabNavigator() {
         ...(Platform.OS === "android" && { tabBarStyle: { height: 60 } }),
         tabBarHideOnKeyboard: true,
         headerShown: false,
+        // tabBarHideOnKeyboard: true,
       }}
     >
       <BottomTab.Screen
@@ -515,19 +546,19 @@ function BottomTabNavigator() {
             ) : (
               <WithLocalSvg asset={MegaphoneFill} />
             ),
-          tabBarStyle: ((route) => {
-            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+          // tabBarStyle: ((route) => {
+          //   const routeName = getFocusedRouteNameFromRoute(route) ?? "";
 
-            if (
-              routeName === "noticeDetail" ||
-              routeName === "noticeAdd" ||
-              routeName === "noticeEdit" ||
-              routeName === "alarm"
-            ) {
-              return { display: "none" };
-            }
-            return Platform.OS === "android" && { height: 60 };
-          })(route),
+          //   if (
+          //     routeName === "noticeDetail" ||
+          //     routeName === "noticeAdd" ||
+          //     routeName === "noticeEdit" ||
+          //     routeName === "alarm"
+          //   ) {
+          //     return { display: "none" };
+          //   }
+          //   return Platform.OS === "android" && { height: 60 };
+          // })(route),
           tabBarLabelStyle: {
             // marginBottom: 9,
             fontSize: 10,
