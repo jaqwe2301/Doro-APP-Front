@@ -50,7 +50,7 @@ function NoticeDetailScreen({ navigation, route }) {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{data.title}</Text>
           <View style={styles.nameContainer}>
-            <Text style={styles.name}>김동규 매니저</Text>
+            <Text style={styles.name}>{data.writer} 매니저</Text>
             <Text style={styles.name}>
               {moment(data.createdAt).format("YYYY-MM-DD")}
             </Text>
