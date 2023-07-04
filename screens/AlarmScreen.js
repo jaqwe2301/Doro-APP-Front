@@ -72,7 +72,18 @@ function AlarmScreen({ navigation }) {
   const Item = ({ item, expandedItems, setExpandedItems }) => {
     const isExpanded = expandedItems.includes(item.id);
     return item.notificationType === "NOTIFICATION" ? (
-      <Pressable>
+      <Pressable
+        onPress={() => {
+          if (isExpanded) {
+            setExpandedItems(expandedItems.filter((id) => id !== item.id));
+          } else {
+            setExpandedItems([...expandedItems, item.id]);
+          }
+          if (!item.isRead) {
+            readHandler(item.id);
+          }
+        }}
+      >
         <View
           style={
             item.isRead
@@ -92,38 +103,33 @@ function AlarmScreen({ navigation }) {
           </View>
           <Text style={styles.content}>{item.title}</Text>
           {isExpanded && <Text style={styles.content2}>{item.body}</Text>}
-          <Pressable
-            onPress={() => {
-              if (isExpanded) {
-                setExpandedItems(expandedItems.filter((id) => id !== item.id));
-              } else {
-                setExpandedItems([...expandedItems, item.id]);
-              }
-              if (!item.isRead) {
-                readHandler(item.id);
-              }
-            }}
-          >
-            <View style={styles.linkConainer}>
-              <Text style={styles.date}>
-                {isExpanded ? "닫기" : "자세히 보기"}{" "}
-              </Text>
-              <View style={styles.svg}>
-                {/* <WithLocalSvg asset={Down} /> */}
-                <Image
-                  source={
-                    isExpanded
-                      ? require("../assets/smallup.png")
-                      : require("../assets/smalldown.png")
-                  }
-                />
-              </View>
+
+          <View style={styles.linkConainer}>
+            <Text style={styles.date}>
+              {isExpanded ? "닫기" : "자세히 보기"}{" "}
+            </Text>
+            <View style={styles.svg}>
+              {/* <WithLocalSvg asset={Down} /> */}
+              <Image
+                source={
+                  isExpanded
+                    ? require("../assets/smallup.png")
+                    : require("../assets/smalldown.png")
+                }
+              />
             </View>
-          </Pressable>
+          </View>
         </View>
       </Pressable>
     ) : (
-      <Pressable>
+      <Pressable
+        onPress={() => {
+          navigation.navigate("noticeScreen");
+          if (!item.isRead) {
+            readHandler(item.id);
+          }
+        }}
+      >
         <View
           style={
             item.isRead
@@ -143,21 +149,12 @@ function AlarmScreen({ navigation }) {
           </View>
           <Text style={styles.content}>{item.body}</Text>
 
-          <Pressable
-            onPress={() => {
-              navigation.navigate("noticeScreen");
-              if (!item.isRead) {
-                readHandler(item.id);
-              }
-            }}
-          >
-            <View style={styles.linkConainer}>
-              <Text style={styles.date}>자세히 보기 </Text>
-              <View>
-                <Image source={require("../assets/smallright.png")} />
-              </View>
+          <View style={styles.linkConainer}>
+            <Text style={styles.date}>게시글 이동 </Text>
+            <View>
+              <Image source={require("../assets/smallright.png")} />
             </View>
-          </Pressable>
+          </View>
         </View>
       </Pressable>
     );
