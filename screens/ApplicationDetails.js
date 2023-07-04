@@ -189,7 +189,7 @@ function ApplicationDetails({ route }) {
 
   return (
     <>
-      <View style={{ backgroundColor: "white", height: 40 }} />
+      <View style={{ backgroundColor: "white", height: 30 }} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -207,7 +207,7 @@ function ApplicationDetails({ route }) {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
-              height: 34,
+              height: 30,
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
