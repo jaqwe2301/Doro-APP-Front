@@ -577,14 +577,15 @@ function BottomTabNavigator() {
         options={{
           title: "강의 신청 내역",
           headerShown: true,
+          headerShadowVisible: false,
           headerTitleAlign: "center",
           headerTitleAllowFontScaling: true,
           headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: "bold",
+            fontSize: 17,
+            fontWeight: "600",
           },
           headerStyle: {
-            height: 60,
+            height: Platform.OS === "android" ? 60 : undefined,
           },
           tabBarIcon: ({ color }) =>
             color === GlobalStyles.colors.gray04 ? (
