@@ -1,7 +1,17 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image } from "react-native";
-import { useState, useContext, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Platform,
+  Pressable,
+} from "react-native";
+import { useState, useContext, useEffect, useRef } from "react";
+import {
+  NavigationContainer,
+  getFocusedRouteNameFromRoute,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GlobalStyles } from "./constants/styles";
@@ -16,12 +26,58 @@ import MyPageScreen from "./screens/MyPageScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
+import DetailLectureScreen from "./screens/DetailLectureScreen";
 import SignUp from "./screens/SignUp";
 import AuthPhone from "./components/signUp/AuthPhone";
 import Id from "./components/signUp/Id";
 import Pw from "./components/signUp/Pw";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
+import Name from "./components/signUp/Name";
+import SignContextProvider from "./store/sign-context";
+import School from "./components/signUp/School";
+import Code from "./components/signUp/Code";
+import AgreeInfo from "./components/signUp/AgreeInfo";
+import Finish from "./components/signUp/Finish";
+import FindId from "./components/signUp/FindId";
+import NotFindId from "./components/signUp/NotFindId";
+import ChangePw from "./components/signUp/ChangePw";
+import ProfileEdit from "./screens/ProfileEdit";
+import ApplicationDetails from "./screens/ApplicationDetails";
+import UpdateLectureScreen from "./screens/UpdateLectureScreen";
+import ManagerScreen from "./screens/ManagerScreen";
+import NoticeDetailScreen from "./screens/NoticeDetailScreen";
+import AddNoticeScreen from "./screens/AddNoticeScreen";
+import jwtDecode from "jwt-decode";
+import HeaderContextProvider, { HeaderContext } from "./store/header-context";
+import EditNoticeScreen from "./screens/EditNoticeScreen";
+import AlarmScreen from "./screens/AlarmScreen";
+import { WithLocalSvg } from "react-native-svg";
+import DoroHorizontal from "./assets/doroHorizontal.svg";
+import Home from "./assets/home.svg";
+import Main from "./assets/main.svg";
+import MainFill from "./assets/main_fill.svg";
+import Megaphone from "./assets/megaphone.svg";
+import MegaphoneFill from "./assets/megaphone_fill.svg";
+import Tray from "./assets/tray.svg";
+import TrayFill from "./assets/tray_fill.svg";
+import Profile from "./assets/profile.svg";
+import ProfileFill from "./assets/profile_fill.svg";
+import FinishPw from "./components/signUp/FinishPw";
+import DeleteUser from "./screens/DeleteUser";
+import AgreeInfo2 from "./components/signUp/AgreeInfo2";
+// import { useState, useEffect, useRef } from 'react';
+// import { Text, View, Button, Platform } from 'react-native';
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -30,13 +86,20 @@ function LogoTitle() {
   return (
     <View
       style={{
-        height: 190,
+        height: 174.81,
       }}
     >
-      <Image
-        style={{ width: 174, height: 52, marginTop: 100, marginLeft: 20 }}
-        source={require("./assets/doroLogo.png")}
-      />
+      <View style={{ marginTop: 86.81, marginLeft: 20 }}>
+        <WithLocalSvg asset={DoroHorizontal} />
+      </View>
+    </View>
+  );
+}
+
+function HeaderStyle({ title }) {
+  return (
+    <View style={{ height: 60 }}>
+      <Text>{title}</Text>
     </View>
   );
 }
@@ -44,23 +107,250 @@ function LogoTitle() {
 //로그인 전 화면 -로그인,회원가입 등등
 function AuthStack() {
   return (
-    <Stack.Navigator>
+    <SignContextProvider>
+      <Stack.Navigator
+        screenOptions={{
+          headerShadowVisible: false,
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontWeight: "600",
+            fontSize: 17,
+          },
+        }}
+      >
+        <Stack.Screen
+          name="login"
+          component={LoginScreen}
+          options={{
+            header: (props) => <LogoTitle {...props} />,
+            headerBackVisible: false,
+            // headerTitleAlign: "left",
+          }}
+        />
+        <Stack.Screen
+          name="searchId"
+          component={SearchID}
+          options={{
+            title: "아이디 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="searchPw"
+          component={SearchPW}
+          options={{
+            title: "비밀번호 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="signUp"
+          component={SignUp}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="authPhone"
+          component={AuthPhone}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="id"
+          component={Id}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="pw"
+          component={Pw}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="name"
+          component={Name}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="school"
+          component={School}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="code"
+          component={Code}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="agreeInfo"
+          component={AgreeInfo}
+          options={{
+            title: "이용약관",
+          }}
+        />
+        <Stack.Screen
+          name="agreeInfo2"
+          component={AgreeInfo2}
+          options={{
+            title: "개인정보 수집 및 이용 동의",
+          }}
+        />
+        <Stack.Screen
+          name="finish"
+          component={Finish}
+          options={{
+            title: "회원가입",
+          }}
+        />
+        <Stack.Screen
+          name="findId"
+          component={FindId}
+          options={{
+            title: "아이디 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="notFindId"
+          component={NotFindId}
+          options={{
+            title: "아이디 찾기",
+          }}
+        />
+        <Stack.Screen
+          name="changePw"
+          component={ChangePw}
+          options={{
+            title: "비밀번호 변경",
+          }}
+        />
+        <Stack.Screen
+          name="finishPw"
+          component={FinishPw}
+          options={{
+            title: "비밀번호 변경",
+          }}
+        />
+      </Stack.Navigator>
+    </SignContextProvider>
+  );
+}
+
+function HomeNavigator({ navigation }) {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        // headerShown: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+          // lineHeight: 22,
+        },
+      }}
+    >
       <Stack.Screen
-        name="login"
-        component={LoginScreen}
+        name="HomePage"
+        component={HomeScreen}
         options={{
-          headerTitle: (props) => <LogoTitle {...props} />,
+          header: () => {
+            return (
+              <View style={styles.HomeHeader}>
+                <View style={styles.headerTopContainer}>
+                  <Image
+                    source={require("./assets/doroLogoMain.png")}
+                    style={styles.Logo}
+                  />
+                  <Pressable onPress={() => navigation.navigate("alarm")}>
+                    <Image
+                      source={require("./assets/icons/alarm_after.png")}
+                      style={styles.iconSize}
+                    />
+                  </Pressable>
+                </View>
+                <View style={styles.noticeContainer}>
+                  <Image
+                    source={require("./assets/icons/megaphone.png")}
+                    style={styles.iconSize}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 16,
+                      fontStyle: GlobalStyles.gray01,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    메이커 스페이스 사용 안내
+                  </Text>
+                </View>
+              </View>
+            );
+          },
         }}
       />
       <Stack.Screen
-        name="searchId"
-        component={SearchID}
+        name="DetailLecture"
+        component={DetailLectureScreen}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="UpdateLectureScreen"
+        component={UpdateLectureScreen}
+        options={{ title: "강의 생성 및 수정" }}
+      />
+      <Stack.Screen
+        name="alarm"
+        component={AlarmScreen}
         options={{
-          title: "아이디 찾기",
-          headerStyle: {
-            height: 150,
-            justifyContent: "center",
-            alignItems: "center",
+          title: "알림",
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function MyPageNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+        },
+      }}
+    >
+      {/* <Stack.Screen
+        name="ManagerPage"
+        component={ManagerScreen}
+        options={{ title: "매니저 페이지" }}
+      /> */}
+      <Stack.Screen
+        name="myPage"
+        component={MyPageScreen}
+        options={{ title: "마이 페이지", headerBackVisible: false }}
+      />
+      <Stack.Screen
+        name="profileEdit"
+        component={ProfileEdit}
+        options={{
+          title: "프로필 수정",
+          headerRight: () => {
+            return <Text style={styles.completeText}>완료</Text>;
+          },
+          headerLeft: () => {
+            return <Text style={styles.cancelText}>취소</Text>;
           },
         }}
       />
@@ -72,31 +362,80 @@ function AuthStack() {
         }}
       />
       <Stack.Screen
-        name="signUp"
-        component={SignUp}
+        name="changePw"
+        component={ChangePw}
         options={{
-          title: "회원가입",
+          title: "비밀번호 변경",
         }}
       />
       <Stack.Screen
-        name="authPhone"
-        component={AuthPhone}
+        name="deleteUser"
+        component={DeleteUser}
         options={{
-          title: "회원가입",
+          title: "회원탈퇴",
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+function NoticeNavigator({ navigation }) {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+          // lineHeight: 22,
+        },
+      }}
+    >
+      <Stack.Screen
+        name="noticeScreen"
+        component={NoticeScreen}
+        options={{
+          title: "공지사항",
+          headerRight: () => {
+            return (
+              // <Pressable onPress={() => navigation.navigate("home")}>
+              <WithLocalSvg asset={Home} />
+              //</Pressable>
+            );
+          },
+          headerBackVisible: false,
         }}
       />
       <Stack.Screen
-        name="id"
-        component={Id}
+        name="noticeDetail"
+        component={NoticeDetailScreen}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="noticeAdd"
+        component={AddNoticeScreen}
         options={{
-          title: "회원가입",
+          title: "글쓰기",
+          headerRight: () => {
+            return <Text style={styles.completeText2}>완료</Text>;
+          },
         }}
       />
       <Stack.Screen
-        name="pw"
-        component={Pw}
+        name="noticeEdit"
+        component={EditNoticeScreen}
         options={{
-          title: "회원가입",
+          title: "글쓰기",
+          headerRight: () => {
+            return <Text style={styles.completeText2}>완료</Text>;
+          },
+        }}
+      />
+      <Stack.Screen
+        name="alarm"
+        component={AlarmScreen}
+        options={{
+          title: "알림",
         }}
       />
     </Stack.Navigator>
@@ -104,77 +443,159 @@ function AuthStack() {
 }
 
 // icon 바꿀 예정
+// 로그인 후 화면
 function BottomTabNavigator() {
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const [homeScreenState, setHomeScreenState] = useState("home");
+  const [lectureIdState, setLectureIdState] = useState([0, "home"]);
+
+  const detailLectureVisibleHandler = (id) => {
+    console.log("아이디", id);
+    setLectureIdState([id, "detailLecture"]);
+    // setHomeScreenState("detailLecture");
+    setHeaderVisible(false);
+  };
+
+  const createLectureVisibleHandler = () => {
+    setLectureIdState([0, "createLecture"]);
+    // setHomeScreenState("createLecture");
+    setHeaderVisible(false);
+  };
+
+  const screenBackHandler = () => {
+    setLectureIdState([0, "home"]);
+    setHomeScreenState("home");
+    setHeaderVisible(true);
+  };
+
   return (
     <BottomTab.Navigator
       screenOptions={{
         tabBarInactiveTintColor: GlobalStyles.colors.gray04,
         tabBarActiveTintColor: GlobalStyles.colors.primaryDefault,
-        tabBarStyle: { height: 60 },
-        headerTitleAlign: "center",
+        ...(Platform.OS === "android" && { tabBarStyle: { height: 60 } }),
+        tabBarHideOnKeyboard: true,
+        headerShown: false,
       }}
     >
       <BottomTab.Screen
         name="Home"
-        component={HomeScreen}
+        component={HomeNavigator}
         options={{
-          title: "홈",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home" color={color} size={24} />
-          ),
+          headerShown: false,
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Main} />
+            ) : (
+              <WithLocalSvg asset={MainFill} />
+            ),
           tabBarLabelStyle: {
-            marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            marginBottom: Platform.OS === "android" ? 9 : 0,
+            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />
       <BottomTab.Screen
         name="Notice"
-        component={NoticeScreen}
-        options={{
+        component={NoticeNavigator}
+        options={({ route }) => ({
           title: "공지사항",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="notifications-outline" color={color} size={24} />
-          ),
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Megaphone} />
+            ) : (
+              <WithLocalSvg asset={MegaphoneFill} />
+            ),
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+
+            if (
+              routeName === "noticeDetail" ||
+              routeName === "noticeAdd" ||
+              routeName === "noticeEdit" ||
+              routeName === "alarm"
+            ) {
+              return { display: "none" };
+            }
+            return Platform.OS === "android" && { height: 60 };
+          })(route),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
-            fontWeight: 600,
-            marginTop: -10,
+            fontWeight: "600",
+            // marginTop: -10,
+            marginBottom: Platform.OS === "android" ? 9 : 0,
+            marginTop: Platform.OS === "android" ? -10 : 0,
           },
-        }}
+        })}
       />
       <BottomTab.Screen
         name="History"
-        component={HistoryScreen}
+        // children={() => <ApplicationDetails header={true} />}
+        component={ApplicationDetails}
         options={{
-          title: "신청 내역",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="file-tray-outline" color={color} size={24} />
-          ),
+          title: "강의 신청 내역",
+          headerShown: true,
+          headerTitleAlign: "center",
+          headerTitleAllowFontScaling: true,
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "bold",
+          },
+          headerStyle: {
+            height: 60,
+          },
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Tray} />
+            ) : (
+              <WithLocalSvg asset={TrayFill} />
+            ),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            // marginTop: -10,
+            marginBottom: Platform.OS === "android" ? 9 : 0,
+            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />
       <BottomTab.Screen
         name="MyPage"
-        component={MyPageScreen}
+        component={MyPageNavigator}
         options={{
           title: "마이 페이지",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="person" color={color} size={24} />
-          ),
+          header: () => {
+            return (
+              <View
+                style={{
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  paddingTop: 22.73,
+                }}
+              >
+                <Text style={{ fontSize: 22 }}>매니저</Text>
+              </View>
+            );
+          },
+          tabBarIcon: ({ color }) =>
+            color === GlobalStyles.colors.gray04 ? (
+              <WithLocalSvg asset={Profile} />
+            ) : (
+              <WithLocalSvg asset={ProfileFill} />
+            ),
           tabBarLabelStyle: {
-            marginBottom: 9,
+            justifyContent: "center",
+            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            marginTop: -10,
+            // marginTop: -10,
+            marginBottom: Platform.OS === "android" ? 9 : 0,
+            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />
@@ -182,29 +603,28 @@ function BottomTabNavigator() {
   );
 }
 
-//로그인 후 화면
-function AuthenticatedStack() {
-  return (
-    <Stack.Navigator screenOptions={{}}>
-      <Stack.Screen
-        name="Bottom"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
-}
-
 function Navigation() {
   const authCtx = useContext(AuthContext);
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
+  // 자동로그인
   useEffect(() => {
     async function fetchToken() {
+      // 저장된 jwt 가져오기
       const storedToken = await AsyncStorage.getItem("token");
+      const storedReToken = await AsyncStorage.getItem("refreshToken");
+      // console.log();
 
       if (storedToken) {
-        authCtx.authenticate(storedToken);
+        authCtx.authenticate(storedToken, storedReToken);
+        const decoded = jwtDecode(storedToken);
+        console.log(decoded);
+        setHeaderRole(decoded.roles[0].authority);
+        setHeaderId(decoded.id);
+        setHeaderAccount(decoded.sub);
       }
 
       // setIsTryingLogin(false);
@@ -213,28 +633,96 @@ function Navigation() {
     fetchToken();
   }, []);
   return (
+    // 로그인 여부에 따른 화면
     <NavigationContainer>
       {!authCtx.isAuthenticated && <AuthStack />}
-      {authCtx.isAuthenticated && <AuthenticatedStack />}
+      {authCtx.isAuthenticated && <BottomTabNavigator />}
     </NavigationContainer>
   );
 }
 
 export default function App() {
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <AuthContextProvider>
-        <Navigation />
+        <HeaderContextProvider>
+          <Navigation />
+        </HeaderContextProvider>
       </AuthContextProvider>
     </SafeAreaView>
   );
 }
 
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    // 프로젝트 ID 바꿔야 함
+    token = (
+      await Notifications.getExpoPushTokenAsync({ projectId: "doro/doro" })
+    ).data;
+    console.log(token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  return token;
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: getStatusBarHeight(),
+    // paddingTop: getStatusBarHeight(),
+    backgroundColor: "white",
   },
 
   bottomtab: {
@@ -242,8 +730,59 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 600,
   },
-  // header: {
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: "#e1e1e1",
-  // },
+  HomeHeader: {
+    paddingTop: 45,
+    paddingBottom: 54,
+    paddingHorizontal: 20,
+    backgroundColor: "white",
+  },
+  headerTopContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 40,
+  },
+  Logo: {
+    height: 20,
+    width: 93.35,
+  },
+  iconSize: {
+    height: 24,
+    width: 24,
+  },
+  noticeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 44,
+    backgroundColor: "#F4F4F4",
+    paddingLeft: 16,
+    borderRadius: 5.41,
+  },
+  completeText: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    color: GlobalStyles.colors.primaryDefault,
+    marginRight: 10,
+  },
+  completeText2: {
+    fontWeight: "400",
+    fontSize: 15,
+    // lineHeight: 20,
+    width: 50,
+    height: 30,
+    borderRadius: 5.41,
+    color: "white",
+    textAlign: "center",
+    textAlignVertical: "center",
+    // marginLeft: -4,
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+
+    lineHeight: 20,
+  },
+  cancelText: {
+    fontWeight: 400,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray05,
+    marginLeft: 10,
+  },
 });
