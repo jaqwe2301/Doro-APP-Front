@@ -21,11 +21,12 @@ import axios from "axios";
 // import { format } from "date-fns";
 // import ko from "date-fns/esm/locale/ko/index.js";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-
+import { URL } from "../utill/config";
 import { GlobalStyles } from "./../constants/styles";
+
 import ButtonBig from "../components/ui/ButtonBig";
 import ButtonSmall from "../components/ui/ButtonSmall";
-import { URL } from "../utill/config";
+import BottomModal from "../components/ui/BottomModal";
 
 function UpdateLectureScreen({ route }) {
   const navigation = useNavigation();
@@ -610,7 +611,24 @@ function UpdateLectureScreen({ route }) {
             </View>
 
             {/* 교육 키트 플러스(+) 버튼 누르면 나오는 하단 모달 */}
-            <Modal transparent={true} visible={modalVisible}>
+            <BottomModal
+              visible={modalVisible}
+              inVisible={() => modalHandler(false)}
+              plusVisible={true}
+              onPressPlus={() => {
+                addContentsModalHandler(true);
+                setContentsData({
+                  content: "",
+                  kit: "",
+                  detail: "",
+                  remark: "",
+                  requirement: "",
+                });
+              }}
+              data={lectureContents}
+              title="교육 목록"
+            />
+            {/* <Modal transparent={true} visible={modalVisible}>
               <View style={styles.modalContainer}>
                 <View style={styles.modalWhiteBox}>
                   <View style={styles.modalTop}>
@@ -661,7 +679,7 @@ function UpdateLectureScreen({ route }) {
                   </View>
                 </View>
               </View>
-            </Modal>
+            </Modal> */}
             {/* 교육 목록 추가 */}
             <Modal transparent={true} visible={addContentsModal}>
               <View style={styles.paymentModal}>
@@ -1096,13 +1114,11 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    // flexDirection: "column",
     justifyContent: "flex-end",
     backgroundColor: "rgba(0,0,0,0.6)",
   },
   modalWhiteBox: {
     backgroundColor: "white",
-    // height: 200,
   },
   modalTop: {
     flexDirection: "row",
@@ -1123,7 +1139,6 @@ const styles = StyleSheet.create({
   },
   modalText: {},
   modalButtonContainer: {
-    // flex: 1,
     height: 45,
     paddingHorizontal: 20,
   },

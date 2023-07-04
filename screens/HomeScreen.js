@@ -30,16 +30,6 @@ const HomeScreen = ({ lectureIdProps }) => {
   const [lectureData, setLectureData] = useState([]);
   const navigation = useNavigation();
 
-  // async function profileHandler() {
-  //   try {
-  //     const response = await getProfile({ id: 18 });
-  //     setData(response);
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
   useEffect(() => {
     axios
       .get(URL + "lectures", {
@@ -99,7 +89,7 @@ const HomeScreen = ({ lectureIdProps }) => {
           .filter((item) => item.mainTitle === recruitingTitle[i])
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            console.log(filteringItem.staff);
+            // console.log(filteringItem.staff);
             return (
               <LectureBox
                 key={filteringItem.id}
@@ -142,7 +132,7 @@ const HomeScreen = ({ lectureIdProps }) => {
           .filter((item) => item.mainTitle === allocationTitle[i])
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            console.log(filteringItem.staff);
+            // console.log(filteringItem.staff);
             return (
               <LectureBox
                 key={filteringItem.id}
