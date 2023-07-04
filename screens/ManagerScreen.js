@@ -22,6 +22,7 @@ import TutorBox from "../components/ui/TutorBox";
 import ButtonBig from "../components/ui/ButtonBig";
 
 function ManagerScreen() {
+  const [userData, setUserData] = useState([]);
   const [users, setUsers] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -31,13 +32,52 @@ function ManagerScreen() {
     axios
       .get(`${URL}users`, {
         headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
         },
       })
-      .then((res) => {
-        console.log(res.data.data);
-        setUsers(res.data.data);
+      .then(async (res) => {
+        let tmp = [];
+        const data = res.data.data;
+
+        // Map each user to a Promise
+        const promises = data.map((user) =>
+          axios
+            .get(`${URL}users-lectures/users/${user.id}`, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then((res) => {
+              user.lectures = [];
+
+              if (res.data.data !== []) {
+                let lectures = res.data.data
+                  .filter((item) => item.tutorStatus === "ASSIGNED")
+                  .reverse();
+
+                for (let j = 0; j < lectures.length; j++) {
+                  const lecture = lectures[j];
+
+                  user.lectures.push({
+                    subTitle: lecture.subTitle,
+                    tutorRole: lecture.tutorRole,
+                  });
+                }
+              }
+
+              tmp.push(user);
+            })
+            .catch((error) => {
+              console.log("에러");
+              console.log(error);
+            })
+        );
+
+        // Wait for all Promises to resolve
+        await Promise.all(promises);
+
+        setUserData(tmp);
+        setUsers(data);
       })
       .catch((error) => {
         console.log("에러");
@@ -73,19 +113,21 @@ function ManagerScreen() {
               }}
             >
               <FlatList
-                data={users}
+                data={userData}
                 renderItem={(itemData) => {
                   const item = itemData.item;
-                  console.log(item);
+                  // console.log(item.lectures[0].subTitle);
                   return (
                     <TutorBox
                       name={item.name}
                       generation={item.generation}
                       school={item.degree.school}
                       major={item.degree.major}
+                      lectures={item.lectures}
                     />
                   );
                 }}
+                extraData={userData}
               />
             </View>
             <Pressable onPress={() => authCtx.logout()}>
