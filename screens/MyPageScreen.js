@@ -11,7 +11,7 @@ import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
 
-import { alarmEdit, getProfile } from "../utill/http";
+import { alarmEdit, getProfile, logout } from "../utill/http";
 import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
@@ -84,8 +84,25 @@ function MyPageScreen({ navigation }) {
         {
           text: "취소",
         },
-        { text: "확인", onPress: () => authCtx.logout() },
+        { text: "확인", onPress: logoutApi },
       ]);
+    }
+
+    async function logoutApi() {
+      try {
+        const response = await logout();
+        console.log(response);
+
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "LoginScreen" }],
+        });
+        if (response.data.success) {
+        }
+      } catch (error) {
+        console.log(error);
+        authCtx.logout();
+      }
     }
 
     // if (Object.keys(data).length === 0) {
