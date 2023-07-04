@@ -244,7 +244,8 @@ export default ApplicationDetails;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 14,
+    paddingTop: 14,
     paddingHorizontal: 20,
+    backgroundColor: GlobalStyles.colors.gray07,
   },
 });
