@@ -4,15 +4,15 @@ import { AuthContext } from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Interceptor from "./Interceptor";
 
-const URL = "http://10.0.2.2:8080";
-// const URL = "https://api.doroapp.com";
+// const URL = "http://10.0.2.2:8080";
+const URL = "https://api.doroapp.com";
 const instance = Interceptor();
 
 // id를 넣어주면 header 필요없고 id없으면 header 필요하다
 export async function getProfile({ id }) {
   try {
     const response = await instance.get("/users/" + `${id}`);
-    return response.data.data;
+    return response.data;
   } catch (error) {
     console.log(error + "api er");
 
@@ -67,6 +67,15 @@ export async function updateProfile({
       studentId: studentId,
       studentStatus: studentStatus,
     });
+    console.log(
+      parseInt(generation),
+      major,
+      phone,
+      school,
+      studentId,
+      studentStatus,
+      parseInt(id)
+    );
     return response.data;
   } catch (error) {
     console.log(

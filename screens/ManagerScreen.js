@@ -21,15 +21,15 @@ import { GlobalStyles } from "./../constants/styles";
 import FilterBox from "../components/ui/FilterBox";
 import TutorBox from "../components/ui/TutorBox";
 import ButtonBig from "../components/ui/ButtonBig";
-import { AuthContext } from "../store/auth-context";
-import { pushNotification } from "../utill/http";
+
+import { getProfile, pushNotification } from "../utill/http";
 
 function ManagerScreen() {
   const [users, setUsers] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const authCtx = useContext(AuthContext);
-
+  const navigation = useNavigation();
   useEffect(() => {
     axios
       .get(`${URL}users`, {
@@ -39,7 +39,7 @@ function ManagerScreen() {
         },
       })
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setUsers(res.data.data);
       })
       .catch((error) => {
@@ -59,6 +59,18 @@ function ManagerScreen() {
         setTitle("");
       }
       console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async function detailTutor(id) {
+    try {
+      const response = await getProfile({
+        id: id,
+      });
+      if (response.success) {
+        navigation.navigate("tutorScreen", { id: response.data, headerId: id });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -109,21 +121,23 @@ function ManagerScreen() {
                 data={users}
                 renderItem={(itemData) => {
                   const item = itemData.item;
-                  console.log(item);
+
                   return (
-                    <TutorBox
-                      name={item.name}
-                      generation={item.generation}
-                      school={item.degree.school}
-                      major={item.degree.major}
-                    />
+                    <Pressable onPress={() => detailTutor(item.id)}>
+                      <TutorBox
+                        name={item.name}
+                        generation={item.generation}
+                        school={item.degree.school}
+                        major={item.degree.major}
+                      />
+                    </Pressable>
                   );
                 }}
               />
             </View>
-            <Pressable onPress={() => authCtx.logout()}>
+            {/* <Pressable onPress={() => authCtx.logout()}>
               <Text>매니저 로그아웃</Text>
-            </Pressable>
+            </Pressable> */}
           </View>
         );
 

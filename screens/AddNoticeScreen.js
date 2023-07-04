@@ -274,7 +274,7 @@ function AddNoticeScreen({ navigation }) {
         );
       },
     });
-  }, []);
+  }, [completeHandler3]);
 
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const { StatusBarManager } = NativeModules;

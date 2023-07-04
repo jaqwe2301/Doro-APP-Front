@@ -37,8 +37,8 @@ function MyPageScreen({ navigation }) {
     try {
       const response = await getProfile({ id: headerId });
 
-      setData(response);
-      console.log(response);
+      setData(response.data);
+      console.log(response.data);
       setIsLoading(false);
     } catch (error) {
       console.log(error);

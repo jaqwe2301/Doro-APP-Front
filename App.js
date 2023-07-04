@@ -70,6 +70,7 @@ import AgreeInfo2 from "./components/signUp/AgreeInfo2";
 // import { Text, View, Button, Platform } from 'react-native';
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import TutorScreen from "./screens/TutorScreen";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -332,11 +333,6 @@ function MyPageNavigator() {
         },
       }}
     >
-      {/* <Stack.Screen
-        name="ManagerPage"
-        component={ManagerScreen}
-        options={{ title: "매니저 페이지" }}
-      /> */}
       <Stack.Screen
         name="myPage"
         component={MyPageScreen}
@@ -375,6 +371,16 @@ function MyPageNavigator() {
         options={{
           title: "회원탈퇴",
         }}
+      />
+      <Stack.Screen
+        name="ManagerPage"
+        component={ManagerScreen}
+        options={{ title: "매니저 페이지" }}
+      />
+      <Stack.Screen
+        name="tutorScreen"
+        component={TutorScreen}
+        options={{ title: "매니저 페이지" }}
       />
     </Stack.Navigator>
   );
