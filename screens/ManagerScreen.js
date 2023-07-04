@@ -152,7 +152,13 @@ function ManagerScreen() {
 
       case "third":
         return (
-          <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "space-between",
+              backgroundColor: "#F5F5F5",
+            }}
+          >
             <ScrollView>
               <Pressable onPress={() => Keyboard.dismiss()}>
                 <View style={styles.titleContainer}>
@@ -189,6 +195,7 @@ function ManagerScreen() {
 
   return (
     <>
+      <View style={{ marginTop: 30 }}></View>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -211,12 +218,28 @@ function ManagerScreen() {
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
-            labelStyle={{
-              // 폰트 스타일
-              margin: 0,
-              fontSize: 15,
-              color: "black",
-            }}
+            // labelStyle={{
+            //   // 폰트 스타일
+            //   margin: 0,
+            //   fontSize: 15,
+            //   color: "black",
+            // }}
+            renderLabel={({ route, focused, color }) => (
+              <Text
+                style={
+                  focused
+                    ? {
+                        margin: 0,
+                        fontSize: 15,
+                        color: "black",
+                        fontWeight: "bold",
+                      }
+                    : { margin: 0, fontSize: 15, color: "black" }
+                }
+              >
+                {route.title}
+              </Text>
+            )}
             tabStyle={{
               flexDirection: "row",
               alignItems: "flex-start",
