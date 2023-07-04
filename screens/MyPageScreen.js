@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
     shadowOpacity: 0.3, // 그림자의 투명도
-    shadowRadius: 1.5, // 그
+    shadowRadius: 0.7, // 그
   },
   btn: {
     fontSize: 10,
