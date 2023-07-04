@@ -277,15 +277,15 @@ const HomeScreen = ({ lectureIdProps }) => {
         )}
       />
       {headerRole === "ROLE_ADMIN" ? (
-        <Pressable
-          onPress={() =>
-            navigation.navigate("UpdateLectureScreen", { data: "" })
-          }
-        >
-          <View style={styles.BottomButton}>
+        <View style={styles.BottomButton}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("UpdateLectureScreen", { data: "" })
+            }
+          >
             <WithLocalSvg asset={CreactingLecture} />
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
       ) : (
         ""
       )}

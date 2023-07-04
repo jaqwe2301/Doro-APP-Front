@@ -254,7 +254,12 @@ function HomeNavigator({ navigation, route }) {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (routeName !== "alarm") {
       //MyPage이외의 화면에 대해 tabBar none을 설정한다.
-      navigation.setOptions({ tabBarStyle: { display: undefined } });
+      navigation.setOptions({
+        tabBarStyle: {
+          display: undefined,
+          ...(Platform.OS === "android" && { height: 60 }),
+        },
+      });
     } else {
       navigation.setOptions({ tabBarStyle: { display: "none" } });
     }
@@ -271,7 +276,6 @@ function HomeNavigator({ navigation, route }) {
           // lineHeight: 22,
         },
         headerBackTitleVisible: false,
-
         headerTintColor: "#000000",
       }}
     >
@@ -281,40 +285,40 @@ function HomeNavigator({ navigation, route }) {
         options={{
           header: () => {
             return (
-              <View style={styles.HomeHeader}>
-                <View style={styles.headerTopContainer}>
-                  <Image
-                    source={require("./assets/doroLogoMain.png")}
-                    style={styles.Logo}
-                  />
-                  <Pressable onPress={() => navigation.navigate("alarm")}>
+              <SafeAreaView style={{}}>
+                <View style={styles.HomeHeader}>
+                  <View style={styles.headerTopContainer}>
                     <Image
-                      source={require("./assets/icons/alarm_after.png")}
+                      source={require("./assets/doroLogoMain.png")}
+                      style={styles.Logo}
+                    />
+                    <Pressable onPress={() => navigation.navigate("alarm")}>
+                      <Image
+                        source={require("./assets/icons/alarm_after.png")}
+                        style={styles.iconSize}
+                      />
+                    </Pressable>
+                  </View>
+                  <View style={styles.noticeContainer}>
+                    <Image
+                      source={require("./assets/icons/megaphone.png")}
                       style={styles.iconSize}
                     />
-                  </Pressable>
+                    <Text
+                      style={{
+                        marginLeft: 16,
+                        fontStyle: GlobalStyles.gray01,
+                        fontSize: 15,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      메이커 스페이스 사용 안내
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.noticeContainer}>
-                  <Image
-                    source={require("./assets/icons/megaphone.png")}
-                    style={styles.iconSize}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 16,
-                      fontStyle: GlobalStyles.gray01,
-                      fontSize: 15,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    메이커 스페이스 사용 안내
-                  </Text>
-                </View>
-              </View>
+              </SafeAreaView>
             );
           },
-
-          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -406,15 +410,6 @@ function MyPageNavigator() {
   );
 }
 function NoticeNavigator({ navigation }) {
-  // React.useLayoutEffect(() => {
-  //   const routeName = getFocusedRouteNameFromRoute(route);
-  //   if (routeName !== "noticeScreen") {
-  //     //MyPage이외의 화면에 대해 tabBar none을 설정한다.
-  //     navigation.setOptions({ tabBarStyle: { display: "none" } });
-  //   } else {
-  //     navigation.setOptions({ tabBarStyle: { display: undefined } });
-  //   }
-  // }, [navigation, route]);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -514,7 +509,6 @@ function BottomTabNavigator() {
         ...(Platform.OS === "android" && { tabBarStyle: { height: 60 } }),
         tabBarHideOnKeyboard: true,
         headerShown: false,
-        // tabBarHideOnKeyboard: true,
       }}
     >
       <BottomTab.Screen
@@ -528,6 +522,7 @@ function BottomTabNavigator() {
             ) : (
               <WithLocalSvg asset={MainFill} />
             ),
+
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: 600,
@@ -584,9 +579,7 @@ function BottomTabNavigator() {
             fontSize: 17,
             fontWeight: "600",
           },
-          headerStyle: {
-            height: Platform.OS === "android" ? 60 : undefined,
-          },
+
           tabBarIcon: ({ color }) =>
             color === GlobalStyles.colors.gray04 ? (
               <WithLocalSvg asset={Tray} />
@@ -788,8 +781,8 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   HomeHeader: {
-    paddingTop: 45,
-    paddingBottom: 54,
+    paddingTop: 30,
+    paddingBottom: Platform.OS === "android" ? 54 : 30,
     paddingHorizontal: 20,
     backgroundColor: "white",
   },
