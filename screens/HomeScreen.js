@@ -70,6 +70,7 @@ const HomeScreen = ({ lectureIdProps }) => {
   const allocationDate = lectureData.filter(
     (item) => item.status === "ALLOCATION_COMP"
   );
+  
   const allocationTitle = [
     ...new Set(allocationDate.map((item) => item.mainTitle)),
   ];
