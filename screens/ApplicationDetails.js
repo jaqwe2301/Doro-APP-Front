@@ -20,7 +20,7 @@ function ApplicationDetails({ route }) {
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
   const [allocation, setAllocation] = useState([]);
-  const [finishedLecture, setFinishedLecture] = useState([]);
+  const [finished, setFinished] = useState([]);
 
   useEffect(() => {
     console.log(headerId);
@@ -61,26 +61,42 @@ function ApplicationDetails({ route }) {
       });
   }, []);
 
-  const controlFinishedLecture = (data) => {
-    setFinishedLecture(data);
+  const controlfinished = (data) => {
+    setFinished(data);
   };
 
   const layout = useWindowDimensions();
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
-    { key: "first", title: `신청중` },
-    { key: "second", title: `배정 완료` },
-    { key: "third", title: `강의 완료` },
+    { key: "first", title: "신청중(00)" },
+    { key: "second", title: "배정 완료(00)" },
+    { key: "third", title: "강의 완료(00)" },
   ]);
 
   useEffect(() => {
     setRoutes([
-      { key: "first", title: `신청중` },
-      { key: "second", title: `배정 완료` },
-      { key: "third", title: `강의 완료` },
+      {
+        key: "first",
+        title: `신청중(${
+          recruiting.length < 10 ? "0" + recruiting.length : recruiting.length
+        })`,
+      },
+      {
+        key: "second",
+        title: `배정 완료(${
+          allocation.length < 10 ? "0" + allocation.length : allocation.length
+        })`,
+      },
+      {
+        key: "third",
+        title: `강의 완료(${
+          finished.length < 10 ? "0" + finished.length : finished.length
+        })`,
+      },
     ]);
-  }, [userLecture.length, finishedLecture.length]);
+    console.log("use");
+  }, [recruiting, allocation, finished]);
 
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
@@ -99,7 +115,7 @@ function ApplicationDetails({ route }) {
         }
       }
     });
-    controlFinishedLecture(finished);
+    controlfinished(finished);
   };
 
   const renderScene = ({ route }) => {
@@ -161,7 +177,7 @@ function ApplicationDetails({ route }) {
         return (
           <FlatList
             style={styles.container}
-            data={finishedLecture}
+            data={finished}
             renderItem={(data) => {
               return (
                 <ApplyingLectureBox
@@ -216,7 +232,8 @@ function ApplicationDetails({ route }) {
                 style={
                   focused
                     ? {
-                        margin: 0,
+                        // margin: 0,
+                        width: 100,
                         fontSize: 15,
                         color: "black",
                         fontWeight: "bold",
