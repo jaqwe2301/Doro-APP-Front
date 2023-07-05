@@ -71,7 +71,7 @@ function DetailLectureScreen({ route }) {
   useEffect(() => {
     // 기본 정보
     axios
-      .get(`${URL}lectures/${route.params.data}`, {
+      .get(`${URL}/lectures/${route.params.data}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -92,7 +92,7 @@ function DetailLectureScreen({ route }) {
     if (headerRole === "ROLE_ADMIN") {
       // 신청 강사 불러오기
       axios
-        .get(`${URL}users-lectures/lectures/${route.params.data}`, {
+        .get(`${URL}/users-lectures/lectures/${route.params.data}`, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
             "Content-Type": "application/json",
@@ -130,7 +130,7 @@ function DetailLectureScreen({ route }) {
             console.log("강사 신청 완료");
             axios
               .post(
-                `${URL}users-lectures/lectures/${route.params.data}`,
+                `${URL}/users-lectures/lectures/${route.params.data}`,
                 {
                   tutorRole: roles,
                   userId: headerId,
@@ -244,7 +244,7 @@ function DetailLectureScreen({ route }) {
             console.log("강사 신청 완료");
             axios
               .patch(
-                `${URL}users-lectures/lectures/${route.params.data}`,
+                `${URL}/users-lectures/lectures/${route.params.data}`,
                 {
                   tutorRole: roles,
                   userId: id,

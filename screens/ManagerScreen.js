@@ -30,7 +30,7 @@ function ManagerScreen() {
 
   useEffect(() => {
     axios
-      .get(`${URL}users`, {
+      .get(`${URL}/users`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -42,7 +42,7 @@ function ManagerScreen() {
         // Map each user to a Promise
         const promises = data.map((user) =>
           axios
-            .get(`${URL}users-lectures/users/${user.id}`, {
+            .get(`${URL}/users-lectures/users/${user.id}`, {
               headers: {
                 "Content-Type": "application/json",
               },

@@ -66,7 +66,7 @@ function UpdateLectureScreen({ route }) {
 
   useEffect(() => {
     axios
-      .get(`${URL}lecture-contents`, {
+      .get(`${URL}/lecture-contents`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -175,7 +175,7 @@ function UpdateLectureScreen({ route }) {
 
     if (option === "create") {
       axios
-        .post(`${URL}lectures/`, lecturedata, {
+        .post(`${URL}/lectures/`, lecturedata, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
             "Content-Type": "application/json",
@@ -528,7 +528,7 @@ function UpdateLectureScreen({ route }) {
     }
 
     await axios
-      .post(`${URL}lecture-contents/`, contentsData, {
+      .post(`${URL}/lecture-contents/`, contentsData, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -540,7 +540,7 @@ function UpdateLectureScreen({ route }) {
       .catch((error) => {
         console.log("에러");
         console.log(error);
-        console.log(`${URL}lecture-contents/`);
+        console.log(`${URL}/lecture-contents/`);
       });
 
     Alert.alert(contentsData["content"], "교육 콘텐츠가 생성되었습니다.", [
@@ -549,7 +549,7 @@ function UpdateLectureScreen({ route }) {
         onPress: () => {
           addContentsModalHandler(false);
           axios
-            .get(`${URL}lecture-contents`, {
+            .get(`${URL}/lecture-contents`, {
               headers: {
                 // 헤더에 필요한 데이터를 여기에 추가
                 "Content-Type": "application/json",
