@@ -19,6 +19,7 @@ import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
 import ManagerScreen from "./ManagerScreen";
+import { StackActions } from "@react-navigation/native";
 
 function MyPageScreen({ navigation }) {
   const [data, setData] = useState({});
@@ -91,22 +92,30 @@ function MyPageScreen({ navigation }) {
     async function logoutApi() {
       try {
         const response = await logout();
-        console.log(response);
-
         navigation.reset({
           index: 0,
-          routes: [{ name: "LoginScreen" }],
+          routes: [{ name: "login" }],
         });
+        authCtx.logout();
+        console.log(response);
         if (response.data.success) {
         }
       } catch (error) {
-        console.log(error);
+        // navigation.navigate("login");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "login" }],
+        });
         authCtx.logout();
+        console.log(error);
       }
     }
 
     // if (Object.keys(data).length === 0) {
-    if (isLoading) {
+    if (
+      isLoading &&
+      (data !== undefined || data !== null || data.degree !== undefined)
+    ) {
       return (
         <View style={{ marginBottom: 33 }}>
           <Pressable onPress={logoutHandler}>
