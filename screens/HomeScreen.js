@@ -23,47 +23,42 @@ import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
+import { useLectures } from "../store/LecturesProvider";
 
 const HomeScreen = ({ lectureIdProps }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [data, setData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
   const navigation = useNavigation();
-
-  // async function profileHandler() {
-  //   try {
-  //     const response = await getProfile({ id: 18 });
-  //     setData(response);
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  const { lectures } = useLectures();
 
   useEffect(() => {
-    axios
-      .get(URL + "lectures", {
-        params: {
-          city: "",
-          endDate: "",
-          startDate: "",
-        },
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        setLectureData(res.data.data);
-        // console.log("성공");
-      })
-      .catch((error) => {
-        console.log("에러");
-        console.log(error);
-      });
+    setLectureData(lectures);
+
+    // axios
+    //   .get(URL + "/lectures/", {
+    //     params: {
+    //       city: "",
+    //       endDate: "",
+    //       startDate: "",
+    //     },
+    //     headers: {
+    //       // 헤더에 필요한 데이터를 여기에 추가
+    //       "Content-Type": "application/json",
+    //     },
+    //   })
+    //   .then((res) => {
+    //     // setLectureData(res.data.data);
+    //     // console.log(res.data.data)
+    //     // console.log("성공");
+    //   })
+    //   .catch((error) => {
+    //     console.log("에러");
+    //     console.log(error);
+    //   });
 
     // profileHandler();
-  }, []);
+  }, [lectures]);
 
   const recruitingData = lectureData.filter(
     (item) => item.status === "RECRUITING"
@@ -75,6 +70,7 @@ const HomeScreen = ({ lectureIdProps }) => {
   const allocationDate = lectureData.filter(
     (item) => item.status === "ALLOCATION_COMP"
   );
+  
   const allocationTitle = [
     ...new Set(allocationDate.map((item) => item.mainTitle)),
   ];
@@ -99,7 +95,7 @@ const HomeScreen = ({ lectureIdProps }) => {
           .filter((item) => item.mainTitle === recruitingTitle[i])
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            console.log(filteringItem.staff);
+            // console.log(filteringItem.staff);
             return (
               <LectureBox
                 key={filteringItem.id}
@@ -142,7 +138,7 @@ const HomeScreen = ({ lectureIdProps }) => {
           .filter((item) => item.mainTitle === allocationTitle[i])
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            console.log(filteringItem.staff);
+            // console.log(filteringItem.staff);
             return (
               <LectureBox
                 key={filteringItem.id}
