@@ -1,6 +1,7 @@
 import axios from "axios";
+import { URL } from "./config";
 
-const URL = "https://api.doroapp.com";
+// const URL = "https://api.doroapp.com";
 // const URL = "http://10.0.2.2:8080";
 
 export function authPhoneNum({ messageType, phone }) {

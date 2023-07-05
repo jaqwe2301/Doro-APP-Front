@@ -51,6 +51,7 @@ import NoticeDetailScreen from "./screens/NoticeDetailScreen";
 import AddNoticeScreen from "./screens/AddNoticeScreen";
 import jwtDecode from "jwt-decode";
 import HeaderContextProvider, { HeaderContext } from "./store/header-context";
+import { LecturesProvider } from "./store/LecturesProvider";
 import EditNoticeScreen from "./screens/EditNoticeScreen";
 import AlarmScreen from "./screens/AlarmScreen";
 import { WithLocalSvg } from "react-native-svg";
@@ -729,7 +730,9 @@ export default function App() {
       <StatusBar style="dark" />
       <AuthContextProvider>
         <HeaderContextProvider>
-          <Navigation notificationAgreement={noti} />
+          <LecturesProvider>
+            <Navigation notificationAgreement={noti} />
+          </LecturesProvider>
         </HeaderContextProvider>
       </AuthContextProvider>
     </SafeAreaView>
