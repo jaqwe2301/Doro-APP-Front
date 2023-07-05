@@ -25,7 +25,7 @@ function ApplicationDetails({ route }) {
   useEffect(() => {
     console.log(headerId);
     axios
-      .get(`${URL}users-lectures/users/${headerId}`, {
+      .get(`${URL}/users-lectures/users/${headerId}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
