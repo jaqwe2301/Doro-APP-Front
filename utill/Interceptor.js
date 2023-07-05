@@ -1,11 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { reToken } from "./auth";
+import { URL } from "./config";
 
 function Interceptor() {
   const instance = axios.create({
-    baseURL: "http://10.0.2.2:8080",
+    // baseURL: "http://10.0.2.2:8080",
     // baseURL: "https://api.doroapp.com",
+    baseURL: URL,
 
     timeout: 1000,
   });
@@ -38,8 +40,9 @@ function Interceptor() {
         console.log("hi refresh 할꺼염 \t");
 
         try {
-          const response = await axios.post("http://10.0.2.2:8080/reissue", {
+          // const response = await axios.post("http://10.0.2.2:8080/reissue", {
           // const response = await axios.post("https://api.doroapp.com/reissue", {
+          const response = await axios.post(`${URL}/reissue`, {
             accessToken: `Bearer ${token}`,
             refreshToken: refreshToken,
           });
