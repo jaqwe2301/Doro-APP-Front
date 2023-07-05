@@ -276,7 +276,7 @@ export async function deleteAnnouncement({ id }) {
 export async function deleteUser() {
   try {
     const response = await instance.delete("/withdrawal");
-
+    console.log(response);
     return response;
   } catch (error) {
     console.log(error);

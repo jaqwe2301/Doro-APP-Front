@@ -39,7 +39,7 @@ function MyPageScreen({ navigation }) {
       const response = await getProfile({ id: headerId });
 
       setData(response.data);
-      console.log(response.data);
+      console.log(JSON.stringify(response) + "여기임");
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -92,20 +92,14 @@ function MyPageScreen({ navigation }) {
     async function logoutApi() {
       try {
         const response = await logout();
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "login" }],
-        });
+
         authCtx.logout();
         console.log(response);
         if (response.data.success) {
         }
       } catch (error) {
         // navigation.navigate("login");
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "login" }],
-        });
+
         authCtx.logout();
         console.log(error);
       }
@@ -113,8 +107,9 @@ function MyPageScreen({ navigation }) {
 
     // if (Object.keys(data).length === 0) {
     if (
-      isLoading &&
-      (data !== undefined || data !== null || data.degree !== undefined)
+      isLoading ||
+      data === undefined
+      // (data !== undefined || data !== null || data.degree !== undefined)
     ) {
       return (
         <View style={{ marginBottom: 33 }}>
@@ -130,7 +125,7 @@ function MyPageScreen({ navigation }) {
     } else {
       const status =
         data.degree.studentStatus === "ATTENDING" ? "재학" : "휴학";
-      console.log(data.profileImg);
+
       return (
         <View style={styles.container}>
           <ScrollView>
