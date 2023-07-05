@@ -274,12 +274,13 @@ export async function deleteAnnouncement({ id }) {
 }
 
 export async function deleteUser() {
-  const response = await instance.delete("/withdrawal");
+  try {
+    const response = await instance.delete("/withdrawal");
 
-  // console.log("hihi\t");
-  // console.log(token);
-
-  return response;
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function updateUserImage({ formData }) {
