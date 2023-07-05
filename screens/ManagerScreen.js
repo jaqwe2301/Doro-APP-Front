@@ -108,6 +108,7 @@ function ManagerScreen() {
       console.log(error);
     }
   }
+
   async function detailTutor(id) {
     try {
       const response = await getProfile({
@@ -129,6 +130,7 @@ function ManagerScreen() {
       { text: "확인", onPress: addAlarm },
     ]);
   }
+
   useEffect(() => {
     setLectureData(lectures);
   }, [lectures]);
