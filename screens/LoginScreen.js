@@ -177,12 +177,12 @@ function LoginScreen({ navigation }) {
         }}
       />
       <ScrollView>
-        <Button
+        {/* <Button
           title="Press to schedule a notification"
           onPress={async () => {
             await schedulePushNotification();
           }}
-        />
+        /> */}
         <View style={styles.content}>
           <View>
             <Input

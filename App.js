@@ -406,6 +406,15 @@ function MyPageNavigator() {
         component={TutorScreen}
         options={{ title: "매니저 페이지" }}
       />
+      <Stack.Screen
+        name="login"
+        component={LoginScreen}
+        options={{
+          header: (props) => <LogoTitle {...props} />,
+          headerBackVisible: false,
+          // headerTitleAlign: "left",
+        }}
+      />
     </Stack.Navigator>
   );
 }
