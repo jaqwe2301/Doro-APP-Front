@@ -14,6 +14,7 @@ import { createAnnouncement, pushNotification } from "../utill/http";
 import { useEffect, useState } from "react";
 import { WithLocalSvg } from "react-native-svg";
 import Camera from "../assets/camera.svg";
+import { URL } from "../utill/config";
 
 import * as ImagePicker from "expo-image-picker";
 import NoticeScreen from "./NoticeScreen";
@@ -97,7 +98,7 @@ function AddNoticeScreen({ navigation }) {
     // const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
     try {
       const response = await axios.post(
-        "http://10.0.2.2:8080/announcements",
+        `${URL}/announcements`,
         // {
         //   announcementReq: [
         //     {
@@ -123,7 +124,7 @@ function AddNoticeScreen({ navigation }) {
           },
         }
       );
-      // fetch("http://10.0.2.2:8080/announcements/", {
+      // fetch(`${URL}/announcements/`, {
       //   method: "POST",
       //   // headers: {
       //   //   // "Content-Type": "multipart/form-data",
@@ -162,7 +163,7 @@ function AddNoticeScreen({ navigation }) {
       // let config = {
       //   method: "post",
       //   maxBodyLength: Infinity,
-      //   url: "http://10.0.2.2:8080/announcements",
+      //   url: "${URL}/announcements",
       //   headers: {
       //     ...data.getHeaders(),
       //   },
@@ -196,7 +197,7 @@ function AddNoticeScreen({ navigation }) {
   //     redirect: "follow",
   //   };
 
-  //   fetch("http://localhost:8080/announcements", requestOptions)
+  //   fetch(`${URL}/announcements`, requestOptions)
   //     .then((response) => response.text())
   //     .then((result) => console.log(result))
   //     .catch((error) => console.log("error", error));
