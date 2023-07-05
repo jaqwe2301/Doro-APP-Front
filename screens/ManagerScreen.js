@@ -23,6 +23,7 @@ import TutorBox from "../components/ui/TutorBox";
 import ButtonBig from "../components/ui/ButtonBig";
 
 import { getProfile, pushNotification } from "../utill/http";
+import { KRRegular } from "../constants/fonts";
 
 function ManagerScreen() {
   const [users, setUsers] = useState([]);
@@ -103,6 +104,31 @@ function ManagerScreen() {
     ]);
   }
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={logoutHandler}>
+            <Text
+              style={[
+                // KRRegular.Body,
+                {
+                  textAlign: "center",
+                  textAlignVertical: "center",
+                  fontSize: 17,
+                  fontWeight: 400,
+                },
+              ]}
+            >
+              로그아웃
+            </Text>
+          </Pressable>
+        );
+      },
+      title: "매니저 페이지",
+    });
+  }, [logoutHandler]);
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
@@ -142,13 +168,7 @@ function ManagerScreen() {
         );
 
       case "second":
-        return (
-          <View>
-            <Pressable onPress={logoutHandler}>
-              <Text>로그아웃</Text>
-            </Pressable>
-          </View>
-        );
+        return <View style={{ flex: 1, backgroundColor: "#F5F5F5" }}></View>;
 
       case "third":
         return (
@@ -228,13 +248,14 @@ function ManagerScreen() {
               <Text
                 style={
                   focused
-                    ? {
-                        margin: 0,
-                        fontSize: 15,
-                        color: "black",
-                        fontWeight: "bold",
-                      }
-                    : { margin: 0, fontSize: 15, color: "black" }
+                    ? [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray01 },
+                      ]
+                    : [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray05 },
+                      ]
                 }
               >
                 {route.title}
