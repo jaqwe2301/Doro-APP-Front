@@ -32,7 +32,7 @@ const HomeScreen = ({ lectureIdProps }) => {
 
   useEffect(() => {
     axios
-      .get(URL + "lectures", {
+      .get(URL + "/lectures/", {
         params: {
           city: "",
           endDate: "",
@@ -45,6 +45,7 @@ const HomeScreen = ({ lectureIdProps }) => {
       })
       .then((res) => {
         setLectureData(res.data.data);
+        // console.log(res.data.data)
         // console.log("성공");
       })
       .catch((error) => {

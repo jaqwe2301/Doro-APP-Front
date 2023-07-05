@@ -143,7 +143,7 @@ function DetailLectureScreen({ route }) {
                 }
               )
               .then((res) => {
-                console.log(res);
+                // console.log(res);
                 // console.log("성공");
               })
               .catch((error) => {
@@ -257,7 +257,7 @@ function DetailLectureScreen({ route }) {
                 }
               )
               .then((res) => {
-                console.log(res);
+                // console.log(res);
               })
               .catch((error) => {
                 console.log("에러");
@@ -314,7 +314,7 @@ function DetailLectureScreen({ route }) {
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>일자</Text>
                   <View>
-                    {lectureBasicInfo.lectureDates.map((item) => {
+                    {lectureBasicInfo.lectureDates.map((item, i) => {
                       const date = new Date(item);
                       const month =
                         date.getMonth() >= 9
@@ -326,7 +326,7 @@ function DetailLectureScreen({ route }) {
                           : "0" + date.getDate();
 
                       return (
-                        <Text key={item} style={styles.infoText}>
+                        <Text key={i} style={styles.infoText}>
                           {date.getFullYear()}.{month}.{days} (
                           {day[date.getDay()]})
                         </Text>
