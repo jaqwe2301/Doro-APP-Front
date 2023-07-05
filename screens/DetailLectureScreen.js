@@ -71,7 +71,7 @@ function DetailLectureScreen({ route }) {
   useEffect(() => {
     // 기본 정보
     axios
-      .get(`${URL}lectures/${route.params.data}`, {
+      .get(`${URL}/lectures/${route.params.data}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -92,7 +92,7 @@ function DetailLectureScreen({ route }) {
     if (headerRole === "ROLE_ADMIN") {
       // 신청 강사 불러오기
       axios
-        .get(`${URL}users-lectures/lectures/${route.params.data}`, {
+        .get(`${URL}/users-lectures/lectures/${route.params.data}`, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
             "Content-Type": "application/json",
@@ -130,7 +130,7 @@ function DetailLectureScreen({ route }) {
             console.log("강사 신청 완료");
             axios
               .post(
-                `${URL}users-lectures/lectures/${route.params.data}`,
+                `${URL}/users-lectures/lectures/${route.params.data}`,
                 {
                   tutorRole: roles,
                   userId: headerId,
@@ -143,7 +143,7 @@ function DetailLectureScreen({ route }) {
                 }
               )
               .then((res) => {
-                console.log(res);
+                // console.log(res);
                 // console.log("성공");
               })
               .catch((error) => {
@@ -244,7 +244,7 @@ function DetailLectureScreen({ route }) {
             console.log("강사 신청 완료");
             axios
               .patch(
-                `${URL}users-lectures/lectures/${route.params.data}`,
+                `${URL}/users-lectures/lectures/${route.params.data}`,
                 {
                   tutorRole: roles,
                   userId: id,
@@ -257,7 +257,7 @@ function DetailLectureScreen({ route }) {
                 }
               )
               .then((res) => {
-                console.log(res);
+                // console.log(res);
               })
               .catch((error) => {
                 console.log("에러");
@@ -314,7 +314,7 @@ function DetailLectureScreen({ route }) {
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>일자</Text>
                   <View>
-                    {lectureBasicInfo.lectureDates.map((item) => {
+                    {lectureBasicInfo.lectureDates.map((item, i) => {
                       const date = new Date(item);
                       const month =
                         date.getMonth() >= 9
@@ -326,7 +326,7 @@ function DetailLectureScreen({ route }) {
                           : "0" + date.getDate();
 
                       return (
-                        <Text key={item} style={styles.infoText}>
+                        <Text key={i} style={styles.infoText}>
                           {date.getFullYear()}.{month}.{days} (
                           {day[date.getDay()]})
                         </Text>

@@ -28,7 +28,7 @@ import CheckmarkAfter from "../../assets/checkmark_after.svg";
 import CheckboxAfter from "../../assets/checkbox_after.svg";
 import Right from "../../assets/right.svg";
 import Down from "../../assets/down.svg";
-import Modalx from "../../assets/modalx.svg";
+import Xmark from "../../assets/xmark_black.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
 
@@ -415,7 +415,7 @@ function Code({ navigation }) {
                   <View style={styles.statusTitleContainer}>
                     <View style={styles.iconContainer}>
                       <Pressable onPress={() => setVisible(!visible)}>
-                        <WithLocalSvg asset={Modalx} />
+                        <WithLocalSvg asset={Xmark} />
                       </Pressable>
                     </View>
                     <Text style={styles.statusTitle}>가입 유형</Text>

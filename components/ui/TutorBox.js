@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 import { KRBold, KRRegular } from "../../constants/fonts";
 
-function TutorBox({ name, generation, school, major, lecture }) {
+function TutorBox({ name, generation, school, major, lectures }) {
   // generation : 기수
   // lecture : 최근 강의
   return (
@@ -19,15 +19,20 @@ function TutorBox({ name, generation, school, major, lecture }) {
         </Text>
       </View>
       <Text style={[styles.new, KRRegular.Subbody]}>최근 강의</Text>
-      {lecture?.map((item) => {
-        <Text style={styles.newContent}>- {item}</Text>;
+      {lectures?.map((item, i) => {
+        const roles = item.tutorRole;
+        const role =
+          roles === "MAIN_TUTOR"
+            ? "주강사"
+            : roles === "SUB_TUTOR"
+            ? "보조강사"
+            : "스태프";
+        return (
+          <Text key={i} style={styles.newContent}>
+            - {item.subTitle} ({role})
+          </Text>
+        );
       })}
-      {/* <Text style={styles.newContent}>
-        - 진로 체험 주간 워킹 로봇 메이킹 클래스(주강사)
-      </Text>
-      <Text style={styles.newContent}>
-        - 진로 체험 주간 워킹 로봇 메이킹 클래스(보조 강사)
-      </Text> */}
       <View style={{ marginTop: 12 }}></View>
     </View>
   );
