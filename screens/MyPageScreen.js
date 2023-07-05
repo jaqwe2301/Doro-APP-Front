@@ -6,6 +6,7 @@ import {
   Image,
   Pressable,
   Alert,
+  Platform,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
@@ -64,11 +65,11 @@ function MyPageScreen({ navigation }) {
       "경고, 사운드 및 아이콘 배지가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다.",
       [
         {
-          text: "허용             ",
+          text: Platform.OS === "ios" ? "허용             " : "허용",
           onPress: () => alarmEditHandler({ notificationAgreement: true }),
         },
         {
-          text: "허용 안함            ",
+          text: Platform.OS === "ios" ? "허용 안함            " : "허용 안함",
           onPress: () => alarmEditHandler({ notificationAgreement: false }),
         },
       ]
