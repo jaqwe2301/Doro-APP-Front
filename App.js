@@ -19,7 +19,7 @@ import { GlobalStyles } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import Constants from "expo-constants";
 import NoticeScreen from "./screens/NoticeScreen";
 import HistoryScreen from "./screens/HistoryScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -765,7 +765,9 @@ async function registerForPushNotificationsAsync() {
     }
     // 프로젝트 ID 바꿔야 함
     token = (
-      await Notifications.getExpoPushTokenAsync({ projectId: "doro/doro" })
+      await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas?.projectId,
+      })
     ).data;
     console.log(token);
     console.log(noti);

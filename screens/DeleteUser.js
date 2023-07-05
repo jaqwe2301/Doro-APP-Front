@@ -43,7 +43,7 @@ function DeleteUser({ navigation, route }) {
   async function deleteUserHandler() {
     try {
       const response = await deleteUser();
-      console.log(response);
+      console.log("갔니" + response);
       authCtx.logout();
     } catch (error) {
       console.log("유저삭제 에러" + error);
