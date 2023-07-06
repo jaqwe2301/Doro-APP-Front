@@ -85,7 +85,7 @@ function NoticeScreen({ navigation }) {
       <Pressable onPress={() => navigHandler(item)}>
         <Text style={styles.title}>{item.title}</Text>
         <View style={styles.subContent}>
-          <Text style={styles.name}>김동규 매니저</Text>
+          <Text style={styles.name}>{item.writer} 매니저</Text>
           <Text style={styles.name}>
             {moment(item.createdAt).format("YYYY-MM-DD")}
           </Text>

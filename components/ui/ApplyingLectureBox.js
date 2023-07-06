@@ -115,6 +115,10 @@ const styles = StyleSheet.create({
     paddingRight: 11,
     backgroundColor: "white",
     justifyContent: "space-between",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    shadowOpacity: 0.3, // 그림자의 투명도
+    shadowRadius: 1.5, // 그
   },
   titleContainer: {
     flexDirection: "row",

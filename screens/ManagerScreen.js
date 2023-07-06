@@ -9,6 +9,7 @@ import {
   Pressable,
   Keyboard,
   TextInput,
+  Alert,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
@@ -22,6 +23,9 @@ import FilterBox from "../components/ui/FilterBox";
 import TutorBox from "../components/ui/TutorBox";
 import ButtonBig from "../components/ui/ButtonBig";
 import LectureBox from "../components/ui/LectureBox";
+
+import { getProfile, pushNotification } from "../utill/http";
+import { KRRegular } from "../constants/fonts";
 
 function ManagerScreen() {
   const [userData, setUserData] = useState([]);
@@ -89,7 +93,43 @@ function ManagerScreen() {
       });
   }, []);
 
-  function addAlarm() {}
+  async function addAlarm() {
+    try {
+      const response = await pushNotification({
+        body: body,
+        title: title,
+      });
+      if (response.success) {
+        setBody("");
+        setTitle("");
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function detailTutor(id) {
+    try {
+      const response = await getProfile({
+        id: id,
+      });
+      if (response.success) {
+        navigation.navigate("tutorScreen", { id: response.data, headerId: id });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function addAlarmHandler() {
+    Alert.alert("알림을 발송 하시겠습니까 ?", undefined, [
+      {
+        text: "취소",
+      },
+      { text: "확인", onPress: addAlarm },
+    ]);
+  }
 
   useEffect(() => {
     setLectureData(lectures);
@@ -158,6 +198,40 @@ function ManagerScreen() {
     { key: "third", title: "알림 발송" },
   ]);
 
+  function logoutHandler() {
+    Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
+      {
+        text: "취소",
+      },
+      { text: "확인", onPress: () => authCtx.logout() },
+    ]);
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={logoutHandler}>
+            <Text
+              style={[
+                // KRRegular.Body,
+                {
+                  textAlign: "center",
+                  textAlignVertical: "center",
+                  fontSize: 17,
+                  fontWeight: 400,
+                },
+              ]}
+            >
+              로그아웃
+            </Text>
+          </Pressable>
+        );
+      },
+      title: "매니저 페이지",
+    });
+  }, [logoutHandler]);
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
@@ -176,23 +250,25 @@ function ManagerScreen() {
                 data={userData}
                 renderItem={(itemData) => {
                   const item = itemData.item;
-                  // console.log(item.lectures[0].subTitle);
+
                   return (
-                    <TutorBox
-                      name={item.name}
-                      generation={item.generation}
-                      school={item.degree.school}
-                      major={item.degree.major}
-                      lectures={item.lectures}
-                    />
+                    <Pressable onPress={() => detailTutor(item.id)}>
+                      <TutorBox
+                        name={item.name}
+                        generation={item.generation}
+                        school={item.degree.school}
+                        major={item.degree.major}
+                        lectures={item.lectures}
+                      />
+                    </Pressable>
                   );
                 }}
                 extraData={userData}
               />
             </View>
-            <Pressable onPress={() => authCtx.logout()}>
+            {/* <Pressable onPress={() => authCtx.logout()}>
               <Text>매니저 로그아웃</Text>
-            </Pressable>
+            </Pressable> */}
           </View>
         );
 
@@ -216,7 +292,13 @@ function ManagerScreen() {
 
       case "third":
         return (
-          <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "space-between",
+              backgroundColor: "#F5F5F5",
+            }}
+          >
             <ScrollView>
               <Pressable onPress={() => Keyboard.dismiss()}>
                 <View style={styles.titleContainer}>
@@ -242,7 +324,7 @@ function ManagerScreen() {
               </Pressable>
             </ScrollView>
             <View style={styles.buttonContainer}>
-              <ButtonBig text="알림 발송" onPress={addAlarm} />
+              <ButtonBig text="알림 발송" onPress={addAlarmHandler} />
             </View>
           </View>
         );
@@ -253,6 +335,7 @@ function ManagerScreen() {
 
   return (
     <>
+      <View style={{ marginTop: 30 }}></View>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -275,12 +358,29 @@ function ManagerScreen() {
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
-            labelStyle={{
-              // 폰트 스타일
-              margin: 0,
-              fontSize: 15,
-              color: "black",
-            }}
+            // labelStyle={{
+            //   // 폰트 스타일
+            //   margin: 0,
+            //   fontSize: 15,
+            //   color: "black",
+            // }}
+            renderLabel={({ route, focused, color }) => (
+              <Text
+                style={
+                  focused
+                    ? [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray01 },
+                      ]
+                    : [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray05 },
+                      ]
+                }
+              >
+                {route.title}
+              </Text>
+            )}
             tabStyle={{
               flexDirection: "row",
               alignItems: "flex-start",
@@ -327,6 +427,8 @@ const styles = StyleSheet.create({
   },
   lectureListContainer: {
     paddingHorizontal: 20,
+    flex: 1,
+    backgroundColor: "#F5F5F5",
   },
   mainTitle: {
     marginTop: 15,

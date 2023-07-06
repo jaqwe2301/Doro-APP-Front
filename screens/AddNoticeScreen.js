@@ -8,6 +8,8 @@ import {
   Keyboard,
   Image,
   Dimensions,
+  NativeModules,
+  KeyboardAvoidingView,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { createAnnouncement, pushNotification } from "../utill/http";
@@ -233,71 +235,116 @@ function AddNoticeScreen({ navigation }) {
     }
   };
 
+  async function completeHandler3() {
+    const formData = new FormData();
+    const announcementReq = {
+      title: title,
+      body: body,
+      writer: "노세인",
+    };
+    formData.append(
+      "announcementReq",
+      // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
+      // new Blob([{ title: "title", body: "body", writer: "노세인" }])
+      announcementReq
+      // JSON.stringify(value)
+      // value
+    );
+    try {
+      const response = await createAnnouncement({
+        formData: formData,
+        title: title,
+        body: body,
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(JSON.stringify(formData));
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
         return (
-          <Pressable onPress={completeHandler2}>
-            <Text style={styles.completeText}>완료</Text>
+          <Pressable onPress={completeHandler3}>
+            <View style={styles.completeContainer}>
+              <Text style={styles.completeText}>완료</Text>
+            </View>
           </Pressable>
         );
       },
     });
-  }, [completeHandler2]);
+  }, [completeHandler3]);
 
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerBar} />
-      <ScrollView>
-        <Pressable onPress={() => Keyboard.dismiss()}>
-          <View style={styles.titleContainer}>
-            <TextInput
-              placeholder="제목"
-              style={styles.title}
-              placeholderTextColor={GlobalStyles.colors.gray03}
-              multiline
-              onChangeText={(text) => setTitle(text)}
-              value={title}
-            ></TextInput>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={styles.container}>
+        <View style={styles.headerBar} />
+        <ScrollView>
+          <Pressable onPress={() => Keyboard.dismiss()}>
+            <View style={styles.titleContainer}>
+              <TextInput
+                placeholder="제목"
+                style={styles.title}
+                placeholderTextColor={GlobalStyles.colors.gray03}
+                multiline
+                onChangeText={(text) => setTitle(text)}
+                value={title}
+              ></TextInput>
+            </View>
+            <View style={styles.contentContainer}>
+              <TextInput
+                placeholder="내용을 입력하세요."
+                style={styles.content}
+                multiline
+                value={body}
+                onChangeText={(text) => setBody(text)}
+                placeholderTextColor={GlobalStyles.colors.gray03}
+              ></TextInput>
+            </View>
+          </Pressable>
+          <View style={{ marginHorizontal: 20 }}>
+            {imageUrl && (
+              <Image
+                source={{ uri: imageUrl }}
+                style={{
+                  width: "100%",
+                  height: 500,
+                  resizeMode: "contain",
+                }}
+              />
+            )}
           </View>
-          <View style={styles.contentContainer}>
-            <TextInput
-              placeholder="내용을 입력하세요."
-              style={styles.content}
-              multiline
-              value={body}
-              onChangeText={(text) => setBody(text)}
-              placeholderTextColor={GlobalStyles.colors.gray03}
-            ></TextInput>
-          </View>
-        </Pressable>
-        <View style={{ marginHorizontal: 20 }}>
-          {imageUrl && (
-            <Image
-              source={{ uri: imageUrl }}
-              style={{
-                width: "100%",
-                height: 500,
-                resizeMode: "contain",
-              }}
-            />
-          )}
+        </ScrollView>
+        <View
+          style={{
+            height: 42,
+            borderTopWidth: 0.8,
+            borderTopColor: GlobalStyles.colors.gray04,
+            justifyContent: "center",
+            paddingLeft: 16,
+          }}
+        >
+          <WithLocalSvg asset={Camera} onPress={cameraHandler} />
         </View>
-      </ScrollView>
-      <View
-        style={{
-          height: 42,
-          borderTopWidth: 0.8,
-          borderTopColor: GlobalStyles.colors.gray04,
-          justifyContent: "center",
-          paddingLeft: 16,
-        }}
-      >
-        <WithLocalSvg asset={Camera} onPress={cameraHandler} />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -331,16 +378,18 @@ const styles = StyleSheet.create({
   completeText: {
     fontWeight: "400",
     fontSize: 15,
-    // lineHeight: 20,
-    width: 50,
-    height: 30,
-    borderRadius: 5.41,
     color: "white",
     textAlign: "center",
     textAlignVertical: "center",
-    // marginLeft: -4,
+    lineHeight: 20,
+  },
+  completeContainer: {
+    borderRadius: 5.41,
     backgroundColor: GlobalStyles.colors.primaryDefault,
 
-    lineHeight: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 11,
+    paddingVertical: 5,
   },
 });

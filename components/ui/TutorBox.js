@@ -48,6 +48,10 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     elevation: 4,
     backgroundColor: "white",
+    shadowColor: GlobalStyles.colors.gray03,
+    shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    shadowOpacity: 0.6, // 그림자의 투명도
+    shadowRadius: 1, // 그
   },
   name: {
     marginTop: 14,
