@@ -13,6 +13,7 @@ import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
+import { KRRegular } from "../constants/fonts";
 
 function ApplicationDetails({ route }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
@@ -205,7 +206,7 @@ function ApplicationDetails({ route }) {
 
   return (
     <>
-      <View style={{ backgroundColor: "white", height: 40 }} />
+      <View style={{ backgroundColor: "white", height: 30 }} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -223,22 +224,38 @@ function ApplicationDetails({ route }) {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
-              height: 34,
+              height: 30,
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
+            // renderLabel={({ route, focused, color }) => (
+            //   <Text
+            //     style={
+            //       focused
+            //         ? {
+            //             margin: 0,
+            //             fontSize: 15,
+            //             color: "black",
+            //             fontWeight: "bold",
+            //           }
+            //         : { margin: 0, fontSize: 15, color: "black" }
+            //     }
+            //   >
+            //     {route.title}
+            //   </Text>
+            // )}
             renderLabel={({ route, focused, color }) => (
               <Text
                 style={
                   focused
-                    ? {
-                        // margin: 0,
-                        width: 100,
-                        fontSize: 15,
-                        color: "black",
-                        fontWeight: "bold",
-                      }
-                    : { margin: 0, fontSize: 15, color: "black" }
+                    ? [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray01 },
+                      ]
+                    : [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray05 },
+                      ]
                 }
               >
                 {route.title}
@@ -261,7 +278,8 @@ export default ApplicationDetails;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 14,
+    paddingTop: 14,
     paddingHorizontal: 20,
+    backgroundColor: GlobalStyles.colors.gray07,
   },
 });

@@ -13,6 +13,8 @@ import { useState, useContext, useEffect } from "react";
 import InputText from "../../components/ui/InputText";
 import { WithLocalSvg } from "react-native-svg";
 import Down from "../../assets/down.svg";
+import Modalx from "../../assets/modalx.svg";
+import ModalCheck from "../../assets/modalcheck.svg";
 
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "../../components/ui/ButtonBig";

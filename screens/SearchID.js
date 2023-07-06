@@ -93,7 +93,14 @@ function SearchID({ navigation }) {
   async function requestNumber() {
     if (phoneNum.length === 11) {
       try {
-        authPhoneNum({ messageType: "ACCOUNT", phone: phoneNum });
+        const response = await authPhoneNum({
+          messageType: "ACCOUNT",
+          phone: phoneNum,
+        });
+        console.log(response);
+        setBtnTitle("다시 요청");
+        setCount(179);
+        setIsVisible(true);
       } catch (error) {
         Alert.alert("ERROR", "다시 시도해주세요");
       }
