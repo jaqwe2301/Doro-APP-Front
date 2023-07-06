@@ -14,6 +14,7 @@ function ApplyingLectureBox({
   place,
   tutorRole,
   dateTypeValue,
+  onPressX,
 }) {
   // console.log(date)
   const dateControl = (stringDate) => {
@@ -57,7 +58,9 @@ function ApplyingLectureBox({
       <View style={styles.whiteBox}>
         <View style={styles.titleContainer}>
           <Text style={styles.SubTitle}>{subTitle}</Text>
-          <WithLocalSvg asset={Xmark} />
+          <Pressable onPress={onPressX}>
+            <WithLocalSvg asset={Xmark} />
+          </Pressable>
         </View>
         <View
           style={{
