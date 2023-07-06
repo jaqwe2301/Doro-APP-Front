@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    shadowOpacity: 0.4, // 그림자의 투명도
+    shadowRadius: 1.5, // 그
   },
   text: {
     color: GlobalStyles.colors.gray07,

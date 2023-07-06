@@ -13,7 +13,7 @@ const instance = Interceptor();
 export async function getProfile({ id }) {
   try {
     const response = await instance.get("/users/" + `${id}`);
-    return response.data.data;
+    return response.data;
   } catch (error) {
     console.log(error + "api er");
 
@@ -68,6 +68,15 @@ export async function updateProfile({
       studentId: studentId,
       studentStatus: studentStatus,
     });
+    console.log(
+      parseInt(generation),
+      major,
+      phone,
+      school,
+      studentId,
+      studentStatus,
+      parseInt(id)
+    );
     return response.data;
   } catch (error) {
     console.log(
@@ -126,26 +135,28 @@ export async function readNotification({ notificationId }) {
 }
 export async function pushNotification({ body, title }) {
   try {
-    const token = await AsyncStorage.getItem("token");
-
-    console.log(token);
-
-    const response = await axios.post(
-      URL + "/notifications",
-      {
-        body: body,
-        title: title,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await instance.post("/notifications", {
+      title: title,
+      body: body,
+      userIds: [],
+    });
     return response.data;
   } catch (error) {
-    console.log(error);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
 
     throw error;
   }
@@ -164,28 +175,75 @@ export async function getAnnouncement({ page, size }) {
   }
 }
 
-export async function createAnnouncement({ formData, title, body }) {
+export async function createAnnouncement({ title, body }) {
   try {
-    const token = await AsyncStorage.getItem("token");
+    // const token = await AsyncStorage.getItem("token");
 
-    const announcementReq = new Blob(
-      [JSON.stringify({ title: title, body: body })],
-      { type: "application/json" }
-    );
-    const response = await axios.post(
-      URL + "/announcements/",
-      { announcementReq: announcementReq, picture: formData },
+    console.log("여긴 http파일");
+    // const announcementReq = new Blob(
+    //   [JSON.stringify({ title: title, body: body })],
+    //   { type: "application/json" }
+    // );
+    const formData = new FormData();
+    // formData.append("announcementReq", {
+    //   title: title,
+    //   body: body,
+    //   writer: "노세인",
+    // });
+    const obj = { title: title, body: body, writer: "노세인" };
+    const blob = new Blob([JSON.stringify(obj, undefined, 2)], {
+      type: "application/json",
+    });
+    formData.append("announcementReq", blob);
+    console.log(JSON.stringify(formData));
+
+    const response = await instance.post(
+      "/announcements",
+      // { announcementReq: announcementReq, picture: formData },
+      // formData
+      // {
+      //   announcementReq: {
+      //     // announcementReq: JSON.stringify({
+      //     title: title,
+      //     body: body,
+      //     writer: "노세인",
+      //   },
+      //   // }),
+      // },
+      formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data;",
         },
+        transformRequest: (data, header) => data,
+        // transformRequest: [
+        //   function (data, headers) {
+        //     // Do whatever you want to transform the data
+
+        //     return JSON.stringify(data);
+        //   },
+        // ],
       }
     );
     console.log(response);
     return response;
   } catch (error) {
-    console.log(error + "여기여기");
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
 
     throw error;
   }
@@ -217,31 +275,23 @@ export async function deleteAnnouncement({ id }) {
 }
 
 export async function deleteUser() {
-  const response = await instance.delete("/withdrawal");
-
-  // console.log("hihi\t");
-  // console.log(token);
-
-  return response;
+  try {
+    const response = await instance.delete("/withdrawal");
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function updateUserImage({ formData }) {
   try {
-    // const token = await AsyncStorage.getItem("token");
-    // console.log(formData);
-    //  const boundary = "----WebKitFormBoundaryABC123";
-    // const response = await axios.patch(URL + "/users/profile", formData, {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    //   transformRequest: () => formData,
-    // });
+    console.log(formData);
     const response = await instance.patch("/users/profile", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      //  transformRequest: () => formData,
     });
     return response;
   } catch (error) {
@@ -261,6 +311,59 @@ export async function updateUserImage({ formData }) {
       console.log("Error", error.message);
     }
 
+    throw error;
+  }
+}
+
+export async function alarmEdit({ id, notificationAgreement }) {
+  try {
+    const response = await instance.patch(
+      "/users/" + `${id}` + "/notification-settings",
+      { notificationAgreement: notificationAgreement }
+    );
+    console.log(response.data);
+    return response;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
+
+    throw error;
+  }
+}
+
+export async function logout() {
+  try {
+    const response = await instance.post("/logout");
+    return response;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
     throw error;
   }
 }

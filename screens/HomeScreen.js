@@ -23,6 +23,7 @@ import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
+import { KRRegular } from "../constants/fonts";
 import { useLectures } from "../store/LecturesProvider";
 
 const HomeScreen = ({ lectureIdProps }) => {
@@ -70,7 +71,7 @@ const HomeScreen = ({ lectureIdProps }) => {
   const allocationDate = lectureData.filter(
     (item) => item.status === "ALLOCATION_COMP"
   );
-  
+
   const allocationTitle = [
     ...new Set(allocationDate.map((item) => item.mainTitle)),
   ];
@@ -253,17 +254,34 @@ const HomeScreen = ({ lectureIdProps }) => {
             }}
             pressColor={"transparent"}
             // 탭바(tap bar) 텍스트 스타일링
+            // renderLabel={({ route, focused, color }) => (
+            //   <Text
+            //     style={
+            //       focused
+            //         ? {
+            //             margin: 0,
+            //             fontSize: 15,
+            //             color: "black",
+            //             fontWeight: "bold",
+            //           }
+            //         : { margin: 0, fontSize: 15, color: "black" }
+            //     }
+            //   >
+            //     {route.title}
+            //   </Text>
+            // )}
             renderLabel={({ route, focused, color }) => (
               <Text
                 style={
                   focused
-                    ? {
-                        margin: 0,
-                        fontSize: 15,
-                        color: "black",
-                        fontWeight: "bold",
-                      }
-                    : { margin: 0, fontSize: 15, color: "black" }
+                    ? [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray01 },
+                      ]
+                    : [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray05 },
+                      ]
                 }
               >
                 {route.title}
@@ -273,15 +291,15 @@ const HomeScreen = ({ lectureIdProps }) => {
         )}
       />
       {headerRole === "ROLE_ADMIN" ? (
-        <Pressable
-          onPress={() =>
-            navigation.navigate("UpdateLectureScreen", { data: "" })
-          }
-        >
-          <View style={styles.BottomButton}>
+        <View style={styles.BottomButton}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("UpdateLectureScreen", { data: "" })
+            }
+          >
             <WithLocalSvg asset={CreactingLecture} />
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
       ) : (
         ""
       )}
@@ -309,6 +327,7 @@ const styles = StyleSheet.create({
   },
   lectureListContainer: {
     paddingHorizontal: 20,
+    backgroundColor: GlobalStyles.colors.gray07,
   },
   BottomButton: {
     position: "absolute",
@@ -325,8 +344,5 @@ const styles = StyleSheet.create({
     marginTop: 15,
     fontSize: 17,
     fontWeight: "bold",
-  },
-  lectureListContainer: {
-    paddingHorizontal: 20,
   },
 });
