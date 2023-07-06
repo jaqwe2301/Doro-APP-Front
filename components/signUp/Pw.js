@@ -45,15 +45,6 @@ function Pw({ navigation }) {
     setMark(
       hasMark ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
     );
-    setEng(
-      hasEng ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
-    );
-    setNum(
-      hasNum ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
-    );
-    setMark(
-      hasMark ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
-    );
     setLen(
       hasValidLen
         ? GlobalStyles.colors.primaryDefault
@@ -196,7 +187,7 @@ const styles = StyleSheet.create({
   },
   pwBtn: {
     flexDirection: "row",
-    marginHorizontal: 20,
+    marginHorizontal: 16,
   },
   text: {
     fontSize: 15,
