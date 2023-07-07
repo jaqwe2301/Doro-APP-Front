@@ -94,15 +94,16 @@ function MyPageScreen({ navigation }) {
       try {
         const response = await logout();
 
-        authCtx.logout();
         console.log(response);
-        if (response.data.success) {
+        if (response.status === 200) {
+          authCtx.logout();
         }
       } catch (error) {
         // navigation.navigate("login");
 
         authCtx.logout();
         console.log(error);
+        console.log("에러났쪄염");
       }
     }
 
