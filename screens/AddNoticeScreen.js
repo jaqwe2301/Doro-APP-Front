@@ -235,31 +235,59 @@ function AddNoticeScreen({ navigation }) {
     }
   };
 
+  // async function completeHandler3() {
+  //   const formData = new FormData();
+  //   const announcementReq = {
+  //     title: title,
+  //     body: body,
+  //     writer: "z",
+  //   };
+  //   formData.append(
+  //     "announcementReq",
+  //     // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
+  //     // new Blob([{ title: "title", body: "body", writer: "노세인" }])
+  //     announcementReq
+  //     // JSON.stringify(value)
+  //     // value
+  //   );
+  //   try {
+  //     const response = await createAnnouncement({
+  //       formData: formData,
+  //       title: title,
+  //       body: body,
+  //     });
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log(JSON.stringify(formData));
+  //     console.log(error);
+  //   }
+  // }
+  
   async function completeHandler3() {
     const formData = new FormData();
     const announcementReq = {
       title: title,
       body: body,
-      writer: "노세인",
+      writer: "asda",
     };
-    formData.append(
-      "announcementReq",
-      // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
-      // new Blob([{ title: "title", body: "body", writer: "노세인" }])
-      announcementReq
-      // JSON.stringify(value)
-      // value
-    );
+
+    // announcementReq를 문자열로 변환한 후 Blob 객체로 만들어 formData에 추가
+    formData.append("announcementReq", new Blob([JSON.stringify(announcementReq)], { type: "application/json" }));
+
     try {
-      const response = await createAnnouncement({
-        formData: formData,
-        title: title,
-        body: body,
+      const response = await fetch(`${URL}/announcements`, { 
+          method: 'POST', 
+          body: formData 
       });
-      console.log(response);
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
     } catch (error) {
-      console.log(JSON.stringify(formData));
-      console.log(error);
+      console.error('Error during announcement creation:', error);
     }
   }
 
