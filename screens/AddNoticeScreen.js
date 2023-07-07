@@ -8,9 +8,15 @@ import {
   Keyboard,
   Image,
   Dimensions,
+  NativeModules,
+  KeyboardAvoidingView,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
-import { createAnnouncement, pushNotification } from "../utill/http";
+import {
+  createAnnouncement,
+  createAnnouncement2,
+  pushNotification,
+} from "../utill/http";
 import { useEffect, useState } from "react";
 import { WithLocalSvg } from "react-native-svg";
 import Camera from "../assets/camera.svg";
@@ -39,23 +45,30 @@ function AddNoticeScreen({ navigation }) {
       },
     ];
 
-    var json = JSON.stringify({ title: title, body: body });
+    var json = JSON.stringify({ title: "fgh", body: "hrt", writer: "hrt" });
     // var json = JSON.stringify(value);
 
     // // // Blob 객체로 JSON 데이터 생성
     var blob = new Blob([json], { type: "application/json" });
-
+    // if (imageUrl) {
+    //   formData.append("picture", {
+    //     uri: imageUrl,
+    //     type: mime.getType(imageUrl),
+    //     name: filename,
+    //   });
+    //   console.log("이미지 들어갔니");
+    // }
     // FormData에 Blob 객체 추가
     formData.append(
       "announcementReq",
-      // blob
       json
+      // json
       // // { title: title, body: body }
       // {
       //   contentType: "application/json",
       // }
     );
-    console.log(formData);
+    // console.log(formData);
     // formData.append(
     //   "announcementReq",
     //   new Blob([JSON.stringify(value)], { type: "application/json" })
@@ -73,15 +86,9 @@ function AddNoticeScreen({ navigation }) {
     //   console.log(value); // 각 값(value)을 출력
     // }
 
-    // if (imageUrl) {
-    //   formData.append("picture", {
-    //     uri: imageUrl,
-    //     type: type,
-    //     name: filename,
-    //   });
-    //   // const response = await fetch(imageUrl);
-    //   // const blob = await response.blob();
-    //   // formData.append("picture", json);
+    // const response = await fetch(imageUrl);
+    // const blob = await response.blob();
+    // formData.append("picture", json);
     // } else {
     //   formData.append("picture", "");
     // }
@@ -90,97 +97,98 @@ function AddNoticeScreen({ navigation }) {
     // console.log(formData.get("announcementReq"));
     // console.log(formData.keys);
 
-    // const response = await createAnnouncement({
-    //   formData: formData,
-    //   title: title,
-    //   body: body,
-    // });
+    const response = await createAnnouncement2({
+      formData: formData,
+      title: title,
+      body: body,
+      writer: "김동규",
+    });
     // const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
-    try {
-      const response = await axios.post(
-        `${URL}/announcements`,
-        // {
-        //   announcementReq: [
-        //     {
-        //       title: title,
-        //       body: body,
-        //     },
-        //   ],
-        //   picture: [
-        //     {
-        //       uri: imageUrl,
-        //       type: type,
-        //       name: filename,
-        //     },
-        //   ],
-        // },
-        // formData,
-        { announcementReq: json },
-        {
-          headers: {
-            "Content-Type": `multipart/form-data`,
-            //  boundary=${boundary}`,
-            // Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      // fetch(`${URL}/announcements/`, {
-      //   method: "POST",
-      //   // headers: {
-      //   //   // "Content-Type": "multipart/form-data",
-      //   //   Accept: "application/json",
-      //   // },
-      //   body: formData,
-      // })
-      //   .then((response) => response.json()) // JSON 형식으로 응답 데이터를 파싱
-      //   .then((data) => {
-      //     // 응답 데이터 처리
-      //     console.log(data);
-      //   })
-      //   .catch((error) => {
-      //     // 에러 처리
-      //     console.log(error);
-      //   });
-      // console.log("성공?" + response);
+    // try {
+    //   const response = await axios.post(
+    //     `${URL}/announcements`,
+    //     // {
+    //     //   announcementReq: [
+    //     //     {
+    //     //       title: title,
+    //     //       body: body,
+    //     //     },
+    //     //   ],
+    //     //   picture: [
+    //     //     {
+    //     //       uri: imageUrl,
+    //     //       type: type,
+    //     //       name: filename,
+    //     //     },
+    //     //   ],
+    //     // },
+    //     // formData,
+    //     { announcementReq: json },
+    //     {
+    //       headers: {
+    //         // "Content-Type": `multipart/form-data`,
+    //         //  boundary=${boundary}`,
+    //         // Authorization: `Bearer ${token}`,
+    //       },
+    //     }
+    //   );
+    // fetch(`${URL}/announcements/`, {
+    //   method: "POST",
+    //   // headers: {
+    //   //   // "Content-Type": "multipart/form-data",
+    //   //   Accept: "application/json",
+    //   // },
+    //   body: formData,
+    // })
+    //   .then((response) => response.json()) // JSON 형식으로 응답 데이터를 파싱
+    //   .then((data) => {
+    //     // 응답 데이터 처리
+    //     console.log(data);
+    //   })
+    //   .catch((error) => {
+    //     // 에러 처리
+    //     console.log(error);
+    //   });
+    // console.log("성공?" + response);
 
-      // console.log(response);
-      // if (response.success) {
-      //   navigation.replace("noticeScreen");
-      // }
+    // console.log(response);
+    // if (response.success) {
+    //   navigation.replace("noticeScreen");
+    // }
 
-      // let data = new FormData();
-      // data.append(
-      //   "announcementReq",
-      //   '{"title":"되냐 안되 ","body":"진아 모르겠나"}',
-      //   { contentType: "application/json" }
-      // );
-      // data.append("picture", {
-      //   uri: imageUrl,
-      //   type: type,
-      //   name: filename,
-      // });
+    // let data = new FormData();
+    // data.append(
+    //   "announcementReq",
+    //   '{"title":"되냐 안되 ","body":"진아 모르겠나"}',
+    //   { contentType: "application/json" }
+    // );
+    // data.append("picture", {
+    //   uri: imageUrl,
+    //   type: type,
+    //   name: filename,
+    // });
 
-      // let config = {
-      //   method: "post",
-      //   maxBodyLength: Infinity,
-      //   url: "${URL}/announcements",
-      //   headers: {
-      //     ...data.getHeaders(),
-      //   },
-      //   data: data,
-      // };
+    // let config = {
+    //   method: "post",
+    //   maxBodyLength: Infinity,
+    //   url: "${URL}/announcements",
+    //   headers: {
+    //     ...data.getHeaders(),
+    //   },
+    //   data: data,
+    // };
 
-      // axios
-      //   .request(config)
-      //   .then((response) => {
-      //     console.log(JSON.stringify(response.data));
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
-    } catch (error) {
-      console.log(error + "여기");
-    }
+    // axios
+    //   .request(config)
+    //   .then((response) => {
+    //     console.log(JSON.stringify(response.data));
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   //   });
+    // } catch (error) {
+    //   console.log(error + "여기");
+    // }
   }
 
   // async function completeHandler() {
@@ -233,71 +241,141 @@ function AddNoticeScreen({ navigation }) {
     }
   };
 
+  // async function completeHandler3() {
+  //   const formData = new FormData();
+  //   const announcementReq = {
+  //     title: title,
+  //     body: body,
+  //     writer: "z",
+  //   };
+  //   formData.append(
+  //     "announcementReq",
+  //     // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
+  //     // new Blob([{ title: "title", body: "body", writer: "노세인" }])
+  //     announcementReq
+  //     // JSON.stringify(value)
+  //     // value
+  //   );
+  //   try {
+  //     const response = await createAnnouncement({
+  //       formData: formData,
+  //       title: title,
+  //       body: body,
+  //     });
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log(JSON.stringify(formData));
+  //     console.log(error);
+  //   }
+  // }
+  
+  async function completeHandler3() {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("writer", "김동규");
+    if (imageUrl) {
+      formData.append("picture", {
+        uri: imageUrl,
+        type: type,
+        name: filename,
+      });
+    }
+    try {
+      const response = await createAnnouncement2({
+        formData: formData,
+      });
+      console.log(response);
+      if (response.code === "NOTI001" || response.success) {
+        navigation.replace("noticeScreen");
+      }
+    } catch (error) {
+      console.error('Error during announcement creation:', error);
+    }
+  }
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
         return (
-          <Pressable onPress={completeHandler2}>
-            <Text style={styles.completeText}>완료</Text>
+          <Pressable onPress={completeHandler3}>
+            <View style={styles.completeContainer}>
+              <Text style={styles.completeText}>완료</Text>
+            </View>
           </Pressable>
         );
       },
     });
-  }, [completeHandler2]);
+  }, [completeHandler3]);
 
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerBar} />
-      <ScrollView>
-        <Pressable onPress={() => Keyboard.dismiss()}>
-          <View style={styles.titleContainer}>
-            <TextInput
-              placeholder="제목"
-              style={styles.title}
-              placeholderTextColor={GlobalStyles.colors.gray03}
-              multiline
-              onChangeText={(text) => setTitle(text)}
-              value={title}
-            ></TextInput>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={styles.container}>
+        <View style={styles.headerBar} />
+        <ScrollView>
+          <Pressable onPress={() => Keyboard.dismiss()}>
+            <View style={styles.titleContainer}>
+              <TextInput
+                placeholder="제목"
+                style={styles.title}
+                placeholderTextColor={GlobalStyles.colors.gray03}
+                multiline
+                onChangeText={(text) => setTitle(text)}
+                value={title}
+              ></TextInput>
+            </View>
+            <View style={styles.contentContainer}>
+              <TextInput
+                placeholder="내용을 입력하세요."
+                style={styles.content}
+                multiline
+                value={body}
+                onChangeText={(text) => setBody(text)}
+                placeholderTextColor={GlobalStyles.colors.gray03}
+              ></TextInput>
+            </View>
+          </Pressable>
+          <View style={{ marginHorizontal: 20 }}>
+            {imageUrl && (
+              <Image
+                source={{ uri: imageUrl }}
+                style={{
+                  width: "100%",
+                  height: 500,
+                  resizeMode: "contain",
+                }}
+              />
+            )}
           </View>
-          <View style={styles.contentContainer}>
-            <TextInput
-              placeholder="내용을 입력하세요."
-              style={styles.content}
-              multiline
-              value={body}
-              onChangeText={(text) => setBody(text)}
-              placeholderTextColor={GlobalStyles.colors.gray03}
-            ></TextInput>
-          </View>
-        </Pressable>
-        <View style={{ marginHorizontal: 20 }}>
-          {imageUrl && (
-            <Image
-              source={{ uri: imageUrl }}
-              style={{
-                width: "100%",
-                height: 500,
-                resizeMode: "contain",
-              }}
-            />
-          )}
+        </ScrollView>
+        <View
+          style={{
+            height: 42,
+            borderTopWidth: 0.8,
+            borderTopColor: GlobalStyles.colors.gray04,
+            justifyContent: "center",
+            paddingLeft: 16,
+          }}
+        >
+          <WithLocalSvg asset={Camera} onPress={cameraHandler} />
         </View>
-      </ScrollView>
-      <View
-        style={{
-          height: 42,
-          borderTopWidth: 0.8,
-          borderTopColor: GlobalStyles.colors.gray04,
-          justifyContent: "center",
-          paddingLeft: 16,
-        }}
-      >
-        <WithLocalSvg asset={Camera} onPress={cameraHandler} />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -331,16 +409,18 @@ const styles = StyleSheet.create({
   completeText: {
     fontWeight: "400",
     fontSize: 15,
-    // lineHeight: 20,
-    width: 50,
-    height: 30,
-    borderRadius: 5.41,
     color: "white",
     textAlign: "center",
     textAlignVertical: "center",
-    // marginLeft: -4,
+    lineHeight: 20,
+  },
+  completeContainer: {
+    borderRadius: 5.41,
     backgroundColor: GlobalStyles.colors.primaryDefault,
 
-    lineHeight: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 11,
+    paddingVertical: 5,
   },
 });

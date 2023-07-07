@@ -6,6 +6,7 @@ function InputData({
   onChangeText,
   keyboardType,
   secureTextEntry,
+  readOnly,
 }) {
   return (
     <View>
@@ -18,6 +19,7 @@ function InputData({
         value={value}
         autoCapitalize="none"
         secureTextEntry={secureTextEntry}
+        readOnly={readOnly}
       />
     </View>
   );

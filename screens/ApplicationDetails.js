@@ -4,6 +4,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   FlatList,
+  Alert,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useEffect, useState, useContext } from "react";
@@ -13,6 +14,7 @@ import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
+import { KRRegular } from "../constants/fonts";
 
 function ApplicationDetails({ route }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
@@ -95,7 +97,6 @@ function ApplicationDetails({ route }) {
         })`,
       },
     ]);
-    console.log("use");
   }, [recruiting, allocation, finished]);
 
   const dateControl = (stringDate) => {
@@ -118,6 +119,58 @@ function ApplicationDetails({ route }) {
     controlfinished(finished);
   };
 
+  const deleteLecture = (id, subTitle) => {
+    console.log(id);
+    Alert.alert(
+      "주의!",
+      "동일한 강의 중 다른 역할로 신청한 내역도 취소됩니다. 괜찮으십니까?",
+      [
+        { text: "취소", onPress: () => {}, style: "cancel" },
+        {
+          text: "확인",
+          onPress: () => {
+            Alert.alert(
+              subTitle,
+              "강의 신청을 취소하시겠습니까?",
+              [
+                { text: "취소", onPress: () => {}, style: "cancel" },
+                {
+                  text: "확인",
+                  onPress: () => {
+                    console.log("강의 취소 완료");
+                  },
+                  style: "destructive",
+                },
+              ],
+              {
+                cancelable: true,
+                onDismiss: () => {},
+              }
+            );
+          },
+          style: "destructive",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      }
+    );
+
+    // axios
+    //   .delete(`${URL}/users-lectures/users/${id}`, {
+    //     headers: {
+    //       // 헤더에 필요한 데이터를 여기에 추가
+    //       "Content-Type": "application/json",
+    //     },
+    //   })
+    //   .then((res) => {})
+    //   .catch((error) => {
+    //     console.log("에러");
+    //     console.log(error);
+    //   });
+  };
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
@@ -130,18 +183,22 @@ function ApplicationDetails({ route }) {
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
+              console.log(data);
               return (
                 <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => {}}
+                  lectureIdHandler={() => console.log("클릭")}
                   id=""
                   dateTypeValue={dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
                   tutorRole={data.item.tutorRole}
+                  onPressX={() =>
+                    deleteLecture(data.item.id, data.item.subTitle)
+                  }
                 />
               );
             }}
@@ -205,7 +262,7 @@ function ApplicationDetails({ route }) {
 
   return (
     <>
-      <View style={{ backgroundColor: "white", height: 40 }} />
+      <View style={{ backgroundColor: "white", height: 30 }} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -223,22 +280,38 @@ function ApplicationDetails({ route }) {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
-              height: 34,
+              height: 30,
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
+            // renderLabel={({ route, focused, color }) => (
+            //   <Text
+            //     style={
+            //       focused
+            //         ? {
+            //             margin: 0,
+            //             fontSize: 15,
+            //             color: "black",
+            //             fontWeight: "bold",
+            //           }
+            //         : { margin: 0, fontSize: 15, color: "black" }
+            //     }
+            //   >
+            //     {route.title}
+            //   </Text>
+            // )}
             renderLabel={({ route, focused, color }) => (
               <Text
                 style={
                   focused
-                    ? {
-                        // margin: 0,
-                        width: 100,
-                        fontSize: 15,
-                        color: "black",
-                        fontWeight: "bold",
-                      }
-                    : { margin: 0, fontSize: 15, color: "black" }
+                    ? [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray01 },
+                      ]
+                    : [
+                        KRRegular.Subheadline,
+                        { color: GlobalStyles.colors.gray05 },
+                      ]
                 }
               >
                 {route.title}
@@ -261,7 +334,8 @@ export default ApplicationDetails;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 14,
+    paddingTop: 14,
     paddingHorizontal: 20,
+    backgroundColor: GlobalStyles.colors.gray07,
   },
 });

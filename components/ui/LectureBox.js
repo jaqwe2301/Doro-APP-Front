@@ -42,7 +42,11 @@ function LectureBox(props) {
     : "";
 
   return (
-    <Pressable key={props.id} onPress={props.lectureIdHandler}>
+    <Pressable
+      style={styles.container}
+      key={props.id}
+      onPress={props.lectureIdHandler}
+    >
       <View style={[styles.colorCover, { backgroundColor: props.colors }]}>
         <View
           style={[
@@ -96,6 +100,13 @@ function LectureBox(props) {
 export default LectureBox;
 
 const styles = StyleSheet.create({
+  container: {
+    // elevation: 2,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    shadowOpacity: 0.3, // 그림자의 투명도
+    shadowRadius: 1.5, // 그
+  },
   mainTitle: {
     fontSize: 17,
     fontWeight: "bold",

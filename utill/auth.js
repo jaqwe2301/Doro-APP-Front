@@ -1,5 +1,6 @@
 import axios from "axios";
 import { URL } from "./config";
+import { Alert } from "react-native";
 
 // const URL = "https://api.doroapp.com";
 // const URL = "http://10.0.2.2:8080";
@@ -106,6 +107,7 @@ export async function signUp({
   generation,
   major,
   name,
+  notificationAgreement,
   password,
   passwordCheck,
   phone,
@@ -123,6 +125,7 @@ export async function signUp({
       generation,
       major,
       name,
+      notificationAgreement,
       password,
       passwordCheck,
       phone,
@@ -139,6 +142,7 @@ export async function signUp({
       generation: generation,
       major: major,
       name: name,
+      notificationAgreement: notificationAgreement,
       password: password,
       passwordCheck: passwordCheck,
       phone: phone,
@@ -148,7 +152,12 @@ export async function signUp({
       studentStatus: studentStatus,
     });
     console.log(response.data);
+    if (!response.data.success) {
+      Alert.alert("회원가입 오류", response.data.message);
+    }
+    return response;
   } catch (error) {
     console.log(error);
+    console.log("여긴가");
   }
 }

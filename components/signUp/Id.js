@@ -6,6 +6,7 @@ import {
   NativeModules,
   Platform,
   KeyboardAvoidingView,
+  SafeAreaView,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 
@@ -18,11 +19,11 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { checkAccount } from "../../utill/auth";
-function Id({ navigation }) {
+function Id({ navigation, route }) {
   const [inputId, setInputId] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [isNavi, setIsNavi] = useState(false);
-  // const statusBarHeight = route.params.h;
+  const statusBarHeight = route.params.h;
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -53,9 +54,8 @@ function Id({ navigation }) {
 
         if (response.success) {
           setSignData({ ...signData, account: inputId });
-          navigation.navigate("pw");
+          navigation.navigate("pw", { h: statusBarHeight });
         } else {
-          Alert.alert("Error", "이미 존재하는 아이디입니다.");
           setIsVisible(true);
         }
       } catch (error) {
@@ -66,53 +66,55 @@ function Id({ navigation }) {
     }
   }
 
-  const { StatusBarManager } = NativeModules;
-  const [statusBarHeight, setStatusBarHeight] = useState(0);
-  useEffect(() => {
-    if (Platform.OS === "ios") {
-      StatusBarManager.getHeight((statusBarFrameData) => {
-        setStatusBarHeight(statusBarFrameData.height);
-      });
-    }
-  }, []);
+  // const { StatusBarManager } = NativeModules;
+  // const [statusBarHeight, setStatusBarHeight] = useState(0);
+  // useEffect(() => {
+  //   if (Platform.OS === "ios") {
+  //     StatusBarManager.getHeight((statusBarFrameData) => {
+  //       setStatusBarHeight(statusBarFrameData.height);
+  //     });
+  //   }
+  // }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar num={1} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={
-          Platform.OS === "ios" ? 44 + statusBarHeight : 0
-        }
-      >
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <View>
-            <View style={styles.textContainer}>
-              <InputText text="아이디를 입력해 주세요." />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Bar num={1} />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
+          keyboardVerticalOffset={
+            Platform.OS === "ios" ? 44 + statusBarHeight : 0
+          }
+        >
+          <View style={{ flex: 1, justifyContent: "space-between" }}>
+            <View>
+              <View style={styles.textContainer}>
+                <InputText text="아이디를 입력해 주세요." />
+              </View>
+              <Text style={styles.text}>
+                입력하신 아이디는 로그인 시 사용됩니다.
+              </Text>
+              <View style={styles.inputContainer}>
+                <InputData
+                  hint="영문 또는 숫자 4~20자"
+                  onChangeText={handleIdChange}
+                  value={inputId}
+                />
+                {isVisible && (
+                  <Text style={styles.failText}>
+                    해당 아이디는 이미 존재합니다.
+                  </Text>
+                )}
+              </View>
             </View>
-            <Text style={styles.text}>
-              입력하신 아이디는 로그인 시 사용됩니다.
-            </Text>
-            <View style={styles.inputContainer}>
-              <InputData
-                hint="영문 또는 숫자 4~20자"
-                onChangeText={handleIdChange}
-                value={inputId}
-              />
-              {isVisible && (
-                <Text style={styles.failText}>
-                  해당 아이디는 이미 존재합니다.
-                </Text>
-              )}
+            <View style={styles.buttonContainer}>
+              <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
             </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    </View>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -154,14 +156,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
-  },
-  failText: {
-    color: GlobalStyles.colors.red,
-    fontSize: 12,
-    fontWeight: 400,
-    lineHeight: 17,
-    marginLeft: 10,
-    marginTop: 3,
   },
   failText: {
     color: GlobalStyles.colors.red,

@@ -6,12 +6,13 @@ import {
   Image,
   Pressable,
   Alert,
+  Platform,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
 
-import { getProfile } from "../utill/http";
+import { alarmEdit, getProfile, logout } from "../utill/http";
 import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderContext } from "../store/header-context";
@@ -19,6 +20,7 @@ import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
 import ManagerScreen from "./ManagerScreen";
+import { StackActions } from "@react-navigation/native";
 
 function MyPageScreen({ navigation }) {
   const [data, setData] = useState({});
@@ -28,7 +30,7 @@ function MyPageScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
-
+  const [notificationAgreement, setNotificationAgreement] = useState();
   useEffect(() => {
     profileHandler();
   }, []);
@@ -37,8 +39,8 @@ function MyPageScreen({ navigation }) {
     try {
       const response = await getProfile({ id: headerId });
 
-      setData(response);
-      console.log(response);
+      setData(response.data);
+      console.log(JSON.stringify(response) + "여기임");
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -46,7 +48,33 @@ function MyPageScreen({ navigation }) {
     }
   }
 
-  function alarmHandler() {}
+  async function alarmEditHandler({ notificationAgreement }) {
+    try {
+      const response = await alarmEdit({
+        id: headerId,
+        notificationAgreement: notificationAgreement,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function alarmHandler() {
+    Alert.alert(
+      "'DORO'에서 알림을 보내고자 합니다.",
+      "경고, 사운드 및 아이콘 배지가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다.",
+      [
+        {
+          text: Platform.OS === "ios" ? "허용             " : "허용",
+          onPress: () => alarmEditHandler({ notificationAgreement: true }),
+        },
+        {
+          text: Platform.OS === "ios" ? "허용 안함            " : "허용 안함",
+          onPress: () => alarmEditHandler({ notificationAgreement: false }),
+        },
+      ]
+    );
+  }
 
   // function ManagerScreen() {
   //   return <ManagerScreen />;
@@ -58,12 +86,33 @@ function MyPageScreen({ navigation }) {
         {
           text: "취소",
         },
-        { text: "확인", onPress: () => authCtx.logout() },
+        { text: "확인", onPress: logoutApi },
       ]);
     }
 
+    async function logoutApi() {
+      try {
+        const response = await logout();
+
+        console.log(response);
+        if (response.status === 200) {
+          authCtx.logout();
+        }
+      } catch (error) {
+        // navigation.navigate("login");
+
+        authCtx.logout();
+        console.log(error);
+        console.log("에러났쪄염");
+      }
+    }
+
     // if (Object.keys(data).length === 0) {
-    if (isLoading) {
+    if (
+      isLoading ||
+      data === undefined
+      // (data !== undefined || data !== null || data.degree !== undefined)
+    ) {
       return (
         <View style={{ marginBottom: 33 }}>
           <Pressable onPress={logoutHandler}>
@@ -78,7 +127,7 @@ function MyPageScreen({ navigation }) {
     } else {
       const status =
         data.degree.studentStatus === "ATTENDING" ? "재학" : "휴학";
-      console.log(data.profileImg);
+
       return (
         <View style={styles.container}>
           <ScrollView>
@@ -276,10 +325,14 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     backgroundColor: "white",
     elevation: 3,
-    shadowColor: GlobalStyles.colors.gray03,
+    // shadowColor: GlobalStyles.colors.gray03,
+    // shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
+    // shadowOpacity: 0.6, // 그림자의 투명도
+    // shadowRadius: 1, // 그
+    shadowColor: "black",
     shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
-    shadowOpacity: 0.6, // 그림자의 투명도
-    shadowRadius: 1, // 그
+    shadowOpacity: 0.3, // 그림자의 투명도
+    shadowRadius: 0.7, // 그
   },
   btn: {
     fontSize: 10,

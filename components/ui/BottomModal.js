@@ -20,6 +20,7 @@ function BottomModal({
   plusVisible,
   data,
   onPressPlus,
+  onPress,
 }) {
   return (
     <Modal transparent={true} visible={visible}>
@@ -32,18 +33,7 @@ function BottomModal({
               </View>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: "bold" }}>{title}</Text>
-            <Pressable
-              onPress={() => {
-                addContentsModalHandler(true);
-                setContentsData({
-                  content: "",
-                  kit: "",
-                  detail: "",
-                  remark: "",
-                  requirement: "",
-                });
-              }}
-            >
+            <Pressable onPress={onPressPlus}>
               <View style={styles.topButton}>
                 {plusVisible ? (
                   <Pressable onPress={onPressPlus}>
@@ -60,9 +50,7 @@ function BottomModal({
             data={data}
             renderItem={(data) => {
               return (
-                <Pressable
-                  onPress={() => selectingLectureContents(data.item.id)}
-                >
+                <Pressable onPress={() => onPress(data.item.id)}>
                   <View style={styles.modalTextContainer}>
                     <Text style={styles.modalText}>{data.item.kit}</Text>
                   </View>

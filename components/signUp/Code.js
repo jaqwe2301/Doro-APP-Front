@@ -7,6 +7,8 @@ import {
   Modal,
   Platform,
   NativeModules,
+  Alert,
+  SafeAreaView,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 
@@ -29,10 +31,11 @@ import CheckboxAfter from "../../assets/checkbox_after.svg";
 import Right from "../../assets/right.svg";
 import Down from "../../assets/down.svg";
 import Xmark from "../../assets/xmark_black.svg";
+import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
 
-function Code({ navigation }) {
+function Code({ navigation, route }) {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
   const [inputGeneration, setInputGeneration] = useState(0);
@@ -53,31 +56,29 @@ function Code({ navigation }) {
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
 
   const { signData, setSignData } = useContext(SignContext);
-  const [flex1, setFlex1] = useState(9);
-  const flex2 = 10 - flex1;
 
   const [accept1, setAccept1] = useState(false);
   const [accept2, setAccept2] = useState(false);
+  const notificationAgreement = route.params.notificationAgreement;
 
   const handleCodeChange = (text) => {
     setInputCode(text);
   };
 
   useEffect(() => {
-    useEffect(() => {
-      setlbtnColor(
-        inputRole !== "" &&
-          inputCode !== "" &&
-          accept1 &&
-          accept2 &&
-          inputGeneration
-          ? GlobalStyles.colors.primaryDefault
-          : GlobalStyles.colors.gray05
-      );
-    }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
+    setlbtnColor(
+      inputRole !== "" &&
+        inputCode !== "" &&
+        accept1 &&
+        accept2 &&
+        inputGeneration
+        ? GlobalStyles.colors.primaryDefault
+        : GlobalStyles.colors.gray05
+    );
+    console.log(notificationAgreement + " 여긴 code");
   }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
 
-  function navigateId() {
+  async function navigateId() {
     if (
       inputRole !== "" &&
       inputCode !== "" &&
@@ -85,149 +86,120 @@ function Code({ navigation }) {
       accept2 &&
       inputGeneration
     ) {
-      if (
-        inputRole !== "" &&
-        inputCode !== "" &&
-        accept1 &&
-        accept2 &&
-        inputGeneration
-      ) {
-        signUp({
-          account: signData.account,
-          birth: signData.birth,
-          doroAuth: inputCode,
-          gender: "FEMALE",
-          generation: inputGeneration,
-          generation: inputGeneration,
-          major: signData.major,
-          name: signData.name,
-          password: signData.password,
-          passwordCheck: signData.passwordCheck,
-          phone: signData.phone,
-          role: inputRole,
-          profileImg: "",
-          school: signData.school,
-          studentId: signData.studentId,
-          studentStatus: signData.studentStatus,
-        });
-        navigation.navigate("finish", { h: statusBarHeight });
+      const response = await signUp({
+        account: signData.account,
+        birth: signData.birth,
+        // birth: "2000-06-23",
+        doroAuth: inputCode,
+        gender: "FEMALE",
+        generation: inputGeneration,
+        major: signData.major,
+        name: signData.name,
+        notificationAgreement: notificationAgreement,
+        password: signData.password,
+        passwordCheck: signData.passwordCheck,
+        phone: signData.phone,
+        role: inputRole,
+        profileImg: "",
+        school: signData.school,
+        studentId: signData.studentId,
+        studentStatus: signData.studentStatus,
+      });
+
+      if (response.data.success) {
+        navigation.navigate("finish");
+      }
+    } else {
+    }
+  }
+
+  function naviAgreeInfo() {
+    navigation.navigate("agreeInfo");
+  }
+  function statusSelect() {
+    if (display1 === "none") {
+      setDispaly1("flex");
+      setDispaly2("none");
+    } else {
+      setDispaly1("none");
+      setDispaly2("flex");
+    }
+  }
+
+  function generationSelect1() {
+    setCDisplay1("flex");
+    setCDisplay2("none");
+    setCDisplay3("none");
+    setCDisplay4("none");
+  }
+  function generationSelect2() {
+    setCDisplay1("none");
+    setCDisplay2("flex");
+    setCDisplay3("none");
+    setCDisplay4("none");
+  }
+  function generationSelect3() {
+    setCDisplay1("none");
+    setCDisplay2("none");
+    setCDisplay3("flex");
+    setCDisplay4("none");
+  }
+  function generationSelect4() {
+    setCDisplay1("none");
+    setCDisplay2("none");
+    setCDisplay3("none");
+    setCDisplay4("flex");
+  }
+
+  function okayBtn() {
+    if (display1 === "flex" || display2 === "flex") {
+      setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
+      setSelect(display1 === "none" ? "매니저" : "강사");
+      setStatusStyle(styles.textInputText);
+
+      setVisible(!visible);
+    } else {
+      setVisible(!visible);
+    }
+  }
+  function okayBtn2() {
+    if (
+      cdisplay1 === "flex" ||
+      cdisplay2 === "flex" ||
+      cdisplay3 === "flex" ||
+      cdisplay4 === "flex"
+    ) {
+      if (cdisplay1 === "flex") {
+        setInputGeneration(0);
+        setSelectCode("0기");
+      } else if (cdisplay2 === "flex") {
+        setInputGeneration(1);
+        setSelectCode("1기");
+      } else if (cdisplay3 === "flex") {
+        setInputGeneration(2);
+        setSelectCode("2기");
       } else {
+        setInputGeneration(3);
+        setSelectCode("3기");
       }
-    }
+      setStatusGStyle(styles.textInputText);
 
-    function naviAgreeInfo() {
-      navigation.navigate("agreeInfo");
+      setVisibleCode(!visibleCode);
+    } else {
+      setVisibleCode(!visibleCode);
     }
-    function statusSelect() {
-      if (display1 === "none") {
-        setDispaly1("flex");
-        setDispaly2("none");
-      } else {
-        setDispaly1("none");
-        setDispaly2("flex");
-      }
+  }
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
     }
-
-    function generationSelect1() {
-      setCDisplay1("flex");
-      setCDisplay2("none");
-      setCDisplay3("none");
-      setCDisplay4("none");
-    }
-    function generationSelect2() {
-      setCDisplay1("none");
-      setCDisplay2("flex");
-      setCDisplay3("none");
-      setCDisplay4("none");
-    }
-    function generationSelect3() {
-      setCDisplay1("none");
-      setCDisplay2("none");
-      setCDisplay3("flex");
-      setCDisplay4("none");
-    }
-    function generationSelect4() {
-      setCDisplay1("none");
-      setCDisplay2("none");
-      setCDisplay3("none");
-      setCDisplay4("flex");
-    }
-
-    function generationSelect1() {
-      setCDisplay1("flex");
-      setCDisplay2("none");
-      setCDisplay3("none");
-      setCDisplay4("none");
-    }
-    function generationSelect2() {
-      setCDisplay1("none");
-      setCDisplay2("flex");
-      setCDisplay3("none");
-      setCDisplay4("none");
-    }
-    function generationSelect3() {
-      setCDisplay1("none");
-      setCDisplay2("none");
-      setCDisplay3("flex");
-      setCDisplay4("none");
-    }
-    function generationSelect4() {
-      setCDisplay1("none");
-      setCDisplay2("none");
-      setCDisplay3("none");
-      setCDisplay4("flex");
-    }
-
-    function okayBtn() {
-      if (display1 === "flex" || display2 === "flex") {
-        setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
-        setSelect(display1 === "none" ? "매니저" : "강사");
-        setStatusStyle(styles.textInputText);
-        setFlex1(9);
-
-        setVisible(!visible);
-      } else {
-        setVisible(!visible);
-      }
-    }
-    function okayBtn2() {
-      if (
-        cdisplay1 === "flex" ||
-        cdisplay2 === "flex" ||
-        cdisplay3 === "flex" ||
-        cdisplay4 === "flex"
-      ) {
-        if (cdisplay1 === "flex") {
-          setInputGeneration(0);
-          setSelectCode("0기");
-        } else if (cdisplay2 === "flex") {
-          setInputGeneration(1);
-          setSelectCode("1기");
-        } else if (cdisplay3 === "flex") {
-          setInputGeneration(2);
-          setSelectCode("2기");
-        } else {
-          setInputGeneration(3);
-          setSelectCode("3기");
-        }
-        setStatusGStyle(styles.textInputText);
-        setFlex1(9);
-
-        setVisibleCode(!visibleCode);
-      } else {
-        setVisibleCode(!visibleCode);
-      }
-    }
-    const { StatusBarManager } = NativeModules;
-    const [statusBarHeight, setStatusBarHeight] = useState(0);
-    useEffect(() => {
-      if (Platform.OS === "ios") {
-        StatusBarManager.getHeight((statusBarFrameData) => {
-          setStatusBarHeight(statusBarFrameData.height);
-        });
-      }
-    }, []);
-    return (
+  }, []);
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <Bar num={3} />
         <KeyboardAvoidingView
@@ -480,7 +452,7 @@ function Code({ navigation }) {
                   <View style={styles.statusTitleContainer}>
                     <View style={styles.iconContainer}>
                       <Pressable onPress={() => setVisibleCode(!visibleCode)}>
-                        <Ionicons name="close-outline" size={40} />
+                        <WithLocalSvg asset={Modalx} />
                       </Pressable>
                     </View>
                     <Text style={styles.statusTitle}>가입 유형</Text>
@@ -493,7 +465,7 @@ function Code({ navigation }) {
                     <View
                       style={[styles.iconContainer2, { display: cdisplay1 }]}
                     >
-                      <Ionicons name="checkmark" size={30} />
+                      <WithLocalSvg asset={ModalCheck} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -504,7 +476,7 @@ function Code({ navigation }) {
                     <View
                       style={[styles.iconContainer2, { display: cdisplay2 }]}
                     >
-                      <Ionicons name="checkmark" size={30} />
+                      <WithLocalSvg asset={ModalCheck} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -515,7 +487,7 @@ function Code({ navigation }) {
                     <View
                       style={[styles.iconContainer2, { display: cdisplay3 }]}
                     >
-                      <Ionicons name="checkmark" size={30} />
+                      <WithLocalSvg asset={ModalCheck} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -526,7 +498,7 @@ function Code({ navigation }) {
                     <View
                       style={[styles.iconContainer2, { display: cdisplay4 }]}
                     >
-                      <Ionicons name="checkmark" size={30} />
+                      <WithLocalSvg asset={ModalCheck} />
                     </View>
                   </Pressable>
                 </View>
@@ -542,8 +514,8 @@ function Code({ navigation }) {
           </Pressable>
         </Modal>
       </View>
-    );
-  }
+    </SafeAreaView>
+  );
 }
 
 export default Code;
@@ -588,7 +560,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 600,
     lineHeight: 22,
-    marginLeft: 19,
     marginLeft: 19,
     color: GlobalStyles.colors.gray05,
   },
