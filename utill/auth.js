@@ -155,6 +155,7 @@ export async function signUp({
     if (!response.data.success) {
       Alert.alert("회원가입 오류", response.data.message);
     }
+    return response;
   } catch (error) {
     console.log(error);
     console.log("여긴가");
