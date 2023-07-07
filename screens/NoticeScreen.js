@@ -105,12 +105,12 @@ function NoticeScreen({ navigation }) {
         onEndReachedThreshold={0.5}
       />
       {headerRole === "ROLE_ADMIN" ? (
-        <Pressable onPress={naviAddHandler}>
-          <View style={styles.plusBtn}>
+        <View style={styles.plusBtn}>
+          <Pressable onPress={naviAddHandler}>
             {/* <Image source={require("../assets/plus.png")} /> */}
             <WithLocalSvg asset={Add} />
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
       ) : (
         <View />
       )}
