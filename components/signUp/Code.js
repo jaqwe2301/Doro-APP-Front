@@ -7,6 +7,7 @@ import {
   Modal,
   Platform,
   NativeModules,
+  Alert,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 
@@ -29,6 +30,7 @@ import CheckboxAfter from "../../assets/checkbox_after.svg";
 import Right from "../../assets/right.svg";
 import Down from "../../assets/down.svg";
 import Xmark from "../../assets/xmark_black.svg";
+import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
 
@@ -75,7 +77,7 @@ function Code({ navigation, route }) {
     console.log(notificationAgreement + " 여긴 code");
   }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
 
-  function navigateId() {
+  async function navigateId() {
     if (
       inputRole !== "" &&
       inputCode !== "" &&
@@ -83,7 +85,7 @@ function Code({ navigation, route }) {
       accept2 &&
       inputGeneration
     ) {
-      signUp({
+      const response = await signUp({
         account: signData.account,
         birth: signData.birth,
         doroAuth: inputCode,
@@ -101,7 +103,10 @@ function Code({ navigation, route }) {
         studentId: signData.studentId,
         studentStatus: signData.studentStatus,
       });
-      navigation.navigate("finish", { h: statusBarHeight });
+
+      if (response.data.success) {
+        navigation.navigate("finish");
+      }
     } else {
     }
   }
