@@ -36,7 +36,7 @@ function UpdateLectureScreen({ route }) {
     city: "",
     lectureDate: {
       enrollEndDate: "",
-      enrollStartDate: new Date(),
+      enrollStartDate: new Date().toISOString().split("T")[0],
     },
     lectureContentId: null,
     lectureDates: [],
@@ -187,6 +187,7 @@ function UpdateLectureScreen({ route }) {
         .catch((error) => {
           console.log("에러");
           console.log(error);
+          console.log(lecturedata);
         });
     } else if (option === "update") {
       axios
@@ -342,7 +343,7 @@ function UpdateLectureScreen({ route }) {
   const onConfirm = (pickedDate) => {
     // 신청 마감
     if (mode === "date" && inputIdx === -1) {
-      handleSingleInputChange(pickedDate, "enrollEndDate");
+      handleSingleInputChange(pickedDate.toISOString().split('T')[0], "enrollEndDate");
       // 일자
     } else if (mode === "date") {
       // 화면에 보이는 데이터
@@ -350,7 +351,7 @@ function UpdateLectureScreen({ route }) {
 
       setLectureData((prev) => {
         let data = prev;
-        data.lectureDates[inputIdx] = pickedDate;
+        data.lectureDates[inputIdx] = pickedDate.toISOString().split('T')[0];
         console.log(data);
         return data;
       });
@@ -625,6 +626,7 @@ function UpdateLectureScreen({ route }) {
                   requirement: "",
                 });
               }}
+              onPress={selectingLectureContents}
               data={lectureContents}
               title="교육 목록"
             />
