@@ -175,57 +175,68 @@ export async function getAnnouncement({ page, size }) {
   }
 }
 
-export async function createAnnouncement({ title, body }) {
+export async function createAnnouncement({ formData, title, body }) {
   try {
-    // const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem("token");
 
     console.log("여긴 http파일");
     // const announcementReq = new Blob(
     //   [JSON.stringify({ title: title, body: body })],
     //   { type: "application/json" }
     // );
-    const formData = new FormData();
+    // const formData = new FormData();
     // formData.append("announcementReq", {
     //   title: title,
     //   body: body,
     //   writer: "노세인",
     // });
-    const obj = { title: title, body: body, writer: "노세인" };
-    const blob = new Blob([JSON.stringify(obj, undefined, 2)], {
-      type: "application/json",
-    });
-    formData.append("announcementReq", blob);
-    console.log(JSON.stringify(formData));
-
-    const response = await instance.post(
-      "/announcements",
-      // { announcementReq: announcementReq, picture: formData },
-      // formData
-      // {
-      //   announcementReq: {
-      //     // announcementReq: JSON.stringify({
-      //     title: title,
-      //     body: body,
-      //     writer: "노세인",
-      //   },
-      //   // }),
-      // },
-      formData,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data;",
+    // const obj = { title: title, body: body, writer: "노세인" };
+    // const blob = new Blob([JSON.stringify(obj)], {
+    //   type: "application/json",
+    // });
+    // formData.append("announcementReq", JSON.stringify([obj]));
+    // formData.append("announcementReq", blob);
+    console.log("폼데이터" + JSON.stringify(formData));
+    const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
+    const response = await axios
+      .post(
+        URL + "/announcements",
+        // { announcementReq: announcementReq, picture: formData },
+        // formData
+        {
+          // announcementReq: {
+          announcementReq: JSON.stringify({
+            title: title,
+            body: body,
+            writer: "노세인",
+            // },
+          }),
         },
-        transformRequest: (data, header) => data,
-        // transformRequest: [
-        //   function (data, headers) {
-        //     // Do whatever you want to transform the data
-
-        //     return JSON.stringify(data);
-        //   },
-        // ],
-      }
-    );
+        // formData,
+        /// formData,
+        {
+          headers: {
+            Accept: "application/json",
+            "content-type": `multipart/form-data; boundary=${boundary}`,
+            //"Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+          //transformRequest: (data, header) => data,
+          transformRequest: [
+            function (data, headers) {
+              // Do whatever you want to transform the data
+              return JSON.stringify(data);
+            },
+          ],
+        }
+      )
+      .then((res) => {
+        console.log("then 리턴" + res);
+        return res;
+      })
+      .catch((e) => {
+        console.log("post 내 에러" + e);
+      });
     console.log(response);
     return response;
   } catch (error) {
@@ -234,21 +245,35 @@ export async function createAnnouncement({ title, body }) {
       // that falls out of the range of 2xx
       console.log(error.response.data);
       console.log(error.response.status);
-      console.log(error.response.headers);
-    } else if (error.request) {
+      console.log(JSON.stringify(error.response.headers) + "response");
+    }
+    if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
-      console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
+      console.log(JSON.stringify(error.request) + "리퀘스트");
     }
+    // Something happened in setting up the request that triggered an Error
+    console.log("Error", error.message);
+    console.log(error);
 
     throw error;
   }
 }
 
+export async function createAnnouncement2({ formData }) {
+  try {
+    const response = await instance.post("/announcements/dto", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
 export async function editAnnouncement({ formData, id }) {
   try {
     const response = await instance.patch(
@@ -349,21 +374,22 @@ export async function logout() {
     const response = await instance.post("/logout");
     return response;
   } catch (error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
-    }
+    // if (error.response) {
+    //   // The request was made and the server responded with a status code
+    //   // that falls out of the range of 2xx
+    //   console.log(error.response.data);
+    //   console.log(error.response.status);
+    //   console.log(error.response.headers);
+    // } else if (error.request) {
+    //   // The request was made but no response was received
+    //   // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    //   // http.ClientRequest in node.js
+    //   console.log(error.request);
+    // } else {
+    //   // Something happened in setting up the request that triggered an Error
+    //   console.log("Error", error.message);
+    // }
+    console.log("로그아웃 에러", error);
     throw error;
   }
 }

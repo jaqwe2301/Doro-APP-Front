@@ -24,7 +24,7 @@ import TutorBox from "../components/ui/TutorBox";
 import ButtonBig from "../components/ui/ButtonBig";
 import LectureBox from "../components/ui/LectureBox";
 
-import { getProfile, pushNotification } from "../utill/http";
+import { getProfile, logout, pushNotification } from "../utill/http";
 import { KRRegular } from "../constants/fonts";
 
 function ManagerScreen() {
@@ -198,12 +198,28 @@ function ManagerScreen() {
     { key: "third", title: "알림 발송" },
   ]);
 
+  async function logoutApi() {
+    try {
+      const response = await logout();
+
+      console.log(response);
+      if (response.status === 200) {
+        authCtx.logout();
+      }
+    } catch (error) {
+      // navigation.navigate("login");
+
+      authCtx.logout();
+      console.log(error);
+      console.log("에러났쪄염");
+    }
+  }
   function logoutHandler() {
     Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
       {
         text: "취소",
       },
-      { text: "확인", onPress: () => authCtx.logout() },
+      { text: "확인", onPress: logoutApi },
     ]);
   }
 
