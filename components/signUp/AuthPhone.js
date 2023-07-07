@@ -19,6 +19,7 @@ import InputData from "../ui/InputData";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import Timer from "../feat/Timer";
+import { SafeAreaView } from "react-native";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
@@ -92,61 +93,67 @@ function AuthPhone() {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar num={1} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={
-          Platform.OS === "ios" ? 44 + statusBarHeight : 0
-        }
-      >
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <View>
-            <View style={styles.textContainer}>
-              <InputText text="휴대폰 번호를 알려주세요." />
-            </View>
-            <Text style={styles.text}>
-              입력하신 번호로 인증번호가 전송됩니다.
-            </Text>
-            <View style={styles.inputContainer}>
-              <View style={styles.input}>
-                <InputData
-                  hint="휴대폰 번호"
-                  onChangeText={handlePhoneChange}
-                  value={phoneNum}
-                  keyboardType="numeric"
-                />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Bar num={1} />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
+          keyboardVerticalOffset={
+            Platform.OS === "ios" ? 44 + statusBarHeight : 0
+          }
+        >
+          <View style={{ flex: 1, justifyContent: "space-between" }}>
+            <View>
+              <View style={styles.textContainer}>
+                <InputText text="휴대폰 번호를 알려주세요." />
               </View>
-              <View>
-                <ButtonSmall
-                  title={btnTitle}
-                  onPress={requestNumber}
-                  style={sbtnColor}
-                />
-              </View>
-            </View>
-            {isVisible && (
-              <>
-                <View style={styles.lInputContainer}>
+              <Text style={styles.text}>
+                입력하신 번호로 인증번호가 전송됩니다.
+              </Text>
+              <View style={styles.inputContainer}>
+                <View style={styles.input}>
                   <InputData
-                    hint="인증번호"
-                    value={authNum}
-                    onChangeText={handleAuthChange}
+                    hint="휴대폰 번호"
+                    onChangeText={handlePhoneChange}
+                    value={phoneNum}
                     keyboardType="numeric"
                   />
-                  <Timer count={count} setCount={setCount} />
                 </View>
-                <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
-              </>
-            )}
+                <View>
+                  <ButtonSmall
+                    title={btnTitle}
+                    onPress={requestNumber}
+                    style={sbtnColor}
+                  />
+                </View>
+              </View>
+              {isVisible && (
+                <>
+                  <View style={styles.lInputContainer}>
+                    <InputData
+                      hint="인증번호"
+                      value={authNum}
+                      onChangeText={handleAuthChange}
+                      keyboardType="numeric"
+                    />
+                    <Timer count={count} setCount={setCount} />
+                  </View>
+                  <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
+                </>
+              )}
+            </View>
+            <View style={styles.buttonContainer}>
+              <ButtonBig
+                text="다음"
+                style={lbtnColor}
+                onPress={verifyAuthNum}
+              />
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <ButtonBig text="다음" style={lbtnColor} onPress={verifyAuthNum} />
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    </View>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 }
 

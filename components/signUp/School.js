@@ -7,6 +7,7 @@ import {
   Modal,
   Platform,
   NativeModules,
+  SafeAreaView,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 
@@ -24,7 +25,8 @@ import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
 import { KeyboardAvoidingView } from "react-native";
-function School({ navigation }) {
+function School({ navigation, route }) {
+  const statusBarHeight = route.params.h;
   const [inputSchool, setInputSchool] = useState("");
   const [inputMajor, setInputMajor] = useState("");
   const [inputStudentId, setInputStudentId] = useState("");
@@ -135,147 +137,153 @@ function School({ navigation }) {
     }
   }
 
-  const { StatusBarManager } = NativeModules;
-  const [statusBarHeight, setStatusBarHeight] = useState(0);
-  useEffect(() => {
-    if (Platform.OS === "ios") {
-      StatusBarManager.getHeight((statusBarFrameData) => {
-        setStatusBarHeight(statusBarFrameData.height);
-      });
-    }
-  }, []);
+  // const { StatusBarManager } = NativeModules;
+  // const [statusBarHeight, setStatusBarHeight] = useState(0);
+  // useEffect(() => {
+  //   if (Platform.OS === "ios") {
+  //     StatusBarManager.getHeight((statusBarFrameData) => {
+  //       setStatusBarHeight(statusBarFrameData.height);
+  //     });
+  //   }
+  // }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Bar num={3} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={
-          Platform.OS === "ios" ? 44 + statusBarHeight : 0
-        }
-      >
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <ScrollView>
-            <View style={[styles.textContainer, { marginTop: 35 }]}>
-              <InputText text="학교를 입력해 주세요." />
-            </View>
-            <View style={styles.inputContainer}>
-              <InputData
-                hint="학교를 입력하세요"
-                onChangeText={handleSchoolChange}
-                value={inputSchool}
-              />
-            </View>
-            <View style={styles.textContainer}>
-              <InputText text="전공을 입력해 주세요." />
-            </View>
-            <View style={styles.inputContainer}>
-              <InputData
-                hint="전공을 입력하세요"
-                onChangeText={handleMajorChange}
-                value={inputMajor}
-              />
-            </View>
-            <View style={styles.textContainer}>
-              <InputText text="학년을 입력해 주세요." />
-            </View>
-            <View style={styles.inputContainer}>
-              <InputData
-                hint="학년을 입력하세요"
-                onChangeText={handleStudentIdChange}
-                value={inputStudentId}
-              />
-            </View>
-            <View style={styles.textContainer}>
-              <InputText text="재학유무를 선택해 주세요." />
-            </View>
-            <Text style={styles.text}>
-              재학중인 아닌 경우 모두 휴학으로 선택해 주세요.
-            </Text>
-            <View style={[styles.inputContainer, { marginBottom: 78 }]}>
-              {/* <InputData
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Bar num={3} />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
+          keyboardVerticalOffset={
+            Platform.OS === "ios" ? 44 + statusBarHeight : 0
+          }
+        >
+          <View style={{ flex: 1, justifyContent: "space-between" }}>
+            <ScrollView>
+              <View style={[styles.textContainer, { marginTop: 35 }]}>
+                <InputText text="학교를 입력해 주세요." />
+              </View>
+              <View style={styles.inputContainer}>
+                <InputData
+                  hint="학교를 입력하세요"
+                  onChangeText={handleSchoolChange}
+                  value={inputSchool}
+                />
+              </View>
+              <View style={styles.textContainer}>
+                <InputText text="전공을 입력해 주세요." />
+              </View>
+              <View style={styles.inputContainer}>
+                <InputData
+                  hint="전공을 입력하세요"
+                  onChangeText={handleMajorChange}
+                  value={inputMajor}
+                />
+              </View>
+              <View style={styles.textContainer}>
+                <InputText text="학년을 입력해 주세요." />
+              </View>
+              <View style={styles.inputContainer}>
+                <InputData
+                  hint="학년을 입력하세요"
+                  onChangeText={handleStudentIdChange}
+                  value={inputStudentId}
+                />
+              </View>
+              <View style={styles.textContainer}>
+                <InputText text="재학유무를 선택해 주세요." />
+              </View>
+              <Text style={styles.text}>
+                재학중인 아닌 경우 모두 휴학으로 선택해 주세요.
+              </Text>
+              <View style={[styles.inputContainer, { marginBottom: 78 }]}>
+                {/* <InputData
               hint="재학유무를 선택하세요"
               onChangeText={handleStatusChange}
               value={inputStatus}
             /> */}
-              <Pressable onPress={() => setVisible(!visible)}>
-                <View style={styles.textInput}>
-                  <Text style={statusStyle}>{select}</Text>
-                  <View style={{ marginRight: 13 }}>
-                    <WithLocalSvg asset={Down} />
+                <Pressable onPress={() => setVisible(!visible)}>
+                  <View style={styles.textInput}>
+                    <Text style={statusStyle}>{select}</Text>
+                    <View style={{ marginRight: 13 }}>
+                      <WithLocalSvg asset={Down} />
+                    </View>
                   </View>
-                </View>
-              </Pressable>
+                </Pressable>
+              </View>
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+              <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
             </View>
-          </ScrollView>
-          <View style={styles.buttonContainer}>
-            <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
           </View>
-        </View>
-      </KeyboardAvoidingView>
-      <Modal
-        animationType="none"
-        transparent={true}
-        visible={visible}
-        statusBarTranslucent={true}
-        onRequestClose={() => setVisible(!visible)}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setVisible(!visible)}
+        </KeyboardAvoidingView>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={visible}
+          statusBarTranslucent={true}
+          onRequestClose={() => setVisible(!visible)}
         >
-          <Pressable>
-            <View
-              style={{
-                backgroundColor: "white",
-                height: 273,
-                justifyContent: "space-between",
+          <Pressable
+            style={styles.modalOverlay}
+            onPress={() => setVisible(!visible)}
+          >
+            <Pressable>
+              <View
+                style={{
+                  backgroundColor: "white",
+                  height: 273,
+                  justifyContent: "space-between",
 
-                borderTopEndRadius: 5.41,
-                borderTopStartRadius: 5.41,
-              }}
-            >
-              <View>
-                <View style={styles.statusTitleContainer}>
-                  <Pressable onPress={() => setVisible(!visible)}>
-                    <View style={styles.iconContainer}>
-                      <WithLocalSvg asset={Modalx} />
+                  borderTopEndRadius: 5.41,
+                  borderTopStartRadius: 5.41,
+                }}
+              >
+                <View>
+                  <View style={styles.statusTitleContainer}>
+                    <Pressable onPress={() => setVisible(!visible)}>
+                      <View style={styles.iconContainer}>
+                        <WithLocalSvg asset={Modalx} />
+                      </View>
+                    </Pressable>
+                    <Text style={styles.statusTitle}>재학 유무</Text>
+                  </View>
+                  <Pressable
+                    style={styles.statusTextContainer}
+                    onPress={statusSelect}
+                  >
+                    <Text style={styles.statusText}>재학</Text>
+                    <View
+                      style={[styles.iconContainer2, { display: display1 }]}
+                    >
+                      <WithLocalSvg asset={ModalCheck} />
                     </View>
                   </Pressable>
-                  <Text style={styles.statusTitle}>재학 유무</Text>
+                  <Pressable
+                    style={styles.statusTextContainer}
+                    onPress={statusSelect}
+                  >
+                    <Text style={styles.statusText}>휴학</Text>
+                    <View
+                      style={[styles.iconContainer2, { display: display2 }]}
+                    >
+                      <WithLocalSvg asset={ModalCheck} />
+                    </View>
+                  </Pressable>
                 </View>
-                <Pressable
-                  style={styles.statusTextContainer}
-                  onPress={statusSelect}
-                >
-                  <Text style={styles.statusText}>재학</Text>
-                  <View style={[styles.iconContainer2, { display: display1 }]}>
-                    <WithLocalSvg asset={ModalCheck} />
-                  </View>
-                </Pressable>
-                <Pressable
-                  style={styles.statusTextContainer}
-                  onPress={statusSelect}
-                >
-                  <Text style={styles.statusText}>휴학</Text>
-                  <View style={[styles.iconContainer2, { display: display2 }]}>
-                    <WithLocalSvg asset={ModalCheck} />
-                  </View>
-                </Pressable>
+                <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                  <ButtonBig
+                    text="확인"
+                    style={GlobalStyles.colors.primaryDefault}
+                    onPress={okayBtn}
+                  />
+                </View>
               </View>
-              <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-                <ButtonBig
-                  text="확인"
-                  style={GlobalStyles.colors.primaryDefault}
-                  onPress={okayBtn}
-                />
-              </View>
-            </View>
+            </Pressable>
           </Pressable>
-        </Pressable>
-      </Modal>
-    </View>
+        </Modal>
+      </View>
+    </SafeAreaView>
   );
 }
 
