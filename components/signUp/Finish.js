@@ -5,8 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { WithLocalSvg } from "react-native-svg";
 import Doro from "../../assets/doroLogoSmall.svg";
 
-function Finish() {
-  const navigation = useNavigation();
+function Finish({ navigation }) {
   function naviLogin() {
     navigation.replace("login");
   }
