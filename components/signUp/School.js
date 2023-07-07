@@ -188,6 +188,7 @@ function School({ navigation, route }) {
                   hint="학년을 입력하세요"
                   onChangeText={handleStudentIdChange}
                   value={inputStudentId}
+                  keyboardType="numeric"
                 />
               </View>
               <View style={styles.textContainer}>

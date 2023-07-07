@@ -89,6 +89,7 @@ function Code({ navigation, route }) {
       const response = await signUp({
         account: signData.account,
         birth: signData.birth,
+        // birth: "2000-06-23",
         doroAuth: inputCode,
         gender: "FEMALE",
         generation: inputGeneration,

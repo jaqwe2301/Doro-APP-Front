@@ -6,6 +6,7 @@ import {
   Platform,
   NativeModules,
   SafeAreaView,
+  Pressable,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 
@@ -18,14 +19,14 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 function Name({ navigation, route }) {
-  const statusBarHeight = route.params.h;
+  // const statusBarHeight = route.params.h;
   const [inputName, setInputName] = useState("");
   const [inputBirth, setInputBirth] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
 
   const { signData, setSignData } = useContext(SignContext);
 
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date(961741730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
@@ -55,9 +56,7 @@ function Name({ navigation, route }) {
     setInputName(text);
 
     setlbtnColor(
-      text && inputBirth !== ""
-        ? GlobalStyles.colors.primaryAccent
-        : GlobalStyles.colors.gray05
+      text ? GlobalStyles.colors.primaryAccent : GlobalStyles.colors.gray05
     );
   };
 
@@ -72,23 +71,27 @@ function Name({ navigation, route }) {
   };
 
   function navigateId() {
-    if (inputName !== "" && inputBirth !== "") {
-      setSignData({ ...signData, name: inputName, birth: inputBirth });
+    if (inputName !== "") {
+      setSignData({
+        ...signData,
+        name: inputName,
+        birth: date.toLocaleDateString().replace(/\//g, "-"),
+      });
 
       navigation.navigate("school", { h: statusBarHeight });
     } else {
     }
   }
 
-  // const { StatusBarManager } = NativeModules;
-  // const [statusBarHeight, setStatusBarHeight] = useState(0);
-  // useEffect(() => {
-  //   if (Platform.OS === "ios") {
-  //     StatusBarManager.getHeight((statusBarFrameData) => {
-  //       setStatusBarHeight(statusBarFrameData.height);
-  //     });
-  //   }
-  // }, []);
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -116,13 +119,34 @@ function Name({ navigation, route }) {
               <View style={[styles.textContainer, { marginTop: 50 }]}>
                 <InputText text="생년월일을 입력해 주세요." />
               </View>
-              <View style={styles.inputContainer}>
-                <InputData
-                  hint="생년월일"
-                  onChangeText={handleBirthChange}
-                  value={inputBirth}
-                />
+              <View>
+                <Pressable onPress={() => setShow(!show)}>
+                  <View style={styles.inputContainer}>
+                    {/* <Pressable> */}
+                    {/* <InputData
+                      hint="생년월일"
+                      onChangeText={handleBirthChange}
+                      value={date.toLocaleDateString()}
+                      readOnly={true}
+                    /> */}
+                    <View style={styles.textInputContainer}>
+                      <Text style={styles.textInput} placeholder="생년월일">
+                        {date.toLocaleDateString().replace(/\//g, "-")}
+                      </Text>
+                    </View>
+                  </View>
+                </Pressable>
               </View>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode="date"
+                  is24Hour={true}
+                  onChange={onChange}
+                  display="spinner"
+                />
+              )}
             </View>
 
             <View style={styles.buttonContainer}>
@@ -172,5 +196,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
+  },
+  textInputContainer: {
+    height: 40,
+    width: "100%",
+    borderColor: GlobalStyles.colors.gray05,
+    borderWidth: 1,
+    borderRadius: 5.41,
+    paddingLeft: 20,
+    lineHeight: 20,
+    fontSize: 15,
+
+    justifyContent: "center",
+  },
+  textInput: {
+    lineHeight: 20,
+    fontSize: 15,
+    color: GlobalStyles.colors.gray01,
+    fontWeight: "600",
   },
 });
