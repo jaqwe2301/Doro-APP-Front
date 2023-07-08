@@ -12,7 +12,11 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
-import { createAnnouncement, pushNotification } from "../utill/http";
+import {
+  createAnnouncement,
+  createAnnouncement2,
+  pushNotification,
+} from "../utill/http";
 import { useEffect, useState } from "react";
 import { WithLocalSvg } from "react-native-svg";
 import Camera from "../assets/camera.svg";
@@ -41,23 +45,30 @@ function AddNoticeScreen({ navigation }) {
       },
     ];
 
-    var json = JSON.stringify({ title: title, body: body });
+    var json = JSON.stringify({ title: "fgh", body: "hrt", writer: "hrt" });
     // var json = JSON.stringify(value);
 
     // // // Blob 객체로 JSON 데이터 생성
     var blob = new Blob([json], { type: "application/json" });
-
+    // if (imageUrl) {
+    //   formData.append("picture", {
+    //     uri: imageUrl,
+    //     type: mime.getType(imageUrl),
+    //     name: filename,
+    //   });
+    //   console.log("이미지 들어갔니");
+    // }
     // FormData에 Blob 객체 추가
     formData.append(
       "announcementReq",
-      // blob
       json
+      // json
       // // { title: title, body: body }
       // {
       //   contentType: "application/json",
       // }
     );
-    console.log(formData);
+    // console.log(formData);
     // formData.append(
     //   "announcementReq",
     //   new Blob([JSON.stringify(value)], { type: "application/json" })
@@ -75,15 +86,9 @@ function AddNoticeScreen({ navigation }) {
     //   console.log(value); // 각 값(value)을 출력
     // }
 
-    // if (imageUrl) {
-    //   formData.append("picture", {
-    //     uri: imageUrl,
-    //     type: type,
-    //     name: filename,
-    //   });
-    //   // const response = await fetch(imageUrl);
-    //   // const blob = await response.blob();
-    //   // formData.append("picture", json);
+    // const response = await fetch(imageUrl);
+    // const blob = await response.blob();
+    // formData.append("picture", json);
     // } else {
     //   formData.append("picture", "");
     // }
@@ -92,97 +97,98 @@ function AddNoticeScreen({ navigation }) {
     // console.log(formData.get("announcementReq"));
     // console.log(formData.keys);
 
-    // const response = await createAnnouncement({
-    //   formData: formData,
-    //   title: title,
-    //   body: body,
-    // });
+    const response = await createAnnouncement2({
+      formData: formData,
+      title: title,
+      body: body,
+      writer: "김동규",
+    });
     // const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
-    try {
-      const response = await axios.post(
-        `${URL}/announcements`,
-        // {
-        //   announcementReq: [
-        //     {
-        //       title: title,
-        //       body: body,
-        //     },
-        //   ],
-        //   picture: [
-        //     {
-        //       uri: imageUrl,
-        //       type: type,
-        //       name: filename,
-        //     },
-        //   ],
-        // },
-        // formData,
-        { announcementReq: json },
-        {
-          headers: {
-            "Content-Type": `multipart/form-data`,
-            //  boundary=${boundary}`,
-            // Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      // fetch(`${URL}/announcements/`, {
-      //   method: "POST",
-      //   // headers: {
-      //   //   // "Content-Type": "multipart/form-data",
-      //   //   Accept: "application/json",
-      //   // },
-      //   body: formData,
-      // })
-      //   .then((response) => response.json()) // JSON 형식으로 응답 데이터를 파싱
-      //   .then((data) => {
-      //     // 응답 데이터 처리
-      //     console.log(data);
-      //   })
-      //   .catch((error) => {
-      //     // 에러 처리
-      //     console.log(error);
-      //   });
-      // console.log("성공?" + response);
+    // try {
+    //   const response = await axios.post(
+    //     `${URL}/announcements`,
+    //     // {
+    //     //   announcementReq: [
+    //     //     {
+    //     //       title: title,
+    //     //       body: body,
+    //     //     },
+    //     //   ],
+    //     //   picture: [
+    //     //     {
+    //     //       uri: imageUrl,
+    //     //       type: type,
+    //     //       name: filename,
+    //     //     },
+    //     //   ],
+    //     // },
+    //     // formData,
+    //     { announcementReq: json },
+    //     {
+    //       headers: {
+    //         // "Content-Type": `multipart/form-data`,
+    //         //  boundary=${boundary}`,
+    //         // Authorization: `Bearer ${token}`,
+    //       },
+    //     }
+    //   );
+    // fetch(`${URL}/announcements/`, {
+    //   method: "POST",
+    //   // headers: {
+    //   //   // "Content-Type": "multipart/form-data",
+    //   //   Accept: "application/json",
+    //   // },
+    //   body: formData,
+    // })
+    //   .then((response) => response.json()) // JSON 형식으로 응답 데이터를 파싱
+    //   .then((data) => {
+    //     // 응답 데이터 처리
+    //     console.log(data);
+    //   })
+    //   .catch((error) => {
+    //     // 에러 처리
+    //     console.log(error);
+    //   });
+    // console.log("성공?" + response);
 
-      // console.log(response);
-      // if (response.success) {
-      //   navigation.replace("noticeScreen");
-      // }
+    // console.log(response);
+    // if (response.success) {
+    //   navigation.replace("noticeScreen");
+    // }
 
-      // let data = new FormData();
-      // data.append(
-      //   "announcementReq",
-      //   '{"title":"되냐 안되 ","body":"진아 모르겠나"}',
-      //   { contentType: "application/json" }
-      // );
-      // data.append("picture", {
-      //   uri: imageUrl,
-      //   type: type,
-      //   name: filename,
-      // });
+    // let data = new FormData();
+    // data.append(
+    //   "announcementReq",
+    //   '{"title":"되냐 안되 ","body":"진아 모르겠나"}',
+    //   { contentType: "application/json" }
+    // );
+    // data.append("picture", {
+    //   uri: imageUrl,
+    //   type: type,
+    //   name: filename,
+    // });
 
-      // let config = {
-      //   method: "post",
-      //   maxBodyLength: Infinity,
-      //   url: "${URL}/announcements",
-      //   headers: {
-      //     ...data.getHeaders(),
-      //   },
-      //   data: data,
-      // };
+    // let config = {
+    //   method: "post",
+    //   maxBodyLength: Infinity,
+    //   url: "${URL}/announcements",
+    //   headers: {
+    //     ...data.getHeaders(),
+    //   },
+    //   data: data,
+    // };
 
-      // axios
-      //   .request(config)
-      //   .then((response) => {
-      //     console.log(JSON.stringify(response.data));
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
-    } catch (error) {
-      console.log(error + "여기");
-    }
+    // axios
+    //   .request(config)
+    //   .then((response) => {
+    //     console.log(JSON.stringify(response.data));
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   //   });
+    // } catch (error) {
+    //   console.log(error + "여기");
+    // }
   }
 
   // async function completeHandler() {
@@ -235,31 +241,56 @@ function AddNoticeScreen({ navigation }) {
     }
   };
 
+  // async function completeHandler3() {
+  //   const formData = new FormData();
+  //   const announcementReq = {
+  //     title: title,
+  //     body: body,
+  //     writer: "z",
+  //   };
+  //   formData.append(
+  //     "announcementReq",
+  //     // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
+  //     // new Blob([{ title: "title", body: "body", writer: "노세인" }])
+  //     announcementReq
+  //     // JSON.stringify(value)
+  //     // value
+  //   );
+  //   try {
+  //     const response = await createAnnouncement({
+  //       formData: formData,
+  //       title: title,
+  //       body: body,
+  //     });
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log(JSON.stringify(formData));
+  //     console.log(error);
+  //   }
+  // }
+  
   async function completeHandler3() {
     const formData = new FormData();
-    const announcementReq = {
-      title: title,
-      body: body,
-      writer: "노세인",
-    };
-    formData.append(
-      "announcementReq",
-      // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
-      // new Blob([{ title: "title", body: "body", writer: "노세인" }])
-      announcementReq
-      // JSON.stringify(value)
-      // value
-    );
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("writer", "김동규");
+    if (imageUrl) {
+      formData.append("picture", {
+        uri: imageUrl,
+        type: type,
+        name: filename,
+      });
+    }
     try {
-      const response = await createAnnouncement({
+      const response = await createAnnouncement2({
         formData: formData,
-        title: title,
-        body: body,
       });
       console.log(response);
+      if (response.code === "NOTI001" || response.success) {
+        navigation.replace("noticeScreen");
+      }
     } catch (error) {
-      console.log(JSON.stringify(formData));
-      console.log(error);
+      console.error('Error during announcement creation:', error);
     }
   }
 
