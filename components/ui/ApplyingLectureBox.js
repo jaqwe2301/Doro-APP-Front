@@ -69,16 +69,7 @@ function ApplyingLectureBox({
           }}
         >
           <View>
-            <Text style={styles.role}>
-              {tutorRole === "MAIN_TUTOR"
-                ? "주강사"
-                : tutorRole === "SUB_TUTOR"
-                ? "보조강사"
-                : tutorRole === "STAFF"
-                ? "스태프"
-                : tutorRole}{" "}
-              신청
-            </Text>
+            <Text style={styles.role}>{tutorRole} 신청</Text>
             <Text style={styles.enrollEndDate}>
               {typeof dateTypeValue === "object"
                 ? `신청마감 ${
