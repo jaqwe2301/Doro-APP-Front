@@ -10,7 +10,7 @@ import {
   LayoutChangeEvent,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import axios from "axios";
 
 import { getProfile } from "../utill/http";
@@ -28,6 +28,9 @@ function DetailLectureScreen({ route }) {
   const navigation = useNavigation();
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+
+  /** 강의 수정 후 리렌더링을 위해 사용 */
+  const isFocused = useIsFocused();
 
   const [lectureBasicInfo, setLectureBasicInfo] = useState({
     city: "",
@@ -47,6 +50,7 @@ function DetailLectureScreen({ route }) {
     subTitle: "",
     subTutor: "",
     time: "",
+    transportCost: "",
   });
   const [lectureContent, setLectureContent] = useState({
     detail: "",
@@ -57,16 +61,6 @@ function DetailLectureScreen({ route }) {
   });
 
   const [tutor, setTutor] = useState([]);
-
-  // async function profileHandler() {
-  //   try {
-  //     const response = await getProfile({ id: 7 });
-  //     setData(response);
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
 
   useEffect(() => {
     // 기본 정보
@@ -108,7 +102,7 @@ function DetailLectureScreen({ route }) {
           console.log(error);
         });
     }
-  }, []);
+  }, [isFocused]);
 
   /** 강의 신청 */
   const applyingTutor = (roles) => {
@@ -494,6 +488,7 @@ function DetailLectureScreen({ route }) {
           city={lectureBasicInfo.city}
           date={lectureBasicInfo.lectureDates}
           time={lectureBasicInfo.time}
+          transportCost={lectureBasicInfo.transportCost}
         />
 
         <TabView
@@ -584,7 +579,7 @@ function DetailLectureScreen({ route }) {
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable
           onPress={() =>
-            navigation.navigate("UpdateLectureScreen", {
+            navigation.push("UpdateLectureScreen", {
               data: {
                 lectureContentDto: lectureContent,
                 lectureDto: lectureBasicInfo,

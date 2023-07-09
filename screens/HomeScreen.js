@@ -155,7 +155,7 @@ const HomeScreen = ({ lectureIdProps }) => {
                 staff={filteringItem.staff}
                 place={filteringItem.place}
                 lectureIdHandler={() =>
-                  navigation.navigate("DetailLecture", {
+                  navigation.push("DetailLecture", {
                     data: filteringItem.id,
                   })
                 }
@@ -294,7 +294,7 @@ const HomeScreen = ({ lectureIdProps }) => {
         <View style={styles.BottomButton}>
           <Pressable
             onPress={() =>
-              navigation.navigate("UpdateLectureScreen", { data: "" })
+              navigation.push("UpdateLectureScreen", { data: "" })
             }
           >
             <WithLocalSvg asset={CreactingLecture} />
