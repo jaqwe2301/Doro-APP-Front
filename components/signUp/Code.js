@@ -33,6 +33,7 @@ import Xmark from "../../assets/xmark_black.svg";
 import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 function Code({ navigation, route }) {
   const [inputCode, setInputCode] = useState("");
@@ -125,31 +126,6 @@ function Code({ navigation, route }) {
     }
   }
 
-  function generationSelect1() {
-    setCDisplay1("flex");
-    setCDisplay2("none");
-    setCDisplay3("none");
-    setCDisplay4("none");
-  }
-  function generationSelect2() {
-    setCDisplay1("none");
-    setCDisplay2("flex");
-    setCDisplay3("none");
-    setCDisplay4("none");
-  }
-  function generationSelect3() {
-    setCDisplay1("none");
-    setCDisplay2("none");
-    setCDisplay3("flex");
-    setCDisplay4("none");
-  }
-  function generationSelect4() {
-    setCDisplay1("none");
-    setCDisplay2("none");
-    setCDisplay3("none");
-    setCDisplay4("flex");
-  }
-
   function okayBtn() {
     if (display1 === "flex" || display2 === "flex") {
       setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
@@ -161,33 +137,7 @@ function Code({ navigation, route }) {
       setVisible(!visible);
     }
   }
-  function okayBtn2() {
-    if (
-      cdisplay1 === "flex" ||
-      cdisplay2 === "flex" ||
-      cdisplay3 === "flex" ||
-      cdisplay4 === "flex"
-    ) {
-      if (cdisplay1 === "flex") {
-        setInputGeneration(0);
-        setSelectCode("0기");
-      } else if (cdisplay2 === "flex") {
-        setInputGeneration(1);
-        setSelectCode("1기");
-      } else if (cdisplay3 === "flex") {
-        setInputGeneration(2);
-        setSelectCode("2기");
-      } else {
-        setInputGeneration(3);
-        setSelectCode("3기");
-      }
-      setStatusGStyle(styles.textInputText);
 
-      setVisibleCode(!visibleCode);
-    } else {
-      setVisibleCode(!visibleCode);
-    }
-  }
   const { StatusBarManager } = NativeModules;
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   useEffect(() => {
@@ -197,6 +147,7 @@ function Code({ navigation, route }) {
       });
     }
   }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -438,85 +389,77 @@ function Code({ navigation, route }) {
           statusBarTranslucent={true}
           onRequestClose={() => setVisibleCode(!visibleCode)}
         >
-          <Pressable
-            style={styles.modalOverlay}
-            onPress={() => setVisibleCode(!visibleCode)}
-          >
-            <Pressable>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  height: 357,
-                  justifyContent: "space-between",
+          <SafeAreaView style={{ flex: 1 }}>
+            <Pressable
+              style={styles.modalOverlay}
+              onPress={() => setVisibleCode(!visibleCode)}
+            >
+              <Pressable>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    height: 357,
+                    justifyContent: "space-between",
 
-                  borderTopEndRadius: 5.41,
-                  borderTopStartRadius: 5.41,
-                }}
-              >
-                <View>
-                  <View style={styles.statusTitleContainer}>
-                    <View style={styles.iconContainer}>
-                      <Pressable onPress={() => setVisibleCode(!visibleCode)}>
-                        <Modalx width={24} height={24} />
-                      </Pressable>
+                    borderTopEndRadius: 5.41,
+                    borderTopStartRadius: 5.41,
+                  }}
+                >
+                  <View>
+                    <View style={styles.statusTitleContainer}>
+                      <View style={styles.iconContainer}>
+                        <Pressable onPress={() => setVisibleCode(!visibleCode)}>
+                          <Modalx width={24} height={24} />
+                        </Pressable>
+                      </View>
+                      <Text style={styles.statusTitle}>기수</Text>
                     </View>
-                    <Text style={styles.statusTitle}>가입 유형</Text>
+                    <Picker
+                      selectedValue={inputGeneration}
+                      onValueChange={(itemValue, itemIndex) => {
+                        setInputGeneration(itemValue);
+                        setSelectCode(itemValue + "기");
+                        setStatusGStyle(styles.textInputText);
+                      }}
+                      itemStyle={{
+                        marginHorizontal: 10,
+                      }}
+                      mode="dropdown"
+                      // prompt="기수 선택"
+                    >
+                      <Picker.Item label="1" value="1" />
+                      <Picker.Item label="2" value="2" />
+                      <Picker.Item label="3" value="3" />
+                      <Picker.Item label="4" value="4" />
+                      <Picker.Item label="5" value="5" />
+                      <Picker.Item label="6" value="6" />
+                      <Picker.Item label="7" value="7" />
+                      <Picker.Item label="8" value="8" />
+                      <Picker.Item label="9" value="9" />
+                      <Picker.Item label="10" value="10" />
+                      <Picker.Item label="11" value="11" />
+                      <Picker.Item label="12" value="12" />
+                      <Picker.Item label="13" value="13" />
+                      <Picker.Item label="14" value="14" />
+                      <Picker.Item label="15" value="15" />
+                      <Picker.Item label="16" value="16" />
+                      <Picker.Item label="17" value="17" />
+                      <Picker.Item label="18" value="18" />
+                      <Picker.Item label="19" value="19" />
+                      <Picker.Item label="20" value="20" />
+                    </Picker>
                   </View>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={generationSelect1}
-                  >
-                    <Text style={styles.statusText}>0기</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: cdisplay1 }]}
-                    >
-                      <ModalCheck width={20} height={20} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={generationSelect2}
-                  >
-                    <Text style={styles.statusText}>1기</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: cdisplay2 }]}
-                    >
-                      <ModalCheck width={20} height={20} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={generationSelect3}
-                  >
-                    <Text style={styles.statusText}>2기</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: cdisplay3 }]}
-                    >
-                      <ModalCheck width={20} height={20} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={generationSelect4}
-                  >
-                    <Text style={styles.statusText}>3기</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: cdisplay4 }]}
-                    >
-                      <ModalCheck width={20} height={20} />
-                    </View>
-                  </Pressable>
+                  <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                    <ButtonBig
+                      text="확인"
+                      style={GlobalStyles.colors.primaryDefault}
+                      onPress={() => setVisibleCode(false)}
+                    />
+                  </View>
                 </View>
-                <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-                  <ButtonBig
-                    text="확인"
-                    style={GlobalStyles.colors.primaryDefault}
-                    onPress={okayBtn2}
-                  />
-                </View>
-              </View>
+              </Pressable>
             </Pressable>
-          </Pressable>
+          </SafeAreaView>
         </Modal>
       </View>
     </SafeAreaView>

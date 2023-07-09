@@ -7,9 +7,10 @@ import {
   NativeModules,
   SafeAreaView,
   Pressable,
+  Modal,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
-
+import Left from "../../assets/left.svg";
 import InputText from "../../components/ui/InputText";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { GlobalStyles } from "../../constants/styles";
@@ -18,6 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
+import { KRBold } from "../../constants/fonts";
 function Name({ navigation, route }) {
   // const statusBarHeight = route.params.h;
   const [inputName, setInputName] = useState("");
@@ -25,64 +27,63 @@ function Name({ navigation, route }) {
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
 
   const { signData, setSignData } = useContext(SignContext);
-
+  const [btn, setBtn] = useState(false);
   const [date, setDate] = useState(new Date(961741730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
-  };
-
-  const showMode = (currentMode) => {
     if (Platform.OS === "android") {
       setShow(false);
-      // for iOS, add a button that closes the picker
+      setBtn(true);
+      setlbtnColor(
+        inputName !== ""
+          ? GlobalStyles.colors.primaryDefault
+          : GlobalStyles.colors.gray05
+      );
     }
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
+    setDate(currentDate);
   };
 
   const handleNameChange = (text) => {
     setInputName(text);
 
     setlbtnColor(
-      text ? GlobalStyles.colors.primaryAccent : GlobalStyles.colors.gray05
+      text && btn ? GlobalStyles.colors : GlobalStyles.colors.gray05
     );
   };
 
-  const handleBirthChange = (text) => {
-    setInputBirth(text);
-
+  function okayBtn() {
+    setShow(false);
+    setBtn(true);
     setlbtnColor(
-      text && inputName !== ""
-        ? GlobalStyles.colors.primaryAccent
+      inputName !== ""
+        ? GlobalStyles.colors.primaryDefault
         : GlobalStyles.colors.gray05
     );
-  };
+  }
 
   function navigateId() {
-    if (inputName !== "") {
+    if (inputName !== "" && btn) {
       setSignData({
         ...signData,
         name: inputName,
-        birth: date.toLocaleDateString().replace(/\//g, "-"),
+        birth:
+          Platform.OS === "ios"
+            ? date.toLocaleDateString().replace(/\//g, "-")
+            : date
+                .toLocaleDateString("ko-KR", options)
+                .replace(/\./g, "-")
+                .replace(/\.|-$/, "")
+                .replace(/\s/g, ""),
       });
 
       navigation.navigate("school", { h: statusBarHeight });
     } else {
     }
   }
-
+  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   const { StatusBarManager } = NativeModules;
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   useEffect(() => {
@@ -131,13 +132,19 @@ function Name({ navigation, route }) {
                     /> */}
                     <View style={styles.textInputContainer}>
                       <Text style={styles.textInput} placeholder="생년월일">
-                        {date.toLocaleDateString().replace(/\//g, "-")}
+                        {Platform.OS === "ios"
+                          ? date.toLocaleDateString().replace(/\//g, "-")
+                          : date
+                              .toLocaleDateString("ko-KR", options)
+                              .replace(/\./g, "-")
+                              .replace(/\.|-$/, "")
+                              .replace(/\s/g, "")}
                       </Text>
                     </View>
                   </View>
                 </Pressable>
               </View>
-              {show && (
+              {/* {show && (
                 <DateTimePicker
                   testID="dateTimePicker"
                   value={date}
@@ -146,9 +153,89 @@ function Name({ navigation, route }) {
                   onChange={onChange}
                   display="spinner"
                 />
-              )}
+              )} */}
             </View>
+            {Platform.OS === "ios" ? (
+              <Modal
+                animationType="none"
+                transparent={true}
+                visible={show}
+                statusBarTranslucent={true}
+                onRequestClose={() => setShow(!show)}
+              >
+                <SafeAreaView style={{ flex: 1 }}>
+                  <Pressable
+                    style={styles.modalOverlay}
+                    onPress={() => setShow(!show)}
+                  >
+                    <Pressable>
+                      <View
+                        style={{
+                          backgroundColor: "white",
+                          height: 379,
+                          justifyContent: "space-between",
 
+                          borderTopEndRadius: 5.41,
+                          borderTopStartRadius: 5.41,
+                        }}
+                      >
+                        <View
+                          style={{
+                            marginTop: 32,
+                            marginLeft: 16,
+                            flexDirection: "row",
+
+                            alignItems: "center",
+                          }}
+                        >
+                          <Left width={24} height={24} />
+                          <Text style={KRBold.Headline4}>
+                            태어난 년월을 선택하세요
+                          </Text>
+                        </View>
+                        <DateTimePicker
+                          testID="dateTimePicker"
+                          value={date}
+                          mode="date"
+                          // is24Hour={true}
+                          onChange={onChange}
+                          display="spinner"
+                          locale="ko"
+                          positiveButton={{ label: "확인", textColor: "green" }}
+                          textColor={GlobalStyles.colors.gray01}
+                          negativeButton={{ label: "취소", textColor: "red" }}
+                        />
+
+                        <View
+                          style={{ marginBottom: 34, marginHorizontal: 20 }}
+                        >
+                          <ButtonBig
+                            text="확인"
+                            style={GlobalStyles.colors.primaryDefault}
+                            onPress={okayBtn}
+                          />
+                        </View>
+                      </View>
+                    </Pressable>
+                  </Pressable>
+                </SafeAreaView>
+              </Modal>
+            ) : (
+              show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode="date"
+                  // is24Hour={true}
+                  onChange={onChange}
+                  display="spinner"
+                  locale="ko"
+                  // positiveButton={{ label: "확인", textColor: "green" }}
+                  textColor={GlobalStyles.colors.gray01}
+                  // negativeButton={{ label: "취소", textColor: "red" }}
+                />
+              )
+            )}
             <View style={styles.buttonContainer}>
               <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
             </View>
@@ -165,6 +252,11 @@ const styles = StyleSheet.create({
   textContainer: {
     marginHorizontal: 23,
     marginTop: 35,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(84, 84, 86, 0.3)",
   },
   buttonContainer: {
     marginHorizontal: 20,

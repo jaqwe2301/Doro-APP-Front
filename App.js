@@ -762,7 +762,7 @@ async function registerForPushNotificationsAsync() {
     console.log(token);
     console.log(noti);
   } else {
-    alert("Must use physical device for Push Notifications");
+    // alert("Must use physical device for Push Notifications");
     console.log(noti);
   }
 
