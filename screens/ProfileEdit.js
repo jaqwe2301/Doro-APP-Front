@@ -19,7 +19,7 @@ import ButtonBig from "../components/ui/ButtonBig";
 import { HeaderContext } from "../store/header-context";
 import Timer from "../components/feat/Timer";
 import * as ImagePicker from "expo-image-picker";
-import { WithLocalSvg } from "react-native-svg";
+
 import Down from "../assets/down.svg";
 
 function ProfileEdit({ navigation, route }) {
@@ -314,7 +314,7 @@ function ProfileEdit({ navigation, route }) {
                 <Text style={styles.statusText2}>{status1}</Text>
                 <Pressable onPress={() => setVisible(!visible)}>
                   {/* <View style={{ paddingBottom: 3 }}> */}
-                  <WithLocalSvg asset={Down} width={20} height={20} />
+                  <Down width={20} height={20} />
                   {/* </View> */}
                 </Pressable>
               </View>

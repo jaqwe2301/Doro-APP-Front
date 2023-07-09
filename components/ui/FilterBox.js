@@ -18,13 +18,18 @@ function FilterBox({ text, color }) {
       >
         {text}
       </Text>
-      <WithLocalSvg
+      {/* <WithLocalSvg
         asset={color ? DownBlack : DownGray}
         fill={color ? color : GlobalStyles.colors.gray03}
         // stroke={GlobalStyles.colors.gray03}
         height={26}
         width={26}
-      />
+      /> */}
+      {color ? (
+        <DownBlack height={26} width={26} />
+      ) : (
+        <DownGray height={26} width={26} />
+      )}
     </View>
   );
 }

@@ -23,7 +23,6 @@ import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
 import { signUp } from "../../utill/auth";
 
-import { WithLocalSvg } from "react-native-svg";
 import Checkmark from "../../assets/checkmark.svg";
 import Checkbox from "../../assets/checkbox.svg";
 import CheckmarkAfter from "../../assets/checkmark_after.svg";
@@ -219,7 +218,7 @@ function Code({ navigation, route }) {
                   <View style={styles.textInput}>
                     <Text style={statusGStyle}>{selectCode}</Text>
                     <View style={{ marginRight: 13 }}>
-                      <WithLocalSvg asset={Down} />
+                      <Down width={24} height={24} />
                     </View>
                   </View>
                 </Pressable>
@@ -237,7 +236,7 @@ function Code({ navigation, route }) {
                   <View style={styles.textInput}>
                     <Text style={statusStyle}>{select}</Text>
                     <View style={{ marginRight: 13 }}>
-                      <WithLocalSvg asset={Down} />
+                      <Down width={24} height={24} />
                     </View>
                   </View>
                 </Pressable>
@@ -268,9 +267,11 @@ function Code({ navigation, route }) {
                     }}
                   >
                     <View style={{ marginTop: -3 }}>
-                      <WithLocalSvg
-                        asset={accept1 && accept2 ? CheckboxAfter : Checkbox}
-                      />
+                      {accept1 && accept2 ? (
+                        <CheckboxAfter width={24} height={24} />
+                      ) : (
+                        <Checkbox width={24} height={24} />
+                      )}
                     </View>
                   </Pressable>
                   <Text
@@ -295,9 +296,11 @@ function Code({ navigation, route }) {
                       }}
                     >
                       <View style={{ marginTop: 4 }}>
-                        <WithLocalSvg
-                          asset={!accept1 ? Checkmark : CheckmarkAfter}
-                        />
+                        {!accept1 ? (
+                          <Checkmark width={12} height={12} />
+                        ) : (
+                          <CheckmarkAfter width={12} height={12} />
+                        )}
                       </View>
                     </Pressable>
 
@@ -318,7 +321,7 @@ function Code({ navigation, route }) {
                     style={{ marginRight: 35 }}
                     onPress={() => navigation.navigate("agreeInfo")}
                   >
-                    <WithLocalSvg asset={Right} />
+                    <Right width={24} height={24} />
                   </Pressable>
                 </View>
                 <View style={styles.acceptContentContainer}>
@@ -329,9 +332,11 @@ function Code({ navigation, route }) {
                       }}
                     >
                       <View style={{ marginTop: 4 }}>
-                        <WithLocalSvg
-                          asset={!accept2 ? Checkmark : CheckmarkAfter}
-                        />
+                        {!accept2 ? (
+                          <Checkmark width={12} height={12} />
+                        ) : (
+                          <CheckmarkAfter width={12} height={12} />
+                        )}
                       </View>
                     </Pressable>
                     <Text
@@ -351,7 +356,7 @@ function Code({ navigation, route }) {
                     style={{ marginRight: 35 }}
                     onPress={() => navigation.navigate("agreeInfo2")}
                   >
-                    <WithLocalSvg asset={Right} />
+                    <Right width={24} height={24} />
                   </Pressable>
                 </View>
               </View>
@@ -387,7 +392,7 @@ function Code({ navigation, route }) {
                   <View style={styles.statusTitleContainer}>
                     <View style={styles.iconContainer}>
                       <Pressable onPress={() => setVisible(!visible)}>
-                        <WithLocalSvg asset={Xmark} />
+                        <Xmark width={24} height={24} />
                       </Pressable>
                     </View>
                     <Text style={styles.statusTitle}>가입 유형</Text>
@@ -400,7 +405,7 @@ function Code({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: display1 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -411,7 +416,7 @@ function Code({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: display2 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                 </View>
@@ -452,7 +457,7 @@ function Code({ navigation, route }) {
                   <View style={styles.statusTitleContainer}>
                     <View style={styles.iconContainer}>
                       <Pressable onPress={() => setVisibleCode(!visibleCode)}>
-                        <WithLocalSvg asset={Modalx} />
+                        <Modalx width={24} height={24} />
                       </Pressable>
                     </View>
                     <Text style={styles.statusTitle}>가입 유형</Text>
@@ -465,7 +470,7 @@ function Code({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: cdisplay1 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -476,7 +481,7 @@ function Code({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: cdisplay2 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -487,7 +492,7 @@ function Code({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: cdisplay3 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -498,7 +503,7 @@ function Code({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: cdisplay4 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                 </View>

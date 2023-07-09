@@ -269,6 +269,21 @@ export async function createAnnouncement2({ formData }) {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(JSON.stringify(error.response.headers) + "response");
+    }
+    if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(JSON.stringify(error.request) + "리퀘스트");
+    }
+    // Something happened in setting up the request that triggered an Error
+    console.log("Error", error.message);
     console.log(error);
 
     throw error;
