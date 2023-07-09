@@ -13,7 +13,7 @@ import ButtonBig from "../components/ui/ButtonBig";
 import { GlobalStyles } from "../constants/styles";
 import { useEffect, useState } from "react";
 import InputLine from "../components/ui/InputLine";
-import { WithLocalSvg } from "react-native-svg";
+
 import Down from "../assets/down.svg";
 import { Ionicons } from "@expo/vector-icons";
 import { KRBold, KRRegular } from "../constants/fonts";
@@ -200,7 +200,7 @@ function TutorScreen({ route, navigation }) {
                 <Text style={styles.statusText2}>{status1}</Text>
                 <Pressable onPress={() => setVisible(!visible)}>
                   {/* <View style={{ paddingBottom: 3 }}> */}
-                  <WithLocalSvg asset={Down} width={20} height={20} />
+                  <Down width={20} height={20} />
                   {/* </View> */}
                 </Pressable>
               </View>

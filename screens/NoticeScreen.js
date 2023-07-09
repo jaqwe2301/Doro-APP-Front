@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../store/header-context";
 import { getAnnouncement, getNotification } from "../utill/http";
 import moment from "moment";
-import { WithLocalSvg } from "react-native-svg";
+
 import Add from "../assets/addNotice.svg";
 import Home from "../assets/home.svg";
 
@@ -42,24 +42,6 @@ function NoticeScreen({ navigation }) {
       console.log(error);
     }
   }
-
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => {
-  //       return (
-  //         <Pressable onPress={naviAlarmHandler}>
-  //           <View>
-  //             <WithLocalSvg asset={Home} />
-  //           </View>
-  //         </Pressable>
-  //       );
-  //     },
-  //   });
-  // }, [naviAlarmHandler]);
-
-  // function naviAlarmHandler() {
-  //   navigation.navigate("alarm");
-  // }
 
   // navigation.setOptions({
   //   headerRight: () => {
@@ -105,10 +87,11 @@ function NoticeScreen({ navigation }) {
         onEndReachedThreshold={0.5}
       />
       {headerRole === "ROLE_ADMIN" ? (
-        <View style={styles.plusBtn}>
+        <View style={styles.plusBtnContainer}>
           <Pressable onPress={naviAddHandler}>
-            {/* <Image source={require("../assets/plus.png")} /> */}
-            <WithLocalSvg asset={Add} />
+            <View style={styles.plusBtn}>
+              <Add width={24} height={24} />
+            </View>
           </Pressable>
         </View>
       ) : (
@@ -151,9 +134,18 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: GlobalStyles.colors.gray03,
   },
-  plusBtn: {
+  plusBtnContainer: {
     position: "absolute",
-    right: 16,
-    bottom: 12,
+    right: 9,
+    bottom: 6,
+  },
+  plusBtn: {
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+    borderRadius: "100%",
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
 });
