@@ -181,11 +181,11 @@ function School({ navigation, route }) {
                 />
               </View>
               <View style={styles.textContainer}>
-                <InputText text="학년을 입력해 주세요." />
+                <InputText text="학번을 입력해 주세요." />
               </View>
               <View style={styles.inputContainer}>
                 <InputData
-                  hint="학년을 입력하세요"
+                  hint="학번을 입력하세요"
                   onChangeText={handleStudentIdChange}
                   value={inputStudentId}
                   keyboardType="numeric"
@@ -225,63 +225,65 @@ function School({ navigation, route }) {
           statusBarTranslucent={true}
           onRequestClose={() => setVisible(!visible)}
         >
-          <Pressable
-            style={styles.modalOverlay}
-            onPress={() => setVisible(!visible)}
-          >
-            <Pressable>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  height: 273,
-                  justifyContent: "space-between",
+          <SafeAreaView style={{ flex: 1 }}>
+            <Pressable
+              style={styles.modalOverlay}
+              onPress={() => setVisible(!visible)}
+            >
+              <Pressable>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    height: 273,
+                    justifyContent: "space-between",
 
-                  borderTopEndRadius: 5.41,
-                  borderTopStartRadius: 5.41,
-                }}
-              >
-                <View>
-                  <View style={styles.statusTitleContainer}>
-                    <Pressable onPress={() => setVisible(!visible)}>
-                      <View style={styles.iconContainer}>
-                        <Modalx width={24} height={24} />
+                    borderTopEndRadius: 5.41,
+                    borderTopStartRadius: 5.41,
+                  }}
+                >
+                  <View>
+                    <View style={styles.statusTitleContainer}>
+                      <Pressable onPress={() => setVisible(!visible)}>
+                        <View style={styles.iconContainer}>
+                          <Modalx width={24} height={24} />
+                        </View>
+                      </Pressable>
+                      <Text style={styles.statusTitle}>재학 유무</Text>
+                    </View>
+                    <Pressable
+                      style={styles.statusTextContainer}
+                      onPress={statusSelect}
+                    >
+                      <Text style={styles.statusText}>재학</Text>
+                      <View
+                        style={[styles.iconContainer2, { display: display1 }]}
+                      >
+                        <ModalCheck width={20} height={20} />
                       </View>
                     </Pressable>
-                    <Text style={styles.statusTitle}>재학 유무</Text>
+                    <Pressable
+                      style={styles.statusTextContainer}
+                      onPress={statusSelect}
+                    >
+                      <Text style={styles.statusText}>휴학</Text>
+                      <View
+                        style={[styles.iconContainer2, { display: display2 }]}
+                      >
+                        <ModalCheck width={24} height={24} />
+                      </View>
+                    </Pressable>
                   </View>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={statusSelect}
-                  >
-                    <Text style={styles.statusText}>재학</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: display1 }]}
-                    >
-                      <ModalCheck width={20} height={20} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={statusSelect}
-                  >
-                    <Text style={styles.statusText}>휴학</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: display2 }]}
-                    >
-                      <ModalCheck width={24} height={24} />
-                    </View>
-                  </Pressable>
+                  <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                    <ButtonBig
+                      text="확인"
+                      style={GlobalStyles.colors.primaryDefault}
+                      onPress={okayBtn}
+                    />
+                  </View>
                 </View>
-                <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-                  <ButtonBig
-                    text="확인"
-                    style={GlobalStyles.colors.primaryDefault}
-                    onPress={okayBtn}
-                  />
-                </View>
-              </View>
+              </Pressable>
             </Pressable>
-          </Pressable>
+          </SafeAreaView>
         </Modal>
       </View>
     </SafeAreaView>

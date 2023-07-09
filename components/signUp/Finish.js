@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text } from "react-native";
+import { View, StyleSheet, Image, Text, SafeAreaView } from "react-native";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
 
@@ -9,27 +9,29 @@ function Finish({ navigation }) {
     navigation.replace("login");
   }
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "white",
-        justifyContent: "space-between",
-      }}
-    >
-      <View>
-        <View style={{ marginLeft: 24, marginTop: 89 }}>
-          <Doro width={121} height={26} />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+          justifyContent: "space-between",
+        }}
+      >
+        <View>
+          <View style={{ marginLeft: 24, marginTop: 89 }}>
+            <Doro width={121} height={26} />
+          </View>
+          <Text style={styles.text}>회원가입을 축하합니다.</Text>
         </View>
-        <Text style={styles.text}>회원가입을 축하합니다.</Text>
+        <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+          <ButtonBig
+            text="로그인"
+            style={GlobalStyles.colors.primaryDefault}
+            onPress={naviLogin}
+          />
+        </View>
       </View>
-      <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-        <ButtonBig
-          text="로그인"
-          style={GlobalStyles.colors.primaryDefault}
-          onPress={naviLogin}
-        />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
