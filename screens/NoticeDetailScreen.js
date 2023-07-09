@@ -6,11 +6,12 @@ import {
   Image,
   Pressable,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
 import { deleteAnnouncement } from "../utill/http";
-import { WithLocalSvg } from "react-native-svg";
+
 import Edit from "../assets/edit.svg";
 import Delete from "../assets/delete.svg";
 
@@ -44,51 +45,55 @@ function NoticeDetailScreen({ navigation, route }) {
     ]);
   }
   return (
-    <View style={styles.container}>
-      <View style={styles.headerBar} />
-      <ScrollView>
-        <View style={styles.contentContainer}>
-          <Text style={styles.title}>{data.title}</Text>
-          <View style={styles.nameContainer}>
-            <Text style={styles.name}>{data.writer} 매니저</Text>
-            <Text style={styles.name}>
-              {moment(data.createdAt).format("YYYY-MM-DD")}
-            </Text>
-          </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <View style={styles.headerBar} />
+        <ScrollView>
+          <View style={styles.contentContainer}>
+            <Text style={styles.title}>{data.title}</Text>
+            <View style={styles.nameContainer}>
+              <Text style={styles.name}>{data.writer} 매니저</Text>
+              <Text style={styles.name}>
+                {moment(data.createdAt).format("YYYY-MM-DD")}
+              </Text>
+            </View>
 
-          <Text style={styles.subcontentContainer}>{data.body}</Text>
-          {data.picture && (
-            <Image
-              source={{ uri: data.picture }}
-              style={{
-                width: "100%",
-                height: 500,
-                resizeMode: "contain",
-              }}
-            />
-          )}
-        </View>
-      </ScrollView>
-      {headerRole === "ROLE_ADMIN" ? (
-        <View style={styles.btnContainer}>
-          <Pressable onPress={editHandler}>
-            {/* <Image
+            <Text style={styles.subcontentContainer}>{data.body}</Text>
+            {data.picture && (
+              <Image
+                source={{ uri: data.picture }}
+                style={{
+                  width: "100%",
+                  height: 500,
+                  resizeMode: "contain",
+                }}
+              />
+            )}
+          </View>
+        </ScrollView>
+        {headerRole === "ROLE_ADMIN" ? (
+          <View style={styles.btnContainer}>
+            <Pressable onPress={editHandler}>
+              {/* <Image
               source={require("../assets/editBtn.png")}
               style={{ marginRight: 5 }}
             /> */}
-            <View style={{ marginRight: 4 }}>
-              <WithLocalSvg asset={Edit} />
-            </View>
-          </Pressable>
-          <Pressable onPress={deleteHandler}>
-            {/* <Image source={require("../assets/deleteBtn.png")} /> */}
-            <WithLocalSvg asset={Delete} />
-          </Pressable>
-        </View>
-      ) : (
-        <View />
-      )}
-    </View>
+              <View style={[styles.btn, { marginRight: 2 }]}>
+                <Edit width={24} height={24} />
+              </View>
+            </Pressable>
+            <Pressable onPress={deleteHandler}>
+              {/* <Image source={require("../assets/deleteBtn.png")} /> */}
+              <View style={styles.btn}>
+                <Delete width={24} height={24} />
+              </View>
+            </Pressable>
+          </View>
+        ) : (
+          <View />
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -133,7 +138,16 @@ const styles = StyleSheet.create({
   btnContainer: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 12,
-    right: 12,
+    bottom: 6,
+    right: 6,
+  },
+  btn: {
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+    borderRadius: 100,
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
 });

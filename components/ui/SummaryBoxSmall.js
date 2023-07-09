@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet } from "react-native";
-import { WithLocalSvg } from "react-native-svg";
+
 import { GlobalStyles } from "../../constants/styles";
 
-function SummaryBoxSmall({svg, title, text}) {
+function SummaryBoxSmall({ svg: SvgComponent, title, text }) {
   return (
     <View style={styles.box}>
       <View style={styles.svgContainer}>
-        <WithLocalSvg asset={svg} height={24} width={24} />
+        <SvgComponent height={24} width={24} />
       </View>
       <View>
         <Text style={styles.boxTitle}>{title}</Text>
