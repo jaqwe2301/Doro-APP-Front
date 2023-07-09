@@ -23,7 +23,6 @@ import InputData from "../ui/InputData";
 import { Ionicons } from "@expo/vector-icons";
 import { signUp } from "../../utill/auth";
 
-import { WithLocalSvg } from "react-native-svg";
 import Checkmark from "../../assets/checkmark.svg";
 import Checkbox from "../../assets/checkbox.svg";
 import CheckmarkAfter from "../../assets/checkmark_after.svg";
@@ -34,6 +33,8 @@ import Xmark from "../../assets/xmark_black.svg";
 import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import GenerationModal from "../ui/GenerationModal";
 
 function Code({ navigation, route }) {
   const [inputCode, setInputCode] = useState("");
@@ -44,10 +45,7 @@ function Code({ navigation, route }) {
   const [visibleCode, setVisibleCode] = useState(false);
   const [display1, setDispaly1] = useState("none");
   const [display2, setDispaly2] = useState("none");
-  const [cdisplay3, setCDisplay3] = useState("none");
-  const [cdisplay4, setCDisplay4] = useState("none");
-  const [cdisplay1, setCDisplay1] = useState("none");
-  const [cdisplay2, setCDisplay2] = useState("none");
+
   const [select, setSelect] = useState("가입 유형을 선택하세요");
   const [selectCode, setSelectCode] = useState("기수를 선택하세요");
   const [statusStyle, setStatusStyle] = useState(styles.textModal);
@@ -126,31 +124,6 @@ function Code({ navigation, route }) {
     }
   }
 
-  function generationSelect1() {
-    setCDisplay1("flex");
-    setCDisplay2("none");
-    setCDisplay3("none");
-    setCDisplay4("none");
-  }
-  function generationSelect2() {
-    setCDisplay1("none");
-    setCDisplay2("flex");
-    setCDisplay3("none");
-    setCDisplay4("none");
-  }
-  function generationSelect3() {
-    setCDisplay1("none");
-    setCDisplay2("none");
-    setCDisplay3("flex");
-    setCDisplay4("none");
-  }
-  function generationSelect4() {
-    setCDisplay1("none");
-    setCDisplay2("none");
-    setCDisplay3("none");
-    setCDisplay4("flex");
-  }
-
   function okayBtn() {
     if (display1 === "flex" || display2 === "flex") {
       setInputRole(display1 === "none" ? "ROLE_ADMIN" : "ROLE_USER");
@@ -162,33 +135,7 @@ function Code({ navigation, route }) {
       setVisible(!visible);
     }
   }
-  function okayBtn2() {
-    if (
-      cdisplay1 === "flex" ||
-      cdisplay2 === "flex" ||
-      cdisplay3 === "flex" ||
-      cdisplay4 === "flex"
-    ) {
-      if (cdisplay1 === "flex") {
-        setInputGeneration(0);
-        setSelectCode("0기");
-      } else if (cdisplay2 === "flex") {
-        setInputGeneration(1);
-        setSelectCode("1기");
-      } else if (cdisplay3 === "flex") {
-        setInputGeneration(2);
-        setSelectCode("2기");
-      } else {
-        setInputGeneration(3);
-        setSelectCode("3기");
-      }
-      setStatusGStyle(styles.textInputText);
 
-      setVisibleCode(!visibleCode);
-    } else {
-      setVisibleCode(!visibleCode);
-    }
-  }
   const { StatusBarManager } = NativeModules;
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   useEffect(() => {
@@ -198,6 +145,7 @@ function Code({ navigation, route }) {
       });
     }
   }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -219,7 +167,7 @@ function Code({ navigation, route }) {
                   <View style={styles.textInput}>
                     <Text style={statusGStyle}>{selectCode}</Text>
                     <View style={{ marginRight: 13 }}>
-                      <WithLocalSvg asset={Down} />
+                      <Down width={24} height={24} />
                     </View>
                   </View>
                 </Pressable>
@@ -237,7 +185,7 @@ function Code({ navigation, route }) {
                   <View style={styles.textInput}>
                     <Text style={statusStyle}>{select}</Text>
                     <View style={{ marginRight: 13 }}>
-                      <WithLocalSvg asset={Down} />
+                      <Down width={24} height={24} />
                     </View>
                   </View>
                 </Pressable>
@@ -268,9 +216,11 @@ function Code({ navigation, route }) {
                     }}
                   >
                     <View style={{ marginTop: -3 }}>
-                      <WithLocalSvg
-                        asset={accept1 && accept2 ? CheckboxAfter : Checkbox}
-                      />
+                      {accept1 && accept2 ? (
+                        <CheckboxAfter width={24} height={24} />
+                      ) : (
+                        <Checkbox width={24} height={24} />
+                      )}
                     </View>
                   </Pressable>
                   <Text
@@ -295,9 +245,11 @@ function Code({ navigation, route }) {
                       }}
                     >
                       <View style={{ marginTop: 4 }}>
-                        <WithLocalSvg
-                          asset={!accept1 ? Checkmark : CheckmarkAfter}
-                        />
+                        {!accept1 ? (
+                          <Checkmark width={12} height={12} />
+                        ) : (
+                          <CheckmarkAfter width={12} height={12} />
+                        )}
                       </View>
                     </Pressable>
 
@@ -318,7 +270,7 @@ function Code({ navigation, route }) {
                     style={{ marginRight: 35 }}
                     onPress={() => navigation.navigate("agreeInfo")}
                   >
-                    <WithLocalSvg asset={Right} />
+                    <Right width={24} height={24} />
                   </Pressable>
                 </View>
                 <View style={styles.acceptContentContainer}>
@@ -329,9 +281,11 @@ function Code({ navigation, route }) {
                       }}
                     >
                       <View style={{ marginTop: 4 }}>
-                        <WithLocalSvg
-                          asset={!accept2 ? Checkmark : CheckmarkAfter}
-                        />
+                        {!accept2 ? (
+                          <Checkmark width={12} height={12} />
+                        ) : (
+                          <CheckmarkAfter width={12} height={12} />
+                        )}
                       </View>
                     </Pressable>
                     <Text
@@ -351,7 +305,7 @@ function Code({ navigation, route }) {
                     style={{ marginRight: 35 }}
                     onPress={() => navigation.navigate("agreeInfo2")}
                   >
-                    <WithLocalSvg asset={Right} />
+                    <Right width={24} height={24} />
                   </Pressable>
                 </View>
               </View>
@@ -387,7 +341,7 @@ function Code({ navigation, route }) {
                   <View style={styles.statusTitleContainer}>
                     <View style={styles.iconContainer}>
                       <Pressable onPress={() => setVisible(!visible)}>
-                        <WithLocalSvg asset={Xmark} />
+                        <Xmark width={24} height={24} />
                       </Pressable>
                     </View>
                     <Text style={styles.statusTitle}>가입 유형</Text>
@@ -400,7 +354,7 @@ function Code({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: display1 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -411,7 +365,7 @@ function Code({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: display2 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                 </View>
@@ -426,93 +380,16 @@ function Code({ navigation, route }) {
             </Pressable>
           </Pressable>
         </Modal>
-        <Modal
-          animationType="none"
-          transparent={true}
-          visible={visibleCode}
-          statusBarTranslucent={true}
-          onRequestClose={() => setVisibleCode(!visibleCode)}
-        >
-          <Pressable
-            style={styles.modalOverlay}
-            onPress={() => setVisibleCode(!visibleCode)}
-          >
-            <Pressable>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  height: 357,
-                  justifyContent: "space-between",
-
-                  borderTopEndRadius: 5.41,
-                  borderTopStartRadius: 5.41,
-                }}
-              >
-                <View>
-                  <View style={styles.statusTitleContainer}>
-                    <View style={styles.iconContainer}>
-                      <Pressable onPress={() => setVisibleCode(!visibleCode)}>
-                        <WithLocalSvg asset={Modalx} />
-                      </Pressable>
-                    </View>
-                    <Text style={styles.statusTitle}>가입 유형</Text>
-                  </View>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={generationSelect1}
-                  >
-                    <Text style={styles.statusText}>0기</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: cdisplay1 }]}
-                    >
-                      <WithLocalSvg asset={ModalCheck} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={generationSelect2}
-                  >
-                    <Text style={styles.statusText}>1기</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: cdisplay2 }]}
-                    >
-                      <WithLocalSvg asset={ModalCheck} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={generationSelect3}
-                  >
-                    <Text style={styles.statusText}>2기</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: cdisplay3 }]}
-                    >
-                      <WithLocalSvg asset={ModalCheck} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={generationSelect4}
-                  >
-                    <Text style={styles.statusText}>3기</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: cdisplay4 }]}
-                    >
-                      <WithLocalSvg asset={ModalCheck} />
-                    </View>
-                  </Pressable>
-                </View>
-                <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-                  <ButtonBig
-                    text="확인"
-                    style={GlobalStyles.colors.primaryDefault}
-                    onPress={okayBtn2}
-                  />
-                </View>
-              </View>
-            </Pressable>
-          </Pressable>
-        </Modal>
+        <GenerationModal
+          setVisibleCode={setVisibleCode}
+          visibleCode={visibleCode}
+          title="기수"
+          inputGeneration={inputGeneration}
+          setInputGeneration={setInputGeneration}
+          setSelectCode={setSelectCode}
+          setStatusGStyle={setStatusGStyle}
+          type={true}
+        />
       </View>
     </SafeAreaView>
   );

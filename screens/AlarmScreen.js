@@ -109,7 +109,6 @@ function AlarmScreen({ navigation }) {
               {isExpanded ? "닫기" : "자세히 보기"}{" "}
             </Text>
             <View style={styles.svg}>
-              {/* <WithLocalSvg asset={Down} /> */}
               <Image
                 source={
                   isExpanded
