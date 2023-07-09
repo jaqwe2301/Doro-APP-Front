@@ -7,6 +7,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 
@@ -23,7 +24,7 @@ function Id({ navigation, route }) {
   const [inputId, setInputId] = useState("");
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
   const [isNavi, setIsNavi] = useState(false);
-  const statusBarHeight = route.params.h;
+  // const statusBarHeight = route.params.h;
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -66,15 +67,15 @@ function Id({ navigation, route }) {
     }
   }
 
-  // const { StatusBarManager } = NativeModules;
-  // const [statusBarHeight, setStatusBarHeight] = useState(0);
-  // useEffect(() => {
-  //   if (Platform.OS === "ios") {
-  //     StatusBarManager.getHeight((statusBarFrameData) => {
-  //       setStatusBarHeight(statusBarFrameData.height);
-  //     });
-  //   }
-  // }, []);
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -88,26 +89,28 @@ function Id({ navigation, route }) {
         <View style={{ flex: 1, backgroundColor: "white" }}>
           <Bar num={1} />
           <View style={{ flex: 1, justifyContent: "space-between" }}>
-            <View>
-              <View style={styles.textContainer}>
-                <InputText text="아이디를 입력해 주세요." />
+            <ScrollView>
+              <View>
+                <View style={styles.textContainer}>
+                  <InputText text="아이디를 입력해 주세요." />
+                </View>
+                <Text style={styles.text}>
+                  입력하신 아이디는 로그인 시 사용됩니다.
+                </Text>
+                <View style={styles.inputContainer}>
+                  <InputData
+                    hint="영문 또는 숫자 4~20자"
+                    onChangeText={handleIdChange}
+                    value={inputId}
+                  />
+                  {isVisible && (
+                    <Text style={styles.failText}>
+                      해당 아이디는 이미 존재합니다.
+                    </Text>
+                  )}
+                </View>
               </View>
-              <Text style={styles.text}>
-                입력하신 아이디는 로그인 시 사용됩니다.
-              </Text>
-              <View style={styles.inputContainer}>
-                <InputData
-                  hint="영문 또는 숫자 4~20자"
-                  onChangeText={handleIdChange}
-                  value={inputId}
-                />
-                {isVisible && (
-                  <Text style={styles.failText}>
-                    해당 아이디는 이미 존재합니다.
-                  </Text>
-                )}
-              </View>
-            </View>
+            </ScrollView>
             <View style={styles.buttonContainer}>
               <ButtonBig text="다음" style={lbtnColor} onPress={navigateId} />
             </View>
