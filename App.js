@@ -428,7 +428,7 @@ function NoticeNavigator({ navigation }) {
           headerRight: () => {
             return (
               // <Pressable onPress={() => navigation.navigate("home")}>
-              // <WithLocalSvg asset={Home} />
+
               <Home width={24} height={24} />
               //</Pressable>
             );
