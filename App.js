@@ -742,6 +742,7 @@ export default function App() {
 async function registerForPushNotificationsAsync() {
   let token;
   let noti;
+  // const authCtx = useContext(AuthContext);
 
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
@@ -762,16 +763,17 @@ async function registerForPushNotificationsAsync() {
     }
     noti = true;
     if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
+      alert("알림 설정 거부하셨습니다!");
       noti = false;
       return { token: null, noti };
     }
-    // 프로젝트 ID 바꿔야 함
     token = (
       await Notifications.getExpoPushTokenAsync({
         projectId: Constants.expoConfig?.extra?.eas?.projectId,
       })
     ).data;
+    // authCtx.fcmToken(token);
+    AsyncStorage.setItem("fcmToken", token);
     console.log(token);
     console.log(noti);
   } else {
