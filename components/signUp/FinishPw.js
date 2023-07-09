@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text } from "react-native";
+import { View, StyleSheet, Image, Text, SafeAreaView } from "react-native";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
 import { useNavigation } from "@react-navigation/native";
@@ -11,27 +11,29 @@ function FinishPw() {
     authCtx.isAuthenticated ? authCtx.logout() : navigation.replace("login");
   }
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "white",
-        justifyContent: "space-between",
-      }}
-    >
-      <View>
-        <View style={styles.headerShadow}></View>
-        <Text style={[styles.text, { marginTop: 45 }]}>
-          비밀번호 변경이 완료되었습니다.
-        </Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+          justifyContent: "space-between",
+        }}
+      >
+        <View>
+          <View style={styles.headerShadow}></View>
+          <Text style={[styles.text, { marginTop: 45 }]}>
+            비밀번호 변경이 완료되었습니다.
+          </Text>
+        </View>
+        <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+          <ButtonBig
+            text="로그인"
+            style={GlobalStyles.colors.primaryDefault}
+            onPress={naviLogin}
+          />
+        </View>
       </View>
-      <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-        <ButtonBig
-          text="로그인"
-          style={GlobalStyles.colors.primaryDefault}
-          onPress={naviLogin}
-        />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import Xmark from "../../assets/xmark_gray.svg";
 
 function ApplyingLectureBox({
@@ -57,7 +57,7 @@ function ApplyingLectureBox({
       <View style={styles.whiteBox}>
         <View style={styles.titleContainer}>
           <Text style={styles.SubTitle}>{subTitle}</Text>
-          <WithLocalSvg asset={Xmark} />
+          <Xmark width={20} height={20} />
         </View>
         <View
           style={{

@@ -15,7 +15,7 @@ import axios from "axios";
 
 import { getProfile } from "../utill/http";
 import { GlobalStyles } from "../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import { URL } from "../utill/config";
 import { HeaderContext } from "../store/header-context";
 import ApplyingTutorBox from "../components/ui/ApplyingTutorBox";
@@ -594,7 +594,7 @@ function DetailLectureScreen({ route }) {
           }
         >
           <View style={styles.BottomButton}>
-            <WithLocalSvg asset={CreactingLecture} />
+            <CreactingLecture width={20} height={20} />
           </View>
         </Pressable>
       ) : (
