@@ -1,6 +1,7 @@
 import axios from "axios";
 import { URL } from "./config";
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const URL = "https://api.doroapp.com";
 // const URL = "http://10.0.2.2:8080";
@@ -71,10 +72,20 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
-  const response = await axios.post(URL + "/login", {
-    account: id,
-    password: pw,
-  });
+  const fcmToken = await AsyncStorage.getItem("fcmToken");
+  console.log(fcmToken + "로그인 fcm");
+  const response = await axios.post(
+    URL + "/login",
+    {
+      account: id,
+      password: pw,
+    },
+    {
+      headers: {
+        fcmToken: fcmToken,
+      },
+    }
+  );
 
   const token = response;
   //.headers.authorization

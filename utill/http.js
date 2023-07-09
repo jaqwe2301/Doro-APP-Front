@@ -371,7 +371,13 @@ export async function alarmEdit({ id, notificationAgreement }) {
 
 export async function logout() {
   try {
-    const response = await instance.post("/logout");
+    const fcmToken = await AsyncStorage.getItem("fcmToken");
+    console.log(fcmToken + "로그아웃 fcm");
+    const response = await instance.post("/logout", undefined, {
+      headers: {
+        fcmToken: fcmToken,
+      },
+    });
     return response;
   } catch (error) {
     // if (error.response) {
