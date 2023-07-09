@@ -28,7 +28,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
 import DetailLectureScreen from "./screens/DetailLectureScreen";
-import SignUp from "./screens/SignUp";
+
 import AuthPhone from "./components/signUp/AuthPhone";
 import Id from "./components/signUp/Id";
 import Pw from "./components/signUp/Pw";
@@ -119,6 +119,7 @@ function AuthStack({ notificationAgreement }) {
           options={{
             header: (props) => <LogoTitle {...props} />,
             headerBackVisible: false,
+
             // headerTitleAlign: "left",
           }}
         />
@@ -134,13 +135,6 @@ function AuthStack({ notificationAgreement }) {
           component={SearchPW}
           options={{
             title: "비밀번호 찾기",
-          }}
-        />
-        <Stack.Screen
-          name="signUp"
-          component={SignUp}
-          options={{
-            title: "회원가입",
           }}
         />
         <Stack.Screen
@@ -184,7 +178,7 @@ function AuthStack({ notificationAgreement }) {
           options={{
             title: "회원가입",
           }}
-          initialParams={{ notificationAgreement: true }}
+          initialParams={{ notificationAgreement: notificationAgreement }}
         />
         <Stack.Screen
           name="agreeInfo"
@@ -421,8 +415,10 @@ function NoticeNavigator({ navigation }) {
           // lineHeight: 22,
         },
         headerBackTitleVisible: false,
+
         headerTintColor: "#000000",
       }}
+      initialRouteName="noticeScreen"
     >
       <Stack.Screen
         name="noticeScreen"
@@ -504,6 +500,8 @@ function BottomTabNavigator() {
         tabBarHideOnKeyboard: true,
         headerShown: false,
       }}
+      initialRouteName="Home"
+      backBehavior="history"
     >
       <BottomTab.Screen
         name="Home"
