@@ -26,7 +26,7 @@ export async function verifyauthPhoneNum({ authNum, messageType, phone }) {
     messageType: messageType,
     phone: phone,
   });
-
+  console.log(response.data);
   const success = response.data.success;
 
   return success;
