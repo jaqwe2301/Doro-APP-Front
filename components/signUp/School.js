@@ -12,7 +12,7 @@ import {
 import { useState, useContext, useEffect } from "react";
 
 import InputText from "../../components/ui/InputText";
-import { WithLocalSvg } from "react-native-svg";
+
 import Down from "../../assets/down.svg";
 import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
@@ -207,7 +207,7 @@ function School({ navigation, route }) {
                   <View style={styles.textInput}>
                     <Text style={statusStyle}>{select}</Text>
                     <View style={{ marginRight: 13 }}>
-                      <WithLocalSvg asset={Down} />
+                      <Down width={24} height={24} />
                     </View>
                   </View>
                 </Pressable>
@@ -244,7 +244,7 @@ function School({ navigation, route }) {
                   <View style={styles.statusTitleContainer}>
                     <Pressable onPress={() => setVisible(!visible)}>
                       <View style={styles.iconContainer}>
-                        <WithLocalSvg asset={Modalx} />
+                        <Modalx width={24} height={24} />
                       </View>
                     </Pressable>
                     <Text style={styles.statusTitle}>재학 유무</Text>
@@ -257,7 +257,7 @@ function School({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: display1 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={20} height={20} />
                     </View>
                   </Pressable>
                   <Pressable
@@ -268,7 +268,7 @@ function School({ navigation, route }) {
                     <View
                       style={[styles.iconContainer2, { display: display2 }]}
                     >
-                      <WithLocalSvg asset={ModalCheck} />
+                      <ModalCheck width={24} height={24} />
                     </View>
                   </Pressable>
                 </View>

@@ -54,7 +54,7 @@ import HeaderContextProvider, { HeaderContext } from "./store/header-context";
 import { LecturesProvider } from "./store/LecturesProvider";
 import EditNoticeScreen from "./screens/EditNoticeScreen";
 import AlarmScreen from "./screens/AlarmScreen";
-import { WithLocalSvg } from "react-native-svg";
+
 import DoroHorizontal from "./assets/doroHorizontal.svg";
 import Home from "./assets/home.svg";
 import Main from "./assets/main.svg";
@@ -87,23 +87,13 @@ const BottomTab = createBottomTabNavigator();
 
 function LogoTitle() {
   return (
-    <View
-      style={{
-        height: 174.81,
-      }}
-    >
-      <View style={{ marginTop: 86.81, marginLeft: 20 }}>
-        <WithLocalSvg asset={DoroHorizontal} />
+    <SafeAreaView>
+      <View style={{ height: Platform.OS === "android" ? 174.81 : undefined }}>
+        <View style={{ marginTop: 86.81, marginLeft: 20 }}>
+          <DoroHorizontal width={173.49} height={52} />
+        </View>
       </View>
-    </View>
-  );
-}
-
-function HeaderStyle({ title }) {
-  return (
-    <View style={{ height: 60 }}>
-      <Text>{title}</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -442,7 +432,8 @@ function NoticeNavigator({ navigation }) {
           headerRight: () => {
             return (
               // <Pressable onPress={() => navigation.navigate("home")}>
-              <WithLocalSvg asset={Home} />
+              // <WithLocalSvg asset={Home} />
+              <Home width={24} height={24} />
               //</Pressable>
             );
           },
@@ -474,13 +465,6 @@ function NoticeNavigator({ navigation }) {
           },
         }}
       />
-      {/* <Stack.Screen
-        name="alarm"
-        component={AlarmScreen}
-        options={{
-          title: "알림",
-        }}
-      /> */}
     </Stack.Navigator>
   );
 }
@@ -525,19 +509,22 @@ function BottomTabNavigator() {
         name="Home"
         component={HomeNavigator}
         options={{
+          title: "홈",
           headerShown: false,
-          tabBarIcon: ({ color }) =>
-            color === GlobalStyles.colors.gray04 ? (
-              <WithLocalSvg asset={Main} />
-            ) : (
-              <WithLocalSvg asset={MainFill} />
-            ),
 
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <MainFill width={30} height={30} />
+            ) : (
+              <Main width={30} height={30} />
+            ),
+          tabBarIconStyle: {
+            marginTop: 7,
+          },
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: 600,
             marginBottom: Platform.OS === "android" ? 9 : 0,
-            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />
@@ -546,11 +533,11 @@ function BottomTabNavigator() {
         component={NoticeNavigator}
         options={({ route }) => ({
           title: "공지사항",
-          tabBarIcon: ({ color }) =>
-            color === GlobalStyles.colors.gray04 ? (
-              <WithLocalSvg asset={Megaphone} />
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <MegaphoneFill width={30} height={30} />
             ) : (
-              <WithLocalSvg asset={MegaphoneFill} />
+              <Megaphone width={30} height={30} />
             ),
           tabBarStyle: ((route) => {
             const routeName = getFocusedRouteNameFromRoute(route) ?? "";
@@ -558,20 +545,19 @@ function BottomTabNavigator() {
             if (
               routeName === "noticeDetail" ||
               routeName === "noticeAdd" ||
-              routeName === "noticeEdit" ||
-              routeName === "alarm"
+              routeName === "noticeEdit"
             ) {
               return { display: "none" };
             }
             return Platform.OS === "android" && { height: 60 };
           })(route),
+          tabBarIconStyle: {
+            marginTop: 6,
+          },
           tabBarLabelStyle: {
-            // marginBottom: 9,
             fontSize: 10,
-            fontWeight: "600",
-            // marginTop: -10,
+            fontWeight: 600,
             marginBottom: Platform.OS === "android" ? 9 : 0,
-            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         })}
       />
@@ -580,7 +566,7 @@ function BottomTabNavigator() {
         // children={() => <ApplicationDetails header={true} />}
         component={ApplicationDetails}
         options={{
-          title: "강의 신청 내역",
+          title: "신청 내역",
           headerShown: true,
           headerShadowVisible: false,
           headerTitleAlign: "center",
@@ -590,19 +576,19 @@ function BottomTabNavigator() {
             fontWeight: "600",
           },
 
-          tabBarIcon: ({ color }) =>
-            color === GlobalStyles.colors.gray04 ? (
-              <WithLocalSvg asset={Tray} />
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <TrayFill width={30} height={30} />
             ) : (
-              <WithLocalSvg asset={TrayFill} />
+              <Tray width={30} height={30} />
             ),
+          tabBarIconStyle: {
+            marginTop: 7,
+          },
           tabBarLabelStyle: {
-            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            // marginTop: -10,
             marginBottom: Platform.OS === "android" ? 9 : 0,
-            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />
@@ -625,20 +611,19 @@ function BottomTabNavigator() {
               </View>
             );
           },
-          tabBarIcon: ({ color }) =>
-            color === GlobalStyles.colors.gray04 ? (
-              <WithLocalSvg asset={Profile} />
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <ProfileFill width={30} height={30} />
             ) : (
-              <WithLocalSvg asset={ProfileFill} />
+              <Profile width={30} height={30} />
             ),
+          tabBarIconStyle: {
+            marginTop: 6,
+          },
           tabBarLabelStyle: {
-            justifyContent: "center",
-            // marginBottom: 9,
             fontSize: 10,
             fontWeight: 600,
-            // marginTop: -10,
             marginBottom: Platform.OS === "android" ? 9 : 0,
-            marginTop: Platform.OS === "android" ? -10 : 0,
           },
         }}
       />

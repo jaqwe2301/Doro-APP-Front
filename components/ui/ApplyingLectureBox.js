@@ -57,7 +57,7 @@ function ApplyingLectureBox({
       <View style={styles.whiteBox}>
         <View style={styles.titleContainer}>
           <Text style={styles.SubTitle}>{subTitle}</Text>
-          <WithLocalSvg asset={Xmark} />
+          <Xmark width={20} height={20} />
         </View>
         <View
           style={{

@@ -16,7 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 import { GlobalStyles } from "../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import CreactingLecture from "../assets/creatingLecture.svg";
 
 import LectureBox from "./../components/ui/LectureBox";
@@ -297,7 +297,7 @@ const HomeScreen = ({ lectureIdProps }) => {
               navigation.navigate("UpdateLectureScreen", { data: "" })
             }
           >
-            <WithLocalSvg asset={CreactingLecture} />
+            <CreactingLecture width={28} height={28} />
           </Pressable>
         </View>
       ) : (
