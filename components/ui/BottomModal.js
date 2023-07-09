@@ -7,7 +7,6 @@ import {
   FlatList,
 } from "react-native";
 
-import { WithLocalSvg } from "react-native-svg";
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "./ButtonBig";
 import Xmark from "../../assets/xmark_black.svg";
@@ -28,7 +27,7 @@ function BottomModal({
           <View style={styles.modalTop}>
             <Pressable onPress={inVisible}>
               <View style={styles.topButton}>
-                <WithLocalSvg asset={Xmark} />
+                <Xmark width={24} height={24} />
               </View>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: "bold" }}>{title}</Text>
@@ -47,7 +46,7 @@ function BottomModal({
               <View style={styles.topButton}>
                 {plusVisible ? (
                   <Pressable onPress={onPressPlus}>
-                    <WithLocalSvg asset={Plus} />
+                    <Plus width={19} height={20} />
                   </Pressable>
                 ) : (
                   ""

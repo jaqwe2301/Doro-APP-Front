@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import Xmark from "../../assets/xmark_gray.svg";
 
 function ApplyingLectureBox({

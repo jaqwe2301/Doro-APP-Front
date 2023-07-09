@@ -34,6 +34,7 @@ import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import GenerationModal from "../ui/GenerationModal";
 
 function Code({ navigation, route }) {
   const [inputCode, setInputCode] = useState("");
@@ -44,10 +45,7 @@ function Code({ navigation, route }) {
   const [visibleCode, setVisibleCode] = useState(false);
   const [display1, setDispaly1] = useState("none");
   const [display2, setDispaly2] = useState("none");
-  const [cdisplay3, setCDisplay3] = useState("none");
-  const [cdisplay4, setCDisplay4] = useState("none");
-  const [cdisplay1, setCDisplay1] = useState("none");
-  const [cdisplay2, setCDisplay2] = useState("none");
+
   const [select, setSelect] = useState("가입 유형을 선택하세요");
   const [selectCode, setSelectCode] = useState("기수를 선택하세요");
   const [statusStyle, setStatusStyle] = useState(styles.textModal);
@@ -382,85 +380,16 @@ function Code({ navigation, route }) {
             </Pressable>
           </Pressable>
         </Modal>
-        <Modal
-          animationType="none"
-          transparent={true}
-          visible={visibleCode}
-          statusBarTranslucent={true}
-          onRequestClose={() => setVisibleCode(!visibleCode)}
-        >
-          <SafeAreaView style={{ flex: 1 }}>
-            <Pressable
-              style={styles.modalOverlay}
-              onPress={() => setVisibleCode(!visibleCode)}
-            >
-              <Pressable>
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    height: 357,
-                    justifyContent: "space-between",
-
-                    borderTopEndRadius: 5.41,
-                    borderTopStartRadius: 5.41,
-                  }}
-                >
-                  <View>
-                    <View style={styles.statusTitleContainer}>
-                      <View style={styles.iconContainer}>
-                        <Pressable onPress={() => setVisibleCode(!visibleCode)}>
-                          <Modalx width={24} height={24} />
-                        </Pressable>
-                      </View>
-                      <Text style={styles.statusTitle}>기수</Text>
-                    </View>
-                    <Picker
-                      selectedValue={inputGeneration}
-                      onValueChange={(itemValue, itemIndex) => {
-                        setInputGeneration(itemValue);
-                        setSelectCode(itemValue + "기");
-                        setStatusGStyle(styles.textInputText);
-                      }}
-                      itemStyle={{
-                        marginHorizontal: 10,
-                      }}
-                      mode="dropdown"
-                      // prompt="기수 선택"
-                    >
-                      <Picker.Item label="1" value="1" />
-                      <Picker.Item label="2" value="2" />
-                      <Picker.Item label="3" value="3" />
-                      <Picker.Item label="4" value="4" />
-                      <Picker.Item label="5" value="5" />
-                      <Picker.Item label="6" value="6" />
-                      <Picker.Item label="7" value="7" />
-                      <Picker.Item label="8" value="8" />
-                      <Picker.Item label="9" value="9" />
-                      <Picker.Item label="10" value="10" />
-                      <Picker.Item label="11" value="11" />
-                      <Picker.Item label="12" value="12" />
-                      <Picker.Item label="13" value="13" />
-                      <Picker.Item label="14" value="14" />
-                      <Picker.Item label="15" value="15" />
-                      <Picker.Item label="16" value="16" />
-                      <Picker.Item label="17" value="17" />
-                      <Picker.Item label="18" value="18" />
-                      <Picker.Item label="19" value="19" />
-                      <Picker.Item label="20" value="20" />
-                    </Picker>
-                  </View>
-                  <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-                    <ButtonBig
-                      text="확인"
-                      style={GlobalStyles.colors.primaryDefault}
-                      onPress={() => setVisibleCode(false)}
-                    />
-                  </View>
-                </View>
-              </Pressable>
-            </Pressable>
-          </SafeAreaView>
-        </Modal>
+        <GenerationModal
+          setVisibleCode={setVisibleCode}
+          visibleCode={visibleCode}
+          title="기수"
+          inputGeneration={inputGeneration}
+          setInputGeneration={setInputGeneration}
+          setSelectCode={setSelectCode}
+          setStatusGStyle={setStatusGStyle}
+          type={true}
+        />
       </View>
     </SafeAreaView>
   );

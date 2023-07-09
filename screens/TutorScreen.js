@@ -7,17 +7,20 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  NativeModules,
 } from "react-native";
 
 import ButtonBig from "../components/ui/ButtonBig";
 import { GlobalStyles } from "../constants/styles";
 import { useEffect, useState } from "react";
 import InputLine from "../components/ui/InputLine";
-
+import Profile from "../assets/defaultProfile.svg";
 import Down from "../assets/down.svg";
 import { Ionicons } from "@expo/vector-icons";
 import { KRBold, KRRegular } from "../constants/fonts";
 import { updateProfile } from "../utill/http";
+import GenerationModal from "../components/ui/GenerationModal";
 
 function TutorScreen({ route, navigation }) {
   const data = route.params.id;
@@ -25,6 +28,7 @@ function TutorScreen({ route, navigation }) {
 
   const [phoneNum, setphoneNum] = useState(data.phone);
   const [visible, setVisible] = useState(false);
+  const [Gvisible, setGVisible] = useState(false);
   const [display1, setDispaly1] = useState("none");
   const [display2, setDispaly2] = useState("none");
   const [imageUrl, setImageUrl] = useState(data.profileImg);
@@ -113,168 +117,215 @@ function TutorScreen({ route, navigation }) {
   const handleGenerationChange = (text) => {
     setGeneration(text);
   };
-
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.imageContainer}>
-          {imageUrl !== null ? (
-            <Image
-              style={styles.image}
-              source={{
-                uri: imageUrl,
-              }}
-            />
-          ) : (
-            <Image
-              style={styles.image}
-              source={require("../assets/profile.png")}
-            />
-          )}
-        </View>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 4,
-          }}
-        >
-          <Text style={KRBold.Body}>{data.name}</Text>
-          {/* </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.imageContainer}>
+            {imageUrl !== null ? (
+              <Image
+                style={styles.image}
+                source={{
+                  uri: imageUrl,
+                }}
+              />
+            ) : (
+              // <Image
+              //   style={styles.image}
+              //   source={require("../assets/profile.png")}
+              // />
+              <View style={{ margin: 11 }}>
+                <Profile />
+              </View>
+            )}
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 4,
+            }}
+          >
+            <Text style={KRBold.Body}>{data.name}</Text>
+            {/* </View>
         <View> */}
 
-          <Text
-            style={[KRRegular.Subbody, { color: GlobalStyles.colors.gray03 }]}
-          >
-            DORO {generation}기
-          </Text>
-        </View>
-        <View style={[styles.border, { marginTop: 33 }]}></View>
-        <View>
-          <Text style={styles.contentTitle}>기본정보</Text>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>이름</Text>
-            <Text style={styles.contentText}>{data.name}</Text>
+            <Text
+              style={[KRRegular.Subbody, { color: GlobalStyles.colors.gray03 }]}
+            >
+              DORO {generation}기
+            </Text>
           </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>생년월일</Text>
-            <Text style={styles.contentText}>{data.birth}</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>기수</Text>
-            <InputLine
-              onChangeText={handleGenerationChange}
-              value={String(generation)}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>휴대전화번호</Text>
-            <InputLine
-              onChangeText={handlePhoneChange}
-              value={phoneNum}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>학교</Text>
-            <InputLine onChangeText={handleSchoolChange} value={school} />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>전공</Text>
-            <InputLine onChangeText={handleMajorChange} value={major} />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>학번</Text>
-            <InputLine onChangeText={handleStudentIdChange} value={studentId} />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>재학 유무</Text>
-            <View style={styles.statusContainer2}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={styles.statusText2}>{status1}</Text>
-                <Pressable onPress={() => setVisible(!visible)}>
-                  {/* <View style={{ paddingBottom: 3 }}> */}
-                  <Down width={20} height={20} />
-                  {/* </View> */}
+          <View style={[styles.border, { marginTop: 33 }]}></View>
+          <View>
+            <Text style={styles.contentTitle}>기본정보</Text>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>이름</Text>
+              <Text style={styles.contentText}>{data.name}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>생년월일</Text>
+              <Text style={styles.contentText}>{data.birth}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>기수</Text>
+              <View style={[styles.statusContainer2]}>
+                <Pressable onPress={() => setGVisible(!Gvisible)}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    {/* <InputLine
+                  onChangeText={handleGenerationChange}
+                  value={String(generation)}
+                  keyboardType="numeric"
+                /> */}
+                    <Text style={styles.statusText2}>DORO {generation}기</Text>
+                    {/* <View style={{ paddingBottom: 3 }}> */}
+                    <Down width={20} height={20} />
+                    {/* </View> */}
+                  </View>
                 </Pressable>
               </View>
             </View>
-          </View>
-          <View style={{ marginTop: 50 }}></View>
-        </View>
-
-        <Modal
-          animationType="none"
-          transparent={true}
-          visible={visible}
-          statusBarTranslucent={true}
-          onRequestClose={() => setVisible(!visible)}
-        >
-          <Pressable
-            style={styles.modalOverlay}
-            onPress={() => setVisible(!visible)}
-          >
-            <Pressable>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  height: 273,
-                  justifyContent: "space-between",
-                  borderTopEndRadius: 5.41,
-                  borderTopStartRadius: 5.41,
-                }}
-              >
-                <View>
-                  <View style={styles.statusTitleContainer}>
-                    <View style={styles.iconContainer}>
-                      <Pressable onPress={() => setVisible(!visible)}>
-                        <Ionicons name="close-outline" size={40} />
-                      </Pressable>
-                    </View>
-                    <Text style={styles.statusTitle}>재학 유무</Text>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>휴대전화번호</Text>
+              {/* <InputLine
+              onChangeText={handlePhoneChange}
+              value={phoneNum}
+              keyboardType="numeric"
+              
+            /> */}
+              <Text style={styles.contentText}>
+                {data.phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3")}
+              </Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>학교</Text>
+              <InputLine onChangeText={handleSchoolChange} value={school} />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>전공</Text>
+              <InputLine onChangeText={handleMajorChange} value={major} />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>학번</Text>
+              <InputLine
+                onChangeText={handleStudentIdChange}
+                value={studentId}
+              />
+            </View>
+            <View style={[styles.contentContainer, { marginBottom: 100 }]}>
+              <Text style={styles.title}>재학 유무</Text>
+              <View style={styles.statusContainer2}>
+                <Pressable onPress={() => setVisible(!visible)}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text style={styles.statusText2}>{status1}</Text>
+                    {/* <View style={{ marginBottom: -2 }}> */}
+                    <Down width={20} height={20} />
+                    {/* </View> */}
                   </View>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={statusSelect}
-                  >
-                    <Text style={styles.statusText}>재학</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: display1 }]}
-                    >
-                      <Ionicons name="checkmark" size={30} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={statusSelect}
-                  >
-                    <Text style={styles.statusText}>휴학</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: display2 }]}
-                    >
-                      <Ionicons name="checkmark" size={30} />
-                    </View>
-                  </Pressable>
-                </View>
-                <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-                  <ButtonBig
-                    text="확인"
-                    style={GlobalStyles.colors.primaryDefault}
-                    onPress={okayBtn}
-                  />
-                </View>
+                </Pressable>
               </View>
+              {/* <View style={{ marginTop: 50 }}></View> */}
+            </View>
+          </View>
+          <GenerationModal
+            visibleCode={Gvisible}
+            setVisibleCode={setGVisible}
+            title="기수 변경"
+            setInputGeneration={setGeneration}
+            inputGeneration={generation}
+            type={false}
+          />
+
+          <Modal
+            animationType="none"
+            transparent={true}
+            visible={visible}
+            statusBarTranslucent={true}
+            onRequestClose={() => setVisible(!visible)}
+          >
+            <Pressable
+              style={styles.modalOverlay}
+              onPress={() => setVisible(!visible)}
+            >
+              <Pressable>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    height: 273,
+                    justifyContent: "space-between",
+                    borderTopEndRadius: 5.41,
+                    borderTopStartRadius: 5.41,
+                  }}
+                >
+                  <View>
+                    <View style={styles.statusTitleContainer}>
+                      <View style={styles.iconContainer}>
+                        <Pressable onPress={() => setVisible(!visible)}>
+                          <Ionicons name="close-outline" size={40} />
+                        </Pressable>
+                      </View>
+                      <Text style={styles.statusTitle}>재학 유무</Text>
+                    </View>
+                    <Pressable
+                      style={styles.statusTextContainer}
+                      onPress={statusSelect}
+                    >
+                      <Text style={styles.statusText}>재학</Text>
+                      <View
+                        style={[styles.iconContainer2, { display: display1 }]}
+                      >
+                        <Ionicons name="checkmark" size={30} />
+                      </View>
+                    </Pressable>
+                    <Pressable
+                      style={styles.statusTextContainer}
+                      onPress={statusSelect}
+                    >
+                      <Text style={styles.statusText}>휴학</Text>
+                      <View
+                        style={[styles.iconContainer2, { display: display2 }]}
+                      >
+                        <Ionicons name="checkmark" size={30} />
+                      </View>
+                    </Pressable>
+                  </View>
+                  <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                    <ButtonBig
+                      text="확인"
+                      style={GlobalStyles.colors.primaryDefault}
+                      onPress={okayBtn}
+                    />
+                  </View>
+                </View>
+              </Pressable>
             </Pressable>
-          </Pressable>
-        </Modal>
-      </ScrollView>
-    </View>
+          </Modal>
+        </ScrollView>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
