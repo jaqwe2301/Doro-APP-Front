@@ -48,7 +48,7 @@ function NoticeScreen({ navigation }) {
   //     return (
   //       <Pressable onPress={() => navigation.navigate("alarm")}>
   //         <View>
-  //           <WithLocalSvg asset={Home} />
+  //           <Home />
   //         </View>
   //       </Pressable>
   //     );
