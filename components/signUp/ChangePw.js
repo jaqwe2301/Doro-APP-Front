@@ -27,13 +27,13 @@ function ChangePw({ navigation, route }) {
   const [num, setNum] = useState(GlobalStyles.colors.gray05);
   const [mark, setMark] = useState(GlobalStyles.colors.gray05);
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
-
+  const [visible, setVisible] = useState(false);
   const id = route.params.id;
   const phoneNum = route.params.phone;
   // const statusBarHeight = route.params.h;
 
   async function handlerPwchange() {
-    if (isNavi) {
+    if (isNavi && pw === repw) {
       try {
         const response = await changePassword({
           account: id,
@@ -50,6 +50,9 @@ function ChangePw({ navigation, route }) {
       } catch (error) {
         console.log(error);
       }
+    } else if (isNavi) {
+      setVisible(true);
+    } else {
     }
   }
 
@@ -80,7 +83,7 @@ function ChangePw({ navigation, route }) {
     if (
       pw !== "" &&
       repw !== "" &&
-      repw === text &&
+      // repw === text &&
       text.length >= 8 &&
       text.length <= 20 &&
       /[a-zA-z]+/g.test(text) &&
@@ -99,7 +102,7 @@ function ChangePw({ navigation, route }) {
     setRePw(text);
 
     if (
-      pw === text &&
+      // pw === text &&
       text.length >= 8 &&
       text.length <= 20 &&
       /[a-zA-z]+/g.test(text) &&
@@ -156,7 +159,9 @@ function ChangePw({ navigation, route }) {
                 secureTextEntry={true}
               />
             </View>
-
+            {visible && (
+              <Text style={styles.failText}>비밀번호가 틀립니다.</Text>
+            )}
             {/* <Text style={styles.textSend}>비밀번호가 틀립니다.</Text> */}
           </View>
         </ScrollView>
@@ -183,6 +188,14 @@ const styles = StyleSheet.create({
   headerShadow: {
     borderBottomColor: GlobalStyles.colors.gray05,
     borderBottomWidth: 0.5,
+  },
+  failText: {
+    color: GlobalStyles.colors.gray01,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 17,
+    marginLeft: 20,
+    marginTop: 3,
   },
   textTitle: {
     marginLeft: 3,
