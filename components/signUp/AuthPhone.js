@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   NativeModules,
+  ScrollView,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 import InputText from "../../components/ui/InputText";
@@ -114,48 +115,50 @@ function AuthPhone() {
           }
         >
           <View style={{ flex: 1, justifyContent: "space-between" }}>
-            <View>
-              <View style={styles.textContainer}>
-                <InputText text="휴대폰 번호를 알려주세요." />
-              </View>
-              <Text style={styles.text}>
-                입력하신 번호로 인증번호가 전송됩니다.
-              </Text>
-              <View style={styles.inputContainer}>
-                <View style={styles.input}>
-                  <InputData
-                    hint="휴대폰 번호"
-                    onChangeText={handlePhoneChange}
-                    value={phoneNum}
-                    keyboardType="numeric"
-                  />
+            <ScrollView>
+              <View>
+                <View style={styles.textContainer}>
+                  <InputText text="휴대폰 번호를 알려주세요." />
                 </View>
-                <View>
-                  <ButtonSmall
-                    title={btnTitle}
-                    onPress={requestNumber}
-                    style={sbtnColor}
-                  />
-                </View>
-              </View>
-              {isVisible && (
-                <>
-                  <View style={styles.lInputContainer}>
+                <Text style={styles.text}>
+                  입력하신 번호로 인증번호가 전송됩니다.
+                </Text>
+                <View style={styles.inputContainer}>
+                  <View style={styles.input}>
                     <InputData
-                      hint="인증번호"
-                      value={authNum}
-                      onChangeText={handleAuthChange}
+                      hint="휴대폰 번호"
+                      onChangeText={handlePhoneChange}
+                      value={phoneNum}
                       keyboardType="numeric"
-                      borderColor={borderColor1}
                     />
-                    <Timer count={count} setCount={setCount} />
                   </View>
-                  <Text style={[styles.textSend, { color: postColor }]}>
-                    {postText}
-                  </Text>
-                </>
-              )}
-            </View>
+                  <View>
+                    <ButtonSmall
+                      title={btnTitle}
+                      onPress={requestNumber}
+                      style={sbtnColor}
+                    />
+                  </View>
+                </View>
+                {isVisible && (
+                  <>
+                    <View style={styles.lInputContainer}>
+                      <InputData
+                        hint="인증번호"
+                        value={authNum}
+                        onChangeText={handleAuthChange}
+                        keyboardType="numeric"
+                        borderColor={borderColor1}
+                      />
+                      <Timer count={count} setCount={setCount} />
+                    </View>
+                    <Text style={[styles.textSend, { color: postColor }]}>
+                      {postText}
+                    </Text>
+                  </>
+                )}
+              </View>
+            </ScrollView>
             <View style={styles.buttonContainer}>
               <ButtonBig
                 text="다음"

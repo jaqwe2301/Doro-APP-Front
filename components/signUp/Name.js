@@ -7,6 +7,7 @@ import {
   NativeModules,
   SafeAreaView,
   Pressable,
+  ScrollView,
   Modal,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
@@ -20,6 +21,7 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { KRBold } from "../../constants/fonts";
+
 function Name({ navigation, route }) {
   // const statusBarHeight = route.params.h;
   const [inputName, setInputName] = useState("");
@@ -106,45 +108,46 @@ function Name({ navigation, route }) {
           }
         >
           <View style={{ flex: 1, justifyContent: "space-between" }}>
-            <View>
-              <View style={styles.textContainer}>
-                <InputText text="이름을 입력해 주세요." />
-              </View>
-              <View style={styles.inputContainer}>
-                <InputData
-                  hint="이름"
-                  onChangeText={handleNameChange}
-                  value={inputName}
-                />
-              </View>
-              <View style={[styles.textContainer, { marginTop: 50 }]}>
-                <InputText text="생년월일을 입력해 주세요." />
-              </View>
+            <ScrollView>
               <View>
-                <Pressable onPress={() => setShow(!show)}>
-                  <View style={styles.inputContainer}>
-                    {/* <Pressable> */}
-                    {/* <InputData
+                <View style={styles.textContainer}>
+                  <InputText text="이름을 입력해 주세요." />
+                </View>
+                <View style={styles.inputContainer}>
+                  <InputData
+                    hint="이름"
+                    onChangeText={handleNameChange}
+                    value={inputName}
+                  />
+                </View>
+                <View style={[styles.textContainer, { marginTop: 50 }]}>
+                  <InputText text="생년월일을 입력해 주세요." />
+                </View>
+                <View>
+                  <Pressable onPress={() => setShow(!show)}>
+                    <View style={styles.inputContainer}>
+                      {/* <Pressable> */}
+                      {/* <InputData
                       hint="생년월일"
                       onChangeText={handleBirthChange}
                       value={date.toLocaleDateString()}
                       readOnly={true}
                     /> */}
-                    <View style={styles.textInputContainer}>
-                      <Text style={styles.textInput} placeholder="생년월일">
-                        {Platform.OS === "ios"
-                          ? date.toLocaleDateString().replace(/\//g, "-")
-                          : date
-                              .toLocaleDateString("ko-KR", options)
-                              .replace(/\./g, "-")
-                              .replace(/\.|-$/, "")
-                              .replace(/\s/g, "")}
-                      </Text>
+                      <View style={styles.textInputContainer}>
+                        <Text style={styles.textInput} placeholder="생년월일">
+                          {Platform.OS === "ios"
+                            ? date.toLocaleDateString().replace(/\//g, "-")
+                            : date
+                                .toLocaleDateString("ko-KR", options)
+                                .replace(/\./g, "-")
+                                .replace(/\.|-$/, "")
+                                .replace(/\s/g, "")}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                </Pressable>
-              </View>
-              {/* {show && (
+                  </Pressable>
+                </View>
+                {/* {show && (
                 <DateTimePicker
                   testID="dateTimePicker"
                   value={date}
@@ -154,7 +157,8 @@ function Name({ navigation, route }) {
                   display="spinner"
                 />
               )} */}
-            </View>
+              </View>
+            </ScrollView>
             {Platform.OS === "ios" ? (
               <Modal
                 animationType="none"
