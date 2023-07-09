@@ -11,6 +11,9 @@ import {
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { Switch } from "react-native-switch";
+import SwitchSelector from "react-native-switch-selector";
+import SwitchToggle from "react-native-switch-toggle";
 import axios from "axios";
 
 import { getProfile } from "../utill/http";
@@ -72,6 +75,7 @@ function DetailLectureScreen({ route }) {
         },
       })
       .then((res) => {
+        // console.log(res.data.data.lectureDto);
         let nonSaveId = res.data.data.lectureDto;
         nonSaveId["id"] = route.params.data;
         setLectureBasicInfo(nonSaveId);
@@ -94,6 +98,7 @@ function DetailLectureScreen({ route }) {
         })
         .then((res) => {
           // console.log("신청 강사 불러옴");
+          console.log(res.data.data);
           setTutor(res.data.data);
         })
         .catch((error) => {
@@ -229,13 +234,13 @@ function DetailLectureScreen({ route }) {
   const assignment = (roles, role, id, name) => {
     Alert.alert(
       lectureBasicInfo.subTitle,
-      `'${role}' 주 강사 ${name} 확정하겠습니까?`,
+      `${role} '${name}' 확정하겠습니까 ?`,
       [
         { text: "취소", onPress: () => {}, style: "cancel" },
         {
           text: "확인",
           onPress: () => {
-            console.log("강사 신청 완료");
+            console.log("강사 배정 완료");
             axios
               .patch(
                 `${URL}/users-lectures/lectures/${route.params.data}`,
@@ -285,6 +290,8 @@ function DetailLectureScreen({ route }) {
       }
     );
   };
+
+  const [toggle, setToggle] = useState(true);
 
   // Use a custom renderScene function instead
   const renderScene = ({ route }) => {
@@ -436,6 +443,17 @@ function DetailLectureScreen({ route }) {
         );
 
       case "third":
+        const getButtonText = () => {
+          return toggle ? "On" : "Off";
+        };
+
+        const getRightText = () => {
+          return toggle ? "" : "Off";
+        };
+
+        const getLeftText = () => {
+          return toggle ? "On" : "";
+        };
         return (
           <View style={{ marginTop: 40, flex: 1 }}>
             <View style={{ paddingHorizontal: 20 }}>
@@ -444,14 +462,81 @@ function DetailLectureScreen({ route }) {
               >
                 신청 강사
               </Text>
-              <View
-                style={[styles.flexDirectionRow, { gap: 8, marginBottom: 28 }]}
-              >
-                <FilterBox text="강사 타입" color="black" />
-                <FilterBox text="정렬 순서" color="black" />
+              <View>
+                <View
+                  style={[
+                    styles.flexDirectionRow,
+                    { gap: 8, marginBottom: 28 },
+                  ]}
+                >
+                  <FilterBox text="강사 타입" color="black" />
+                  <FilterBox text="정렬 순서" color="black" />
+                </View>
+                <SwitchToggle
+                  switchOn={toggle}
+                  onPress={() => setToggle((toggle) => !toggle)}
+                  circleColorOff="#C4C4C4"
+                  circleColorOn="#00D9D5"
+                  backgroundColorOn="#6D6D6D"
+                  backgroundColorOff="#C4C4C4"
+                  backTextRight={toggle ? "모집중" : ""}
+                  // backTextLeft={!toggle ? "진행중" : ""}
+                  textRightStyle={{ fontSize: 12, margin: 0 }}
+                  textLeftStyle={{ fontSize: 12, margin: 0 }}
+                  leftContainerStyle={{ padding: 0 }}
+                  rightContainerStyle={{ padding: 0 }}
+                  containerStyle={{ width: 76, height: 32, borderRadius: 100 }}
+                  // buttonContainerStyle={{ width: 500 }}
+                  buttonStyle={{ width: 24, height: 24 }}
+                />
+                <SwitchToggle
+                  switchOn={toggle}
+                  onPress={() =>
+                    setToggle((prev) => {
+                      return !prev;
+                    })
+                  }
+                  // buttonText={getButtonText()}
+                  containerStyle={{
+                    marginTop: 16,
+                    width: 108,
+                    height: 48,
+                    borderRadius: 25,
+                    padding: 5,
+                  }}
+                  circleStyle={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: 19,
+                  }}
+                  buttonStyle={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    position: "absolute",
+                  }}
+                  rightContainerStyle={{
+                    flex: 1,
+                    position: "absolute",
+                    marginLeft: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  leftContainerStyle={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                  }}
+                  buttonTextStyle={{ fontSize: 20 }}
+                  backTextRight={toggle ? "모집중" : ""}
+                  backTextLeft={!toggle ? "진행중" : ""}
+                  textRightStyle={{ fontSize: 12, color: "red" }}
+                  textLeftStyle={{ fontSize: 12 }}
+                  textRight={getRightText()}
+                  textLeft={getLeftText()}
+                />
               </View>
+
               {tutor.map((item) => {
-                // console.log(item)
                 const role =
                   item.tutorRole === "MAIN_TUTOR"
                     ? "주강사"
@@ -463,8 +548,10 @@ function DetailLectureScreen({ route }) {
                     key={item.id}
                     name={item.name}
                     role={role}
-                    major={item.major}
-                    onPress={() => assignment(item.tutorRole, role)}
+                    major={item.degree.major}
+                    onPress={() =>
+                      assignment(item.tutorRole, role, item.userId, item.name)
+                    }
                   />
                 );
               })}
