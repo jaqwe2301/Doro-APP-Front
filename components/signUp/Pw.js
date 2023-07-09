@@ -6,6 +6,7 @@ import {
   Platform,
   NativeModules,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { GlobalStyles } from "../../constants/styles";
@@ -120,40 +121,42 @@ function Pw({ navigation, route }) {
         <View style={{ flex: 1, backgroundColor: "white" }}>
           <Bar num={1} />
           <View style={{ flex: 1, justifyContent: "space-between" }}>
-            <View>
-              <View style={styles.textContainer}>
-                <InputText text="비밀번호를 입력해 주세요." />
+            <ScrollView>
+              <View>
+                <View style={styles.textContainer}>
+                  <InputText text="비밀번호를 입력해 주세요." />
+                </View>
+                <View style={styles.contentContainer}>
+                  <Text style={styles.id}>{signData.account}</Text>
+                  <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
+                </View>
+                <View style={styles.inputContainer}>
+                  <InputData
+                    hint="영문, 숫자, 특수문자 포함 8~20자"
+                    onChangeText={handlePwChange}
+                    value={inputPw}
+                    secureTextEntry={true}
+                  />
+                </View>
+                <View style={styles.pwBtn}>
+                  <PwBtn text="영문" btnColor={eng} />
+                  <PwBtn text="숫자" btnColor={num} />
+                  <PwBtn text="특수문자" btnColor={mark} />
+                  <PwBtn text="8~20자" btnColor={len} />
+                </View>
+                <View style={[styles.inputContainer, { marginTop: 0 }]}>
+                  <InputData
+                    hint="비밀번호 재입력"
+                    onChangeText={handleRePwChange}
+                    value={inputRePw}
+                    secureTextEntry={true}
+                  />
+                </View>
+                {visible && (
+                  <Text style={styles.failText}>비밀번호가 틀립니다.</Text>
+                )}
               </View>
-              <View style={styles.contentContainer}>
-                <Text style={styles.id}>{signData.account}</Text>
-                <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
-              </View>
-              <View style={styles.inputContainer}>
-                <InputData
-                  hint="영문, 숫자, 특수문자 포함 8~20자"
-                  onChangeText={handlePwChange}
-                  value={inputPw}
-                  secureTextEntry={true}
-                />
-              </View>
-              <View style={styles.pwBtn}>
-                <PwBtn text="영문" btnColor={eng} />
-                <PwBtn text="숫자" btnColor={num} />
-                <PwBtn text="특수문자" btnColor={mark} />
-                <PwBtn text="8~20자" btnColor={len} />
-              </View>
-              <View style={[styles.inputContainer, { marginTop: 0 }]}>
-                <InputData
-                  hint="비밀번호 재입력"
-                  onChangeText={handleRePwChange}
-                  value={inputRePw}
-                  secureTextEntry={true}
-                />
-              </View>
-              {visible && (
-                <Text style={styles.failText}>비밀번호가 틀립니다.</Text>
-              )}
-            </View>
+            </ScrollView>
             <View style={styles.buttonContainer}>
               <ButtonBig text="다음" style={lbtnColor} onPress={navigatePw} />
             </View>

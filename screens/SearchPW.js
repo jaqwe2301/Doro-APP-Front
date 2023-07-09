@@ -7,6 +7,7 @@ import {
   Platform,
   NativeModules,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 
 import { GlobalStyles } from "../constants/styles";
@@ -108,76 +109,83 @@ function SearchPW({ navigation }) {
     }
   }, []);
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
-    >
-      <View style={styles.container}>
-        <View>
-          <View
-            style={{
-              borderBottomColor: GlobalStyles.colors.gray05,
-              borderBottomWidth: 0.5,
-            }}
-          >
-            <Text style={styles.numberText}>휴대폰 인증</Text>
-            <View style={styles.viewBorder}></View>
-          </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={
+          Platform.OS === "ios" ? 44 + statusBarHeight : 0
+        }
+      >
+        <View style={styles.container}>
           <ScrollView>
-            <Text style={[styles.text, { marginTop: 31 }]}>아이디</Text>
-            <View style={styles.idContainer}>
-              <InputData
-                hint="아이디 입력"
-                value={id}
-                onChangeText={handleIdChange}
-              />
-            </View>
-            <Text style={styles.text}>가입 시 입력한 휴대폰 번호</Text>
             <View>
-              <View style={styles.inputContainer}>
-                <View style={styles.input}>
-                  <InputData
-                    hint="휴대폰 번호"
-                    onChangeText={handlePhoneChange}
-                    value={phoneNum}
-                    keyboardType="numeric"
-                  />
-                </View>
-                <View>
-                  <ButtonSmall
-                    title={btnTitle}
-                    onPress={requestNumber}
-                    style={sbtnColor}
-                  />
-                </View>
+              <View
+                style={{
+                  borderBottomColor: GlobalStyles.colors.gray05,
+                  borderBottomWidth: 0.5,
+                }}
+              >
+                <Text style={styles.numberText}>휴대폰 인증</Text>
+                <View style={styles.viewBorder}></View>
               </View>
-              {isVisible && (
-                <>
-                  <View style={styles.lInputContainer}>
+
+              <Text style={[styles.text, { marginTop: 31 }]}>아이디</Text>
+              <View style={styles.idContainer}>
+                <InputData
+                  hint="아이디 입력"
+                  value={id}
+                  onChangeText={handleIdChange}
+                />
+              </View>
+              <Text style={styles.text}>가입 시 입력한 휴대폰 번호</Text>
+              <View>
+                <View style={styles.inputContainer}>
+                  <View style={styles.input}>
                     <InputData
-                      hint="인증번호"
-                      value={authNum}
-                      onChangeText={handleAuthChange}
+                      hint="휴대폰 번호"
+                      onChangeText={handlePhoneChange}
+                      value={phoneNum}
                       keyboardType="numeric"
                     />
-                    <Timer count={count} setCount={setCount} />
                   </View>
-                  <Text style={styles.textSend}>인증번호가 전송되었습니다</Text>
-                </>
-              )}
+                  <View>
+                    <ButtonSmall
+                      title={btnTitle}
+                      onPress={requestNumber}
+                      style={sbtnColor}
+                    />
+                  </View>
+                </View>
+                {isVisible && (
+                  <>
+                    <View style={styles.lInputContainer}>
+                      <InputData
+                        hint="인증번호"
+                        value={authNum}
+                        onChangeText={handleAuthChange}
+                        keyboardType="numeric"
+                      />
+                      <Timer count={count} setCount={setCount} />
+                    </View>
+                    <Text style={styles.textSend}>
+                      인증번호가 전송되었습니다
+                    </Text>
+                  </>
+                )}
+              </View>
             </View>
           </ScrollView>
+          <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+            <ButtonBig
+              text="비밀번호 확인 "
+              style={lbtnColor}
+              onPress={verifyAuthNum}
+            />
+          </View>
         </View>
-        <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-          <ButtonBig
-            text="비밀번호 확인 "
-            style={lbtnColor}
-            onPress={verifyAuthNum}
-          />
-        </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

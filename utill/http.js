@@ -13,6 +13,7 @@ const instance = Interceptor();
 export async function getProfile({ id }) {
   try {
     const response = await instance.get("/users/" + `${id}`);
+    console.log(response);
     return response.data;
   } catch (error) {
     console.log(error + "api er");
