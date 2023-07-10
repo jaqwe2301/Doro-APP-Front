@@ -35,30 +35,6 @@ const HomeScreen = ({ lectureIdProps }) => {
 
   useEffect(() => {
     setLectureData(lectures);
-
-    // axios
-    //   .get(URL + "/lectures/", {
-    //     params: {
-    //       city: "",
-    //       endDate: "",
-    //       startDate: "",
-    //     },
-    //     headers: {
-    //       // 헤더에 필요한 데이터를 여기에 추가
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     // setLectureData(res.data.data);
-    //     // console.log(res.data.data)
-    //     // console.log("성공");
-    //   })
-    //   .catch((error) => {
-    //     console.log("에러");
-    //     console.log(error);
-    //   });
-
-    // profileHandler();
   }, [lectures]);
 
   const recruitingData = lectureData.filter(

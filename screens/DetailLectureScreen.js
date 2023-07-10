@@ -27,11 +27,13 @@ import FilterBox from "../components/ui/FilterBox";
 import LectureTop from "../components/ui/LectureTop";
 import CreactingLecture from "../assets/creatingLecture.svg";
 
+import Interceptor from "../utill/Interceptor";
+
 function DetailLectureScreen({ route }) {
   const navigation = useNavigation();
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
-
+  const instance = Interceptor();
   /** 강의 수정 후 리렌더링을 위해 사용 */
   const isFocused = useIsFocused();
 
@@ -67,8 +69,8 @@ function DetailLectureScreen({ route }) {
 
   useEffect(() => {
     // 기본 정보
-    axios
-      .get(`${URL}/lectures/${route.params.data}`, {
+    instance
+      .get(`/lectures/${route.params.data}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -89,7 +91,7 @@ function DetailLectureScreen({ route }) {
 
     if (headerRole === "ROLE_ADMIN") {
       // 신청 강사 불러오기
-      axios
+      instance
         .get(`${URL}/users-lectures/lectures/${route.params.data}`, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
@@ -127,7 +129,7 @@ function DetailLectureScreen({ route }) {
           text: "확인",
           onPress: () => {
             console.log("강사 신청 완료");
-            axios
+            instance
               .post(
                 `${URL}/users-lectures/lectures/${route.params.data}`,
                 {
@@ -241,7 +243,7 @@ function DetailLectureScreen({ route }) {
           text: "확인",
           onPress: () => {
             console.log("강사 배정 완료");
-            axios
+            instance
               .patch(
                 `${URL}/users-lectures/lectures/${route.params.data}`,
                 {

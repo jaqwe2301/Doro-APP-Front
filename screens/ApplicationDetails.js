@@ -11,6 +11,7 @@ import { useEffect, useState, useContext } from "react";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import axios from "axios";
+import Interceptor from "../utill/Interceptor";
 
 import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
@@ -24,8 +25,10 @@ function ApplicationDetails({ route }) {
   const [allocation, setAllocation] = useState([]);
   const [finished, setFinished] = useState([]);
 
+  const instance = Interceptor();
+
   const getMyLectures = () => {
-    axios
+    instance
       .get(`${URL}/users-lectures/users/${headerId}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -63,42 +66,6 @@ function ApplicationDetails({ route }) {
   };
 
   useEffect(() => {
-    // console.log(headerId);
-    // axios
-    //   .get(`${URL}/users-lectures/users/${headerId}`, {
-    //     headers: {
-    //       // 헤더에 필요한 데이터를 여기에 추가
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     // console.log(res.data.data);
-    //     setRecruiting(() => {
-    //       const data = res.data.data.filter(
-    //         (item) => item.status === "RECRUITING"
-    //       );
-    //       return data;
-    //     });
-    //     setAllocation(() => {
-    //       const data = res.data.data.filter(
-    //         (item) => item.status === "ALLOCATION_COMP"
-    //       );
-    //       // console.log(data);
-    //       return data;
-    //     });
-    //     // finishLectureHandler(() => {
-    //     //   const data = res.data.data.filter(
-    //     //     (item) => item.status === "ALLOCATION_COMP"
-    //     //   );
-    //     //   console.log(data);
-    //     //   return data;
-    //     // });
-    //     // console.log("성공");
-    //   })
-    //   .catch((error) => {
-    //     console.log("에러");
-    //     console.log(error);
-    //   });
     getMyLectures();
   }, []);
 
@@ -168,7 +135,7 @@ function ApplicationDetails({ route }) {
         {
           text: "확인",
           onPress: () => {
-            axios
+            instance
               .delete(`${URL}/users-lectures/lectures/${id}`, {
                 headers: {
                   // 헤더에 필요한 데이터를 여기에 추가
