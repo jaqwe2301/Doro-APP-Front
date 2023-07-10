@@ -698,7 +698,6 @@ export default function App() {
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
       });
-    console.log(noti);
 
     return () => {
       Notifications.removeNotificationSubscription(
@@ -750,18 +749,20 @@ async function registerForPushNotificationsAsync() {
       noti = false;
       return { token: null, noti };
     }
-    token = (
-      await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig?.extra?.eas?.projectId,
-      })
-    ).data;
+    // token = (
+    //   await Notifications.getExpoPushTokenAsync({
+    //     projectId: Constants.expoConfig?.extra?.eas?.projectId,
+    //   })
+    // ).data;
+    token = (await Notifications.getDevicePushTokenAsync()).data;
     // authCtx.fcmToken(token);
     AsyncStorage.setItem("fcmToken", token);
-    console.log(token);
-    console.log(noti);
+    console.log(token + "이건 토큰");
+    console.log(noti + "이건 noti");
   } else {
     // alert("Must use physical device for Push Notifications");
     console.log(noti);
+    noti = false;
   }
 
   return { token, noti };
