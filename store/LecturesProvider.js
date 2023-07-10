@@ -1,16 +1,18 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { URL } from "../utill/config";
+import Interceptor from "../utill/Interceptor";
 
 // create context
 const LecturesContext = createContext();
 
 // create context provider
 export const LecturesProvider = ({ children }) => {
+  const instance = Interceptor();
   const [lectures, setLectures] = useState([]);
 
   useEffect(() => {
-    axios
+    instance
       .get(URL + "/lectures/", {
         params: {
           city: "",

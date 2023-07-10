@@ -31,8 +31,11 @@ import ButtonBig from "../components/ui/ButtonBig";
 import ButtonSmall from "../components/ui/ButtonSmall";
 import BottomModal from "../components/ui/BottomModal";
 
+import Interceptor from "../utill/Interceptor";
+
 function UpdateLectureScreen({ route }) {
   const navigation = useNavigation();
+  const instance = Interceptor();
 
   const [lecturedata, setLectureData] = useState({
     institution: "",
@@ -69,7 +72,7 @@ function UpdateLectureScreen({ route }) {
   });
 
   useEffect(() => {
-    axios
+    instance
       .get(`${URL}/lecture-contents`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -154,7 +157,7 @@ function UpdateLectureScreen({ route }) {
     // console.log(lecturedata)
 
     if (option === "create") {
-      axios
+      instance
         .post(`${URL}/lectures/`, lecturedata, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
@@ -170,7 +173,7 @@ function UpdateLectureScreen({ route }) {
           console.log(lecturedata);
         });
     } else if (option === "update") {
-      axios
+      instance
         .patch(
           `${URL}/lectures/${route.params.data.lectureDto.id}`,
           lecturedata,
@@ -504,7 +507,7 @@ function UpdateLectureScreen({ route }) {
       }
     }
 
-    await axios
+    await instance
       .post(`${URL}/lecture-contents/`, contentsData, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -525,7 +528,7 @@ function UpdateLectureScreen({ route }) {
         text: "확인",
         onPress: () => {
           addContentsModalHandler(false);
-          axios
+          instance
             .get(`${URL}/lecture-contents`, {
               headers: {
                 // 헤더에 필요한 데이터를 여기에 추가
