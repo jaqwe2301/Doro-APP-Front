@@ -252,7 +252,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               horizontal={false}
               showsPagination={false}
               width={250}
-              height={22}
+              height={20}
             >
               {response.map((data) => {
                 return (
