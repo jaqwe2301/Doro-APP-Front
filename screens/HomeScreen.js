@@ -91,7 +91,7 @@ const HomeScreen = ({ lectureIdProps }) => {
                 place={filteringItem.place}
                 lectureIdHandler={() =>
                   navigation.navigate("DetailLecture", {
-                    id: filteringItem.id, 
+                    id: filteringItem.id,
                     status: filteringItem.status,
                   })
                 }
@@ -134,8 +134,9 @@ const HomeScreen = ({ lectureIdProps }) => {
                 staff={filteringItem.staff}
                 place={filteringItem.place}
                 lectureIdHandler={() =>
-                  navigation.push("DetailLecture", {
-                    data: filteringItem.id,
+                  navigation.navigate("DetailLecture", {
+                    id: filteringItem.id,
+                    status: filteringItem.status,
                   })
                 }
                 // date={dateText}
