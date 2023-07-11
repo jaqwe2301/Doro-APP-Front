@@ -59,7 +59,7 @@ function UpdateLectureScreen({ route }) {
     subTitle: "",
     place: "",
     transportCost: "",
-    status: "ALLOCATION_COMP",
+    status: "RECRUITING",
   });
 
   const [lectureContents, setLectureContents] = useState();
@@ -166,6 +166,18 @@ function UpdateLectureScreen({ route }) {
         })
         .then((res) => {
           console.log(res);
+          Alert.alert(
+            "강의 업데이트",
+            `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.\n앱을 재실행 하십시오.`,
+            [
+              {
+                text: "확인",
+                onPress: () => {
+                  navigation.pop();
+                },
+              },
+            ]
+          );
         })
         .catch((error) => {
           console.log("에러");

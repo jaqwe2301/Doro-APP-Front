@@ -18,7 +18,7 @@ import axios from "axios";
 
 import { getProfile } from "../utill/http";
 import { GlobalStyles } from "../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import { URL } from "../utill/config";
 import { HeaderContext } from "../store/header-context";
 import ApplyingTutorBox from "../components/ui/ApplyingTutorBox";
@@ -56,6 +56,7 @@ function DetailLectureScreen({ route }) {
     subTutor: "",
     time: "",
     transportCost: "",
+    status: "",
   });
   const [lectureContent, setLectureContent] = useState({
     detail: "",
@@ -67,10 +68,12 @@ function DetailLectureScreen({ route }) {
 
   const [tutor, setTutor] = useState([]);
 
+  const data = route.params.data;
+
   useEffect(() => {
     // 기본 정보
     instance
-      .get(`/lectures/${route.params.data}`, {
+      .get(`/lectures/${data.id}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -78,9 +81,17 @@ function DetailLectureScreen({ route }) {
       })
       .then((res) => {
         // console.log(res.data.data.lectureDto);
-        let nonSaveId = res.data.data.lectureDto;
-        nonSaveId["id"] = route.params.data;
-        setLectureBasicInfo(nonSaveId);
+        // lecture.lectureContentId = res.data.data.lectureContentDto.id;
+        // let nonSaveId = res.data.data.lectureDto;
+        // nonSaveId["id"] = data.id;
+        setLectureBasicInfo(() => {
+          let lecutre = {
+            ...res.data.data.lectureDto,
+            id: data.id,
+            lectureContentId: res.data.data.lectureContentDto.id,
+          };
+          return lecutre;
+        });
         setLectureContent(res.data.data.lectureContentDto);
         // console.log("성공");
       })
@@ -92,7 +103,7 @@ function DetailLectureScreen({ route }) {
     if (headerRole === "ROLE_ADMIN") {
       // 신청 강사 불러오기
       instance
-        .get(`${URL}/users-lectures/lectures/${route.params.data}`, {
+        .get(`${URL}/users-lectures/lectures/${data.id}`, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
             "Content-Type": "application/json",
@@ -100,7 +111,7 @@ function DetailLectureScreen({ route }) {
         })
         .then((res) => {
           // console.log("신청 강사 불러옴");
-          console.log(res.data.data);
+          // console.log(res.data.data);
           setTutor(res.data.data);
         })
         .catch((error) => {
@@ -128,10 +139,9 @@ function DetailLectureScreen({ route }) {
         {
           text: "확인",
           onPress: () => {
-            console.log("강사 신청 완료");
             instance
               .post(
-                `${URL}/users-lectures/lectures/${route.params.data}`,
+                `${URL}/users-lectures/lectures/${data.id}`,
                 {
                   tutorRole: roles,
                   userId: headerId,
@@ -146,9 +156,10 @@ function DetailLectureScreen({ route }) {
               .then((res) => {
                 // console.log(res);
                 // console.log("성공");
+                console.log("강사 신청 완료");
               })
               .catch((error) => {
-                console.log("에러");
+                console.log("강사 신청 실패");
                 console.log(error);
               });
 
@@ -245,7 +256,7 @@ function DetailLectureScreen({ route }) {
             console.log("강사 배정 완료");
             instance
               .patch(
-                `${URL}/users-lectures/lectures/${route.params.data}`,
+                `${URL}/users-lectures/lectures/${data.id}`,
                 {
                   tutorRole: roles,
                   userId: id,
@@ -294,6 +305,9 @@ function DetailLectureScreen({ route }) {
   };
 
   const [toggle, setToggle] = useState(true);
+  const [status, setStatus] = useState(
+    data.status === "RECRUITING" ? false : true
+  );
 
   // Use a custom renderScene function instead
   const renderScene = ({ route }) => {
@@ -445,17 +459,23 @@ function DetailLectureScreen({ route }) {
         );
 
       case "third":
-        const getButtonText = () => {
-          return toggle ? "On" : "Off";
+        /** 토글 관련 함수 */
+        const statusHandler = async (lecture) => {
+          try {
+            const res = await instance.post(`${URL}/lectures/`, lecture, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            console.log(lecture.status + "변경 완료");
+            return res; // Promise가 성공적으로 완료됨을 나타내는 값 반환
+          } catch (error) {
+            console.log("에러");
+            console.log(error);
+            console.log(lecture);
+          }
         };
 
-        const getRightText = () => {
-          return toggle ? "" : "Off";
-        };
-
-        const getLeftText = () => {
-          return toggle ? "On" : "";
-        };
         return (
           <View style={{ marginTop: 40, flex: 1 }}>
             <View style={{ paddingHorizontal: 20 }}>
@@ -464,7 +484,12 @@ function DetailLectureScreen({ route }) {
               >
                 신청 강사
               </Text>
-              <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
                 <View
                   style={[
                     styles.flexDirectionRow,
@@ -474,42 +499,66 @@ function DetailLectureScreen({ route }) {
                   <FilterBox text="강사 타입" color="black" />
                   <FilterBox text="정렬 순서" color="black" />
                 </View>
+                {/* SwitchToggle 참고 링크 */}
+                {/* https://github.com/yujong-lee/react-native-switch-toggle */}
+
                 <SwitchToggle
-                  switchOn={toggle}
-                  onPress={() => setToggle((toggle) => !toggle)}
-                  circleColorOff="#C4C4C4"
-                  circleColorOn="#00D9D5"
-                  backgroundColorOn="#6D6D6D"
-                  backgroundColorOff="#C4C4C4"
-                  backTextRight={toggle ? "모집중" : ""}
-                  // backTextLeft={!toggle ? "진행중" : ""}
-                  textRightStyle={{ fontSize: 12, margin: 0 }}
-                  textLeftStyle={{ fontSize: 12, margin: 0 }}
-                  leftContainerStyle={{ padding: 0 }}
-                  rightContainerStyle={{ padding: 0 }}
-                  containerStyle={{ width: 76, height: 32, borderRadius: 100 }}
-                  // buttonContainerStyle={{ width: 500 }}
-                  buttonStyle={{ width: 24, height: 24 }}
-                />
-                <SwitchToggle
-                  switchOn={toggle}
-                  onPress={() =>
-                    setToggle((prev) => {
-                      return !prev;
-                    })
-                  }
+                  switchOn={status}
+                  onPress={() => {
+                    data.status === "FINISH"
+                      ? Alert.alert(
+                          "해당 강의는 끝난 강의입니다.",
+                          "상태를 변경할 수 없습니다.",
+                          [
+                            {
+                              text: "확인",
+                              onPress: () => {
+                                // console.log("강사 신청 완료");
+                              },
+                              style: "destructive",
+                            },
+                          ],
+                          {
+                            cancelable: true,
+                            onDismiss: () => {},
+                          }
+                        )
+                      : setStatus((prev) => {
+                          let lecture = lectureBasicInfo;
+                          if (!lecture) {
+                            console.error("lecture is undefined");
+                            // return prev;
+                          }
+
+                          delete lecture.id;
+                          if (prev) {
+                            lecture.status = "ALLOCATION_COMP";
+                          } else {
+                            lecture.status = "RECRUITING";
+                          }
+                          console.log(lecture);
+                          // statusHandler가 promise를 반환하므로
+                          // .then을 사용하여 상태 변경 후의 동작을 지정할 수 있음.
+                          // statusHandler(lecture)
+                          //   .then(() => {
+                          //     return !prev;
+                          //   })
+                          //   .catch((error) => {
+                          //     console.log("statusHandler error:", error);
+                          //   });
+                        });
+                  }}
                   // buttonText={getButtonText()}
                   containerStyle={{
-                    marginTop: 16,
-                    width: 108,
-                    height: 48,
-                    borderRadius: 25,
-                    padding: 5,
+                    width: 80,
+                    height: 36,
+                    borderRadius: 100,
+                    padding: 4,
                   }}
                   circleStyle={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 19,
+                    width: 24,
+                    height: 24,
+                    borderRadius: 23,
                   }}
                   buttonStyle={{
                     alignItems: "center",
@@ -520,6 +569,7 @@ function DetailLectureScreen({ route }) {
                     flex: 1,
                     position: "absolute",
                     marginLeft: 10,
+                    paddingBottom: 2,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -528,13 +578,14 @@ function DetailLectureScreen({ route }) {
                     alignItems: "center",
                     justifyContent: "flex-start",
                   }}
-                  buttonTextStyle={{ fontSize: 20 }}
-                  backTextRight={toggle ? "모집중" : ""}
-                  backTextLeft={!toggle ? "진행중" : ""}
-                  textRightStyle={{ fontSize: 12, color: "red" }}
+                  backTextRight={status ? "모집중" : ""}
+                  backTextLeft={!status ? "진행중" : ""}
+                  textRightStyle={{
+                    fontSize: 12,
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
                   textLeftStyle={{ fontSize: 12 }}
-                  textRight={getRightText()}
-                  textLeft={getLeftText()}
                 />
               </View>
 
@@ -678,7 +729,7 @@ function DetailLectureScreen({ route }) {
           }
         >
           <View style={styles.BottomButton}>
-            <WithLocalSvg asset={CreactingLecture} />
+            <CreactingLecture width={20} height={20} />
           </View>
         </Pressable>
       ) : (

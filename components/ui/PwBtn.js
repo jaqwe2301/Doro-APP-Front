@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View, StyleSheet } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import Password from "../../assets/password.svg";
 import PasswordAfter from "../../assets/password_after.svg";
 function PwBtn({ text, btnColor }) {
@@ -9,9 +9,9 @@ function PwBtn({ text, btnColor }) {
     <View style={styles.container}>
       <View style={styles.icon}>
         {btnColor === GlobalStyles.colors.primaryDefault ? (
-          <WithLocalSvg asset={PasswordAfter} />
+          <PasswordAfter widht={12} height={9.4} />
         ) : (
-          <WithLocalSvg asset={Password} />
+          <Password widht={12} height={9.4} />
         )}
       </View>
       <Text style={[styles.text, { color: btnColor }]}>{text}</Text>

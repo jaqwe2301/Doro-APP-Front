@@ -18,7 +18,7 @@ import {
   pushNotification,
 } from "../utill/http";
 import { useEffect, useState } from "react";
-import { WithLocalSvg } from "react-native-svg";
+
 import Camera from "../assets/camera.svg";
 import { URL } from "../utill/config";
 
@@ -369,10 +369,14 @@ function AddNoticeScreen({ navigation }) {
             borderTopWidth: 0.8,
             borderTopColor: GlobalStyles.colors.gray04,
             justifyContent: "center",
-            paddingLeft: 16,
+            paddingLeft: 6,
           }}
         >
-          <WithLocalSvg asset={Camera} onPress={cameraHandler} />
+          <Pressable onPress={cameraHandler}>
+            <View style={{ margin: 10 }}>
+              <Camera width={24} height={24} />
+            </View>
+          </Pressable>
         </View>
       </View>
     </KeyboardAvoidingView>

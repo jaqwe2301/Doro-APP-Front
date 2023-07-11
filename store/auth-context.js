@@ -5,6 +5,7 @@ import { createContext, useEffect, useState } from "react";
 export const AuthContext = createContext({
   token: "",
   refreshToken: "",
+  fcmToken: "",
   // 사용자의 로그인 여부
   isAuthenticated: false,
   authenticate: () => {},
@@ -14,6 +15,7 @@ export const AuthContext = createContext({
 function AuthContextProvider({ children }) {
   const [authToken, setAuthToken] = useState();
   const [reToken, setReToken] = useState();
+  const [fcmToken, setFcmToken] = useState();
 
   function authenticate(token, refreshToken) {
     setAuthToken(token);
@@ -23,18 +25,27 @@ function AuthContextProvider({ children }) {
     AsyncStorage.setItem("refreshToken", refreshToken);
   }
 
+  function pushtoken(fcmToken) {
+    setFcmToken(fcmToken);
+    AsyncStorage.setItem("fcmToken", fcmToken);
+  }
+
   function logout() {
     setAuthToken(null);
     setReToken(null);
+    setFcmToken(null);
     AsyncStorage.removeItem("token");
     AsyncStorage.removeItem("refreshToken");
+    AsyncStorage.removeItem("fcmToken");
   }
 
   const value = {
     token: authToken,
     refreshToken: reToken,
+    fcmToken: fcmToken,
     isAuthenticated: !!authToken,
     authenticate: authenticate,
+    pushtoken: pushtoken,
     logout: logout,
   };
 
