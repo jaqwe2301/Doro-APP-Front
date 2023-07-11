@@ -57,7 +57,7 @@ import HeaderContextProvider, { HeaderContext } from "./store/header-context";
 import { LecturesProvider } from "./store/LecturesProvider";
 import EditNoticeScreen from "./screens/EditNoticeScreen";
 import AlarmScreen from "./screens/AlarmScreen";
-
+import Splash from "./assets/splash.svg";
 import DoroHorizontal from "./assets/doroHorizontal.svg";
 import Home from "./assets/home.svg";
 import Main from "./assets/main.svg";
@@ -76,6 +76,7 @@ import AgreeInfo2 from "./components/signUp/AgreeInfo2";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import TutorScreen from "./screens/TutorScreen";
+import * as SplashScreen from "expo-splash-screen";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -615,7 +616,7 @@ function Navigation({ notificationAgreement }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
-  // const [isTryingLogin, setIsTryingLogin] = useState(true);
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   // 자동로그인
   useEffect(() => {
@@ -634,11 +635,12 @@ function Navigation({ notificationAgreement }) {
         setHeaderAccount(decoded.sub);
       }
 
-      // setIsTryingLogin(false);
+      setIsTryingLogin(false);
     }
 
     fetchToken();
   }, []);
+
   const navTheme = {
     ...DefaultTheme,
     colors: {
@@ -646,6 +648,19 @@ function Navigation({ notificationAgreement }) {
       background: "white",
     },
   };
+
+  if (isTryingLogin) {
+    return (
+      // <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      //   <Splash width={100} height={106} />
+      // </View>
+      <Image
+        source={require("./assets/splash3.png")}
+        resizeMode="contain"
+        backgroundColor="#FFFFFF"
+      />
+    );
+  }
   return (
     // 로그인 여부에 따른 화면
     <NavigationContainer theme={navTheme}>
