@@ -256,39 +256,39 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
             >
               {response.map((data, index) => {
                 return (
-                  // <Pressable
-                  //   onPress={() =>
-                  //     navigation.navigate("noticeDetail", { data: data })
-                  //   }
-                  //   key={index}
-                  // >
-                  <Text
-                    // key={data.id}
-                    style={{
-                      marginLeft: 16,
-                      fontStyle: GlobalStyles.gray01,
-                      fontSize: 15,
-                      fontWeight: "bold",
-                    }}
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("noticeDetail", { data: data })
+                    }
+                    key={data.id}
                   >
-                    {data.title}
-                  </Text>
-                  // </Pressable>
+                    <Text
+                      key={data.id}
+                      style={{
+                        marginLeft: 16,
+                        fontStyle: GlobalStyles.gray01,
+                        fontSize: 15,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {data.title}
+                    </Text>
+                  </Pressable>
                 );
               })}
             </Swiper>
           </View>
         </View>
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             navigation.navigate("Notice");
           }}
           // style={{ flex: 1 }}
-        >
-          {/* <View style={{ marginRight: 16 }}> */}
-          <Right width={24} height={24} />
-          {/* </View> */}
-        </Pressable>
+        > */}
+        {/* <View style={{ marginRight: 16 }}> */}
+        <Right width={24} height={24} />
+        {/* </View> */}
+        {/* </Pressable> */}
       </View>
 
       <TabView

@@ -32,6 +32,7 @@ import Back from "./assets/backBtn.svg";
 import Logo from "./assets/Logo_main.svg";
 import AlarmAfter from "./assets/alarm_before.svg";
 import Right from "./assets/rightBlack.svg";
+import Left from "./assets/left.svg";
 import AuthPhone from "./components/signUp/AuthPhone";
 import Id from "./components/signUp/Id";
 import Pw from "./components/signUp/Pw";
@@ -239,20 +240,20 @@ function AuthStack({ notificationAgreement }) {
 }
 
 function HomeNavigator({ navigation, route }) {
-  React.useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName !== "alarm") {
-      //MyPage이외의 화면에 대해 tabBar none을 설정한다.
-      navigation.setOptions({
-        tabBarStyle: {
-          display: undefined,
-          ...(Platform.OS === "android" && { height: 60 }),
-        },
-      });
-    } else {
-      navigation.setOptions({ tabBarStyle: { display: "none" } });
-    }
-  }, [navigation, route]);
+  // React.useLayoutEffect(() => {
+  //   const routeName = getFocusedRouteNameFromRoute(route);
+  //   if (routeName !== "alarm" || routeName !== "noticeDetail") {
+  //     //MyPage이외의 화면에 대해 tabBar none을 설정한다.
+  //     navigation.setOptions({
+  //       tabBarStyle: {
+  //         display: undefined,
+  //         ...(Platform.OS === "android" && { height: 60 }),
+  //       },
+  //     });
+  //   } else {
+  //     navigation.setOptions({ tabBarStyle: { display: "none" } });
+  //   }
+  // }, [navigation, route]);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -305,6 +306,18 @@ function HomeNavigator({ navigation, route }) {
         options={{
           title: "알림",
           tabBarStyle: { display: "none" },
+        }}
+      />
+      <Stack.Screen
+        name="noticeDetail"
+        component={NoticeDetailScreen}
+        options={{
+          title: "",
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.goBack()}>
+              <Left width={24} height={24} />
+            </Pressable>
+          ),
         }}
       />
     </Stack.Navigator>
@@ -488,10 +501,17 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Home"
         component={HomeNavigator}
-        options={{
+        options={({ route }) => ({
           title: "홈",
           headerShown: false,
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
 
+            if (routeName === "noticeDetail" || routeName === "alarm") {
+              return { display: "none" };
+            }
+            return Platform.OS === "android" && { height: 60 };
+          })(route),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <MainFill width={30} height={30} />
@@ -506,7 +526,7 @@ function BottomTabNavigator() {
             fontWeight: 600,
             marginBottom: Platform.OS === "android" ? 9 : 0,
           },
-        }}
+        })}
       />
       <BottomTab.Screen
         name="Notice"
