@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { WithLocalSvg } from "react-native-svg";
+
 import { GlobalStyles } from "../../constants/styles";
 
 // svg

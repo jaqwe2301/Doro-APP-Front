@@ -7,6 +7,7 @@ function InputData({
   keyboardType,
   secureTextEntry,
   readOnly,
+  borderColor = GlobalStyles.colors.gray05,
 }) {
   return (
     <View>
@@ -20,6 +21,7 @@ function InputData({
         autoCapitalize="none"
         secureTextEntry={secureTextEntry}
         readOnly={readOnly}
+        borderColor={borderColor}
       />
     </View>
   );
