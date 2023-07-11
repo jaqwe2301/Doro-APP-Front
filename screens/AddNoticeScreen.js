@@ -15,9 +15,10 @@ import { GlobalStyles } from "../constants/styles";
 import {
   createAnnouncement,
   createAnnouncement2,
+  getProfile,
   pushNotification,
 } from "../utill/http";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Camera from "../assets/camera.svg";
 import { URL } from "../utill/config";
@@ -25,12 +26,13 @@ import { URL } from "../utill/config";
 import * as ImagePicker from "expo-image-picker";
 import NoticeScreen from "./NoticeScreen";
 import axios from "axios";
+import { HeaderContext } from "../store/header-context";
 
 function AddNoticeScreen({ navigation }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [result, setResult] = useState();
-
+  const { headerId, setHeaderId } = useContext(HeaderContext);
   const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
   const [imageUrl, setImageUrl] = useState("");
   const [filename, setFileName] = useState("");
@@ -67,27 +69,33 @@ function AddNoticeScreen({ navigation }) {
   };
 
   async function completeHandler3() {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("body", body);
-    formData.append("writer", "김동규");
-    if (imageUrl) {
-      formData.append("picture", {
-        uri: imageUrl,
-        type: type,
-        name: filename,
-      });
-    }
     try {
-      const response = await createAnnouncement2({
-        formData: formData,
-      });
-      console.log(response);
-      if (response.code === "NOTI001" || response.success) {
-        navigation.replace("noticeScreen");
+      const response = await getProfile({ id: headerId });
+      const formData = new FormData();
+      formData.append("writer", response.data.name);
+      formData.append("title", title);
+      formData.append("body", body);
+
+      if (imageUrl) {
+        formData.append("picture", {
+          uri: imageUrl,
+          type: type,
+          name: filename,
+        });
+      }
+      try {
+        const response = await createAnnouncement2({
+          formData: formData,
+        });
+        console.log(response);
+        if (response.code === "NOTI001" || response.success) {
+          navigation.replace("noticeScreen");
+        }
+      } catch (error) {
+        console.log(JSON.stringify(formData));
+        console.log(error);
       }
     } catch (error) {
-      console.log(JSON.stringify(formData));
       console.log(error);
     }
   }
