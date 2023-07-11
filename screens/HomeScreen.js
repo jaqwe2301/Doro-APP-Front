@@ -254,9 +254,16 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               width={250}
               height={20}
             >
-              {response.map((data) => {
+              {response.map((data, index) => {
                 return (
+                  // <Pressable
+                  //   onPress={() =>
+                  //     navigation.navigate("noticeDetail", { data: data })
+                  //   }
+                  //   key={index}
+                  // >
                   <Text
+                    // key={data.id}
                     style={{
                       marginLeft: 16,
                       fontStyle: GlobalStyles.gray01,
@@ -266,6 +273,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                   >
                     {data.title}
                   </Text>
+                  // </Pressable>
                 );
               })}
             </Swiper>
