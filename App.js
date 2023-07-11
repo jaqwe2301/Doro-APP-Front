@@ -28,7 +28,10 @@ import LoginScreen from "./screens/LoginScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
 import DetailLectureScreen from "./screens/DetailLectureScreen";
-
+import Back from "./assets/backBtn.svg";
+import Logo from "./assets/Logo_main.svg";
+import AlarmAfter from "./assets/alarm_before.svg";
+import Right from "./assets/rightBlack.svg";
 import AuthPhone from "./components/signUp/AuthPhone";
 import Id from "./components/signUp/Id";
 import Pw from "./components/signUp/Pw";
@@ -262,6 +265,7 @@ function HomeNavigator({ navigation, route }) {
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
+        // headerBackImageSource: <Back width={24} height={24} />,
       }}
     >
       <Stack.Screen
@@ -273,32 +277,10 @@ function HomeNavigator({ navigation, route }) {
               <SafeAreaView style={{}}>
                 <View style={styles.HomeHeader}>
                   <View style={styles.headerTopContainer}>
-                    <Image
-                      source={require("./assets/doroLogoMain.png")}
-                      style={styles.Logo}
-                    />
+                    <Logo width={94} height={20} />
                     <Pressable onPress={() => navigation.navigate("alarm")}>
-                      <Image
-                        source={require("./assets/icons/alarm_after.png")}
-                        style={styles.iconSize}
-                      />
+                      <AlarmAfter width={24} height={24} />
                     </Pressable>
-                  </View>
-                  <View style={styles.noticeContainer}>
-                    <Image
-                      source={require("./assets/icons/megaphone.png")}
-                      style={styles.iconSize}
-                    />
-                    <Text
-                      style={{
-                        marginLeft: 16,
-                        fontStyle: GlobalStyles.gray01,
-                        fontSize: 15,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      메이커 스페이스 사용 안내
-                    </Text>
                   </View>
                 </View>
               </SafeAreaView>
@@ -340,6 +322,7 @@ function MyPageNavigator() {
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
+        ///  headerBackImageSource: <Back width={24} height={24} />,
       }}
     >
       <Stack.Screen
@@ -415,7 +398,6 @@ function NoticeNavigator({ navigation }) {
           // lineHeight: 22,
         },
         headerBackTitleVisible: false,
-
         headerTintColor: "#000000",
       }}
       initialRouteName="noticeScreen"
@@ -780,24 +762,18 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   HomeHeader: {
-    paddingTop: 30,
-    paddingBottom: Platform.OS === "android" ? 54 : 30,
+    paddingTop: 45,
+    // paddingBottom: Platform.OS === "android" ? 54 : 30,
+    paddingBottom: 20,
     paddingHorizontal: 20,
     backgroundColor: "white",
   },
   headerTopContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 40,
+    // marginBottom: 40,
   },
-  Logo: {
-    height: 20,
-    width: 93.35,
-  },
-  iconSize: {
-    height: 24,
-    width: 24,
-  },
+
   noticeContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -805,6 +781,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F4F4",
     paddingLeft: 16,
     borderRadius: 5.41,
+    justifyContent: "space-between",
   },
   completeText: {
     fontWeight: "400",

@@ -45,17 +45,19 @@ function NoticeScreen({ navigation }) {
     }
   }
 
-  // navigation.setOptions({
-  //   headerRight: () => {
-  //     return (
-  //       <Pressable onPress={() => navigation.navigate("alarm")}>
-  //         <View>
-  //           <Home />
-  //         </View>
-  //       </Pressable>
-  //     );
-  //   },
-  // });
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={() => navigation.navigate("Home")}>
+            <View>
+              <Home width={24} height={24} />
+            </View>
+          </Pressable>
+        );
+      },
+    });
+  }, []);
 
   const navigHandler = (item) => {
     navigation.navigate("noticeDetail", { data: item, role: headerRole });
