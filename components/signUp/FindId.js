@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Pressable } from "react-native";
+import { View, StyleSheet, Text, Pressable, SafeAreaView } from "react-native";
 
 import InputText from "../ui/InputText";
 import ButtonBig from "../ui/ButtonBig";
@@ -16,30 +16,31 @@ function FindId({ route }) {
     navigation.navigate("searchPw");
   }
 
-  //   const id = route.params.id;
   return (
-    <View style={styles.container}>
-      <View>
-        <View style={styles.headerShadow}></View>
-        <View style={styles.text}>
-          <InputText text="가입된 아이디를 찾았어요." />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <View>
+          <View style={styles.headerShadow}></View>
+          <View style={styles.text}>
+            <InputText text="가입된 아이디를 찾았어요." />
+          </View>
+          <Text style={styles.idContainer}>{id}</Text>
+          <View style={styles.pwContainer}>
+            <Text style={styles.pwText}>비밀번호를 잊으셨나요?</Text>
+            <Pressable onPress={naviFindPW}>
+              <Text style={[styles.pwText, styles.pw]}>비밀번호 찾기</Text>
+            </Pressable>
+          </View>
         </View>
-        <Text style={styles.idContainer}>{id}</Text>
-        <View style={styles.pwContainer}>
-          <Text style={styles.pwText}>비밀번호를 잊으셨나요?</Text>
-          <Pressable onPress={naviFindPW}>
-            <Text style={[styles.pwText, styles.pw]}>비밀번호 찾기</Text>
-          </Pressable>
+        <View style={{ marginHorizontal: 20, marginBottom: 83 }}>
+          <ButtonBig
+            text="로그인 하기"
+            style={GlobalStyles.colors.primaryAccent}
+            onPress={naviLogin}
+          />
         </View>
       </View>
-      <View style={{ marginHorizontal: 20, marginBottom: 83 }}>
-        <ButtonBig
-          text="로그인 하기"
-          style={GlobalStyles.colors.primaryAccent}
-          onPress={naviLogin}
-        />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

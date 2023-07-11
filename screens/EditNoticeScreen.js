@@ -6,15 +6,18 @@ import {
   TextInput,
   Pressable,
   Image,
+  SafeAreaView,
+  NativeModules,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { editAnnouncement } from "../utill/http";
-import { WithLocalSvg } from "react-native-svg";
+
 import Camera from "../assets/camera.svg";
 
 import * as ImagePicker from "expo-image-picker";
+import { KeyboardAvoidingView } from "react-native";
 
 function EditNoticeScreen({ navigation, route }) {
   const data = route.params.data;
@@ -102,55 +105,74 @@ function EditNoticeScreen({ navigation, route }) {
     }
   };
 
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
-    <View style={styles.container}>
-      <View style={styles.headerBar} />
-      <ScrollView>
-        <View style={styles.contentContainer}>
-          <TextInput
-            value={title}
-            style={styles.title}
-            multiline
-            onChangeText={(text) => setTitle(text)}
-          />
-          <View style={styles.nameContainer}>
-            <Text style={styles.name}>김동규 매니저</Text>
-            <Text style={styles.name}>
-              {moment(data.createdAt).format("YYYY-MM-DD")}
-            </Text>
-          </View>
-          <TextInput
-            value={body}
-            onChangeText={(text) => setBody(text)}
-            style={styles.subcontentContainer}
-            multiline
-          />
-        </View>
-        <View style={{ marginHorizontal: 20 }}>
-          {imageUrl && (
-            <Image
-              source={{ uri: imageUrl }}
-              style={{
-                width: "100%",
-                height: 500,
-                resizeMode: "contain",
-              }}
-            />
-          )}
-        </View>
-      </ScrollView>
-      <View
-        style={{
-          height: 42,
-          borderTopWidth: 0.8,
-          borderTopColor: GlobalStyles.colors.gray04,
-          justifyContent: "center",
-          paddingLeft: 16,
-        }}
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={
+          Platform.OS === "ios" ? 44 + statusBarHeight : 0
+        }
       >
-        <WithLocalSvg asset={Camera} onPress={cameraHandler} />
-      </View>
-    </View>
+        <View style={styles.container}>
+          <View style={styles.headerBar} />
+          <ScrollView>
+            <View style={styles.contentContainer}>
+              <TextInput
+                value={title}
+                style={styles.title}
+                multiline
+                onChangeText={(text) => setTitle(text)}
+              />
+              <View style={styles.nameContainer}>
+                <Text style={styles.name}>김동규 매니저</Text>
+                <Text style={styles.name}>
+                  {moment(data.createdAt).format("YYYY-MM-DD")}
+                </Text>
+              </View>
+              <TextInput
+                value={body}
+                onChangeText={(text) => setBody(text)}
+                style={styles.subcontentContainer}
+                multiline
+              />
+            </View>
+            <View style={{ marginHorizontal: 20 }}>
+              {imageUrl && (
+                <Image
+                  source={{ uri: imageUrl }}
+                  style={{
+                    width: "100%",
+                    height: 500,
+                    resizeMode: "contain",
+                  }}
+                />
+              )}
+            </View>
+          </ScrollView>
+          <View
+            style={{
+              height: 42,
+              borderTopWidth: 0.8,
+              borderTopColor: GlobalStyles.colors.gray04,
+              justifyContent: "center",
+              paddingLeft: 16,
+            }}
+          >
+            <Camera width={24} height={24} />
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
