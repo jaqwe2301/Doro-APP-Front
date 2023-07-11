@@ -501,7 +501,6 @@ function BottomTabNavigator() {
         headerShown: false,
       }}
       initialRouteName="Home"
-      backBehavior="history"
     >
       <BottomTab.Screen
         name="Home"

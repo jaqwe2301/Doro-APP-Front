@@ -13,7 +13,7 @@ const instance = Interceptor();
 export async function getProfile({ id }) {
   try {
     const response = await instance.get("/users/" + `${id}`);
-    console.log(response);
+    // console.log(response);
     return response.data;
   } catch (error) {
     console.log(error + "api er");
@@ -124,8 +124,8 @@ export async function getNotification({ userId, page, size }) {
 }
 export async function readNotification({ notificationId }) {
   try {
-    const response = await axios.post(
-      URL + "/notifications/" + `${notificationId}` + "/doRead"
+    const response = await instance.post(
+      "/notifications/" + `${notificationId}` + "/doRead"
     );
     return response;
   } catch (error) {
@@ -264,7 +264,7 @@ export async function createAnnouncement({ formData, title, body }) {
 
 export async function createAnnouncement2({ formData }) {
   try {
-    const response = await instance.post("/announcements/dto", formData, {
+    const response = await instance.post("/announcements", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     console.log(response.data);
