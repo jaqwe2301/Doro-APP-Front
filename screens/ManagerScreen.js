@@ -351,7 +351,7 @@ function ManagerScreen() {
 
   return (
     <>
-      <View style={{ marginTop: 30 }}></View>
+      <View style={{ marginTop: 20 }} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}

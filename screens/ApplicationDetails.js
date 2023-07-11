@@ -206,7 +206,7 @@ function ApplicationDetails({ route }) {
 
   return (
     <>
-      <View style={{ backgroundColor: "white", height: 30 }} />
+      <View style={{ backgroundColor: "white", height: 20 }} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -228,22 +228,6 @@ function ApplicationDetails({ route }) {
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
-            // renderLabel={({ route, focused, color }) => (
-            //   <Text
-            //     style={
-            //       focused
-            //         ? {
-            //             margin: 0,
-            //             fontSize: 15,
-            //             color: "black",
-            //             fontWeight: "bold",
-            //           }
-            //         : { margin: 0, fontSize: 15, color: "black" }
-            //     }
-            //   >
-            //     {route.title}
-            //   </Text>
-            // )}
             renderLabel={({ route, focused, color }) => (
               <Text
                 style={
