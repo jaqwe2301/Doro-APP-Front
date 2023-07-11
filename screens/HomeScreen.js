@@ -21,6 +21,7 @@ import CreactingLecture from "../assets/creatingLecture.svg";
 
 import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
+import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
@@ -73,6 +74,7 @@ const HomeScreen = ({ lectureIdProps }) => {
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
             // console.log(filteringItem.staff);
+            // console.log(filteringItem.status);
             return (
               <LectureBox
                 key={filteringItem.id}
@@ -89,10 +91,8 @@ const HomeScreen = ({ lectureIdProps }) => {
                 place={filteringItem.place}
                 lectureIdHandler={() =>
                   navigation.navigate("DetailLecture", {
-                    data: {
-                      id: filteringItem.id,
-                      status: filteringItem.status,
-                    },
+                    id: filteringItem.id, 
+                    status: filteringItem.status,
                   })
                 }
                 // date={dateText}
@@ -151,6 +151,15 @@ const HomeScreen = ({ lectureIdProps }) => {
     lectureIdProps(id);
   };
 
+  const [filter, setFilter] = useState(false);
+
+  const filterHandler = () => {
+    setFilter(true);
+  };
+
+  // const [cityModal, setCityModal] = useState();
+  // const [dataModal, setDataModal] = useState();
+
   const layout = useWindowDimensions();
 
   const [index, setIndex] = useState(0);
@@ -172,8 +181,16 @@ const HomeScreen = ({ lectureIdProps }) => {
                 marginBottom: 5,
               }}
             >
-              <FilterBox text="교육 지역" />
-              <FilterBox text="교육 날짜" />
+              <Pressable
+                onPress={() => {
+                  filterHandler();
+                }}
+              >
+                <FilterBox text="교육 지역" />
+              </Pressable>
+              <Pressable>
+                <FilterBox text="교육 날짜" />
+              </Pressable>
             </View>
             {recruitingElements}
           </ScrollView>
@@ -268,6 +285,12 @@ const HomeScreen = ({ lectureIdProps }) => {
             )}
           />
         )}
+      />
+      <BottomModal
+        visible={filter}
+        inVisible={() => {
+          setFilter(false);
+        }}
       />
       {headerRole === "ROLE_ADMIN" ? (
         <View style={styles.BottomButton}>

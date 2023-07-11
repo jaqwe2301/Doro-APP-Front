@@ -56,7 +56,7 @@ function DetailLectureScreen({ route }) {
     subTutor: "",
     time: "",
     transportCost: "",
-    status: "",
+    // status: "",
   });
   const [lectureContent, setLectureContent] = useState({
     detail: "",
@@ -68,7 +68,7 @@ function DetailLectureScreen({ route }) {
 
   const [tutor, setTutor] = useState([]);
 
-  const data = route.params.data;
+  const data = route.params;
 
   useEffect(() => {
     // 기본 정보
@@ -96,7 +96,7 @@ function DetailLectureScreen({ route }) {
         // console.log("성공");
       })
       .catch((error) => {
-        console.log("에러");
+        console.log("강의 세부 못 불러옴");
         console.log(error);
       });
 
@@ -539,13 +539,13 @@ function DetailLectureScreen({ route }) {
                           console.log(lecture);
                           // statusHandler가 promise를 반환하므로
                           // .then을 사용하여 상태 변경 후의 동작을 지정할 수 있음.
-                          // statusHandler(lecture)
-                          //   .then(() => {
-                          //     return !prev;
-                          //   })
-                          //   .catch((error) => {
-                          //     console.log("statusHandler error:", error);
-                          //   });
+                          statusHandler(lecture)
+                            .then(() => {
+                              return !prev;
+                            })
+                            .catch((error) => {
+                              console.log("statusHandler error:", error);
+                            });
                         });
                   }}
                   // buttonText={getButtonText()}
