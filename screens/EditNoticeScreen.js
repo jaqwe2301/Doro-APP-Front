@@ -24,24 +24,22 @@ function EditNoticeScreen({ navigation, route }) {
   const [body, setBody] = useState(data.body);
   const [title, setTitle] = useState(data.title);
   // const [formData, setFormData] = useState(new FormData());
+  const [filename, setFileName] = useState("");
+  const [type, setType] = useState("");
 
   async function completeHandler() {
     const formData = new FormData();
-    const value = [
-      {
-        title: title,
-        body: body,
-      },
-    ];
-
-    const blob = new Blob([JSON.stringify(value)], {
-      type: "application/json",
-    });
-    console.log(blob);
-    formData.append("announcementReq", blob);
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("writer", "김동규");
     // console.log(formData.get("announcementReq"));
-    if (imageUrl) {
-      formData.append("picture", null);
+    if (imageUrl && imageUrl !== data.picture) {
+      formData.append("picture", {
+        uri: imageUrl,
+        type: type,
+        name: filename,
+      });
+      console.log("이미지 넣음요");
     }
     try {
       const response = await editAnnouncement({
@@ -49,9 +47,9 @@ function EditNoticeScreen({ navigation, route }) {
         id: data.id,
       });
       console.log(response);
-      // if (response.success) {
-      //   navigation.replace("noticeScreen");
-      // }
+      if (response.success) {
+        navigation.replace("noticeScreen");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -71,7 +69,7 @@ function EditNoticeScreen({ navigation, route }) {
 
   //camera
   const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(data.picture);
 
   const cameraHandler = async () => {
     if (!statusCamera?.granted) {
@@ -89,17 +87,13 @@ function EditNoticeScreen({ navigation, route }) {
     });
 
     console.log(result);
-    console.log(!result.canceled);
 
     if (!result.canceled) {
-      const filename = result.assets[0].uri.split("/").pop();
-      console.log(filename);
-      formData.append("picture", {
-        uri: result.assets[0].uri,
-        type: "multipart/form-data",
-        name: filename,
-      });
+      setFileName(result.assets[0].uri.split("/").pop());
       setImageUrl(result.assets[0].uri);
+      let match = /\.(\w+)$/.exec(result.assets[0].uri.split("/").pop());
+      let imageType = match ? `image/${match[1]}` : `image`;
+      setType(imageType);
     } else {
       return null;
     }
@@ -168,7 +162,9 @@ function EditNoticeScreen({ navigation, route }) {
               paddingLeft: 16,
             }}
           >
-            <Camera width={24} height={24} />
+            <Pressable onPress={cameraHandler}>
+              <Camera width={24} height={24} />
+            </Pressable>
           </View>
         </View>
       </KeyboardAvoidingView>

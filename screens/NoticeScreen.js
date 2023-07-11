@@ -36,6 +36,8 @@ function NoticeScreen({ navigation }) {
         // pageNum++;
 
         console.log(pageNum);
+        console.log("공지사항 전체 출력");
+        console.log(response);
       }
       // console.log(response);
     } catch (error) {
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
   },
   plusBtn: {
     backgroundColor: GlobalStyles.colors.primaryDefault,
-    borderRadius: "100%",
+    borderRadius: 100,
     width: 56,
     height: 56,
     justifyContent: "center",
