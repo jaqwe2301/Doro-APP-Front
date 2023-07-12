@@ -14,6 +14,7 @@ import {
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import Interceptor from "../utill/Interceptor";
 import { URL } from "../utill/config";
 import { AuthContext } from "../store/auth-context";
 import { useLectures } from "../store/LecturesProvider";
@@ -35,9 +36,10 @@ function ManagerScreen() {
   const authCtx = useContext(AuthContext);
   const { lectures } = useLectures();
   const [lecturesData, setLectureData] = useState([]);
+  const instance = Interceptor();
 
   useEffect(() => {
-    axios
+    instance
       .get(`${URL}/users`, {
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +51,7 @@ function ManagerScreen() {
 
         // Map each user to a Promise
         const promises = data.map((user) =>
-          axios
+          instance
             .get(`${URL}/users-lectures/users/${user.id}`, {
               headers: {
                 "Content-Type": "application/json",
