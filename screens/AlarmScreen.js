@@ -6,6 +6,7 @@ import {
   Pressable,
   Image,
   FlatList,
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
@@ -96,7 +97,11 @@ function AlarmScreen({ navigation }) {
       const response = await getAnnouncementId({
         id: id,
       });
-      navigation.navigate("noticeDetail", { data: response });
+      if (response !== undefined) {
+        navigation.navigate("noticeDetail", { data: response });
+      } else {
+        Alert.alert("삭제된 공지 입니다.");
+      }
     } catch (error) {
       console.log(error);
     }
