@@ -26,6 +26,20 @@ function NoticeScreen({ navigation }) {
     notiHandler();
   }, []);
 
+  async function refreshHandler() {
+    try {
+      const response = await getAnnouncement({ page: 0, size: 10 });
+      if (response) {
+        setData(response);
+        setPageNum(1);
+        console.log("공지사항 전체 출력");
+        console.log(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   // let pageNum = 0;
   async function notiHandler() {
     try {
@@ -60,11 +74,17 @@ function NoticeScreen({ navigation }) {
   }, []);
 
   const navigHandler = (item) => {
-    navigation.navigate("noticeDetail", { data: item, role: headerRole });
+    setSelectedId(item.id);
+    navigation.navigate("noticeDetail", {
+      data: item,
+    });
+    console.log(selectedId + "선택");
   };
   function naviAddHandler() {
     navigation.navigate("noticeAdd");
   }
+
+  const [selectedId, setSelectedId] = useState();
 
   const Item = ({ item }) => (
     <View style={styles.content}>
@@ -86,9 +106,14 @@ function NoticeScreen({ navigation }) {
       <FlatList
         data={data}
         renderItem={Item}
+        extraData={selectedId}
         keyExtractor={(item) => item.id}
         onEndReached={notiHandler}
         onEndReachedThreshold={0.5}
+        onRefresh={() => {
+          refreshHandler();
+        }}
+        refreshing={false}
       />
       {headerRole === "ROLE_ADMIN" ? (
         <View style={styles.plusBtnContainer}>

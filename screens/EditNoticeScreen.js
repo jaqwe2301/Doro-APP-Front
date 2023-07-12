@@ -11,13 +11,14 @@ import {
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
-import { useEffect, useState } from "react";
-import { editAnnouncement } from "../utill/http";
+import { useContext, useEffect, useState } from "react";
+import { editAnnouncement, getAnnouncementId, getProfile } from "../utill/http";
 
 import Camera from "../assets/camera.svg";
 
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAvoidingView } from "react-native";
+import { HeaderContext } from "../store/header-context";
 
 function EditNoticeScreen({ navigation, route }) {
   const data = route.params.data;
@@ -26,12 +27,14 @@ function EditNoticeScreen({ navigation, route }) {
   // const [formData, setFormData] = useState(new FormData());
   const [filename, setFileName] = useState("");
   const [type, setType] = useState("");
+  const { headerId, setHeaderId } = useContext(HeaderContext);
 
   async function completeHandler() {
+    const response = await getProfile({ id: headerId });
     const formData = new FormData();
+    formData.append("writer", response.data.name);
     formData.append("title", title);
     formData.append("body", body);
-    formData.append("writer", "김동규");
     // console.log(formData.get("announcementReq"));
     if (imageUrl && imageUrl !== data.picture) {
       formData.append("picture", {
@@ -48,7 +51,14 @@ function EditNoticeScreen({ navigation, route }) {
       });
       console.log(response);
       if (response.success) {
-        navigation.replace("noticeScreen");
+        try {
+          const response = await getAnnouncementId({
+            id: data.id,
+          });
+          navigation.navigate("noticeDetail", { data: response });
+        } catch (error) {
+          console.log(error);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -60,7 +70,9 @@ function EditNoticeScreen({ navigation, route }) {
       headerRight: () => {
         return (
           <Pressable onPress={completeHandler}>
-            <Text style={styles.completeText}>완료</Text>
+            <View style={styles.completeTextContainer}>
+              <Text style={styles.completeText}>완료</Text>
+            </View>
           </Pressable>
         );
       },
@@ -128,7 +140,7 @@ function EditNoticeScreen({ navigation, route }) {
                 onChangeText={(text) => setTitle(text)}
               />
               <View style={styles.nameContainer}>
-                <Text style={styles.name}>김동규 매니저</Text>
+                <Text style={styles.name}>{data.writer} 매니저</Text>
                 <Text style={styles.name}>
                   {moment(data.createdAt).format("YYYY-MM-DD")}
                 </Text>
@@ -219,16 +231,20 @@ const styles = StyleSheet.create({
   completeText: {
     fontWeight: "400",
     fontSize: 15,
-    // lineHeight: 20,
-    width: 50,
-    height: 30,
     borderRadius: 5.41,
     color: "white",
     textAlign: "center",
     textAlignVertical: "center",
+    lineHeight: 20,
+  },
+  completeTextContainer: {
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+
+    borderRadius: 5.41,
+    justifyContent: "center",
+    alignItems: "center",
     // marginLeft: -4,
     backgroundColor: GlobalStyles.colors.primaryDefault,
-
-    lineHeight: 20,
   },
 });
