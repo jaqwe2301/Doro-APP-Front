@@ -42,9 +42,20 @@ function EditNoticeScreen({ navigation, route }) {
         type: type,
         name: filename,
       });
+    } else if (imageUrl === data.picture) {
+      const imagePath = imageUrl.split("/").pop();
+      const imageName = imagePath.split(".")[0];
+      const imageType = imagePath.split(".")[1];
+      formData.append("picture", {
+        uri: imageUrl,
+        type: imageType,
+        name: imageName,
+      });
       console.log("이미지 넣음요");
     }
+    // }
     try {
+      console.log(JSON.stringify(formData));
       const response = await editAnnouncement({
         formData: formData,
         id: data.id,
