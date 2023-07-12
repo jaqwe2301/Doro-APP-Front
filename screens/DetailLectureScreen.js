@@ -306,7 +306,7 @@ function DetailLectureScreen({ route }) {
 
   const [toggle, setToggle] = useState(true);
   const [status, setStatus] = useState(
-    data.status === "RECRUITING" ? false : true
+    data.status === "RECRUITING" ? true : false
   );
 
   // Use a custom renderScene function instead
@@ -497,7 +497,9 @@ function DetailLectureScreen({ route }) {
                   ]}
                 >
                   <FilterBox text="강사 타입" color="black" />
-                  <FilterBox text="정렬 순서" color="black" />
+                  <Pressable onPress={() => console.log(status)}>
+                    <FilterBox text="정렬 순서" color="black" />
+                  </Pressable>
                 </View>
                 {/* SwitchToggle 참고 링크 */}
                 {/* https://github.com/yujong-lee/react-native-switch-toggle */}
@@ -525,6 +527,7 @@ function DetailLectureScreen({ route }) {
                         )
                       : setStatus((prev) => {
                           let lecture = lectureBasicInfo;
+                          console.log(lecture);
                           if (!lecture) {
                             console.error("lecture is undefined");
                             // return prev;
@@ -541,7 +544,7 @@ function DetailLectureScreen({ route }) {
                           // .then을 사용하여 상태 변경 후의 동작을 지정할 수 있음.
                           statusHandler(lecture)
                             .then(() => {
-                              return !prev;
+                              setStatus(!prev);
                             })
                             .catch((error) => {
                               console.log("statusHandler error:", error);
