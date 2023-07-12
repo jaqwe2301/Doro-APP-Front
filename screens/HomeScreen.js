@@ -29,24 +29,43 @@ import { useLectures } from "../store/LecturesProvider";
 
 const HomeScreen = ({ lectureIdProps }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
-  const [data, setData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
   const navigation = useNavigation();
   const { lectures } = useLectures();
 
   useEffect(() => {
     setLectureData(lectures);
+    // console.log(lectures);
+    setRecruitingCity(recruitingCityList);
+    setAllocationCity(allocationCityList);
   }, [lectures]);
 
+  const recruitingCityList = lectures
+    .filter((item) => item.status === "RECRUITING")
+    .map((item) => {
+      return item.city;
+    });
+
+  const [recruitingCity, setRecruitingCity] = useState(recruitingCityList);
+
   const recruitingData = lectureData.filter(
-    (item) => item.status === "RECRUITING"
+    (item) => item.status === "RECRUITING" && recruitingCity.includes(item.city)
   );
   const recruitingTitle = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
 
+  const allocationCityList = lectures
+    .filter((item) => item.status === "ALLOCATION_COMP")
+    .map((item) => {
+      return item.city;
+    });
+
+  const [allocationCity, setAllocationCity] = useState(allocationCityList);
+
   const allocationDate = lectureData.filter(
-    (item) => item.status === "ALLOCATION_COMP"
+    (item) =>
+      item.status === "ALLOCATION_COMP" && allocationCity.includes(item.city)
   );
 
   const allocationTitle = [
@@ -153,13 +172,23 @@ const HomeScreen = ({ lectureIdProps }) => {
   };
 
   const [filter, setFilter] = useState(false);
+  const [title, setTitle] = useState("");
+  const [status, setStatus] = useState();
 
-  const filterHandler = () => {
+  const onFilter = (title, status) => {
     setFilter(true);
+    setStatus(status);
+    setTitle(title);
   };
 
-  // const [cityModal, setCityModal] = useState();
-  // const [dataModal, setDataModal] = useState();
+  const applyCityFilter = (city) => {
+    status === "RECRUITING" ? setRecruitingCity(city) : setAllocationCity(city);
+    setFilter(false);
+  };
+
+  const applyDateFilter = () => {
+    setFilter(false);
+  };
 
   const layout = useWindowDimensions();
 
@@ -184,12 +213,16 @@ const HomeScreen = ({ lectureIdProps }) => {
             >
               <Pressable
                 onPress={() => {
-                  filterHandler();
+                  onFilter("교육 지역", "RECRUITING");
                 }}
               >
                 <FilterBox text="교육 지역" />
               </Pressable>
-              <Pressable>
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 날짜", "date");
+                }}
+              >
                 <FilterBox text="교육 날짜" />
               </Pressable>
             </View>
@@ -207,8 +240,20 @@ const HomeScreen = ({ lectureIdProps }) => {
                 marginBottom: 5,
               }}
             >
-              <FilterBox text="교육 지역" />
-              <FilterBox text="교육 날짜" />
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 지역", "ALLOCATION_COMP");
+                }}
+              >
+                <FilterBox text="교육 지역" />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 날짜", "date");
+                }}
+              >
+                <FilterBox text="교육 날짜" />
+              </Pressable>
             </View>
             {allocationElements}
           </ScrollView>
@@ -287,12 +332,22 @@ const HomeScreen = ({ lectureIdProps }) => {
           />
         )}
       />
+
       <BottomModal
         visible={filter}
-        inVisible={() => {
-          setFilter(false);
-        }}
+        inVisible={() => setFilter(false)}
+        title={title}
+        data={
+          status === "RECRUITING"
+            ? recruitingCityList
+            : status === "date"
+            ? ["", ""]
+            : allocationCityList
+        }
+        status={status}
+        onPress={status === "Date" ? applyDateFilter : applyCityFilter}
       />
+
       {headerRole === "ROLE_ADMIN" ? (
         <View style={styles.BottomButton}>
           <Pressable
