@@ -14,6 +14,7 @@ function ApplyingLectureBox({
   place,
   tutorRole,
   dateTypeValue,
+  onPressX,
 }) {
   // console.log(date)
   const dateControl = (stringDate) => {
@@ -57,7 +58,9 @@ function ApplyingLectureBox({
       <View style={styles.whiteBox}>
         <View style={styles.titleContainer}>
           <Text style={styles.SubTitle}>{subTitle}</Text>
-          <Xmark width={20} height={20} />
+          <Pressable onPress={onPressX}>
+            <Xmark width={20} height={20} />
+          </Pressable>
         </View>
         <View
           style={{
@@ -66,16 +69,7 @@ function ApplyingLectureBox({
           }}
         >
           <View>
-            <Text style={styles.role}>
-              {tutorRole === "MAIN_TUTOR"
-                ? "주강사"
-                : tutorRole === "SUB_TUTOR"
-                ? "보조강사"
-                : tutorRole === "STAFF"
-                ? "스태프"
-                : tutorRole}{" "}
-              신청
-            </Text>
+            <Text style={styles.role}>{tutorRole} 신청</Text>
             <Text style={styles.enrollEndDate}>
               {typeof dateTypeValue === "object"
                 ? `신청마감 ${
