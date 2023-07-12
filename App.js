@@ -298,11 +298,6 @@ function HomeNavigator({ navigation }) {
         component={NoticeDetailScreen}
         options={{
           title: "",
-          headerLeft: () => (
-            <Pressable onPress={() => navigation.goBack()}>
-              <Left width={24} height={24} />
-            </Pressable>
-          ),
         }}
       />
     </Stack.Navigator>
