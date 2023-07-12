@@ -29,7 +29,7 @@ import { GlobalStyles } from "./../constants/styles";
 
 import ButtonBig from "../components/ui/ButtonBig";
 import ButtonSmall from "../components/ui/ButtonSmall";
-import BottomModal from "../components/ui/BottomModal";
+import AddContentModal from "../components/ui/AddContentModal";
 
 import Interceptor from "../utill/Interceptor";
 
@@ -62,13 +62,13 @@ function UpdateLectureScreen({ route }) {
     status: "RECRUITING",
   });
 
-  const [lectureContents, setLectureContents] = useState();
+  const [lectureContents, setLectureContents] = useState([]);
   const [selectedLectureContents, setSelectedLectureContents] = useState({
     kit: "",
     detail: "",
     remark: "",
     requirement: "",
-    constent: "",
+    content: "",
   });
 
   useEffect(() => {
@@ -80,6 +80,7 @@ function UpdateLectureScreen({ route }) {
         },
       })
       .then((res) => {
+        // console.log(res.data.data)
         setLectureContents(res.data.data);
       })
       .catch((error) => {
@@ -579,6 +580,7 @@ function UpdateLectureScreen({ route }) {
               <View style={[styles.inputBox, styles.dateBox]}>
                 <Text style={{ flex: 1 }}>{selectedLectureContents.kit}</Text>
                 <Pressable onPress={() => modalHandler(true)}>
+                {/* <Pressable onPress={() => console.log(lectureContents)}> */}
                   <Text style={{ marginRight: 8.03 }}>+</Text>
                 </Pressable>
               </View>
@@ -603,7 +605,7 @@ function UpdateLectureScreen({ route }) {
             </View>
 
             {/* 교육 키트 플러스(+) 버튼 누르면 나오는 하단 모달 */}
-            <BottomModal
+            <AddContentModal
               visible={modalVisible}
               inVisible={() => modalHandler(false)}
               plusVisible={true}
