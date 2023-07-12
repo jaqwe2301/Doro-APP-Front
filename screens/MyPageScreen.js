@@ -20,7 +20,7 @@ import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
 import ManagerScreen from "./ManagerScreen";
-import { StackActions } from "@react-navigation/native";
+import { CommonActions, StackActions } from "@react-navigation/native";
 
 function MyPageScreen({ navigation }) {
   const [data, setData] = useState({});
@@ -96,6 +96,12 @@ function MyPageScreen({ navigation }) {
 
         console.log(response);
         if (response.status === 200) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: "Home" }],
+            })
+          );
           authCtx.logout();
         }
       } catch (error) {
