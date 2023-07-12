@@ -241,6 +241,34 @@ function AddNoticeScreen({ navigation }) {
     }
   };
 
+  // async function completeHandler3() {
+  //   const formData = new FormData();
+  //   const announcementReq = {
+  //     title: title,
+  //     body: body,
+  //     writer: "z",
+  //   };
+  //   formData.append(
+  //     "announcementReq",
+  //     // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
+  //     // new Blob([{ title: "title", body: "body", writer: "노세인" }])
+  //     announcementReq
+  //     // JSON.stringify(value)
+  //     // value
+  //   );
+  //   try {
+  //     const response = await createAnnouncement({
+  //       formData: formData,
+  //       title: title,
+  //       body: body,
+  //     });
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log(JSON.stringify(formData));
+  //     console.log(error);
+  //   }
+  // }
+  
   async function completeHandler3() {
     const formData = new FormData();
     formData.append("title", title);
@@ -262,8 +290,7 @@ function AddNoticeScreen({ navigation }) {
         navigation.replace("noticeScreen");
       }
     } catch (error) {
-      console.log(JSON.stringify(formData));
-      console.log(error);
+      console.error('Error during announcement creation:', error);
     }
   }
 
