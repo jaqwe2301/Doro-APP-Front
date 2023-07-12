@@ -249,18 +249,20 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
           <View>
             <Swiper
               autoplay={true}
+              autoplayTimeout={3}
               horizontal={false}
               showsPagination={false}
               width={250}
-              height={20}
+              // height={2}
             >
-              {response.map((data, index) => {
+              {response.map((data) => {
                 return (
                   <Pressable
                     onPress={() =>
                       navigation.navigate("noticeDetail", { data: data })
                     }
                     key={data.id}
+                    style={{ justifyContent: "center" }}
                   >
                     <Text
                       key={data.id}
@@ -269,6 +271,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                         fontStyle: GlobalStyles.gray01,
                         fontSize: 15,
                         fontWeight: "bold",
+                        textAlignVertical: "center",
                       }}
                     >
                       {data.title}

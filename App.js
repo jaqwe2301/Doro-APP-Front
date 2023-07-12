@@ -340,7 +340,7 @@ function MyPageNavigator() {
       }}
     >
       <Stack.Screen
-        name="myPage"
+        name="myPageScreen"
         component={MyPageScreen}
         options={{ title: "마이 페이지", headerBackVisible: false }}
       />
