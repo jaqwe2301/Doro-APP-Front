@@ -11,7 +11,7 @@ import {
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
-
+import Profile from "../assets/defaultProfile.svg";
 import { alarmEdit, getProfile, logout } from "../utill/http";
 import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -140,24 +140,35 @@ function MyPageScreen({ navigation }) {
                   }}
                 />
               ) : (
-                <Image
-                  style={styles.image}
-                  source={require("../assets/profile.png")}
-                />
+                // <Image
+                //   style={styles.image}
+                //   source={require("../assets/profile.png")}
+                // />
+                <View style={{ margin: 11, marginLeft: 31 }}>
+                  <Profile />
+                </View>
               )}
               <View style={styles.statusContainer}>
-                <View style={styles.textContainer}>
-                  <Text style={styles.text}>강의 신청</Text>
-                  <Text style={styles.textNum}>02</Text>
-                </View>
-                <View style={[styles.textContainer, { marginHorizontal: 26 }]}>
-                  <Text style={styles.text}>배정 완료</Text>
-                  <Text style={styles.textNum}>02</Text>
-                </View>
-                <View style={styles.textContainer}>
-                  <Text style={styles.text}>강의 완료</Text>
-                  <Text style={styles.textNum}>02</Text>
-                </View>
+                <Pressable onPress={() => navigation.navigate("History")}>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.text}>강의 신청</Text>
+                    <Text style={styles.textNum}>02</Text>
+                  </View>
+                </Pressable>
+                <Pressable onPress={() => navigation.navigate("History")}>
+                  <View
+                    style={[styles.textContainer, { marginHorizontal: 26 }]}
+                  >
+                    <Text style={styles.text}>배정 완료</Text>
+                    <Text style={styles.textNum}>02</Text>
+                  </View>
+                </Pressable>
+                <Pressable onPress={() => navigation.navigate("History")}>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.text}>강의 완료</Text>
+                    <Text style={styles.textNum}>02</Text>
+                  </View>
+                </Pressable>
               </View>
             </View>
             <View style={{ marginHorizontal: 20, marginTop: 6 }}>

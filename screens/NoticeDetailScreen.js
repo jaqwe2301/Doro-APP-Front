@@ -11,18 +11,35 @@ import {
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
 import { deleteAnnouncement } from "../utill/http";
-
+import Left from "../assets/left.svg";
 import Edit from "../assets/edit.svg";
 import Delete from "../assets/delete.svg";
+import { HeaderContext } from "../store/header-context";
+import { useContext, useEffect } from "react";
 
 function NoticeDetailScreen({ navigation, route }) {
   const data = route.params.data;
-  const headerRole = route.params.role;
+  const { headerRole, setHeaderRole } = useContext(HeaderContext);
   console.log(data);
 
   function editHandler() {
     navigation.navigate("noticeEdit", { data: data });
   }
+
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerLeft: () => (
+  //       <Pressable
+  //         onPress={() => {
+  //           navigation.replace("noticeScreen");
+  //         }}
+  //         style={{ marginLeft: 10 }}
+  //       >
+  //         <Left width={24} height={24} />
+  //       </Pressable>
+  //     ),
+  //   });
+  // }, []);
 
   async function deleteAnnouncementHandler() {
     try {
