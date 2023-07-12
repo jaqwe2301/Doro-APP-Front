@@ -206,6 +206,12 @@ function ManagerScreen() {
 
       console.log(response);
       if (response.status === 200) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          })
+        );
         authCtx.logout();
       }
     } catch (error) {

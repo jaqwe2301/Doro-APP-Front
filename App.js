@@ -239,21 +239,7 @@ function AuthStack({ notificationAgreement }) {
   );
 }
 
-function HomeNavigator({ navigation, route }) {
-  // React.useLayoutEffect(() => {
-  //   const routeName = getFocusedRouteNameFromRoute(route);
-  //   if (routeName !== "alarm" || routeName !== "noticeDetail") {
-  //     //MyPage이외의 화면에 대해 tabBar none을 설정한다.
-  //     navigation.setOptions({
-  //       tabBarStyle: {
-  //         display: undefined,
-  //         ...(Platform.OS === "android" && { height: 60 }),
-  //       },
-  //     });
-  //   } else {
-  //     navigation.setOptions({ tabBarStyle: { display: "none" } });
-  //   }
-  // }, [navigation, route]);
+function HomeNavigator({ navigation }) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -267,7 +253,6 @@ function HomeNavigator({ navigation, route }) {
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
-        // headerBackImageSource: <Back width={24} height={24} />,
       }}
     >
       <Stack.Screen
