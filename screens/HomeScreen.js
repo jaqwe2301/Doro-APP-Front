@@ -10,11 +10,15 @@ import {
   Text,
   ScrollView,
   useWindowDimensions,
+  SafeAreaView,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-
+import Logo from "../assets/Logo_main.svg";
+import AlarmAfter from "../assets/alarm_before.svg";
+import Right from "../assets/rightBlack.svg";
+import Megaphone from "../assets/megaphoneBlack.svg";
 import { GlobalStyles } from "../constants/styles";
 
 import CreactingLecture from "../assets/creatingLecture.svg";
@@ -26,12 +30,28 @@ import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
 import { useLectures } from "../store/LecturesProvider";
+import Swiper from "react-native-swiper";
+import { getAnnouncement } from "../utill/http";
 
-const HomeScreen = ({ lectureIdProps }) => {
+const HomeScreen = ({ lectureIdProps, navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const [response, setResponse] = useState([]);
+
   const [lectureData, setLectureData] = useState([]);
-  const navigation = useNavigation();
   const { lectures } = useLectures();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const result = await getAnnouncement({ page: 0, size: 3 });
+        setResponse(result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     setLectureData(lectures);
@@ -266,6 +286,57 @@ const HomeScreen = ({ lectureIdProps }) => {
 
   return (
     <>
+      <View style={styles.noticeContainer}>
+        <View style={{ flexDirection: "row" }}>
+          <Megaphone width={24} height={24} />
+          <View>
+            <Swiper
+              autoplay={true}
+              autoplayTimeout={3}
+              horizontal={false}
+              showsPagination={false}
+              width={250}
+              // height={2}
+            >
+              {response.map((data) => {
+                return (
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("noticeDetail", { data: data })
+                    }
+                    key={data.id}
+                    style={{ justifyContent: "center" }}
+                  >
+                    <Text
+                      key={data.id}
+                      style={{
+                        marginLeft: 16,
+                        fontStyle: GlobalStyles.gray01,
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        textAlignVertical: "center",
+                      }}
+                    >
+                      {data.title}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </Swiper>
+          </View>
+        </View>
+        {/* <Pressable
+          onPress={() => {
+            navigation.navigate("Notice");
+          }}
+          // style={{ flex: 1 }}
+        > */}
+        {/* <View style={{ marginRight: 16 }}> */}
+        <Right width={24} height={24} />
+        {/* </View> */}
+        {/* </Pressable> */}
+      </View>
+
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -400,5 +471,17 @@ const styles = StyleSheet.create({
     marginTop: 15,
     fontSize: 17,
     fontWeight: "bold",
+  },
+  noticeContainer: {
+    marginTop: 20,
+    marginHorizontal: 20,
+    marginBottom: 54,
+    backgroundColor: "#F4F4F4",
+    flexDirection: "row",
+    height: 44,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    borderRadius: 5.41,
   },
 });

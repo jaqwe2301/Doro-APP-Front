@@ -30,13 +30,14 @@ function AuthContextProvider({ children }) {
     AsyncStorage.setItem("fcmToken", fcmToken);
   }
 
-  function logout() {
+  async function logout() {
     setAuthToken(null);
     setReToken(null);
     setFcmToken(null);
-    AsyncStorage.removeItem("token");
-    AsyncStorage.removeItem("refreshToken");
-    AsyncStorage.removeItem("fcmToken");
+    // AsyncStorage.removeItem("token");
+    // AsyncStorage.removeItem("refreshToken");
+    // AsyncStorage.removeItem("fcmToken");
+    await AsyncStorage.clear();
   }
 
   const value = {

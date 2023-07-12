@@ -28,7 +28,11 @@ import LoginScreen from "./screens/LoginScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
 import DetailLectureScreen from "./screens/DetailLectureScreen";
-
+import Back from "./assets/backBtn.svg";
+import Logo from "./assets/Logo_main.svg";
+import AlarmAfter from "./assets/alarm_before.svg";
+import Right from "./assets/rightBlack.svg";
+import Left from "./assets/left.svg";
 import AuthPhone from "./components/signUp/AuthPhone";
 import Id from "./components/signUp/Id";
 import Pw from "./components/signUp/Pw";
@@ -54,7 +58,7 @@ import HeaderContextProvider, { HeaderContext } from "./store/header-context";
 import { LecturesProvider } from "./store/LecturesProvider";
 import EditNoticeScreen from "./screens/EditNoticeScreen";
 import AlarmScreen from "./screens/AlarmScreen";
-
+import Splash from "./assets/splash.svg";
 import DoroHorizontal from "./assets/doroHorizontal.svg";
 import Home from "./assets/home.svg";
 import Main from "./assets/main.svg";
@@ -73,6 +77,7 @@ import AgreeInfo2 from "./components/signUp/AgreeInfo2";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import TutorScreen from "./screens/TutorScreen";
+import * as SplashScreen from "expo-splash-screen";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -235,20 +240,20 @@ function AuthStack({ notificationAgreement }) {
 }
 
 function HomeNavigator({ navigation, route }) {
-  React.useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName !== "alarm") {
-      //MyPage이외의 화면에 대해 tabBar none을 설정한다.
-      navigation.setOptions({
-        tabBarStyle: {
-          display: undefined,
-          ...(Platform.OS === "android" && { height: 60 }),
-        },
-      });
-    } else {
-      navigation.setOptions({ tabBarStyle: { display: "none" } });
-    }
-  }, [navigation, route]);
+  // React.useLayoutEffect(() => {
+  //   const routeName = getFocusedRouteNameFromRoute(route);
+  //   if (routeName !== "alarm" || routeName !== "noticeDetail") {
+  //     //MyPage이외의 화면에 대해 tabBar none을 설정한다.
+  //     navigation.setOptions({
+  //       tabBarStyle: {
+  //         display: undefined,
+  //         ...(Platform.OS === "android" && { height: 60 }),
+  //       },
+  //     });
+  //   } else {
+  //     navigation.setOptions({ tabBarStyle: { display: "none" } });
+  //   }
+  // }, [navigation, route]);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -262,6 +267,7 @@ function HomeNavigator({ navigation, route }) {
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
+        // headerBackImageSource: <Back width={24} height={24} />,
       }}
     >
       <Stack.Screen
@@ -273,32 +279,10 @@ function HomeNavigator({ navigation, route }) {
               <SafeAreaView style={{}}>
                 <View style={styles.HomeHeader}>
                   <View style={styles.headerTopContainer}>
-                    <Image
-                      source={require("./assets/doroLogoMain.png")}
-                      style={styles.Logo}
-                    />
+                    <Logo width={94} height={20} />
                     <Pressable onPress={() => navigation.navigate("alarm")}>
-                      <Image
-                        source={require("./assets/icons/alarm_after.png")}
-                        style={styles.iconSize}
-                      />
+                      <AlarmAfter width={24} height={24} />
                     </Pressable>
-                  </View>
-                  <View style={styles.noticeContainer}>
-                    <Image
-                      source={require("./assets/icons/megaphone.png")}
-                      style={styles.iconSize}
-                    />
-                    <Text
-                      style={{
-                        marginLeft: 16,
-                        fontStyle: GlobalStyles.gray01,
-                        fontSize: 15,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      메이커 스페이스 사용 안내
-                    </Text>
                   </View>
                 </View>
               </SafeAreaView>
@@ -324,6 +308,18 @@ function HomeNavigator({ navigation, route }) {
           tabBarStyle: { display: "none" },
         }}
       />
+      <Stack.Screen
+        name="noticeDetail"
+        component={NoticeDetailScreen}
+        options={{
+          title: "",
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.goBack()}>
+              <Left width={24} height={24} />
+            </Pressable>
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -340,10 +336,11 @@ function MyPageNavigator() {
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
+        ///  headerBackImageSource: <Back width={24} height={24} />,
       }}
     >
       <Stack.Screen
-        name="myPage"
+        name="myPageScreen"
         component={MyPageScreen}
         options={{ title: "마이 페이지", headerBackVisible: false }}
       />
@@ -415,7 +412,6 @@ function NoticeNavigator({ navigation }) {
           // lineHeight: 22,
         },
         headerBackTitleVisible: false,
-
         headerTintColor: "#000000",
       }}
       initialRouteName="noticeScreen"
@@ -425,21 +421,17 @@ function NoticeNavigator({ navigation }) {
         component={NoticeScreen}
         options={{
           title: "공지사항",
-          headerRight: () => {
-            return (
-              // <Pressable onPress={() => navigation.navigate("home")}>
+          // headerRight: () => {
 
-              <Home width={24} height={24} />
-              //</Pressable>
-            );
-          },
           headerBackVisible: false,
         }}
       />
       <Stack.Screen
         name="noticeDetail"
         component={NoticeDetailScreen}
-        options={{ title: "" }}
+        options={{
+          title: "",
+        }}
       />
       <Stack.Screen
         name="noticeAdd"
@@ -501,15 +493,21 @@ function BottomTabNavigator() {
         headerShown: false,
       }}
       initialRouteName="Home"
-      backBehavior="history"
     >
       <BottomTab.Screen
         name="Home"
         component={HomeNavigator}
-        options={{
+        options={({ route }) => ({
           title: "홈",
           headerShown: false,
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
 
+            if (routeName === "noticeDetail" || routeName === "alarm") {
+              return { display: "none" };
+            }
+            return Platform.OS === "android" && { height: 60 };
+          })(route),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <MainFill width={30} height={30} />
@@ -524,7 +522,7 @@ function BottomTabNavigator() {
             fontWeight: 600,
             marginBottom: Platform.OS === "android" ? 9 : 0,
           },
-        }}
+        })}
       />
       <BottomTab.Screen
         name="Notice"
@@ -634,7 +632,7 @@ function Navigation({ notificationAgreement }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
-  // const [isTryingLogin, setIsTryingLogin] = useState(true);
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   // 자동로그인
   useEffect(() => {
@@ -653,11 +651,12 @@ function Navigation({ notificationAgreement }) {
         setHeaderAccount(decoded.sub);
       }
 
-      // setIsTryingLogin(false);
+      setIsTryingLogin(false);
     }
 
     fetchToken();
   }, []);
+
   const navTheme = {
     ...DefaultTheme,
     colors: {
@@ -665,6 +664,19 @@ function Navigation({ notificationAgreement }) {
       background: "white",
     },
   };
+
+  if (isTryingLogin) {
+    return (
+      // <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      //   <Splash width={100} height={106} />
+      // </View>
+      <Image
+        source={require("./assets/splash3.png")}
+        resizeMode="contain"
+        backgroundColor="#FFFFFF"
+      />
+    );
+  }
   return (
     // 로그인 여부에 따른 화면
     <NavigationContainer theme={navTheme}>
@@ -698,7 +710,6 @@ export default function App() {
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
       });
-    console.log(noti);
 
     return () => {
       Notifications.removeNotificationSubscription(
@@ -750,18 +761,20 @@ async function registerForPushNotificationsAsync() {
       noti = false;
       return { token: null, noti };
     }
-    token = (
-      await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig?.extra?.eas?.projectId,
-      })
-    ).data;
+    // token = (
+    //   await Notifications.getExpoPushTokenAsync({
+    //     projectId: Constants.expoConfig?.extra?.eas?.projectId,
+    //   })
+    // ).data;
+    token = (await Notifications.getDevicePushTokenAsync()).data;
     // authCtx.fcmToken(token);
     AsyncStorage.setItem("fcmToken", token);
-    console.log(token);
-    console.log(noti);
+    console.log(token + "이건 토큰");
+    console.log(noti + "이건 noti");
   } else {
     // alert("Must use physical device for Push Notifications");
     console.log(noti);
+    noti = false;
   }
 
   return { token, noti };
@@ -780,24 +793,18 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   HomeHeader: {
-    paddingTop: 30,
-    paddingBottom: Platform.OS === "android" ? 54 : 30,
+    paddingTop: 45,
+    // paddingBottom: Platform.OS === "android" ? 54 : 30,
+    paddingBottom: 20,
     paddingHorizontal: 20,
     backgroundColor: "white",
   },
   headerTopContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 40,
+    // marginBottom: 40,
   },
-  Logo: {
-    height: 20,
-    width: 93.35,
-  },
-  iconSize: {
-    height: 24,
-    width: 24,
-  },
+
   noticeContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -805,6 +812,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F4F4",
     paddingLeft: 16,
     borderRadius: 5.41,
+    justifyContent: "space-between",
   },
   completeText: {
     fontWeight: "400",
