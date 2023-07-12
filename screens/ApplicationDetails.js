@@ -4,12 +4,14 @@ import {
   StyleSheet,
   useWindowDimensions,
   FlatList,
+  Alert,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useEffect, useState, useContext } from "react";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import axios from "axios";
+import Interceptor from "../utill/Interceptor";
 
 import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
@@ -23,9 +25,10 @@ function ApplicationDetails({ route }) {
   const [allocation, setAllocation] = useState([]);
   const [finished, setFinished] = useState([]);
 
-  useEffect(() => {
-    console.log(headerId);
-    axios
+  const instance = Interceptor();
+
+  const getMyLectures = () => {
+    instance
       .get(`${URL}/users-lectures/users/${headerId}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -60,6 +63,10 @@ function ApplicationDetails({ route }) {
         console.log("에러");
         console.log(error);
       });
+  };
+
+  useEffect(() => {
+    getMyLectures();
   }, []);
 
   const controlfinished = (data) => {
@@ -96,7 +103,6 @@ function ApplicationDetails({ route }) {
         })`,
       },
     ]);
-    console.log("use");
   }, [recruiting, allocation, finished]);
 
   const dateControl = (stringDate) => {
@@ -119,6 +125,42 @@ function ApplicationDetails({ route }) {
     controlfinished(finished);
   };
 
+  const deleteLecture = (id, subTitle, role) => {
+    console.log(id);
+    Alert.alert(
+      subTitle,
+      `${role} 신청을 취소하시겠습니까?`,
+      [
+        { text: "취소", onPress: () => {}, style: "cancel" },
+        {
+          text: "확인",
+          onPress: () => {
+            instance
+              .delete(`${URL}/users-lectures/lectures/${id}`, {
+                headers: {
+                  // 헤더에 필요한 데이터를 여기에 추가
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((res) => {
+                console.log("강의 취소 완료");
+                getMyLectures();
+              })
+              .catch((error) => {
+                console.log("에러");
+                console.log(error);
+              });
+          },
+          style: "destructive",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      }
+    );
+  };
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
@@ -131,18 +173,30 @@ function ApplicationDetails({ route }) {
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
+              const roles = data.item.tutorRole;
+              const role =
+                roles === "MAIN_TUTOR"
+                  ? "주강사"
+                  : roles === "SUB_TUTOR"
+                  ? "보조강사"
+                  : roles === "STAFF"
+                  ? "스태프"
+                  : "";
               return (
                 <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => {}}
+                  lectureIdHandler={() => console.log("클릭")}
                   id=""
                   dateTypeValue={dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
-                  tutorRole={data.item.tutorRole}
+                  tutorRole={role}
+                  onPressX={() =>
+                    deleteLecture(data.item.id, data.item.subTitle, role)
+                  }
                 />
               );
             }}

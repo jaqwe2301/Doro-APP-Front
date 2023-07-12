@@ -21,8 +21,9 @@ function LectureTop({
   city,
   date,
   time,
+  transportCost,
 }) {
-  console.log(staffPayment);
+  // console.log(staffPayment);
   const day = ["일", "월", "화", "수", "목", "금", "토"];
 
   // ex. 05월 04일 (금) 09:30 ~ 12:30
@@ -65,7 +66,7 @@ function LectureTop({
     <View style={{ alignItems: "center", paddingHorizontal: 20 }}>
       <Text style={styles.Title}>{subTitle}</Text>
       <View style={styles.boxContainer}>
-        <SummaryBoxSmall svg={Bus} title="교통비" text="" />
+        <SummaryBoxSmall svg={Bus} title="교통비" text={transportCost + "원"} />
         <SummaryBoxSmall svg={Location} title="지역" text={city} />
       </View>
 

@@ -1,3 +1,6 @@
+// ---- 강의 생성과 수정 기능의 페이지 -----
+
+import React from "react";
 import {
   Text,
   Animated,
@@ -26,17 +29,20 @@ import { GlobalStyles } from "./../constants/styles";
 
 import ButtonBig from "../components/ui/ButtonBig";
 import ButtonSmall from "../components/ui/ButtonSmall";
-import BottomModal from "../components/ui/BottomModal";
+import AddContentModal from "../components/ui/AddContentModal";
+
+import Interceptor from "../utill/Interceptor";
 
 function UpdateLectureScreen({ route }) {
   const navigation = useNavigation();
+  const instance = Interceptor();
 
   const [lecturedata, setLectureData] = useState({
     institution: "",
     city: "",
     lectureDate: {
       enrollEndDate: "",
-      enrollStartDate: new Date(),
+      enrollStartDate: new Date().toISOString().split("T")[0],
     },
     lectureContentId: null,
     lectureDates: [],
@@ -52,20 +58,21 @@ function UpdateLectureScreen({ route }) {
     mainTitle: "",
     subTitle: "",
     place: "",
-    status: "ALLOCATION_COMP",
+    transportCost: "",
+    status: "RECRUITING",
   });
 
-  const [lectureContents, setLectureContents] = useState();
+  const [lectureContents, setLectureContents] = useState([]);
   const [selectedLectureContents, setSelectedLectureContents] = useState({
     kit: "",
     detail: "",
     remark: "",
     requirement: "",
-    constent: "",
+    content: "",
   });
 
   useEffect(() => {
-    axios
+    instance
       .get(`${URL}/lecture-contents`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -73,6 +80,7 @@ function UpdateLectureScreen({ route }) {
         },
       })
       .then((res) => {
+        // console.log(res.data.data)
         setLectureContents(res.data.data);
       })
       .catch((error) => {
@@ -117,21 +125,6 @@ function UpdateLectureScreen({ route }) {
 
   /** state에 저장해둔 값을 객체에 옮김 */
   const inputStateHandler = () => {
-    // handleSingleInputChange(realDate, "lectureDates");
-    // handleSingleInputChange(mainTutor, "mainTutor");
-    // handleSingleInputChange(!subTutor ? "0" : subTutor, "subTutor");
-    // handleSingleInputChange(!staff ? "0" : staff, "staff");
-
-    // handleSingleInputChange(String(mainPayment), "mainPayment");
-    // handleSingleInputChange(String(subPayment), "subPayment");
-    // handleSingleInputChange(
-    //   !staffPayment ? "0" : String(staffPayment),
-    //   "staffPayment"
-    // );
-    // // enrollEndDateStateChange(endDate);
-
-    // const times = tmpTime[0] + " ~ " + tmpTime[1];
-    // handleSingleInputChange(times, "time");
     const inputs = [
       [realDate, "lectureDates"],
       [mainTutor, "mainTutor"],
@@ -162,19 +155,10 @@ function UpdateLectureScreen({ route }) {
       }
     }
 
-    Alert.alert(
-      "강의 업데이트",
-      `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.`,
-      [
-        {
-          text: "확인",
-          onPress: () => {},
-        },
-      ]
-    );
+    // console.log(lecturedata)
 
     if (option === "create") {
-      axios
+      instance
         .post(`${URL}/lectures/`, lecturedata, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
@@ -183,15 +167,28 @@ function UpdateLectureScreen({ route }) {
         })
         .then((res) => {
           console.log(res);
+          Alert.alert(
+            "강의 업데이트",
+            `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.\n앱을 재실행 하십시오.`,
+            [
+              {
+                text: "확인",
+                onPress: () => {
+                  navigation.pop();
+                },
+              },
+            ]
+          );
         })
         .catch((error) => {
           console.log("에러");
           console.log(error);
+          console.log(lecturedata);
         });
     } else if (option === "update") {
-      axios
+      instance
         .patch(
-          `${URL}lectures/${route.params.data.lectureDto.id}`,
+          `${URL}/lectures/${route.params.data.lectureDto.id}`,
           lecturedata,
           {
             headers: {
@@ -201,8 +198,21 @@ function UpdateLectureScreen({ route }) {
           }
         )
         .then((res) => {
-          console.log("강의 수정 완료");
-          console.log(res);
+          Alert.alert(
+            "강의 업데이트",
+            `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.\n앱을 재실행 하십시오.`,
+            [
+              {
+                text: "확인",
+                onPress: () => {
+                  navigation.pop();
+                },
+              },
+            ]
+          );
+
+          // console.log("강의 수정 완료");
+          // console.log(res);
         })
         .catch((error) => {
           console.log("에러");
@@ -212,33 +222,12 @@ function UpdateLectureScreen({ route }) {
   };
 
   const handleSingleInputChange = (text, item) => {
-    // item === "lectureDates"
-    //   ? setLectureData((prevState) => ({
-    //       ...prevState,
-    //       ["lectureDates"]: [],
-    //     }))
-    //   : "";
-    // if (item === "studentNumber") {
-    //   let value = text.replace(/\D/g, "");
-    //   setLectureData((prevState) => ({
-    //     ...prevState,
-    //     [item]: value,
-    //   }));
-    // } else if (item === "enrollEndDate") {
-    //   setLectureData((prev) => {
-    //     let data = prev;
-    //     data.lectureDate.enrollEndDate = text;
-    //     return data;
-    //   });
-    // } else {
-    //   setLectureData((prevState) => ({
-    //     ...prevState,
-    //     [item]: text,
-    //   }));
-    // }
     const itemHandlers = {
       lectureDates: () => ({ ["lectureDates"]: [] }),
       studentNumber: () => ({ [item]: text.replace(/\D/g, "") }),
+      transportCost: () => ({
+        [item]: text.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      }),
       enrollEndDate: (prevState) => ({
         ...prevState,
         lectureDate: { ...prevState.lectureDate, enrollEndDate: text },
@@ -342,7 +331,10 @@ function UpdateLectureScreen({ route }) {
   const onConfirm = (pickedDate) => {
     // 신청 마감
     if (mode === "date" && inputIdx === -1) {
-      handleSingleInputChange(pickedDate, "enrollEndDate");
+      handleSingleInputChange(
+        pickedDate.toISOString().split("T")[0],
+        "enrollEndDate"
+      );
       // 일자
     } else if (mode === "date") {
       // 화면에 보이는 데이터
@@ -350,7 +342,7 @@ function UpdateLectureScreen({ route }) {
 
       setLectureData((prev) => {
         let data = prev;
-        data.lectureDates[inputIdx] = pickedDate;
+        data.lectureDates[inputIdx] = pickedDate.toISOString().split("T")[0];
         console.log(data);
         return data;
       });
@@ -407,12 +399,13 @@ function UpdateLectureScreen({ route }) {
       : setStaff(value);
   };
 
-  const formatPeople = (input, role) => {
+  /** (10,000원, 2명 등) 입력값에서 단위 명사 제어 */
+  const formatUnit = (input, unit, role = "") => {
     let value = input;
     if (
-      (role === "main" && input + "명" === mainTutor) ||
-      (role === "sub" && input + "명" === subTutor) ||
-      (role === "staff" && input + "명" === staff)
+      (role === "main" && input + unit === mainTutor) ||
+      (role === "sub" && input + unit === subTutor) ||
+      (role === "staff" && input + unit === staff)
     ) {
       value = value.slice(0, -1);
     }
@@ -424,22 +417,22 @@ function UpdateLectureScreen({ route }) {
 
     // If the input is not empty, append "명" to the end
     if (value !== "") {
-      value += "명";
+      value += unit;
     }
 
     tutorStateHandler(value, role);
   };
 
   const mainTutorHandler = (input) => {
-    formatPeople(input, "main");
+    formatUnit(input, "명", "main");
   };
 
   const subTutorHandler = (input) => {
-    formatPeople(input, "sub");
+    formatUnit(input, "명", "sub");
   };
 
   const staffHandler = (input) => {
-    formatPeople(input, "staff");
+    formatUnit(input, "명", "staff");
   };
 
   /** 모집 인원 모달 확인 버튼 클릭 시 */
@@ -527,7 +520,7 @@ function UpdateLectureScreen({ route }) {
       }
     }
 
-    await axios
+    await instance
       .post(`${URL}/lecture-contents/`, contentsData, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -548,7 +541,7 @@ function UpdateLectureScreen({ route }) {
         text: "확인",
         onPress: () => {
           addContentsModalHandler(false);
-          axios
+          instance
             .get(`${URL}/lecture-contents`, {
               headers: {
                 // 헤더에 필요한 데이터를 여기에 추가
@@ -587,6 +580,7 @@ function UpdateLectureScreen({ route }) {
               <View style={[styles.inputBox, styles.dateBox]}>
                 <Text style={{ flex: 1 }}>{selectedLectureContents.kit}</Text>
                 <Pressable onPress={() => modalHandler(true)}>
+                {/* <Pressable onPress={() => console.log(lectureContents)}> */}
                   <Text style={{ marginRight: 8.03 }}>+</Text>
                 </Pressable>
               </View>
@@ -611,7 +605,7 @@ function UpdateLectureScreen({ route }) {
             </View>
 
             {/* 교육 키트 플러스(+) 버튼 누르면 나오는 하단 모달 */}
-            <BottomModal
+            <AddContentModal
               visible={modalVisible}
               inVisible={() => modalHandler(false)}
               plusVisible={true}
@@ -625,6 +619,7 @@ function UpdateLectureScreen({ route }) {
                   requirement: "",
                 });
               }}
+              onPress={selectingLectureContents}
               data={lectureContents}
               title="교육 목록"
             />
@@ -885,6 +880,16 @@ function UpdateLectureScreen({ route }) {
                 </View>
               </Pressable>
             </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text>교통비</Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.transportCost}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "transportCost");
+                }}
+              />
+            </View>
             <ButtonBig
               text="확인"
               // onPress={option === "create" ? creatingLecture : updateLecture}
@@ -899,7 +904,7 @@ function UpdateLectureScreen({ route }) {
               onCancel={() => setDatePickerVisible(false)}
               date={new Date()}
             />
-            {/* 모집인원 input 클릭 시 나오는 모달 */}
+            {/* 모집 인원 input 클릭 시 나오는 모달 */}
             <Modal transparent={true} visible={tutorModal}>
               <View style={styles.paymentModal}>
                 <View style={{ backgroundColor: "white", padding: 20 }}>
