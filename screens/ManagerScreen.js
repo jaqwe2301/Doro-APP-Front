@@ -216,7 +216,12 @@ function ManagerScreen() {
       }
     } catch (error) {
       // navigation.navigate("login");
-
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        })
+      );
       authCtx.logout();
       console.log(error);
       console.log("에러났쪄염");
