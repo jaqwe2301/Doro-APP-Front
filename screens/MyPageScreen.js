@@ -144,7 +144,7 @@ function MyPageScreen({ navigation }) {
                 //   style={styles.image}
                 //   source={require("../assets/profile.png")}
                 // />
-                <View style={{ margin: 11 }}>
+                <View style={{ margin: 11, marginLeft: 31 }}>
                   <Profile />
                 </View>
               )}

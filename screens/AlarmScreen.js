@@ -9,7 +9,11 @@ import {
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
-import { getNotification, readNotification } from "../utill/http";
+import {
+  getAnnouncementId,
+  getNotification,
+  readNotification,
+} from "../utill/http";
 import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 
@@ -69,6 +73,17 @@ function AlarmScreen({ navigation }) {
     return formattedTime;
   }
 
+  async function naviNotice(id) {
+    try {
+      const response = await getAnnouncementId({
+        id: id,
+      });
+      navigation.navigate("noticeDetail", { data: response });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const Item = ({ item, expandedItems, setExpandedItems }) => {
     const isExpanded = expandedItems.includes(item.id);
     return item.notificationType === "NOTIFICATION" ? (
@@ -123,7 +138,7 @@ function AlarmScreen({ navigation }) {
     ) : (
       <Pressable
         onPress={() => {
-          navigation.navigate("noticeScreen");
+          naviNotice(item.announcementId);
           if (!item.isRead) {
             readHandler(item.id);
           }
