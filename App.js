@@ -421,21 +421,17 @@ function NoticeNavigator({ navigation }) {
         component={NoticeScreen}
         options={{
           title: "공지사항",
-          headerRight: () => {
-            return (
-              // <Pressable onPress={() => navigation.navigate("home")}>
+          // headerRight: () => {
 
-              <Home width={24} height={24} />
-              //</Pressable>
-            );
-          },
           headerBackVisible: false,
         }}
       />
       <Stack.Screen
         name="noticeDetail"
         component={NoticeDetailScreen}
-        options={{ title: "" }}
+        options={{
+          title: "",
+        }}
       />
       <Stack.Screen
         name="noticeAdd"
