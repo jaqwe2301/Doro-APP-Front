@@ -7,52 +7,28 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "./ButtonBig";
 import Xmark from "../../assets/xmark_black.svg";
 import Plus from "../../assets/plus.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-function BottomModal({
+function AddContentModal({
   visible,
   title,
   inVisible,
   plusVisible,
   data,
-  option,
   onPressPlus,
   onPress,
   multiCheck, // 체크 복수 가능 여부
-  status,
 }) {
   const [check, setCheck] = useState();
   const [checkItem, setCheckItem] = useState();
-  const [date, setDate] = useState([new Date(), new Date()]);
-  const [dateVisible, setDateVisible] = useState();
-  const [choice, setChoice] = useState(true);
-  // useEffect(() => {
-  //   status === "Date" ? setCheckItem([new Date(), new Date()]) : "";
-  // }, []);
-
-  const dateControl = (date) => {
-    const month =
-      date.getMonth() >= 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1);
-    const days = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
-    return `${date.getFullYear()}.${month}.${days}`;
-  };
-
-  const dateOnConfirm = (pick) => {
-    setDate((prev) => (choice ? [pick, prev[1]] : [prev[0], pick]));
-    setDateVisible(false);
-  };
-
   const onConfirm = (item) => {
-    if (status === "date") {
-      onPress(item);
-    } else if (!item) {
+    if (!item) {
       Alert.alert(
         "주의",
         "항목을 체크해주세요!",
@@ -97,74 +73,37 @@ function BottomModal({
               </View>
             </Pressable>
           </View>
-          {status === "date" ? (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginHorizontal: 20,
-                marginVertical: 24,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  setChoice(true);
-                  setDateVisible(true);
-                }}
-              >
-                <Text>{dateControl(date[0])}</Text>
-              </Pressable>
-              <Text>-</Text>
-              <Pressable
-                onPress={() => {
-                  setChoice(false);
-                  setDateVisible(true);
-                }}
-              >
-                <Text>{dateControl(date[1])}</Text>
-              </Pressable>
-            </View>
-          ) : (
-            <FlatList
-              style={styles.modalList}
-              data={data}
-              renderItem={(data) => {
-                // onPress(data.item)
-                return (
-                  <Pressable
-                    onPress={() => {
-                      setCheck(data.index);
-                      setCheckItem(data.item);
-                    }}
-                  >
-                    <View style={styles.modalTextContainer}>
-                      <Text style={styles.modalText}>{data.item}</Text>
-                      {check === data.index ? <ModalCheck /> : ""}
-                    </View>
-                  </Pressable>
-                );
-              }}
-              extraData={data}
-            />
-          )}
+          <FlatList
+            style={styles.modalList}
+            data={data}
+            renderItem={(data) => {
+              // onPress(data.item)
+              return (
+                <Pressable
+                  onPress={() => {
+                    setCheck(data.index);
+                    setCheckItem(data.item.id);
+                  }}
+                >
+                  <View style={styles.modalTextContainer}>
+                    <Text style={styles.modalText}>{data.item.kit}</Text>
+                    {check === data.index ? <ModalCheck /> : ""}
+                  </View>
+                </Pressable>
+              );
+            }}
+            extraData={data}
+          />
           <View style={styles.modalButtonContainer}>
             <ButtonBig text="확인" onPress={() => onConfirm(checkItem)} />
           </View>
         </View>
       </View>
-      <DateTimePickerModal
-        isVisible={dateVisible}
-        mode={"date"}
-        onConfirm={dateOnConfirm}
-        onCancel={() => setDateVisible(false)}
-        date={choice ? date[0] : date[1]}
-      />
     </Modal>
   );
 }
 
-export default BottomModal;
+export default AddContentModal;
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -217,5 +156,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  datebox: {},
 });

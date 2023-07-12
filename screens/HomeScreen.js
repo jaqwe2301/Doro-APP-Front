@@ -25,6 +25,7 @@ import CreactingLecture from "../assets/creatingLecture.svg";
 
 import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
+import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
@@ -54,41 +55,37 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
 
   useEffect(() => {
     setLectureData(lectures);
-
-    // axios
-    //   .get(URL + "/lectures/", {
-    //     params: {
-    //       city: "",
-    //       endDate: "",
-    //       startDate: "",
-    //     },
-    //     headers: {
-    //       // 헤더에 필요한 데이터를 여기에 추가
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     // setLectureData(res.data.data);
-    //     // console.log(res.data.data)
-    //     // console.log("성공");
-    //   })
-    //   .catch((error) => {
-    //     console.log("에러");
-    //     console.log(error);
-    //   });
-
-    // profileHandler();
+    // console.log(lectures);
+    setRecruitingCity(recruitingCityList);
+    setAllocationCity(allocationCityList);
   }, [lectures]);
 
+  const recruitingCityList = lectures
+    .filter((item) => item.status === "RECRUITING")
+    .map((item) => {
+      return item.city;
+    });
+
+  const [recruitingCity, setRecruitingCity] = useState(recruitingCityList);
+
   const recruitingData = lectureData.filter(
-    (item) => item.status === "RECRUITING"
+    (item) => item.status === "RECRUITING" && recruitingCity.includes(item.city)
   );
   const recruitingTitle = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
 
+  const allocationCityList = lectures
+    .filter((item) => item.status === "ALLOCATION_COMP")
+    .map((item) => {
+      return item.city;
+    });
+
+  const [allocationCity, setAllocationCity] = useState(allocationCityList);
+
   const allocationDate = lectureData.filter(
-    (item) => item.status === "ALLOCATION_COMP"
+    (item) =>
+      item.status === "ALLOCATION_COMP" && allocationCity.includes(item.city)
   );
 
   const allocationTitle = [
@@ -116,6 +113,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
             // console.log(filteringItem.staff);
+            // console.log(filteringItem.status);
             return (
               <LectureBox
                 key={filteringItem.id}
@@ -132,7 +130,8 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 place={filteringItem.place}
                 lectureIdHandler={() =>
                   navigation.navigate("DetailLecture", {
-                    data: filteringItem.id,
+                    id: filteringItem.id,
+                    status: filteringItem.status,
                   })
                 }
                 // date={dateText}
@@ -175,7 +174,8 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 place={filteringItem.place}
                 lectureIdHandler={() =>
                   navigation.navigate("DetailLecture", {
-                    data: filteringItem.id,
+                    id: filteringItem.id,
+                    status: filteringItem.status,
                   })
                 }
                 // date={dateText}
@@ -189,6 +189,25 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
   const lectureIdHomeScreen = (id) => {
     // 강의 클릭하면 id 값 state로 넘어옴
     lectureIdProps(id);
+  };
+
+  const [filter, setFilter] = useState(false);
+  const [title, setTitle] = useState("");
+  const [status, setStatus] = useState();
+
+  const onFilter = (title, status) => {
+    setFilter(true);
+    setStatus(status);
+    setTitle(title);
+  };
+
+  const applyCityFilter = (city) => {
+    status === "RECRUITING" ? setRecruitingCity(city) : setAllocationCity(city);
+    setFilter(false);
+  };
+
+  const applyDateFilter = () => {
+    setFilter(false);
   };
 
   const layout = useWindowDimensions();
@@ -212,8 +231,20 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 marginBottom: 5,
               }}
             >
-              <FilterBox text="교육 지역" />
-              <FilterBox text="교육 날짜" />
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 지역", "RECRUITING");
+                }}
+              >
+                <FilterBox text="교육 지역" />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 날짜", "date");
+                }}
+              >
+                <FilterBox text="교육 날짜" />
+              </Pressable>
             </View>
             {recruitingElements}
           </ScrollView>
@@ -229,8 +260,20 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 marginBottom: 5,
               }}
             >
-              <FilterBox text="교육 지역" />
-              <FilterBox text="교육 날짜" />
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 지역", "ALLOCATION_COMP");
+                }}
+              >
+                <FilterBox text="교육 지역" />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 날짜", "date");
+                }}
+              >
+                <FilterBox text="교육 날짜" />
+              </Pressable>
             </View>
             {allocationElements}
           </ScrollView>
@@ -360,12 +403,26 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
           />
         )}
       />
+
+      <BottomModal
+        visible={filter}
+        inVisible={() => setFilter(false)}
+        title={title}
+        data={
+          status === "RECRUITING"
+            ? recruitingCityList
+            : status === "date"
+            ? ["", ""]
+            : allocationCityList
+        }
+        status={status}
+        onPress={status === "Date" ? applyDateFilter : applyCityFilter}
+      />
+
       {headerRole === "ROLE_ADMIN" ? (
         <View style={styles.BottomButton}>
           <Pressable
-            onPress={() =>
-              navigation.navigate("UpdateLectureScreen", { data: "" })
-            }
+            onPress={() => navigation.push("UpdateLectureScreen", { data: "" })}
           >
             <CreactingLecture width={28} height={28} />
           </Pressable>
