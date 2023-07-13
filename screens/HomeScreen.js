@@ -110,9 +110,11 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       return date >= filterDate[1][0] && date <= filterDate[1][1];
     });
 
-    item.status === "ALLOCATION_COMP" &&
+    return (
+      item.status === "ALLOCATION_COMP" &&
       allocationCity.includes(item.city) &&
-      dateCheck;
+      dateCheck
+    );
   });
 
   const allocationTitle = [

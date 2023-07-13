@@ -36,7 +36,7 @@ function ApplicationDetails({ route }) {
         },
       })
       .then((res) => {
-        // console.log(res.data.data);
+        console.log(res.data.data);
         setRecruiting(() => {
           const data = res.data.data.filter(
             (item) => item.status === "RECRUITING"
