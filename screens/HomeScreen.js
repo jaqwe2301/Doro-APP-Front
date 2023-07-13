@@ -60,6 +60,17 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     setAllocationCity(allocationCityList);
   }, [lectures]);
 
+  const [filterDate, setFilterDate] = useState([
+    [
+      new Date(new Date().setMonth(new Date().getMonth() - 6)),
+      new Date(new Date().setMonth(new Date().getMonth() + 6)),
+    ],
+    [
+      new Date(new Date().setMonth(new Date().getMonth() - 6)),
+      new Date(new Date().setMonth(new Date().getMonth() + 6)),
+    ],
+  ]);
+
   const recruitingCityList = lectures
     .filter((item) => item.status === "RECRUITING")
     .map((item) => {
@@ -68,9 +79,19 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
 
   const [recruitingCity, setRecruitingCity] = useState(recruitingCityList);
 
-  const recruitingData = lectureData.filter(
-    (item) => item.status === "RECRUITING" && recruitingCity.includes(item.city)
-  );
+  const recruitingData = lectureData.filter((item) => {
+    const dateCheck = item.lectureDates.every((dateStr) => {
+      const date = new Date(dateStr);
+
+      return date >= filterDate[0][0] && date <= filterDate[0][1];
+    });
+    return (
+      item.status === "RECRUITING" &&
+      recruitingCity.includes(item.city) &&
+      dateCheck
+    );
+  });
+
   const recruitingTitle = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
@@ -83,10 +104,16 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
 
   const [allocationCity, setAllocationCity] = useState(allocationCityList);
 
-  const allocationDate = lectureData.filter(
-    (item) =>
-      item.status === "ALLOCATION_COMP" && allocationCity.includes(item.city)
-  );
+  const allocationDate = lectureData.filter((item) => {
+    const dateCheck = item.lectureDates.every((dateStr) => {
+      const date = new Date(dateStr);
+      return date >= filterDate[1][0] && date <= filterDate[1][1];
+    });
+
+    item.status === "ALLOCATION_COMP" &&
+      allocationCity.includes(item.city) &&
+      dateCheck;
+  });
 
   const allocationTitle = [
     ...new Set(allocationDate.map((item) => item.mainTitle)),
@@ -206,7 +233,10 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     setFilter(false);
   };
 
-  const applyDateFilter = () => {
+  const applyDateFilter = (date) => {
+    status === "recruitingDate"
+      ? setFilterDate((prev) => [date, prev[1]])
+      : setFilterDate((prev) => [prev[0], date]);
     setFilter(false);
   };
 
@@ -240,7 +270,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               </Pressable>
               <Pressable
                 onPress={() => {
-                  onFilter("교육 날짜", "date");
+                  onFilter("교육 날짜", "recruitingDate");
                 }}
               >
                 <FilterBox text="교육 날짜" />
@@ -269,7 +299,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               </Pressable>
               <Pressable
                 onPress={() => {
-                  onFilter("교육 날짜", "date");
+                  onFilter("교육 날짜", "allocationDate");
                 }}
               >
                 <FilterBox text="교육 날짜" />
@@ -411,12 +441,18 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         data={
           status === "RECRUITING"
             ? recruitingCityList
-            : status === "date"
-            ? ["", ""]
+            : status === "recruitingDate"
+            ? filterDate[0]
+            : status === "allocationDate"
+            ? filterDate[1]
             : allocationCityList
         }
         status={status}
-        onPress={status === "Date" ? applyDateFilter : applyCityFilter}
+        onPress={
+          status === "recruitingDate" || status === "allocationDate"
+            ? applyDateFilter
+            : applyCityFilter
+        }
       />
 
       {headerRole === "ROLE_ADMIN" ? (
