@@ -460,21 +460,59 @@ function DetailLectureScreen({ route }) {
 
       case "third":
         /** 토글 관련 함수 */
-        const statusHandler = async (lecture) => {
-          try {
-            const res = await instance.post(`${URL}/lectures/`, lecture, {
+        const statusHandler = () => {
+          let lecture = lectureBasicInfo;
+          if (!lecture) {
+            console.error("lecture is undefined");
+            // return prev;
+          }
+
+          delete lecture.id;
+          if (status) {
+            lecture.status = "ALLOCATION_COMP";
+          } else {
+            lecture.status = "RECRUITING";
+          }
+
+          axios
+            .patch(`${URL}/lectures/${data.id}`, lecture, {
               headers: {
+                // 헤더에 필요한 데이터를 여기에 추가
                 "Content-Type": "application/json",
               },
+            })
+            .then((res) => {
+              console.log(
+                status
+                  ? "ALLOCATION_COMP" + "변경완료"
+                  : "RECRUITING" + "변경완료"
+              );
+              setStatus((prev) => !prev);
+            })
+            .catch((error) => {
+              console.log("에러");
+              console.log(error);
             });
-            console.log(lecture.status + "변경 완료");
-            return res; // Promise가 성공적으로 완료됨을 나타내는 값 반환
-          } catch (error) {
-            console.log("에러");
-            console.log(error);
-            console.log(lecture);
-          }
         };
+
+        // const statusHandler = async (lecture) => {
+        //   try {
+        //     const res = await instance.post(`${URL}/lectures/`, lecture, {
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //       },
+        //     });
+        //     console.log(lecture);
+
+        //     // console.log(lecture.status + "변경 완료");
+        //     // console.log(res)
+        //     return res; // Promise가 성공적으로 완료됨을 나타내는 값 반환
+        //   } catch (error) {
+        //     console.log("에러");
+        //     console.log(error);
+        //     console.log(lecture);
+        //   }
+        // };
 
         return (
           <View style={{ marginTop: 40, flex: 1 }}>
@@ -496,7 +534,9 @@ function DetailLectureScreen({ route }) {
                     { gap: 8, marginBottom: 28 },
                   ]}
                 >
-                  <FilterBox text="강사 타입" color="black" />
+                  <Pressable>
+                    <FilterBox text="강사 타입" color="black" />
+                  </Pressable>
                   <Pressable onPress={() => console.log(status)}>
                     <FilterBox text="정렬 순서" color="black" />
                   </Pressable>
@@ -525,31 +565,58 @@ function DetailLectureScreen({ route }) {
                             onDismiss: () => {},
                           }
                         )
-                      : setStatus((prev) => {
-                          let lecture = lectureBasicInfo;
-                          console.log(lecture);
-                          if (!lecture) {
-                            console.error("lecture is undefined");
-                            // return prev;
-                          }
+                      : // setStatus((prev) => {
+                        //     let lecture = lectureBasicInfo;
+                        //     console.log(lecture);
+                        //     if (!lecture) {
+                        //       console.error("lecture is undefined");
+                        //       // return prev;
+                        //     }
 
-                          delete lecture.id;
-                          if (prev) {
-                            lecture.status = "ALLOCATION_COMP";
-                          } else {
-                            lecture.status = "RECRUITING";
-                          }
-                          console.log(lecture);
-                          // statusHandler가 promise를 반환하므로
-                          // .then을 사용하여 상태 변경 후의 동작을 지정할 수 있음.
-                          statusHandler(lecture)
-                            .then(() => {
-                              setStatus(!prev);
-                            })
-                            .catch((error) => {
-                              console.log("statusHandler error:", error);
-                            });
-                        });
+                        //     delete lecture.id;
+                        //     if (prev) {
+                        //       lecture.status = "ALLOCATION_COMP";
+                        //     } else {
+                        //       lecture.status = "RECRUITING";
+                        //     }
+                        statusHandler();
+                    // axios
+                    //   .patch(`${URL}/lectures/${data.id}`, lecture, {
+                    //     headers: {
+                    //       // 헤더에 필요한 데이터를 여기에 추가
+                    //       "Content-Type": "application/json",
+                    //     },
+                    //   })
+                    //   .then((res) => {
+                    //     console.log(
+                    //       status
+                    //         ? "ALLOCATION_COMP" + "변경완료"
+                    //         : "RECRUITING" + "변경완료"
+                    //     );
+                    //     setStatus((prev) => prev);
+                    //   })
+                    //   .catch((error) => {
+                    //     console.log("에러");
+                    //     console.log(error);
+                    //   });
+
+                    // delete lecture.id;
+                    // if (prev) {
+                    //   lecture.status = "ALLOCATION_COMP";
+                    // } else {
+                    //   lecture.status = "RECRUITING";
+                    // }
+                    // console.log(lecture);
+                    // statusHandler가 promise를 반환하므로
+                    // .then을 사용하여 상태 변경 후의 동작을 지정할 수 있음.
+                    // statusHandler(lecture, prev)
+                    //   .then(() => {
+                    //     setStatus(!prev);
+                    //   })
+                    //   .catch((error) => {
+                    //     console.log("statusHandler error:", error);
+                    //   });
+                    // });
                   }}
                   // buttonText={getButtonText()}
                   containerStyle={{
