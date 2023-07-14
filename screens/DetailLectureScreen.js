@@ -80,10 +80,6 @@ function DetailLectureScreen({ route }) {
         },
       })
       .then((res) => {
-        // console.log(res.data.data.lectureDto);
-        // lecture.lectureContentId = res.data.data.lectureContentDto.id;
-        // let nonSaveId = res.data.data.lectureDto;
-        // nonSaveId["id"] = data.id;
         setLectureBasicInfo(() => {
           let lecutre = {
             ...res.data.data.lectureDto,
@@ -191,35 +187,6 @@ function DetailLectureScreen({ route }) {
     );
   };
 
-  const choiceTutor = (value, name) => {
-    // 강사 배청 확인창
-    let role =
-      value === "MAIN_TUTOR"
-        ? "주 강사"
-        : value === "SUB_TUTOR"
-        ? "보조강사"
-        : "스태프";
-
-    Alert.alert(
-      lectureBasicInfo.subTitle,
-      role + " '" + name + "' 확정하겠습니까 ?",
-      [
-        { text: "취소", onPress: () => {}, style: "cancel" },
-        {
-          text: "확인",
-          onPress: () => {
-            console.log("강사 배정 완료");
-          },
-          style: "destructive",
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => {},
-      }
-    );
-  };
-
   const day = ["일", "월", "화", "수", "목", "금", "토"];
 
   const layout = useWindowDimensions();
@@ -244,16 +211,18 @@ function DetailLectureScreen({ route }) {
   };
 
   /** 강사 배정 */
-  const assignment = (roles, role, id, name) => {
+  const assignment = (roles, role, id, name, status) => {
     Alert.alert(
       lectureBasicInfo.subTitle,
-      `${role} '${name}' 확정하겠습니까 ?`,
+      `${role} '${name}' ${
+        status === "ASSIGNED" ? "배정취소하겠습니까 ?" : "확정하겠습니까 ?"
+      }`,
       [
         { text: "취소", onPress: () => {}, style: "cancel" },
         {
           text: "확인",
           onPress: () => {
-            console.log("강사 배정 완료");
+            console.log("강사 배정 혹은 취소 완료");
             instance
               .patch(
                 `${URL}/users-lectures/lectures/${data.id}`,
@@ -278,7 +247,9 @@ function DetailLectureScreen({ route }) {
 
             Alert.alert(
               lectureBasicInfo.subTitle,
-              `${role} '${name}' 확정이 완료되었습니다.`,
+              `${role} '${name}' ${
+                status === "ASSIGNED" ? "배정취소가 ?" : "확정이 ?"
+              } 완료되었습니다.`,
               [
                 {
                   text: "확인",
@@ -495,25 +466,6 @@ function DetailLectureScreen({ route }) {
             });
         };
 
-        // const statusHandler = async (lecture) => {
-        //   try {
-        //     const res = await instance.post(`${URL}/lectures/`, lecture, {
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //       },
-        //     });
-        //     console.log(lecture);
-
-        //     // console.log(lecture.status + "변경 완료");
-        //     // console.log(res)
-        //     return res; // Promise가 성공적으로 완료됨을 나타내는 값 반환
-        //   } catch (error) {
-        //     console.log("에러");
-        //     console.log(error);
-        //     console.log(lecture);
-        //   }
-        // };
-
         return (
           <View style={{ marginTop: 40, flex: 1 }}>
             <View style={{ paddingHorizontal: 20 }}>
@@ -565,9 +517,7 @@ function DetailLectureScreen({ route }) {
                             onDismiss: () => {},
                           }
                         )
-                      : 
-                        statusHandler();
-                   
+                      : statusHandler();
                   }}
                   containerStyle={{
                     width: 80,
@@ -623,8 +573,15 @@ function DetailLectureScreen({ route }) {
                     role={role}
                     major={item.degree.major}
                     onPress={() =>
-                      assignment(item.tutorRole, role, item.userId, item.name)
+                      assignment(
+                        item.tutorRole,
+                        role,
+                        item.userId,
+                        item.name,
+                        item.tutorStatus
+                      )
                     }
+                    status={item.tutorStatus}
                   />
                 );
               })}
