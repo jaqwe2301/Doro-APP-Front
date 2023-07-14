@@ -9,8 +9,10 @@ import {
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useEffect, useState, useContext } from "react";
 import { HeaderContext } from "../store/header-context";
-import { URL } from "../utill/config";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+
+import { URL } from "../utill/config";
 import Interceptor from "../utill/Interceptor";
 
 import { GlobalStyles } from "../constants/styles";
@@ -19,6 +21,7 @@ import { KRRegular } from "../constants/fonts";
 
 function ApplicationDetails({ route }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const navigation = useNavigation();
 
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
@@ -162,7 +165,6 @@ function ApplicationDetails({ route }) {
             style={styles.container}
             data={recruiting}
             renderItem={(data) => {
-              // console.log(data);
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
@@ -181,12 +183,16 @@ function ApplicationDetails({ route }) {
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => console.log("클릭")}
+                  lectureIdHandler={() =>
+                    navigation.navigate("DetailLecture", {
+                      id: data.item.id,
+                    })
+                  }
                   id=""
-                  dateTypeValue={dateTypeValue}
+                  dateTypeValue={"신청마감 " + dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
-                  tutorRole={role}
+                  tutorRole={role + " 신청"}
                   onPressX={() =>
                     deleteLecture(data.item.id, data.item.subTitle, role)
                   }
@@ -204,18 +210,30 @@ function ApplicationDetails({ route }) {
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
+              const backgroundColor =
+                data.item.tutorStatus === "WAITING"
+                  ? GlobalStyles.colors.gray06
+                  : "white";
               return (
                 <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => {}}
+                  lectureIdHandler={() =>
+                    navigation.navigate("DetailLecture", {
+                      id: data.item.id,
+                    })
+                  }
                   id=""
-                  dateTypeValue={dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
-                  tutorRole={data.item.tutorRole}
+                  backgroundColor={backgroundColor}
+                  matchingText={
+                    data.item.tutorStatus === "WAITING"
+                      ? "매칭 실패"
+                      : "매칭 성공"
+                  }
                 />
               );
             }}
