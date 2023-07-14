@@ -8,7 +8,7 @@ function ApplyingLectureBox({
   time,
   id,
   lectureIdHandler,
-  boxColor,
+  backgroundColor,
   colors,
   subTitle,
   place,
@@ -16,6 +16,7 @@ function ApplyingLectureBox({
   dateTypeValue,
   onPressX,
   onPress,
+  matchingText,
 }) {
   // console.log(date)
   const dateControl = (stringDate) => {
@@ -56,7 +57,12 @@ function ApplyingLectureBox({
 
   return (
     <Pressable key={id} onPress={lectureIdHandler}>
-      <View style={styles.whiteBox}>
+      <View
+        style={[
+          styles.whiteBox,
+          backgroundColor ? { backgroundColor: backgroundColor } : "",
+        ]}
+      >
         <View style={styles.titleContainer}>
           <Text style={styles.SubTitle}>{subTitle}</Text>
 
@@ -65,7 +71,7 @@ function ApplyingLectureBox({
               <Xmark width={20} height={20} />
             </Pressable>
           ) : (
-            ""
+            <Text style={{ fontSize: 10 }}>{matchingText}</Text>
           )}
         </View>
         <View
@@ -75,16 +81,16 @@ function ApplyingLectureBox({
           }}
         >
           <View>
-            <Text style={styles.role}>{tutorRole} 신청</Text>
+            <Text style={styles.role}>{tutorRole}</Text>
             <Text style={styles.enrollEndDate}>
               {typeof dateTypeValue === "object"
-                ? `신청마감 ${
+                ? `${
                     dateTypeValue?.getMonth() + 1
                   }월 ${dateTypeValue?.getDate()}일`
                 : dateTypeValue}
             </Text>
           </View>
-          <View>
+          <View style={{ alignItems: "flex-end" }}>
             <Text style={styles.place}>{place}</Text>
             <Text style={styles.date}>{time}</Text>
           </View>
@@ -110,7 +116,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     paddingLeft: 15,
     paddingRight: 11,
-    backgroundColor: "white",
+    // backgroundColor: "white",
     justifyContent: "space-between",
     shadowColor: "black",
     shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
