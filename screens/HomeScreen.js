@@ -163,7 +163,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                     status: filteringItem.status,
                   })
                 }
-                // date={dateText}
               />
             );
           })}

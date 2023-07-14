@@ -50,13 +50,10 @@ function ApplicationDetails({ route }) {
           // console.log(data);
           return data;
         });
-        // finishLectureHandler(() => {
-        //   const data = res.data.data.filter(
-        //     (item) => item.status === "ALLOCATION_COMP"
-        //   );
-        //   console.log(data);
-        //   return data;
-        // });
+        setFinished(() => {
+          const data = res.data.data.filter((item) => item.status === "FINISH");
+          return data;
+        });
         // console.log("성공");
       })
       .catch((error) => {
@@ -68,10 +65,6 @@ function ApplicationDetails({ route }) {
   useEffect(() => {
     getMyLectures();
   }, []);
-
-  const controlfinished = (data) => {
-    setFinished(data);
-  };
 
   const layout = useWindowDimensions();
 
