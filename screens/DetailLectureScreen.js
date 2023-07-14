@@ -565,60 +565,10 @@ function DetailLectureScreen({ route }) {
                             onDismiss: () => {},
                           }
                         )
-                      : // setStatus((prev) => {
-                        //     let lecture = lectureBasicInfo;
-                        //     console.log(lecture);
-                        //     if (!lecture) {
-                        //       console.error("lecture is undefined");
-                        //       // return prev;
-                        //     }
-
-                        //     delete lecture.id;
-                        //     if (prev) {
-                        //       lecture.status = "ALLOCATION_COMP";
-                        //     } else {
-                        //       lecture.status = "RECRUITING";
-                        //     }
+                      : 
                         statusHandler();
-                    // axios
-                    //   .patch(`${URL}/lectures/${data.id}`, lecture, {
-                    //     headers: {
-                    //       // 헤더에 필요한 데이터를 여기에 추가
-                    //       "Content-Type": "application/json",
-                    //     },
-                    //   })
-                    //   .then((res) => {
-                    //     console.log(
-                    //       status
-                    //         ? "ALLOCATION_COMP" + "변경완료"
-                    //         : "RECRUITING" + "변경완료"
-                    //     );
-                    //     setStatus((prev) => prev);
-                    //   })
-                    //   .catch((error) => {
-                    //     console.log("에러");
-                    //     console.log(error);
-                    //   });
-
-                    // delete lecture.id;
-                    // if (prev) {
-                    //   lecture.status = "ALLOCATION_COMP";
-                    // } else {
-                    //   lecture.status = "RECRUITING";
-                    // }
-                    // console.log(lecture);
-                    // statusHandler가 promise를 반환하므로
-                    // .then을 사용하여 상태 변경 후의 동작을 지정할 수 있음.
-                    // statusHandler(lecture, prev)
-                    //   .then(() => {
-                    //     setStatus(!prev);
-                    //   })
-                    //   .catch((error) => {
-                    //     console.log("statusHandler error:", error);
-                    //   });
-                    // });
+                   
                   }}
-                  // buttonText={getButtonText()}
                   containerStyle={{
                     width: 80,
                     height: 36,
