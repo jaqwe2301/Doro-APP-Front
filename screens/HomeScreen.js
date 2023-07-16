@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, ActivityIndicator } from "react";
 import {
   View,
   StyleSheet,
@@ -29,7 +29,7 @@ import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
-import { useLectures } from "../store/LecturesProvider";
+// import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
 import { getAnnouncement } from "../utill/http";
 
@@ -37,8 +37,22 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
 
-  const [lectureData, setLectureData] = useState([]);
-  const { lectures } = useLectures();
+  const [lectureData, setLectureData] = useState([
+    {
+      lectureDates: [],
+    },
+  ]);
+  // const { lectures } = useLectures(null);
+
+  if (lectureData.lectureDates === []) {
+    // 로딩
+    return (
+      <ActivityIndicator
+        size="large"
+        color={GlobalStyles.colors.primaryDefault}
+      />
+    ); // or any other loading indicator
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -54,11 +68,34 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
   }, []);
 
   useEffect(() => {
-    setLectureData(lectures);
-    // console.log(lectures);
+    axios
+      .get(URL + "/lectures/", {
+        params: {
+          city: "",
+          endDate: "",
+          startDate: "",
+        },
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        setLectureData(res.data.data);
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+      });
+
+    // setLectureData(lectures);
+  }, []);
+
+  useEffect(() => {
     setRecruitingCity(recruitingCityList);
     setAllocationCity(allocationCityList);
-  }, [lectures]);
+  }, [lectureData]);
 
   const [filterDate, setFilterDate] = useState([
     [
@@ -71,7 +108,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     ],
   ]);
 
-  const recruitingCityList = lectures
+  const recruitingCityList = lectureData
     .filter((item) => item.status === "RECRUITING")
     .map((item) => {
       return item.city;
@@ -96,7 +133,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
 
-  const allocationCityList = lectures
+  const allocationCityList = lectureData
     .filter((item) => item.status === "ALLOCATION_COMP")
     .map((item) => {
       return item.city;
@@ -213,11 +250,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       </View>
     );
   }
-
-  const lectureIdHomeScreen = (id) => {
-    // 강의 클릭하면 id 값 state로 넘어옴
-    lectureIdProps(id);
-  };
 
   const [filter, setFilter] = useState(false);
   const [title, setTitle] = useState("");
