@@ -358,31 +358,31 @@ function DetailLectureScreen({ route }) {
               )
               .then((res) => {
                 // console.log(res);
+                Alert.alert(
+                  lectureBasicInfo.subTitle,
+                  `${role} '${name}' ${
+                    status === "ASSIGNED" ? "배정취소가 " : "확정이 "
+                  } 완료되었습니다.`,
+                  [
+                    {
+                      text: "확인",
+                      onPress: () => {
+                        // console.log("강사 신청 완료");
+                        setAfter((prev) => !prev);
+                      },
+                      style: "destructive",
+                    },
+                  ],
+                  {
+                    cancelable: true,
+                    onDismiss: () => {},
+                  }
+                );
               })
               .catch((error) => {
                 console.log("에러");
                 console.log(error);
               });
-
-            Alert.alert(
-              lectureBasicInfo.subTitle,
-              `${role} '${name}' ${
-                status === "ASSIGNED" ? "배정취소가 " : "확정이 "
-              } 완료되었습니다.`,
-              [
-                {
-                  text: "확인",
-                  onPress: () => {
-                    // console.log("강사 신청 완료");
-                  },
-                  style: "destructive",
-                },
-              ],
-              {
-                cancelable: true,
-                onDismiss: () => {},
-              }
-            );
           },
           style: "destructive",
         },
