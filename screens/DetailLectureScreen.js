@@ -28,6 +28,7 @@ import LectureTop from "../components/ui/LectureTop";
 import CreactingLecture from "../assets/creatingLecture.svg";
 
 import Interceptor from "../utill/Interceptor";
+import { KRRegular } from "../constants/fonts";
 
 function DetailLectureScreen({ route }) {
   const navigation = useNavigation();
@@ -429,7 +430,7 @@ function DetailLectureScreen({ route }) {
                           : "0" + date.getDate();
 
                       return (
-                        <Text key={i} style={styles.infoText}>
+                        <Text key={i} style={[styles.infoText]}>
                           {date.getFullYear()}.{month}.{days} (
                           {day[date.getDay()]})
                         </Text>
@@ -463,7 +464,7 @@ function DetailLectureScreen({ route }) {
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>모집 인원</Text>
-                  <Text style={styles.infoText}>
+                  {/* <Text style={styles.infoText}>
                     주강사 {lectureBasicInfo.mainTutor}
                     {lectureBasicInfo.subTutor === "0"
                       ? ""
@@ -471,7 +472,26 @@ function DetailLectureScreen({ route }) {
                     {lectureBasicInfo.staff === "0"
                       ? ""
                       : ", 스태프 " + lectureBasicInfo.staff}
-                  </Text>
+                  </Text> */}
+                  <View>
+                    <Text style={styles.infoText}>
+                      주 강사 : {lectureBasicInfo.mainTutor}
+                    </Text>
+                    {lectureBasicInfo.subTutor === "0" ? (
+                      ""
+                    ) : (
+                      <Text style={[styles.infoText, { marginTop: 2 }]}>
+                        보조 강사 : {lectureBasicInfo.subTutor}
+                      </Text>
+                    )}
+                    {lectureBasicInfo.staff === "0" ? (
+                      ""
+                    ) : (
+                      <Text style={[styles.infoText, { marginTop: 2 }]}>
+                        스태프 : {lectureBasicInfo.staff}
+                      </Text>
+                    )}
+                  </View>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>강사 급여</Text>
@@ -482,14 +502,14 @@ function DetailLectureScreen({ route }) {
                     {lectureBasicInfo.subPayment === "0" ? (
                       ""
                     ) : (
-                      <Text style={styles.infoText}>
+                      <Text style={[styles.infoText, { marginTop: 2 }]}>
                         보조 강사 : {lectureBasicInfo.subPayment}원
                       </Text>
                     )}
                     {lectureBasicInfo.staffPayment === "0" ? (
                       ""
                     ) : (
-                      <Text style={styles.infoText}>
+                      <Text style={[styles.infoText, { marginTop: 2 }]}>
                         스태프 : {lectureBasicInfo.staffPayment}원
                       </Text>
                     )}
@@ -762,7 +782,7 @@ function DetailLectureScreen({ route }) {
 
         <TabView
           style={{
-            marginTop: 50,
+            marginTop: 28,
             flex: 1,
             height:
               layout["height"] - (headerRole === "ROLE_ADMIN" ? 188 : 174),
@@ -871,10 +891,11 @@ function DetailLectureScreen({ route }) {
               option: "update",
             })
           }
+          style={styles.BottomButton}
         >
-          <View style={styles.BottomButton}>
-            <CreactingLecture width={20} height={20} />
-          </View>
+          {/* <View style={styles.BottomButton}> */}
+          <CreactingLecture width={20} height={20} />
+          {/* </View> */}
         </Pressable>
       ) : (
         ""
