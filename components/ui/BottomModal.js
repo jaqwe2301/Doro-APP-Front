@@ -30,12 +30,18 @@ function BottomModal({
 }) {
   const [check, setCheck] = useState();
   const [checkItem, setCheckItem] = useState();
-  const [date, setDate] = useState([new Date(), new Date()]);
+  const [date, setDate] = useState([
+    new Date(new Date().setMonth(new Date().getMonth() - 6)),
+    new Date(new Date().setMonth(new Date().getMonth() + 6)),
+  ]);
   const [dateVisible, setDateVisible] = useState();
   const [choice, setChoice] = useState(true);
-  // useEffect(() => {
-  //   status === "Date" ? setCheckItem([new Date(), new Date()]) : "";
-  // }, []);
+
+  useEffect(() => {
+    status === "recruitingDate" || status === "allocationDate"
+      ? setDate(data)
+      : "";
+  }, [status]);
 
   const dateControl = (date) => {
     const month =
@@ -50,7 +56,9 @@ function BottomModal({
   };
 
   const onConfirm = (item) => {
-    if (status === "date") {
+    if (status === "recruitingDate" || status === "allocationDate") {
+      if (status === "recruitingDate") {
+      }
       onPress(item);
     } else if (!item) {
       Alert.alert(
@@ -97,7 +105,7 @@ function BottomModal({
               </View>
             </Pressable>
           </View>
-          {status === "date" ? (
+          {status === "recruitingDate" || status === "allocationDate" ? (
             <View
               style={{
                 flexDirection: "row",
@@ -149,7 +157,14 @@ function BottomModal({
             />
           )}
           <View style={styles.modalButtonContainer}>
-            <ButtonBig text="확인" onPress={() => onConfirm(checkItem)} />
+            <ButtonBig
+              text="확인"
+              onPress={() =>
+                status === "recruitingDate" || status === "allocationDate"
+                  ? onConfirm(date)
+                  : onConfirm(checkItem)
+              }
+            />
           </View>
         </View>
       </View>
