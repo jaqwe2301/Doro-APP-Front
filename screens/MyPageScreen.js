@@ -20,7 +20,8 @@ import ManagerSend from "./ManagerSend";
 import { deleteUser, reToken } from "../utill/auth";
 import axios from "axios";
 import ManagerScreen from "./ManagerScreen";
-import { StackActions } from "@react-navigation/native";
+import { CommonActions, StackActions } from "@react-navigation/native";
+import Interceptor from "../utill/Interceptor";
 
 function MyPageScreen({ navigation }) {
   const [data, setData] = useState({});
@@ -31,9 +32,52 @@ function MyPageScreen({ navigation }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   const [notificationAgreement, setNotificationAgreement] = useState();
+  const [recruiting, setRecruiting] = useState([]);
+  const [allocation, setAllocation] = useState([]);
+  const [finished, setFinished] = useState([]);
+  const instance = Interceptor();
   useEffect(() => {
     profileHandler();
+    getMyLectures();
   }, []);
+
+  const getMyLectures = () => {
+    instance
+      .get(`${URL}/users-lectures/users/${headerId}`, {
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        setRecruiting(() => {
+          const data = res.data.data.filter(
+            (item) => item.status === "RECRUITING"
+          );
+          return data;
+        });
+        setAllocation(() => {
+          const data = res.data.data.filter(
+            (item) => item.status === "ALLOCATION_COMP"
+          );
+          // console.log(data);
+          return data;
+        });
+        // finishLectureHandler(() => {
+        //   const data = res.data.data.filter(
+        //     (item) => item.status === "ALLOCATION_COMP"
+        //   );
+        //   console.log(data);
+        //   return data;
+        // });
+        // console.log("성공");
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+      });
+  };
 
   async function profileHandler() {
     try {
@@ -96,11 +140,22 @@ function MyPageScreen({ navigation }) {
 
         console.log(response);
         if (response.status === 200) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: "Home" }],
+            })
+          );
           authCtx.logout();
         }
       } catch (error) {
         // navigation.navigate("login");
-
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          })
+        );
         authCtx.logout();
         console.log(error);
         console.log("에러났쪄염");
@@ -149,24 +204,46 @@ function MyPageScreen({ navigation }) {
                 </View>
               )}
               <View style={styles.statusContainer}>
-                <Pressable onPress={() => navigation.navigate("History")}>
+                <Pressable
+                  onPress={() => navigation.navigate("History", { screen: 0 })}
+                >
                   <View style={styles.textContainer}>
                     <Text style={styles.text}>강의 신청</Text>
-                    <Text style={styles.textNum}>02</Text>
+                    <Text style={styles.textNum}>
+                      {recruiting.length < 10
+                        ? "0" + recruiting.length
+                        : recruiting.length}
+                    </Text>
                   </View>
                 </Pressable>
-                <Pressable onPress={() => navigation.navigate("History")}>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("History", {
+                      screen: 1,
+                    })
+                  }
+                >
                   <View
                     style={[styles.textContainer, { marginHorizontal: 26 }]}
                   >
                     <Text style={styles.text}>배정 완료</Text>
-                    <Text style={styles.textNum}>02</Text>
+                    <Text style={styles.textNum}>
+                      {allocation.length < 10
+                        ? "0" + allocation.length
+                        : allocation.length}
+                    </Text>
                   </View>
                 </Pressable>
-                <Pressable onPress={() => navigation.navigate("History")}>
+                <Pressable
+                  onPress={() => navigation.navigate("History", { screen: 2 })}
+                >
                   <View style={styles.textContainer}>
                     <Text style={styles.text}>강의 완료</Text>
-                    <Text style={styles.textNum}>02</Text>
+                    <Text style={styles.textNum}>
+                      {finished.length < 10
+                        ? "0" + finished.length
+                        : finished.length}
+                    </Text>
                   </View>
                 </Pressable>
               </View>

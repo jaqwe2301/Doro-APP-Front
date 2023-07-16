@@ -21,6 +21,7 @@ import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import Timer from "../feat/Timer";
 import { SafeAreaView } from "react-native";
+import { Keyboard } from "react-native";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
@@ -71,6 +72,7 @@ function AuthPhone() {
     }
   }
   async function verifyAuthNum() {
+    Keyboard.dismiss();
     if (authNum.length === 6) {
       try {
         const success = await verifyauthPhoneNum({
