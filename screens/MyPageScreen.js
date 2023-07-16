@@ -38,12 +38,15 @@ function MyPageScreen({ navigation }) {
   const instance = Interceptor();
   useEffect(() => {
     profileHandler();
+  }, []);
+
+  useEffect(() => {
     getMyLectures();
   }, []);
 
   const getMyLectures = () => {
     instance
-      .get(`${URL}/users-lectures/users/${headerId}`, {
+      .get(`/users-lectures/users/${headerId}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
@@ -74,6 +77,7 @@ function MyPageScreen({ navigation }) {
         // console.log("성공");
       })
       .catch((error) => {
+        console.log("왜 에러나니");
         console.log("에러");
         console.log(error);
       });
