@@ -47,7 +47,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         setResponse(result);
       } catch (error) {
         console.error(error);
-        console.log("뭐야?>?");
       }
     }
 
@@ -139,6 +138,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               />
             );
           })}
+        {i === recruitingTitle.length - 1 && <View style={{ height: 20 }} />}
       </View>
     );
   }
@@ -485,6 +485,7 @@ const styles = StyleSheet.create({
   },
   mainTitle: {
     marginTop: 15,
+
     fontSize: 17,
     fontWeight: "bold",
   },
