@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, ActivityIndicator } from "react";
 import {
   View,
   StyleSheet,
@@ -28,8 +28,8 @@ import FilterBox from "../components/ui/FilterBox";
 import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
-import { KRBold, KRRegular } from "../constants/fonts";
-import { useLectures } from "../store/LecturesProvider";
+import { KRRegular } from "../constants/fonts";
+// import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
 import { getAnnouncement } from "../utill/http";
 
@@ -37,8 +37,22 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
 
-  const [lectureData, setLectureData] = useState([]);
-  const { lectures } = useLectures();
+  const [lectureData, setLectureData] = useState([
+    {
+      lectureDates: [],
+    },
+  ]);
+  // const { lectures } = useLectures(null);
+
+  if (lectureData.lectureDates === []) {
+    // 로딩
+    return (
+      <ActivityIndicator
+        size="large"
+        color={GlobalStyles.colors.primaryDefault}
+      />
+    ); // or any other loading indicator
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -54,13 +68,47 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
   }, []);
 
   useEffect(() => {
-    setLectureData(lectures);
-    // console.log(lectures);
+    axios
+      .get(URL + "/lectures/", {
+        params: {
+          city: "",
+          endDate: "",
+          startDate: "",
+        },
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        setLectureData(res.data.data);
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+      });
+
+    // setLectureData(lectures);
+  }, []);
+
+  useEffect(() => {
     setRecruitingCity(recruitingCityList);
     setAllocationCity(allocationCityList);
-  }, [lectures]);
+  }, [lectureData]);
 
-  const recruitingCityList = lectures
+  const [filterDate, setFilterDate] = useState([
+    [
+      new Date(new Date().setMonth(new Date().getMonth() - 6)),
+      new Date(new Date().setMonth(new Date().getMonth() + 6)),
+    ],
+    [
+      new Date(new Date().setMonth(new Date().getMonth() - 6)),
+      new Date(new Date().setMonth(new Date().getMonth() + 6)),
+    ],
+  ]);
+
+  const recruitingCityList = lectureData
     .filter((item) => item.status === "RECRUITING")
     .map((item) => {
       return item.city;
@@ -68,14 +116,24 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
 
   const [recruitingCity, setRecruitingCity] = useState(recruitingCityList);
 
-  const recruitingData = lectureData.filter(
-    (item) => item.status === "RECRUITING" && recruitingCity.includes(item.city)
-  );
+  const recruitingData = lectureData.filter((item) => {
+    const dateCheck = item.lectureDates.every((dateStr) => {
+      const date = new Date(dateStr);
+
+      return date >= filterDate[0][0] && date <= filterDate[0][1];
+    });
+    return (
+      item.status === "RECRUITING" &&
+      recruitingCity.includes(item.city) &&
+      dateCheck
+    );
+  });
+
   const recruitingTitle = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
 
-  const allocationCityList = lectures
+  const allocationCityList = lectureData
     .filter((item) => item.status === "ALLOCATION_COMP")
     .map((item) => {
       return item.city;
@@ -83,10 +141,18 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
 
   const [allocationCity, setAllocationCity] = useState(allocationCityList);
 
-  const allocationDate = lectureData.filter(
-    (item) =>
-      item.status === "ALLOCATION_COMP" && allocationCity.includes(item.city)
-  );
+  const allocationDate = lectureData.filter((item) => {
+    const dateCheck = item.lectureDates.every((dateStr) => {
+      const date = new Date(dateStr);
+      return date >= filterDate[1][0] && date <= filterDate[1][1];
+    });
+
+    return (
+      item.status === "ALLOCATION_COMP" &&
+      allocationCity.includes(item.city) &&
+      dateCheck
+    );
+  });
 
   const allocationTitle = [
     ...new Set(allocationDate.map((item) => item.mainTitle)),
@@ -134,7 +200,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                     status: filteringItem.status,
                   })
                 }
-                // date={dateText}
               />
             );
           })}
@@ -187,11 +252,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     );
   }
 
-  const lectureIdHomeScreen = (id) => {
-    // 강의 클릭하면 id 값 state로 넘어옴
-    lectureIdProps(id);
-  };
-
   const [filter, setFilter] = useState(false);
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState();
@@ -207,7 +267,10 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     setFilter(false);
   };
 
-  const applyDateFilter = () => {
+  const applyDateFilter = (date) => {
+    status === "recruitingDate"
+      ? setFilterDate((prev) => [date, prev[1]])
+      : setFilterDate((prev) => [prev[0], date]);
     setFilter(false);
   };
 
@@ -241,7 +304,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               </Pressable>
               <Pressable
                 onPress={() => {
-                  onFilter("교육 날짜", "date");
+                  onFilter("교육 날짜", "recruitingDate");
                 }}
               >
                 <FilterBox text="교육 날짜" />
@@ -270,7 +333,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               </Pressable>
               <Pressable
                 onPress={() => {
-                  onFilter("교육 날짜", "date");
+                  onFilter("교육 날짜", "allocationDate");
                 }}
               >
                 <FilterBox text="교육 날짜" />
@@ -418,12 +481,18 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         data={
           status === "RECRUITING"
             ? recruitingCityList
-            : status === "date"
-            ? ["", ""]
+            : status === "recruitingDate"
+            ? filterDate[0]
+            : status === "allocationDate"
+            ? filterDate[1]
             : allocationCityList
         }
         status={status}
-        onPress={status === "Date" ? applyDateFilter : applyCityFilter}
+        onPress={
+          status === "recruitingDate" || status === "allocationDate"
+            ? applyDateFilter
+            : applyCityFilter
+        }
       />
 
       {headerRole === "ROLE_ADMIN" ? (
