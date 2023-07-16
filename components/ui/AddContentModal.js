@@ -55,23 +55,40 @@ function AddContentModal({
       <View style={styles.modalContainer}>
         <View style={styles.modalWhiteBox}>
           <View style={styles.modalTop}>
-            <Pressable onPress={inVisible}>
-              <View style={styles.topButton}>
-                <Xmark width={24} height={24} />
-              </View>
+            <Pressable
+              onPress={inVisible}
+              style={{
+                // backgroundColor: GlobalStyles.colors.green,
+                padding: 10,
+                paddingLeft: 0,
+              }}
+            >
+              {/* <View style={styles.topButton}> */}
+              <Xmark width={24} height={24} />
+              {/* </View> */}
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: "bold" }}>{title}</Text>
-            <Pressable onPress={onPressPlus}>
-              <View style={styles.topButton}>
-                {plusVisible ? (
-                  <Pressable onPress={onPressPlus}>
-                    <Plus width={19} height={20} />
-                  </Pressable>
-                ) : (
-                  ""
-                )}
-              </View>
-            </Pressable>
+            {/* <Pressable
+              onPress={onPressPlus}
+              style={{ backgroundColor: GlobalStyles.colors.red }}
+            > */}
+            {/* <View style={styles.topButton}> */}
+            {plusVisible ? (
+              <Pressable
+                onPress={onPressPlus}
+                style={{
+                  backgroundColor: GlobalStyles.colors.green,
+                  padding: 10,
+                  paddingRight: 0,
+                }}
+              >
+                <Plus width={20} height={20} />
+              </Pressable>
+            ) : (
+              ""
+            )}
+            {/* </View> */}
+            {/* </Pressable> */}
           </View>
           <FlatList
             style={styles.modalList}
