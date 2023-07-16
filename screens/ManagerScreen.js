@@ -12,7 +12,7 @@ import {
   Alert,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Interceptor from "../utill/Interceptor";
 import { URL } from "../utill/config";
@@ -185,6 +185,7 @@ function ManagerScreen() {
               />
             );
           })}
+        {i === lecturesTitle.length - 1 && <View style={{ height: 20 }} />}
       </View>
     );
   }
@@ -205,12 +206,23 @@ function ManagerScreen() {
       const response = await logout();
 
       console.log(response);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        })
+      );
       if (response.status === 200) {
         authCtx.logout();
       }
     } catch (error) {
       // navigation.navigate("login");
-
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        })
+      );
       authCtx.logout();
       console.log(error);
       console.log("에러났쪄염");

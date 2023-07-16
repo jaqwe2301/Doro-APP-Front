@@ -28,7 +28,7 @@ import FilterBox from "../components/ui/FilterBox";
 import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
-import { KRRegular } from "../constants/fonts";
+import { KRBold, KRRegular } from "../constants/fonts";
 import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
 import { getAnnouncement } from "../utill/http";
@@ -138,6 +138,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               />
             );
           })}
+        {i === recruitingTitle.length - 1 && <View style={{ height: 20 }} />}
       </View>
     );
   }
@@ -287,43 +288,51 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
   return (
     <>
       <View style={styles.noticeContainer}>
-        <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
           <Megaphone width={24} height={24} />
-          <View>
-            <Swiper
-              autoplay={true}
-              autoplayTimeout={3}
-              horizontal={false}
-              showsPagination={false}
-              width={250}
-              // height={2}
-            >
-              {response.map((data) => {
-                return (
-                  <Pressable
-                    onPress={() =>
-                      navigation.navigate("noticeDetail", { data: data })
-                    }
+          {/* <View> */}
+          <Swiper
+            autoplay={true}
+            autoplayTimeout={3}
+            horizontal={false}
+            showsPagination={false}
+            width={250}
+            height={25}
+          >
+            {response.map((data) => {
+              return (
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("noticeDetail", { data: data })
+                  }
+                  key={data.id}
+                  style={{ justifyContent: "center" }}
+                >
+                  <Text
                     key={data.id}
-                    style={{ justifyContent: "center" }}
+                    style={{
+                      marginTop: 2,
+                      marginLeft: 16,
+                      fontStyle: GlobalStyles.gray01,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      textAlignVertical: "center",
+                      lineHeight: 20,
+                    }}
                   >
-                    <Text
-                      key={data.id}
-                      style={{
-                        marginLeft: 16,
-                        fontStyle: GlobalStyles.gray01,
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        textAlignVertical: "center",
-                      }}
-                    >
-                      {data.title}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </Swiper>
-          </View>
+                    {data.title}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </Swiper>
+          {/* </View> */}
+          <Right width={24} height={24} />
         </View>
         {/* <Pressable
           onPress={() => {
@@ -331,9 +340,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
           }}
           // style={{ flex: 1 }}
         > */}
-        {/* <View style={{ marginRight: 16 }}> */}
-        <Right width={24} height={24} />
-        {/* </View> */}
+
         {/* </Pressable> */}
       </View>
 
@@ -356,7 +363,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
-              height: 34,
+              height: 30,
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
@@ -420,13 +427,14 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       />
 
       {headerRole === "ROLE_ADMIN" ? (
-        <View style={styles.BottomButton}>
-          <Pressable
-            onPress={() => navigation.push("UpdateLectureScreen", { data: "" })}
-          >
+        <Pressable
+          onPress={() => navigation.push("UpdateLectureScreen", { data: "" })}
+          style={[styles.BottomButtonContainer]}
+        >
+          <View style={styles.BottomButton}>
             <CreactingLecture width={28} height={28} />
-          </Pressable>
-        </View>
+          </View>
+        </Pressable>
       ) : (
         ""
       )}
@@ -456,19 +464,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: GlobalStyles.colors.gray07,
   },
-  BottomButton: {
+  BottomButtonContainer: {
     position: "absolute",
+    height: 76,
+    width: 76,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: GlobalStyles.colors.green,
+    bottom: 17,
+    right: 10,
+  },
+  BottomButton: {
     height: 56,
     width: 56,
     borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: GlobalStyles.colors.primaryDefault,
-    bottom: 27,
-    right: 20,
   },
   mainTitle: {
     marginTop: 15,
+
     fontSize: 17,
     fontWeight: "bold",
   },
@@ -478,7 +495,8 @@ const styles = StyleSheet.create({
     marginBottom: 54,
     backgroundColor: "#F4F4F4",
     flexDirection: "row",
-    height: 44,
+    // height: 44,
+    paddingVertical: 10,
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
