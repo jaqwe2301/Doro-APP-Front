@@ -17,15 +17,19 @@ import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 import { KRRegular } from "../constants/fonts";
 
-function ApplicationDetails({ route }) {
+function ApplicationDetails({ navigation, route }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
 
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
   const [allocation, setAllocation] = useState([]);
   const [finished, setFinished] = useState([]);
-
+  const jump = route.params?.screen;
   const instance = Interceptor();
+
+  useEffect(() => {
+    setIndex(jump);
+  }, [jump]);
 
   const getMyLectures = () => {
     instance
@@ -77,9 +81,9 @@ function ApplicationDetails({ route }) {
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
-    { key: "first", title: "신청중(00)" },
-    { key: "second", title: "배정 완료(00)" },
-    { key: "third", title: "강의 완료(00)" },
+    { key: "first", title: "신청중(0)" },
+    { key: "second", title: "배정 완료(0)" },
+    { key: "third", title: "강의 완료(0)" },
   ]);
 
   useEffect(() => {
@@ -87,19 +91,22 @@ function ApplicationDetails({ route }) {
       {
         key: "first",
         title: `신청중(${
-          recruiting.length < 10 ? "0" + recruiting.length : recruiting.length
+          // recruiting.length < 10 ? "0" + recruiting.length :
+          recruiting.length
         })`,
       },
       {
         key: "second",
         title: `배정 완료(${
-          allocation.length < 10 ? "0" + allocation.length : allocation.length
+          // allocation.length < 10 ? "0" + allocation.length :
+          allocation.length
         })`,
       },
       {
         key: "third",
         title: `강의 완료(${
-          finished.length < 10 ? "0" + finished.length : finished.length
+          // finished.length < 10 ? "0" + finished.length :
+          finished.length
         })`,
       },
     ]);

@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 
 import { GlobalStyles } from "../../constants/styles";
+import { KRBold, KRRegular } from "../../constants/fonts";
 
 function SummaryBoxSmall({ svg: SvgComponent, title, text }) {
   return (
@@ -8,9 +9,20 @@ function SummaryBoxSmall({ svg: SvgComponent, title, text }) {
       <View style={styles.svgContainer}>
         <SvgComponent height={24} width={24} />
       </View>
-      <View>
-        <Text style={styles.boxTitle}>{title}</Text>
-        <Text style={styles.paymentText}>{text}</Text>
+      <View style={{ marginBottom: 7 }}>
+        <Text
+          style={[KRRegular.Caption, { color: GlobalStyles.colors.gray03 }]}
+        >
+          {title}
+        </Text>
+        <Text
+          style={[
+            KRBold.Subbody,
+            { color: GlobalStyles.colors.gray01, marginTop: -5 },
+          ]}
+        >
+          {text}
+        </Text>
       </View>
     </View>
   );

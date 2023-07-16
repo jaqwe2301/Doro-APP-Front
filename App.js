@@ -239,21 +239,7 @@ function AuthStack({ notificationAgreement }) {
   );
 }
 
-function HomeNavigator({ navigation, route }) {
-  // React.useLayoutEffect(() => {
-  //   const routeName = getFocusedRouteNameFromRoute(route);
-  //   if (routeName !== "alarm" || routeName !== "noticeDetail") {
-  //     //MyPage이외의 화면에 대해 tabBar none을 설정한다.
-  //     navigation.setOptions({
-  //       tabBarStyle: {
-  //         display: undefined,
-  //         ...(Platform.OS === "android" && { height: 60 }),
-  //       },
-  //     });
-  //   } else {
-  //     navigation.setOptions({ tabBarStyle: { display: "none" } });
-  //   }
-  // }, [navigation, route]);
+function HomeNavigator({ navigation }) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -267,7 +253,6 @@ function HomeNavigator({ navigation, route }) {
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
-        // headerBackImageSource: <Back width={24} height={24} />,
       }}
     >
       <Stack.Screen
@@ -279,9 +264,17 @@ function HomeNavigator({ navigation, route }) {
               <SafeAreaView style={{}}>
                 <View style={styles.HomeHeader}>
                   <View style={styles.headerTopContainer}>
-                    <Logo width={94} height={20} />
-                    <Pressable onPress={() => navigation.navigate("alarm")}>
-                      <AlarmAfter width={24} height={24} />
+                    <Logo width={94} height={21} />
+                    <Pressable
+                      onPress={() => navigation.navigate("alarm")}
+                      style={{
+                        // backgroundColor: "#F5F5F5",
+                        paddingBottom: 10,
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                      }}
+                    >
+                      <AlarmAfter width={24} height={25} />
                     </Pressable>
                   </View>
                 </View>
@@ -313,11 +306,6 @@ function HomeNavigator({ navigation, route }) {
         component={NoticeDetailScreen}
         options={{
           title: "",
-          headerLeft: () => (
-            <Pressable onPress={() => navigation.goBack()}>
-              <Left width={24} height={24} />
-            </Pressable>
-          ),
         }}
       />
     </Stack.Navigator>
@@ -793,10 +781,15 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   HomeHeader: {
-    paddingTop: 45,
-    // paddingBottom: Platform.OS === "android" ? 54 : 30,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
+    // paddingTop: 45,
+    // // paddingBottom: Platform.OS === "android" ? 54 : 30,
+    // paddingBottom: Platform.OS === "android" ? 20 : 0,
+    // marginBottom: -40,
+    // paddingHorizontal: 20,
+    marginLeft: 20,
+    marginRight: 10,
+    marginTop: 45,
+    marginBottom: Platform.OS === "android" ? 10 : -30,
     backgroundColor: "white",
   },
   headerTopContainer: {
