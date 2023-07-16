@@ -19,7 +19,7 @@ import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 import { KRRegular } from "../constants/fonts";
 
-function ApplicationDetails({ navigation, route }) {
+function ApplicationDetails({ route }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const navigation = useNavigation();
 
