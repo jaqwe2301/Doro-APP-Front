@@ -834,7 +834,9 @@ function DetailLectureScreen({ route }) {
             />
           )}
         />
-        {headerRole === "ROLE_ADMIN" ? (
+        {headerRole === "ROLE_ADMIN" ||
+        lectureBasicInfo.status === "ALLOCATION_COMP" ||
+        lectureBasicInfo.status === "FINISH" ? (
           ""
         ) : (
           <View style={styles.buttonContainer}>
