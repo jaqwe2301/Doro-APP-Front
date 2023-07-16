@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
+  Keyboard,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 
@@ -48,6 +49,7 @@ function Id({ navigation, route }) {
 
   async function navigateId() {
     if (isNavi) {
+      Keyboard.dismiss();
       try {
         const response = await checkAccount({
           account: inputId,

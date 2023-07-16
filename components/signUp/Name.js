@@ -9,6 +9,7 @@ import {
   Pressable,
   ScrollView,
   Modal,
+  Keyboard,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 import Left from "../../assets/left.svg";
@@ -67,23 +68,26 @@ function Name({ navigation, route }) {
   }
 
   function navigateId() {
-    if (inputName !== "" && btn) {
-      setSignData({
-        ...signData,
-        name: inputName,
-        birth:
-          Platform.OS === "ios"
-            ? date.toLocaleDateString().replace(/\//g, "-")
-            : date
-                .toLocaleDateString("ko-KR", options)
-                .replace(/\./g, "-")
-                .replace(/\.|-$/, "")
-                .replace(/\s/g, ""),
-      });
+    Keyboard.dismiss();
+    setTimeout(() => {
+      if (inputName !== "" && btn) {
+        setSignData({
+          ...signData,
+          name: inputName,
+          birth:
+            Platform.OS === "ios"
+              ? date.toLocaleDateString().replace(/\//g, "-")
+              : date
+                  .toLocaleDateString("ko-KR", options)
+                  .replace(/\./g, "-")
+                  .replace(/\.|-$/, "")
+                  .replace(/\s/g, ""),
+        });
 
-      navigation.navigate("school", { h: statusBarHeight });
-    } else {
-    }
+        navigation.navigate("school", { h: statusBarHeight });
+      } else {
+      }
+    }, 100);
   }
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   const { StatusBarManager } = NativeModules;

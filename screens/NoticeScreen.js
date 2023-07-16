@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
   },
   plusBtnContainer: {
     position: "absolute",
-    right: 9,
-    bottom: 6,
+    right: 10,
+    bottom: 17,
   },
   plusBtn: {
     backgroundColor: GlobalStyles.colors.primaryDefault,

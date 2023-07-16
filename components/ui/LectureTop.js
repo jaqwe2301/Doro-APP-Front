@@ -86,7 +86,7 @@ export default LectureTop;
 const styles = StyleSheet.create({
   Title: {
     marginTop: 28,
-    marginBottom: 68,
+    marginBottom: 28,
     fontSize: 22,
     fontWeight: 600,
     lineHeight: 28,
