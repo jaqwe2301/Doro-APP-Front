@@ -290,7 +290,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         <View
           style={{
             flexDirection: "row",
-
             alignItems: "center",
           }}
         >
@@ -302,7 +301,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
             horizontal={false}
             showsPagination={false}
             width={250}
-            height={22}
+            height={25}
           >
             {response.map((data) => {
               return (
@@ -311,7 +310,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                     navigation.navigate("noticeDetail", { data: data })
                   }
                   key={data.id}
-                  // style={{ justifyContent: "center" }}
+                  style={{ justifyContent: "center" }}
                 >
                   <Text
                     key={data.id}
@@ -332,6 +331,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
             })}
           </Swiper>
           {/* </View> */}
+          <Right width={24} height={24} />
         </View>
         {/* <Pressable
           onPress={() => {
@@ -339,9 +339,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
           }}
           // style={{ flex: 1 }}
         > */}
-        {/* <View style={{ marginRight: 16 }}> */}
-        <Right width={24} height={24} />
-        {/* </View> */}
+
         {/* </Pressable> */}
       </View>
 
