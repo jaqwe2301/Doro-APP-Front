@@ -803,8 +803,9 @@ function UpdateLectureScreen({ route }) {
                       style={{
                         backgroundColor: "white",
                         width: layout.width - 20,
-                        height: 300,
+                        height: 280,
                         padding: 16,
+                        borderRadius: 5.41,
                       }}
                     >
                       {Object.keys(contentsForm).map((item) => {
@@ -820,13 +821,58 @@ function UpdateLectureScreen({ route }) {
                           </View>
                         );
                       })}
-                      <ButtonSmall title="확인" onPress={onConfirmContents} />
-                      <ButtonSmall
-                        title="취소"
-                        onPress={() => {
-                          addContentsModalHandler(false);
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginTop: 25,
+                          justifyContent: "space-between",
                         }}
-                      />
+                      >
+                        {/* <ButtonSmall title="확인" onPress={onConfirmContents} /> */}
+                        <Pressable
+                          onPress={onConfirmContents}
+                          style={{
+                            flex: 1,
+                            height: 30,
+                            marginRight: 5,
+                            backgroundColor: GlobalStyles.colors.primaryDefault,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 5.41,
+                          }}
+                        >
+                          <Text
+                            style={[KRRegular.Subheadline, { color: "white" }]}
+                          >
+                            확인
+                          </Text>
+                        </Pressable>
+                        <Pressable
+                          onPress={() => {
+                            addContentsModalHandler(false);
+                          }}
+                          style={{
+                            flex: 1,
+                            marginLeft: 5,
+                            backgroundColor: GlobalStyles.colors.primaryDefault,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 5.41,
+                          }}
+                        >
+                          <Text
+                            style={[KRRegular.Subheadline, { color: "white" }]}
+                          >
+                            취소
+                          </Text>
+                        </Pressable>
+                        {/* <ButtonSmall
+                          title="취소"
+                          onPress={() => {
+                            addContentsModalHandler(false);
+                          }}
+                        /> */}
+                      </View>
                     </View>
                   </View>
                 </Modal>
