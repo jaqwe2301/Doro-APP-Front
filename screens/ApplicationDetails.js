@@ -77,9 +77,9 @@ function ApplicationDetails({ route }) {
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
-    { key: "first", title: "신청중(00)" },
-    { key: "second", title: "배정 완료(00)" },
-    { key: "third", title: "강의 완료(00)" },
+    { key: "first", title: "신청중(0)" },
+    { key: "second", title: "배정 완료(0)" },
+    { key: "third", title: "강의 완료(0)" },
   ]);
 
   useEffect(() => {
