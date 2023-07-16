@@ -617,99 +617,100 @@ function UpdateLectureScreen({ route }) {
     switch (route.key) {
       case "first":
         return (
-          <View style={styles.lectureInfoListContainer}>
-            <Text style={KRBold.Headline4}>강의 관련 정보</Text>
-            <View style={[styles.lectureInfoContainer, { marginTop: 29 }]}>
-              <Text
-                style={[
-                  KRRegular.Subheadline,
-                  { color: GlobalStyles.colors.gray03 },
-                ]}
-              >
-                교육 내용
-              </Text>
-              <View style={styles.inputBox}>
-                <Text style={KRRegular.Subheadline}>
-                  {selectedLectureContents.content}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.lectureInfoContainer}>
-              <Text
-                style={[
-                  KRRegular.Subheadline,
-                  { color: GlobalStyles.colors.gray03 },
-                ]}
-              >
-                교육 키트
-              </Text>
-              <View style={[styles.inputBox, styles.dateBox]}>
-                <Text style={{ flex: 1 }}>{selectedLectureContents.kit}</Text>
-                <Pressable
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                  }}
-                  style={{
-                    // backgroundColor: GlobalStyles.colors.green,
-                    padding: 5,
-                    paddingRight: 8,
-                  }}
+          <ScrollView style={{ flex: 1 }}>
+            <View style={styles.lectureInfoListContainer}>
+              <Text style={KRBold.Headline4}>강의 관련 정보</Text>
+              <View style={[styles.lectureInfoContainer, { marginTop: 29 }]}>
+                <Text
+                  style={[
+                    KRRegular.Subheadline,
+                    { color: GlobalStyles.colors.gray03 },
+                  ]}
                 >
-                  {/* <Pressable onPress={() => console.log(lectureContents)}> */}
-                  {/* <Text style={{ marginRight: 8.03 }}>+</Text> */}
+                  교육 내용
+                </Text>
+                <View style={styles.inputBox}>
+                  <Text style={KRRegular.Subheadline}>
+                    {selectedLectureContents.content}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.lectureInfoContainer}>
+                <Text
+                  style={[
+                    KRRegular.Subheadline,
+                    { color: GlobalStyles.colors.gray03 },
+                  ]}
+                >
+                  교육 키트
+                </Text>
+                <View style={[styles.inputBox, styles.dateBox]}>
+                  <Text style={{ flex: 1 }}>{selectedLectureContents.kit}</Text>
+                  <Pressable
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                    style={{
+                      // backgroundColor: GlobalStyles.colors.green,
+                      padding: 5,
+                      paddingRight: 8,
+                    }}
+                  >
+                    {/* <Pressable onPress={() => console.log(lectureContents)}> */}
+                    {/* <Text style={{ marginRight: 8.03 }}>+</Text> */}
 
-                  <Xmark width={17} height={17} />
-                </Pressable>
+                    <Xmark width={17} height={17} />
+                  </Pressable>
+                </View>
               </View>
-            </View>
-            <View style={styles.lectureInfoContainer}>
-              <Text
-                style={[
-                  KRRegular.Subheadline,
-                  { color: GlobalStyles.colors.gray03 },
-                ]}
-              >
-                기본 강의 구성
-              </Text>
-              <View style={styles.inputBox}>
-                <Text style={KRRegular.Subheadline}>
-                  {selectedLectureContents.detail}
+              <View style={styles.lectureInfoContainer}>
+                <Text
+                  style={[
+                    KRRegular.Subheadline,
+                    { color: GlobalStyles.colors.gray03 },
+                  ]}
+                >
+                  기본 강의 구성
                 </Text>
+                <View style={styles.inputBox}>
+                  <Text style={KRRegular.Subheadline}>
+                    {selectedLectureContents.detail}
+                  </Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.lectureInfoContainer}>
-              <Text
-                style={[
-                  KRRegular.Subheadline,
-                  { color: GlobalStyles.colors.gray03 },
-                ]}
-              >
-                기타 특이 사항
-              </Text>
-              <View style={styles.inputBox}>
-                <Text style={KRRegular.Subheadline}>
-                  {selectedLectureContents.remark}
+              <View style={styles.lectureInfoContainer}>
+                <Text
+                  style={[
+                    KRRegular.Subheadline,
+                    { color: GlobalStyles.colors.gray03 },
+                  ]}
+                >
+                  기타 특이 사항
                 </Text>
+                <View style={styles.inputBox}>
+                  <Text style={KRRegular.Subheadline}>
+                    {selectedLectureContents.remark}
+                  </Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.lectureInfoContainer}>
-              <Text
-                style={[
-                  KRRegular.Subheadline,
-                  { color: GlobalStyles.colors.gray03 },
-                ]}
-              >
-                자격 요건
-              </Text>
-              <View style={styles.inputBox}>
-                <Text style={KRRegular.Subheadline}>
-                  {selectedLectureContents.requirement}
+              <View style={styles.lectureInfoContainer}>
+                <Text
+                  style={[
+                    KRRegular.Subheadline,
+                    { color: GlobalStyles.colors.gray03 },
+                  ]}
+                >
+                  자격 요건
                 </Text>
+                <View style={styles.inputBox}>
+                  <Text style={KRRegular.Subheadline}>
+                    {selectedLectureContents.requirement}
+                  </Text>
+                </View>
               </View>
-            </View>
 
-            {/* 교육 키트 플러스(+) 버튼 누르면 나오는 하단 모달 */}
-            {/* <AddContentModal
+              {/* 교육 키트 플러스(+) 버튼 누르면 나오는 하단 모달 */}
+              {/* <AddContentModal
               visible={modalVisible}
               inVisible={() => modalHandler(false)}
               plusVisible={true}
@@ -728,111 +729,112 @@ function UpdateLectureScreen({ route }) {
               data={lectureContents}
               title="교육 목록"
             /> */}
-            <Modal transparent={true} visible={modalVisible}>
-              {/* <SafeAreaView style={{ flex: 1 }}> */}
-              <View style={styles.modalContainer}>
-                <View style={styles.modalWhiteBox}>
-                  <View style={styles.modalTop}>
-                    <Pressable
-                      onPress={() => modalHandler(false)}
-                      style={{
-                        padding: 10,
-                        paddingLeft: 0,
-                        // backgroundColor: GlobalStyles.colors.red,
+              <Modal transparent={true} visible={modalVisible}>
+                {/* <SafeAreaView style={{ flex: 1 }}> */}
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalWhiteBox}>
+                    <View style={styles.modalTop}>
+                      <Pressable
+                        onPress={() => modalHandler(false)}
+                        style={{
+                          padding: 10,
+                          paddingLeft: 0,
+                          // backgroundColor: GlobalStyles.colors.red,
+                        }}
+                      >
+                        <ModalX width={24} height={24} />
+                      </Pressable>
+                      <Text style={KRBold.Body}>교육 목록</Text>
+                      <Pressable
+                        onPress={() => {
+                          addContentsModalHandler(true);
+                          setContentsData({
+                            content: "",
+                            kit: "",
+                            detail: "",
+                            remark: "",
+                            requirement: "",
+                          });
+                        }}
+                        style={{
+                          // backgroundColor: GlobalStyles.colors.green,
+                          padding: 10,
+                          paddingRight: 0,
+                        }}
+                      >
+                        <Plus width={20} height={20} />
+                      </Pressable>
+                    </View>
+                    <FlatList
+                      style={styles.modalList}
+                      data={lectureContents}
+                      renderItem={(data) => {
+                        return (
+                          <Pressable
+                            onPress={() => {
+                              setCheck(data.index);
+                              setCheckItem(data.item.id);
+                            }}
+                          >
+                            <View style={styles.modalTextContainer}>
+                              <Text style={styles.modalText}>
+                                {data.item.kit}
+                              </Text>
+                              {check === data.index ? <ModalCheck /> : ""}
+                            </View>
+                          </Pressable>
+                        );
                       }}
-                    >
-                      <ModalX width={24} height={24} />
-                    </Pressable>
-                    <Text style={KRBold.Body}>교육 목록</Text>
-                    <Pressable
-                      onPress={() => {
-                        addContentsModalHandler(true);
-                        setContentsData({
-                          content: "",
-                          kit: "",
-                          detail: "",
-                          remark: "",
-                          requirement: "",
-                        });
-                      }}
-                      style={{
-                        // backgroundColor: GlobalStyles.colors.green,
-                        padding: 10,
-                        paddingRight: 0,
-                      }}
-                    >
-                      <Plus width={20} height={20} />
-                    </Pressable>
-                  </View>
-                  <FlatList
-                    style={styles.modalList}
-                    data={lectureContents}
-                    renderItem={(data) => {
-                      return (
-                        <Pressable
-                          onPress={() => {
-                            setCheck(data.index);
-                            setCheckItem(data.item.id);
-                          }}
-                        >
-                          <View style={styles.modalTextContainer}>
-                            <Text style={styles.modalText}>
-                              {data.item.kit}
-                            </Text>
-                            {check === data.index ? <ModalCheck /> : ""}
-                          </View>
-                        </Pressable>
-                      );
-                    }}
-                    extraData={lectureContents}
-                  />
-                  <View style={styles.modalButtonContainer}>
-                    <ButtonBig
-                      text="확인"
-                      onPress={() => onConfirm2(checkItem)}
+                      extraData={lectureContents}
                     />
-                    <View style={{ height: 24 }} />
+                    <View style={styles.modalButtonContainer}>
+                      <ButtonBig
+                        text="확인"
+                        onPress={() => onConfirm2(checkItem)}
+                      />
+                      <View style={{ height: 24 }} />
+                    </View>
                   </View>
                 </View>
-              </View>
 
-              <Modal transparent={true} visible={addContentsModal}>
-                <View style={styles.paymentModal}>
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      width: layout.width - 20,
-                      height: 300,
-                      padding: 16,
-                    }}
-                  >
-                    {Object.keys(contentsForm).map((item) => {
-                      return (
-                        <View key={item} style={styles.lectureInfoContainer}>
-                          <Text>{contentsForm[item]}</Text>
-                          <TextInput
-                            style={styles.inputBox}
-                            onChangeText={(text) =>
-                              creatingContents(text, item)
-                            }
-                          />
-                        </View>
-                      );
-                    })}
-                    <ButtonSmall title="확인" onPress={onConfirmContents} />
-                    <ButtonSmall
-                      title="취소"
-                      onPress={() => {
-                        addContentsModalHandler(false);
+                <Modal transparent={true} visible={addContentsModal}>
+                  <View style={styles.paymentModal}>
+                    <View
+                      style={{
+                        backgroundColor: "white",
+                        width: layout.width - 20,
+                        height: 300,
+                        padding: 16,
                       }}
-                    />
+                    >
+                      {Object.keys(contentsForm).map((item) => {
+                        return (
+                          <View key={item} style={styles.lectureInfoContainer}>
+                            <Text>{contentsForm[item]}</Text>
+                            <TextInput
+                              style={styles.inputBox}
+                              onChangeText={(text) =>
+                                creatingContents(text, item)
+                              }
+                            />
+                          </View>
+                        );
+                      })}
+                      <ButtonSmall title="확인" onPress={onConfirmContents} />
+                      <ButtonSmall
+                        title="취소"
+                        onPress={() => {
+                          addContentsModalHandler(false);
+                        }}
+                      />
+                    </View>
                   </View>
-                </View>
+                </Modal>
+                {/* </SafeAreaView> */}
               </Modal>
-              {/* </SafeAreaView> */}
-            </Modal>
-            {/* 교육 목록 추가 */}
-          </View>
+              {/* 교육 목록 추가 */}
+            </View>
+          </ScrollView>
         );
       case "second":
         return (
