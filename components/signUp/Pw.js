@@ -7,6 +7,7 @@ import {
   NativeModules,
   SafeAreaView,
   ScrollView,
+  Keyboard,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { GlobalStyles } from "../../constants/styles";
@@ -91,14 +92,21 @@ function Pw({ navigation, route }) {
   };
 
   function navigatePw() {
-    if (isNavi && inputPw === inputRePw) {
-      setSignData({ ...signData, password: inputPw, passwordCheck: inputRePw });
-
-      navigation.navigate("name", { h: statusBarHeight });
-    } else if (isNavi) {
-      setVisible(true);
-    } else {
-    }
+    Keyboard.dismiss();
+    setTimeout(() => {
+      if (isNavi && inputPw === inputRePw) {
+        setSignData({
+          ...signData,
+          password: inputPw,
+          passwordCheck: inputRePw,
+        });
+        navigation.navigate("name", { h: statusBarHeight });
+      } else if (isNavi) {
+        setVisible(true);
+      } else {
+        // 다른 경우에 대한 처리
+      }
+    }, 100);
   }
   const { StatusBarManager } = NativeModules;
   const [statusBarHeight, setStatusBarHeight] = useState(0);

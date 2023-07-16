@@ -8,6 +8,7 @@ import {
   Platform,
   NativeModules,
   SafeAreaView,
+  Keyboard,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 
@@ -92,22 +93,25 @@ function School({ navigation, route }) {
   // };
 
   function navigateId() {
-    setSignData({
-      ...signData,
-      school: inputSchool,
-      major: inputMajor,
-      studentId: inputStudentId,
-      studentStatus: inputStatus,
-    });
-    if (
-      inputSchool !== "" &&
-      inputMajor !== "" &&
-      inputStudentId !== "" &&
-      inputStatus !== ""
-    ) {
-      navigation.navigate("code");
-    } else {
-    }
+    Keyboard.dismiss();
+    setTimeout(() => {
+      setSignData({
+        ...signData,
+        school: inputSchool,
+        major: inputMajor,
+        studentId: inputStudentId,
+        studentStatus: inputStatus,
+      });
+      if (
+        inputSchool !== "" &&
+        inputMajor !== "" &&
+        inputStudentId !== "" &&
+        inputStatus !== ""
+      ) {
+        navigation.navigate("code");
+      } else {
+      }
+    }, 100);
   }
 
   function statusSelect() {
