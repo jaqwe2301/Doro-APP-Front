@@ -9,16 +9,19 @@ import {
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useEffect, useState, useContext } from "react";
 import { HeaderContext } from "../store/header-context";
-import { URL } from "../utill/config";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+
+import { URL } from "../utill/config";
 import Interceptor from "../utill/Interceptor";
 
 import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 import { KRRegular } from "../constants/fonts";
 
-function ApplicationDetails({ navigation, route }) {
+function ApplicationDetails({ route }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const navigation = useNavigation();
 
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
@@ -40,7 +43,7 @@ function ApplicationDetails({ navigation, route }) {
         },
       })
       .then((res) => {
-        // console.log(res.data.data);
+        console.log(res.data.data);
         setRecruiting(() => {
           const data = res.data.data.filter(
             (item) => item.status === "RECRUITING"
@@ -54,13 +57,10 @@ function ApplicationDetails({ navigation, route }) {
           // console.log(data);
           return data;
         });
-        // finishLectureHandler(() => {
-        //   const data = res.data.data.filter(
-        //     (item) => item.status === "ALLOCATION_COMP"
-        //   );
-        //   console.log(data);
-        //   return data;
-        // });
+        setFinished(() => {
+          const data = res.data.data.filter((item) => item.status === "FINISH");
+          return data;
+        });
         // console.log("성공");
       })
       .catch((error) => {
@@ -72,10 +72,6 @@ function ApplicationDetails({ navigation, route }) {
   useEffect(() => {
     getMyLectures();
   }, []);
-
-  const controlfinished = (data) => {
-    setFinished(data);
-  };
 
   const layout = useWindowDimensions();
 
@@ -176,7 +172,6 @@ function ApplicationDetails({ navigation, route }) {
             style={styles.container}
             data={recruiting}
             renderItem={(data) => {
-              // console.log(data);
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
@@ -195,12 +190,16 @@ function ApplicationDetails({ navigation, route }) {
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => console.log("클릭")}
+                  lectureIdHandler={() =>
+                    navigation.navigate("DetailLecture", {
+                      id: data.item.id,
+                    })
+                  }
                   id=""
-                  dateTypeValue={dateTypeValue}
+                  dateTypeValue={"신청마감 " + dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
-                  tutorRole={role}
+                  tutorRole={role + " 신청"}
                   onPressX={() =>
                     deleteLecture(data.item.id, data.item.subTitle, role)
                   }
@@ -218,18 +217,30 @@ function ApplicationDetails({ navigation, route }) {
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
+              const backgroundColor =
+                data.item.tutorStatus === "WAITING"
+                  ? GlobalStyles.colors.gray06
+                  : "white";
               return (
                 <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => {}}
+                  lectureIdHandler={() =>
+                    navigation.navigate("DetailLecture", {
+                      id: data.item.id,
+                    })
+                  }
                   id=""
-                  dateTypeValue={dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
-                  tutorRole={data.item.tutorRole}
+                  backgroundColor={backgroundColor}
+                  matchingText={
+                    data.item.tutorStatus === "WAITING"
+                      ? "매칭 실패"
+                      : "매칭 성공"
+                  }
                 />
               );
             }}
