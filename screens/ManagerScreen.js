@@ -185,6 +185,7 @@ function ManagerScreen() {
               />
             );
           })}
+        {i === lecturesTitle.length - 1 && <View style={{ height: 20 }} />}
       </View>
     );
   }
