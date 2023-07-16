@@ -60,7 +60,9 @@ function ApplyingLectureBox({
       <View
         style={[
           styles.whiteBox,
-          backgroundColor ? { backgroundColor: backgroundColor } : "",
+          backgroundColor
+            ? { backgroundColor: backgroundColor }
+            : { backgroundColor: "white" },
         ]}
       >
         <View style={styles.titleContainer}>
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     height: 128,
     borderRadius: 5.41,
-    elevation: 2,
+    elevation: 3,
     paddingLeft: 15,
     paddingRight: 11,
     // backgroundColor: "white",
