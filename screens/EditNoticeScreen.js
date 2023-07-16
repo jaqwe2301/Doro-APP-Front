@@ -42,7 +42,11 @@ function EditNoticeScreen({ navigation, route }) {
         type: type,
         name: filename,
       });
-    } else if (imageUrl === data.picture) {
+    } else if (
+      imageUrl === data.picture &&
+      imageUrl !== undefined &&
+      imageUrl !== null
+    ) {
       const imagePath = imageUrl.split("/").pop();
       const imageName = imagePath.split(".")[0];
       const imageType = imagePath.split(".")[1];
