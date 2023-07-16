@@ -47,6 +47,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         setResponse(result);
       } catch (error) {
         console.error(error);
+        console.log("뭐야?>?");
       }
     }
 
