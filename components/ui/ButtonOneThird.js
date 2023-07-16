@@ -1,15 +1,17 @@
 import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
-function ButtonOneThird({
-  text,
-  onPress,
-}) {
+function ButtonOneThird({ text, onPress, backgroundColor }) {
   return (
-    <View style={styles.container}>
-      <Pressable
-        onPress={onPress}
-      >
+    <View
+      style={[
+        styles.container,
+        backgroundColor
+          ? { backgroundColor: backgroundColor }
+          : { backgroundColor: GlobalStyles.colors.primaryDefault },
+      ]}
+    >
+      <Pressable onPress={onPress}>
         <Text style={styles.text}>{text}</Text>
       </Pressable>
     </View>
@@ -26,7 +28,7 @@ const styles = StyleSheet.create({
     borderRadius: 5.41,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: GlobalStyles.colors.primaryDefault,
+    // backgroundColor: GlobalStyles.colors.primaryDefault,
   },
   text: {
     color: GlobalStyles.colors.gray07,

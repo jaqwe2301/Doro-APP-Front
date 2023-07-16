@@ -7,7 +7,7 @@ import {
   ScrollView,
   useWindowDimensions,
   Alert,
-  LayoutChangeEvent,
+  ActivityIndicator,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
@@ -56,7 +56,7 @@ function DetailLectureScreen({ route }) {
     subTutor: "",
     time: "",
     transportCost: "",
-    // status: "",
+    status: "",
   });
   const [lectureContent, setLectureContent] = useState({
     detail: "",
@@ -67,6 +67,9 @@ function DetailLectureScreen({ route }) {
   });
 
   const [tutor, setTutor] = useState([]);
+  const [assign, setAssign] = useState([]); // 강사 배정되었는지 체크
+  const [assignList, setAssignList] = useState([]); // 강의 배정 정보
+  const [apply, setApply] = useState([false, false, false]); // 강사가 강의를 신청했는지 체크
 
   const data = route.params;
 
@@ -81,15 +84,80 @@ function DetailLectureScreen({ route }) {
       })
       .then((res) => {
         setLectureBasicInfo(() => {
-          let lecutre = {
+          let lecture = {
             ...res.data.data.lectureDto,
             id: data.id,
             lectureContentId: res.data.data.lectureContentDto.id,
           };
-          return lecutre;
+          return lecture;
         });
         setLectureContent(res.data.data.lectureContentDto);
-        // console.log("성공");
+
+        const assignedTutors = res.data.data.assignedTutors;
+
+        /** 강사 배정되었는지 체크 */
+        setAssign(() => {
+          return assignedTutors.some((data) => {
+            const check =
+              data.userId === headerId && data.tutorStatus === "ASSIGNED";
+            if (check) {
+              setAssignList(() => {
+                const mainTutor = assignedTutors
+                  .filter(
+                    (item) =>
+                      item.tutorRole === "MAIN_TUTOR" &&
+                      item.tutorStatus === "ASSIGNED"
+                  )
+                  .map((item) => {
+                    return item.name;
+                  })
+                  .join(", ");
+
+                const subTutor = assignedTutors
+                  .filter(
+                    (item) =>
+                      item.tutorRole === "SUB_TUTOR" &&
+                      item.tutorStatus === "ASSIGNED"
+                  )
+                  .map((item) => {
+                    return item.name;
+                  })
+                  .join(", ");
+
+                const staff = assignedTutors
+                  .filter(
+                    (item) =>
+                      item.tutorRole === "STAFF" &&
+                      item.tutorStatus === "ASSIGNED"
+                  )
+                  .map((item) => {
+                    return item.name;
+                  })
+                  .join(", ");
+
+                return [mainTutor, subTutor, staff];
+              });
+            }
+            return check;
+          });
+        });
+
+        /** 로그인한 강사가 강의를 신청했는지 체크 */
+        setApply(() => {
+          return [
+            assignedTutors.some((item) => {
+              return (
+                item.userId === headerId && item.tutorRole === "MAIN_TUTOR"
+              );
+            }),
+            assignedTutors.some((item) => {
+              return item.userId === headerId && item.tutorRole === "SUB_TUTOR";
+            }),
+            assignedTutors.some((item) => {
+              return item.userId === headerId && item.tutorRole === "STAFF";
+            }),
+          ];
+        });
       })
       .catch((error) => {
         console.log("강의 세부 못 불러옴");
@@ -116,75 +184,123 @@ function DetailLectureScreen({ route }) {
           console.log(error);
         });
     }
+
+    setStatus(data.status === "RECRUITING" ? true : false);
   }, [isFocused]);
 
   /** 강의 신청 */
   const applyingTutor = (roles) => {
-    const role =
-      roles === "MAIN_TUTOR"
-        ? "주 강사"
-        : roles === "SUB_TUTOR"
-        ? "보조강사"
-        : "스태프";
-
-    Alert.alert(
-      lectureBasicInfo.subTitle,
-      `'${role}' 신청하시겠습니까?`,
-      [
-        { text: "취소", onPress: () => {}, style: "cancel" },
-        {
-          text: "확인",
-          onPress: () => {
-            instance
-              .post(
-                `${URL}/users-lectures/lectures/${data.id}`,
-                {
-                  tutorRole: roles,
-                  userId: headerId,
-                },
-                {
-                  headers: {
-                    // 헤더에 필요한 데이터를 여기에 추가
-                    "Content-Type": "application/json",
-                  },
-                }
-              )
-              .then((res) => {
-                // console.log(res);
-                // console.log("성공");
-                console.log("강사 신청 완료");
-              })
-              .catch((error) => {
-                console.log("강사 신청 실패");
-                console.log(error);
-              });
-
-            Alert.alert(
-              lectureBasicInfo.subTitle,
-              `${role} 신청이 완료되었습니다.`,
-              [
-                {
-                  text: "확인",
-                  onPress: () => {
-                    // console.log("강사 신청 완료");
-                  },
-                  style: "destructive",
-                },
-              ],
-              {
-                cancelable: true,
-                onDismiss: () => {},
-              }
-            );
+    let role = "";
+    let applyStatus = false;
+    if (roles === "MAIN_TUTOR") {
+      role = "주 강사";
+      applyStatus = apply[0];
+    } else if (roles === "SUB_TUTOR") {
+      role = "보조 강사";
+      applyStatus = apply[1];
+    } else {
+      role = "스태프";
+      applyStatus = apply[2];
+    }
+    console.log(applyStatus);
+    // const role =
+    //   roles === "MAIN_TUTOR"
+    //     ? "주 강사"
+    //     : roles === "SUB_TUTOR"
+    //     ? "보조강사"
+    //     : "스태프";
+    if (applyStatus) {
+      Alert.alert(
+        `이미 ${role}를 신청하셨습니다.`,
+        `취소는 신청내역에서 해주세요.`,
+        [
+          {
+            text: "확인",
+            onPress: () => {},
+            style: "destructive",
           },
-          style: "destructive",
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => {},
-      }
-    );
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => {},
+        }
+      );
+    } else {
+      Alert.alert(
+        lectureBasicInfo.subTitle,
+        `'${role}' 신청하시겠습니까?`,
+        [
+          { text: "취소", onPress: () => {}, style: "cancel" },
+          {
+            text: "확인",
+            onPress: () => {
+              instance
+                .post(
+                  `${URL}/users-lectures/lectures/${data.id}`,
+                  {
+                    tutorRole: roles,
+                    userId: headerId,
+                  },
+                  {
+                    headers: {
+                      // 헤더에 필요한 데이터를 여기에 추가
+                      "Content-Type": "application/json",
+                    },
+                  }
+                )
+                .then((res) => {
+                  // console.log(res);
+                  // console.log("성공");
+                  // console.log("강사 신청 완료");
+                  Alert.alert(
+                    lectureBasicInfo.subTitle,
+                    `${role} 신청이 완료되었습니다.`,
+                    [
+                      {
+                        text: "확인",
+                        onPress: () => {
+                          // console.log("강사 신청 완료");
+                        },
+                        style: "destructive",
+                      },
+                    ],
+                    {
+                      cancelable: true,
+                      onDismiss: () => {},
+                    }
+                  );
+                })
+                .catch((error) => {
+                  // console.log("강사 신청 실패");
+                  Alert.alert(
+                    lectureBasicInfo.subTitle,
+                    `강의 신청에 실패하였습니다. 다시 시도해주세요.`,
+                    [
+                      {
+                        text: "확인",
+                        onPress: () => {
+                          // console.log("강사 신청 완료");
+                        },
+                        style: "destructive",
+                      },
+                    ],
+                    {
+                      cancelable: true,
+                      onDismiss: () => {},
+                    }
+                  );
+                  console.log(error);
+                });
+            },
+            style: "destructive",
+          },
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => {},
+        }
+      );
+    }
   };
 
   const day = ["일", "월", "화", "수", "목", "금", "토"];
@@ -248,7 +364,7 @@ function DetailLectureScreen({ route }) {
             Alert.alert(
               lectureBasicInfo.subTitle,
               `${role} '${name}' ${
-                status === "ASSIGNED" ? "배정취소가 ?" : "확정이 ?"
+                status === "ASSIGNED" ? "배정취소가 " : "확정이 "
               } 완료되었습니다.`,
               [
                 {
@@ -276,9 +392,8 @@ function DetailLectureScreen({ route }) {
   };
 
   const [toggle, setToggle] = useState(true);
-  const [status, setStatus] = useState(
-    data.status === "RECRUITING" ? true : false
-  );
+  const [status, setStatus] = useState();
+  // data.status === "RECRUITING" ? true : false
 
   // Use a custom renderScene function instead
   const renderScene = ({ route }) => {
@@ -394,8 +509,8 @@ function DetailLectureScreen({ route }) {
         );
       case "second":
         return (
-          <View style={{ marginTop: 40, flex: 1 }}>
-            <View style={{ paddingHorizontal: 20 }}>
+          <View style={{ marginTop: 40, flex: 1, paddingHorizontal: 20 }}>
+            <View style={{ marginBottom: 0 }}>
               <Text
                 style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
               >
@@ -426,6 +541,42 @@ function DetailLectureScreen({ route }) {
                 </View>
               </View>
             </View>
+            {assign ? (
+              <View>
+                <View
+                  style={{
+                    height: 0.5,
+                    backgroundColor: GlobalStyles.colors.gray04,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontWeight: "bold",
+                    marginTop: 44,
+                    marginBottom: 34,
+                  }}
+                >
+                  강의 배정 정보
+                </Text>
+                <View style={{ gap: 18 }}>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>주 강사</Text>
+                    <Text style={styles.infoText}>{assignList[0]}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>보조 강사</Text>
+                    <Text style={styles.infoText}>{assignList[1]}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>스태프</Text>
+                    <Text style={styles.infoText}>{assignList[2]}</Text>
+                  </View>
+                </View>
+              </View>
+            ) : (
+              ""
+            )}
           </View>
         );
 
@@ -463,6 +614,7 @@ function DetailLectureScreen({ route }) {
             .catch((error) => {
               console.log("에러");
               console.log(error);
+              ㅌㅌㅌㅌㅌㅌ;
             });
         };
 
@@ -671,6 +823,11 @@ function DetailLectureScreen({ route }) {
               <ButtonOneThird
                 onPress={() => applyingTutor("MAIN_TUTOR")}
                 text="주 강사 신청"
+                backgroundColor={
+                  apply[0]
+                    ? GlobalStyles.colors.gray05
+                    : GlobalStyles.colors.primaryDefault
+                }
               />
             )}
             {lectureBasicInfo.subTutor === "0" ? (
@@ -679,6 +836,11 @@ function DetailLectureScreen({ route }) {
               <ButtonOneThird
                 onPress={() => applyingTutor("SUB_TUTOR")}
                 text="보조 강사 신청"
+                backgroundColor={
+                  apply[1]
+                    ? GlobalStyles.colors.gray05
+                    : GlobalStyles.colors.primaryDefault
+                }
               />
             )}
             {lectureBasicInfo.staff === "0" ? (
@@ -687,6 +849,11 @@ function DetailLectureScreen({ route }) {
               <ButtonOneThird
                 onPress={() => applyingTutor("STAFF")}
                 text="스태프 신청"
+                backgroundColor={
+                  apply[2]
+                    ? GlobalStyles.colors.gray05
+                    : GlobalStyles.colors.primaryDefault
+                }
               />
             )}
           </View>
