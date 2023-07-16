@@ -838,57 +838,50 @@ function UpdateLectureScreen({ route }) {
         );
       case "second":
         return (
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-            style={{ flex: 1 }}
-            keyboardVerticalOffset={
-              Platform.OS === "ios" ? 44 + statusBarHeight : 0
-            }
-          >
-            <ScrollView style={styles.lectureInfoListContainer}>
-              <Text style={KRBold.Headline4}>기본정보</Text>
-              <View style={[styles.lectureInfoContainer, { marginTop: 29 }]}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  주최 및 주관
-                </Text>
-                <TextInput
-                  style={styles.inputBox}
-                  value={lecturedata.institution}
-                  onChangeText={(text) => {
-                    handleSingleInputChange(text, "institution");
-                  }}
-                />
-              </View>
-              <View style={[styles.lectureInfoContainer, { marginBottom: 5 }]}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  일자
-                </Text>
-                <View>
-                  {inputList.map((item, index) => (
-                    // <View
-                    //   style={[
-                    //     styles.inputBox,
-                    //     styles.dateBox,
-                    //     index > 0 ? { marginTop: 8 } : "",
-                    //     { backgroundColor: GlobalStyles.colors.red },
-                    //   ]}
-                    // >
-                    <Pressable
-                      key={index}
-                      onPress={() => onPressDateInput(index, "date")}
-                      style={styles.dataInputBox}
-                    >
-                      {/* <TextInput
+          <ScrollView style={styles.lectureInfoListContainer}>
+            <Text style={KRBold.Headline4}>기본정보</Text>
+            <View style={[styles.lectureInfoContainer, { marginTop: 29 }]}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                주최 및 주관
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.institution}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "institution");
+                }}
+              />
+            </View>
+            <View style={[styles.lectureInfoContainer, { marginBottom: 5 }]}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                일자
+              </Text>
+              <View>
+                {inputList.map((item, index) => (
+                  // <View
+                  //   style={[
+                  //     styles.inputBox,
+                  //     styles.dateBox,
+                  //     index > 0 ? { marginTop: 8 } : "",
+                  //     { backgroundColor: GlobalStyles.colors.red },
+                  //   ]}
+                  // >
+                  <Pressable
+                    key={index}
+                    onPress={() => onPressDateInput(index, "date")}
+                    style={styles.dataInputBox}
+                  >
+                    {/* <TextInput
                       value={item}
                       style={[styles.inputBox, { flex: 1, color: "black" }]}
                       onChangeText={(text) =>
@@ -896,47 +889,47 @@ function UpdateLectureScreen({ route }) {
                       }
                       editable={false}
                     /> */}
-                      <Text style={KRRegular.Subheadline}>
-                        {inputList[index]}
-                      </Text>
-                      {index === 0 ? (
-                        <Pressable
-                          onPress={handleAddInput}
-                          style={{
-                            // backgroundColor: GlobalStyles.colors.red,
-                            padding: 5,
-                            paddingRight: 8,
-                            // marginRight: 3,
-                          }}
-                        >
-                          <Xmark width={17} height={17} />
-                        </Pressable>
-                      ) : (
-                        ""
-                      )}
-                    </Pressable>
-                    // </View>
-                  ))}
-                </View>
+                    <Text style={KRRegular.Subheadline}>
+                      {inputList[index]}
+                    </Text>
+                    {index === 0 ? (
+                      <Pressable
+                        onPress={handleAddInput}
+                        style={{
+                          // backgroundColor: GlobalStyles.colors.red,
+                          padding: 5,
+                          paddingRight: 8,
+                          // marginRight: 3,
+                        }}
+                      >
+                        <Xmark width={17} height={17} />
+                      </Pressable>
+                    ) : (
+                      ""
+                    )}
+                  </Pressable>
+                  // </View>
+                ))}
               </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                시간
+              </Text>
+              <View style={styles.timeContainer}>
+                <Pressable
+                  onPress={() => {
+                    onPressDateInput(0, "time");
+                    setStartTime(true);
+                  }}
+                  style={styles.timeInputBox}
                 >
-                  시간
-                </Text>
-                <View style={styles.timeContainer}>
-                  <Pressable
-                    onPress={() => {
-                      onPressDateInput(0, "time");
-                      setStartTime(true);
-                    }}
-                    style={styles.timeInputBox}
-                  >
-                    {/* <TextInput
+                  {/* <TextInput
                     style={styles.timeInputBox}
                     // value={lecturedata.time}
                     // onChangeText={(text) => {
@@ -948,17 +941,17 @@ function UpdateLectureScreen({ route }) {
                     }}
                     editable={false}
                   /> */}
-                    <Text style={KRRegular.Subheadline}>{tmpTime[0]}</Text>
-                  </Pressable>
-                  <Text>~</Text>
-                  <Pressable
-                    onPress={() => {
-                      onPressDateInput(1, "time");
-                      setStartTime(false);
-                    }}
-                    style={styles.timeInputBox}
-                  >
-                    {/* <TextInput
+                  <Text style={KRRegular.Subheadline}>{tmpTime[0]}</Text>
+                </Pressable>
+                <Text>~</Text>
+                <Pressable
+                  onPress={() => {
+                    onPressDateInput(1, "time");
+                    setStartTime(false);
+                  }}
+                  style={styles.timeInputBox}
+                >
+                  {/* <TextInput
                     style={styles.timeInputBox}
                     // onChangeText={(text) => {
                     //   handleSingleInputChange(text, "time");
@@ -966,307 +959,311 @@ function UpdateLectureScreen({ route }) {
                     value={tmpTime[1]}
                     editable={false}
                   /> */}
-                    <Text style={KRRegular.Subheadline}>{tmpTime[1]}</Text>
-                  </Pressable>
-                </View>
+                  <Text style={KRRegular.Subheadline}>{tmpTime[1]}</Text>
+                </Pressable>
               </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                지역
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.city}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "city");
+                }}
+              />
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                장소
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.place}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "place");
+                }}
+              />
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                강의 대상
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.studentGrade}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "studentGrade");
+                }}
+              />
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                인원수
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.studentNumber}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "studentNumber");
+                }}
+                keyboardType="number-pad"
+              />
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                모집 인원
+              </Text>
+              <View>
+                <Pressable
+                  onPress={() => setTutorModal(true)}
+                  style={styles.multiLineInputBox}
                 >
-                  지역
-                </Text>
-                <TextInput
-                  style={styles.inputBox}
-                  value={lecturedata.city}
-                  onChangeText={(text) => {
-                    handleSingleInputChange(text, "city");
-                  }}
-                />
-              </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  장소
-                </Text>
-                <TextInput
-                  style={styles.inputBox}
-                  value={lecturedata.place}
-                  onChangeText={(text) => {
-                    handleSingleInputChange(text, "place");
-                  }}
-                />
-              </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  강의 대상
-                </Text>
-                <TextInput
-                  style={styles.inputBox}
-                  value={lecturedata.studentGrade}
-                  onChangeText={(text) => {
-                    handleSingleInputChange(text, "studentGrade");
-                  }}
-                />
-              </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  인원수
-                </Text>
-                <TextInput
-                  style={styles.inputBox}
-                  value={lecturedata.studentNumber}
-                  onChangeText={(text) => {
-                    handleSingleInputChange(text, "studentNumber");
-                  }}
-                />
-              </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  모집 인원
-                </Text>
-                <View>
-                  <Pressable
-                    onPress={() => setTutorModal(true)}
-                    style={styles.multiLineInputBox}
-                  >
-                    {/* <TextInput
+                  {/* <TextInput
                       style={styles.multiLineInputBox}
                       value={`주강사 : ${mainTutor}\n보조강사 : ${subTutor}\n스태프 : ${staff}`}
                       multiline={true}
                       editable={false}
                     /> */}
-                    {/* <View style={styles.multiLineInputBox}> */}
-                    <Text style={KRRegular.Subheadline}>
-                      주강사 : {mainTutor}
-                    </Text>
-                    <Text style={KRRegular.Subheadline}>
-                      보조강사 : {subTutor}
-                    </Text>
-                    <Text style={KRRegular.Subheadline}>스태프 : {staff}</Text>
-                    {/* </View> */}
-                  </Pressable>
-                </View>
+                  {/* <View style={styles.multiLineInputBox}> */}
+                  <Text style={KRRegular.Subheadline}>
+                    주강사 : {mainTutor}
+                  </Text>
+                  <Text style={KRRegular.Subheadline}>
+                    보조강사 : {subTutor}
+                  </Text>
+                  <Text style={KRRegular.Subheadline}>스태프 : {staff}</Text>
+                  {/* </View> */}
+                </Pressable>
               </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  신청 마감
-                </Text>
-                <Pressable
-                  key={index}
-                  onPress={() => onPressDateInput(-1, "date")}
-                  style={styles.dataInputBox}
-                >
-                  {/* <TextInput
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                신청 마감
+              </Text>
+              <Pressable
+                key={index}
+                onPress={() => onPressDateInput(-1, "date")}
+                style={styles.dataInputBox}
+              >
+                {/* <TextInput
                     style={[styles.inputBox]}
                     editable={false}
                     value={dateFormat(
                       new Date(lecturedata.lectureDate.enrollEndDate)
                     )}
                   /> */}
-                  <View>
-                    <Text style={KRRegular.Subheadline}>
-                      {lecturedata.lectureDate.enrollEndDate
-                        ? dateFormat(
-                            new Date(lecturedata.lectureDate.enrollEndDate)
-                          )
-                        : ""}
-                    </Text>
-                  </View>
-                </Pressable>
-              </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  강사 급여
-                </Text>
-                <Pressable
-                  onPress={() => setPaymentModal(true)}
-                  style={styles.multiLineInputBox}
-                >
-                  {/* <View> */}
-                  {/* <TextInput
+                <View>
+                  <Text style={KRRegular.Subheadline}>
+                    {lecturedata.lectureDate.enrollEndDate
+                      ? dateFormat(
+                          new Date(lecturedata.lectureDate.enrollEndDate)
+                        )
+                      : ""}
+                  </Text>
+                </View>
+              </Pressable>
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                강사 급여
+              </Text>
+              <Pressable
+                onPress={() => setPaymentModal(true)}
+                style={styles.multiLineInputBox}
+              >
+                {/* <View> */}
+                {/* <TextInput
                       style={[styles.multiLineInputBox]}
                       value={`주강사 : ${mainPayment}원\n보조강사 : ${subPayment}원\n스태프 : ${staffPayment}원`}
                       multiline={true}
                       editable={false}
                     /> */}
-                  <Text style={KRRegular.Subheadline}>
-                    주강사 : {mainPayment}
-                  </Text>
-                  <Text style={KRRegular.Subheadline}>
-                    보조강사 : {subPayment}
-                  </Text>
-                  <Text style={KRRegular.Subheadline}>
-                    스태프 : {staffPayment}
-                  </Text>
-                  {/* </View> */}
-                </Pressable>
-              </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  교통비
+                <Text style={KRRegular.Subheadline}>
+                  주강사 : {mainPayment}
                 </Text>
-                <TextInput
-                  style={styles.inputBox}
-                  value={lecturedata.transportCost}
-                  onChangeText={(text) => {
-                    handleSingleInputChange(text, "transportCost");
-                  }}
-                />
-              </View>
-
-              <View style={{ marginBottom: 60, marginTop: 69 }}>
-                <ButtonBig
-                  text="확인"
-                  // onPress={option === "create" ? creatingLecture : updateLecture}
-                  onPress={updateLecture}
-                />
-              </View>
-
-              {/* 일자, 시간 - 달력, 시간 선택 팝업 */}
-              <DateTimePickerModal
-                isVisible={datePickerVisible}
-                mode={mode}
-                onConfirm={onConfirm}
-                onCancel={() => setDatePickerVisible(false)}
-                date={new Date()}
+                <Text style={KRRegular.Subheadline}>
+                  보조강사 : {subPayment}
+                </Text>
+                <Text style={KRRegular.Subheadline}>
+                  스태프 : {staffPayment}
+                </Text>
+                {/* </View> */}
+              </Pressable>
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                교통비
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.transportCost}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "transportCost");
+                }}
+                keyboardType="number-pad"
               />
-              {/* 모집 인원 input 클릭 시 나오는 모달 */}
-              <Modal transparent={true} visible={tutorModal}>
-                <View style={styles.paymentModal}>
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      padding: 20,
-                      borderRadius: 5.41,
-                    }}
-                  >
-                    <Text style>모집 대상이 아니라면 칸을 비워주세요.</Text>
-                    <Text>(숫자만 입력 가능)</Text>
-                    <Text></Text>
-                    <Text style={{ marginLeft: 3 }}>주강사</Text>
-                    <View>
-                      <TextInput
-                        style={styles.paymentInput}
-                        keyboardType="number-pad"
-                        onChangeText={mainTutorHandler}
-                        value={mainTutor}
-                      />
-                    </View>
-                    <Text style={{ marginTop: 5, marginLeft: 3 }}>
-                      보조강사
-                    </Text>
-                    <View>
-                      <TextInput
-                        style={styles.paymentInput}
-                        keyboardType="number-pad"
-                        onChangeText={subTutorHandler}
-                        value={subTutor}
-                      />
-                    </View>
-                    <Text style={{ marginTop: 5, marginLeft: 3 }}>스태프</Text>
-                    <View>
-                      <TextInput
-                        style={styles.paymentInput}
-                        keyboardType="number-pad"
-                        onChangeText={staffHandler}
-                        value={staff}
-                      />
-                    </View>
-                    <View style={{ marginTop: 20 }}>
-                      <ButtonSmall title="확인" onPress={tutorOnConfirm} />
-                    </View>
-                  </View>
-                </View>
-              </Modal>
-              {/* 강사 급여 input 클릭 시 나오는 모달 */}
-              <Modal transparent={true} visible={paymentModal}>
-                <View style={styles.paymentModal}>
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      padding: 20,
-                      borderRadius: 5.41,
-                    }}
-                  >
-                    <Text>급여가 없다면 칸을 비워주세요.</Text>
-                    <Text>(숫자만 입력 가능)</Text>
-                    <Text></Text>
+            </View>
 
-                    <Text style={{ marginLeft: 3 }}>주강사</Text>
-                    <View>
-                      <TextInput
-                        style={styles.paymentInput}
-                        keyboardType="number-pad"
-                        onChangeText={mainPaymentHandler}
-                        value={mainPayment}
-                      />
-                    </View>
-                    <Text style={{ marginTop: 5, marginLeft: 3 }}>
-                      보조강사
-                    </Text>
-                    <View>
-                      <TextInput
-                        style={styles.paymentInput}
-                        keyboardType="number-pad"
-                        onChangeText={subPaymentHandler}
-                        value={subPayment}
-                      />
-                    </View>
-                    <Text style={{ marginTop: 5, marginLeft: 3 }}>스태프</Text>
-                    <View>
-                      <TextInput
-                        style={styles.paymentInput}
-                        keyboardType="number-pad"
-                        onChangeText={staffPaymentHandler}
-                        value={staffPayment}
-                      />
-                    </View>
-                    <View style={{ marginTop: 20 }}>
-                      <ButtonSmall title="확인" onPress={paymentOnConfirm} />
-                    </View>
+            <View style={{ marginBottom: 60, marginTop: 69 }}>
+              <ButtonBig
+                text="확인"
+                // onPress={option === "create" ? creatingLecture : updateLecture}
+                onPress={updateLecture}
+              />
+            </View>
+
+            {/* 일자, 시간 - 달력, 시간 선택 팝업 */}
+            <DateTimePickerModal
+              isVisible={datePickerVisible}
+              mode={mode}
+              onConfirm={onConfirm}
+              onCancel={() => setDatePickerVisible(false)}
+              date={new Date()}
+              locale="ko"
+              textColor={GlobalStyles.colors.gray01}
+              confirmTextIOS="확인"
+              cancelTextIOS="취소"
+              customCancelButtonIOS={() => {
+                <View></View>;
+              }}
+            />
+            {/* 모집 인원 input 클릭 시 나오는 모달 */}
+            <Modal transparent={true} visible={tutorModal}>
+              <View style={styles.paymentModal}>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    padding: 20,
+                    borderRadius: 5.41,
+                  }}
+                >
+                  <Text style>모집 대상이 아니라면 칸을 비워주세요.</Text>
+                  <Text>(숫자만 입력 가능)</Text>
+                  <Text></Text>
+                  <Text style={{ marginLeft: 3 }}>주강사</Text>
+                  <View>
+                    <TextInput
+                      style={styles.paymentInput}
+                      keyboardType="number-pad"
+                      onChangeText={mainTutorHandler}
+                      value={mainTutor}
+                    />
+                  </View>
+                  <Text style={{ marginTop: 5, marginLeft: 3 }}>보조강사</Text>
+                  <View>
+                    <TextInput
+                      style={styles.paymentInput}
+                      keyboardType="number-pad"
+                      onChangeText={subTutorHandler}
+                      value={subTutor}
+                    />
+                  </View>
+                  <Text style={{ marginTop: 5, marginLeft: 3 }}>스태프</Text>
+                  <View>
+                    <TextInput
+                      style={styles.paymentInput}
+                      keyboardType="number-pad"
+                      onChangeText={staffHandler}
+                      value={staff}
+                    />
+                  </View>
+                  <View style={{ marginTop: 20 }}>
+                    <ButtonSmall title="확인" onPress={tutorOnConfirm} />
                   </View>
                 </View>
-              </Modal>
-            </ScrollView>
-          </KeyboardAvoidingView>
+              </View>
+            </Modal>
+            {/* 강사 급여 input 클릭 시 나오는 모달 */}
+            <Modal transparent={true} visible={paymentModal}>
+              <View style={styles.paymentModal}>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    padding: 20,
+                    borderRadius: 5.41,
+                  }}
+                >
+                  <Text>급여가 없다면 칸을 비워주세요.</Text>
+                  <Text>(숫자만 입력 가능)</Text>
+                  <Text></Text>
+
+                  <Text style={{ marginLeft: 3 }}>주강사</Text>
+                  <View>
+                    <TextInput
+                      style={styles.paymentInput}
+                      keyboardType="number-pad"
+                      onChangeText={mainPaymentHandler}
+                      value={mainPayment}
+                    />
+                  </View>
+                  <Text style={{ marginTop: 5, marginLeft: 3 }}>보조강사</Text>
+                  <View>
+                    <TextInput
+                      style={styles.paymentInput}
+                      keyboardType="number-pad"
+                      onChangeText={subPaymentHandler}
+                      value={subPayment}
+                    />
+                  </View>
+                  <Text style={{ marginTop: 5, marginLeft: 3 }}>스태프</Text>
+                  <View>
+                    <TextInput
+                      style={styles.paymentInput}
+                      keyboardType="number-pad"
+                      onChangeText={staffPaymentHandler}
+                      value={staffPayment}
+                    />
+                  </View>
+                  <View style={{ marginTop: 20 }}>
+                    <ButtonSmall title="확인" onPress={paymentOnConfirm} />
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          </ScrollView>
         );
 
       default:
@@ -1275,89 +1272,97 @@ function UpdateLectureScreen({ route }) {
   };
   return (
     <>
-      <View style={styles.containerTop}>
-        <Text
-          style={[
-            KRBold.Subbody,
-            { color: GlobalStyles.colors.gray05, marginBottom: -3 },
-          ]}
-        >
-          메인타이틀
-        </Text>
-        <TextInput
-          style={[styles.titleInput]}
-          onChangeText={(text) => {
-            handleSingleInputChange(text, "mainTitle");
-          }}
-          value={lecturedata.mainTitle ? lecturedata.mainTitle : ""}
-        />
-        <Text
-          style={[
-            KRBold.Subbody,
-            {
-              color: GlobalStyles.colors.gray05,
-              marginTop: 10,
-              marginBottom: -3,
-            },
-          ]}
-        >
-          서브타이틀
-        </Text>
-        <TextInput
-          style={styles.titleInput2}
-          multiline
-          // maxLength={44}
-          onChangeText={(text) => {
-            handleSingleInputChange(text, "subTitle");
-          }}
-          textAlignVertical="center"
-          value={lecturedata.subTitle ? lecturedata.subTitle : ""}
-        />
-      </View>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        renderTabBar={(props) => (
-          <TabBar
-            {...props}
-            // 밑에 막대기(line) 스타일링
-            indicatorStyle={{
-              backgroundColor: GlobalStyles.colors.primaryDefault,
-              border: "none",
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={
+          Platform.OS === "ios" ? 44 + statusBarHeight : 0
+        }
+      >
+        <View style={styles.containerTop}>
+          <Text
+            style={[
+              KRBold.Subbody,
+              { color: GlobalStyles.colors.gray05, marginBottom: -3 },
+            ]}
+          >
+            메인타이틀
+          </Text>
+          <TextInput
+            style={[styles.titleInput]}
+            onChangeText={(text) => {
+              handleSingleInputChange(text, "mainTitle");
             }}
-            style={{
-              backgroundColor: "white",
-              shadowOffset: { height: 0, width: 0 },
-              shadowColor: "transparent",
-              height: 31,
-              borderBottomWidth: 0.5,
-              borderBottomColor: GlobalStyles.colors.gray04,
-            }}
-            renderLabel={({ route, focused, color }) => (
-              <Text
-                style={
-                  focused
-                    ? [KRBold.Subheadline]
-                    : [
-                        KRRegular.Subheadline,
-                        { color: GlobalStyles.colors.gray05 },
-                      ]
-                }
-              >
-                {route.title}
-              </Text>
-            )}
-            tabStyle={{
-              flexDirection: "row",
-              alignItems: "flex-start",
-              padding: 0,
-            }}
-            pressColor={"transparent"}
+            value={lecturedata.mainTitle ? lecturedata.mainTitle : ""}
           />
-        )}
-      />
+          <Text
+            style={[
+              KRBold.Subbody,
+              {
+                color: GlobalStyles.colors.gray05,
+                marginTop: 10,
+                marginBottom: -3,
+              },
+            ]}
+          >
+            서브타이틀
+          </Text>
+          <TextInput
+            style={styles.titleInput2}
+            multiline
+            // maxLength={44}
+            onChangeText={(text) => {
+              handleSingleInputChange(text, "subTitle");
+            }}
+            textAlignVertical="center"
+            value={lecturedata.subTitle ? lecturedata.subTitle : ""}
+          />
+        </View>
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={(props) => (
+            <TabBar
+              {...props}
+              // 밑에 막대기(line) 스타일링
+              indicatorStyle={{
+                backgroundColor: GlobalStyles.colors.primaryDefault,
+                border: "none",
+              }}
+              style={{
+                backgroundColor: "white",
+                shadowOffset: { height: 0, width: 0 },
+                shadowColor: "transparent",
+                height: 31,
+                borderBottomWidth: 0.5,
+                borderBottomColor: GlobalStyles.colors.gray04,
+              }}
+              renderLabel={({ route, focused, color }) => (
+                <Text
+                  style={
+                    focused
+                      ? [KRBold.Subheadline]
+                      : [
+                          KRRegular.Subheadline,
+                          { color: GlobalStyles.colors.gray05 },
+                        ]
+                  }
+                >
+                  {route.title}
+                </Text>
+              )}
+              tabStyle={{
+                flexDirection: "row",
+                alignItems: "flex-start",
+                padding: 0,
+              }}
+              pressColor={"transparent"}
+            />
+          )}
+        />
+      </KeyboardAvoidingView>
     </>
   );
 }
