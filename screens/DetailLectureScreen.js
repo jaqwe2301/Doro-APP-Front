@@ -71,6 +71,7 @@ function DetailLectureScreen({ route }) {
   const [assign, setAssign] = useState([]); // 강사 배정되었는지 체크
   const [assignList, setAssignList] = useState([]); // 강의 배정 정보
   const [apply, setApply] = useState([false, false, false]); // 강사가 강의를 신청했는지 체크
+  const [after, setAfter] = useState(false); // 강사 신청 후 리렌더링 위해 사용
 
   const data = route.params;
 
@@ -187,7 +188,7 @@ function DetailLectureScreen({ route }) {
     }
 
     setStatus(data.status === "RECRUITING" ? true : false);
-  }, [isFocused]);
+  }, [isFocused, after]);
 
   /** 강의 신청 */
   const applyingTutor = (roles) => {
@@ -261,6 +262,7 @@ function DetailLectureScreen({ route }) {
                         text: "확인",
                         onPress: () => {
                           // console.log("강사 신청 완료");
+                          setAfter((prev) => !prev);
                         },
                         style: "destructive",
                       },
