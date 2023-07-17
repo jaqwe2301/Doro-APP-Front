@@ -365,6 +365,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
           <Swiper
             autoplay={true}
             autoplayTimeout={3}
+            autoplayDirection={true}
             horizontal={false}
             showsPagination={false}
             width={250}
