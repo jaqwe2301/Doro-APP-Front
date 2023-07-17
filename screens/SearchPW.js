@@ -8,6 +8,7 @@ import {
   NativeModules,
   ScrollView,
   SafeAreaView,
+  Keyboard,
 } from "react-native";
 
 import { GlobalStyles } from "../constants/styles";
@@ -66,14 +67,16 @@ function SearchPW({ navigation }) {
           messageType: "PASSWORD",
           phone: phoneNum,
         });
-
         console.log(success);
         if (success) {
-          navigation.navigate("changePw", {
-            id: id,
-            phone: phoneNum,
-          });
-          setCount(0);
+          Keyboard.dismiss();
+          setTimeout(() => {
+            navigation.navigate("changePw", {
+              id: id,
+              phone: phoneNum,
+            });
+            setCount(0);
+          }, 100);
         } else {
           Alert.alert("인증번호 불일치", "정확한 인증번호를 입력해주세요");
         }

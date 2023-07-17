@@ -1,14 +1,42 @@
 import { View, StyleSheet, Image, Text, SafeAreaView } from "react-native";
 import ButtonBig from "../ui/ButtonBig";
 import { GlobalStyles } from "../../constants/styles";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { AuthContext } from "../../store/auth-context";
+import { logout } from "../../utill/http";
 function FinishPw() {
   const authCtx = useContext(AuthContext);
   const navigation = useNavigation();
   function naviLogin() {
-    authCtx.isAuthenticated ? authCtx.logout() : navigation.replace("login");
+    authCtx.isAuthenticated ? logoutApi() : navigation.replace("login");
+  }
+  async function logoutApi() {
+    try {
+      const response = await logout();
+
+      console.log(response);
+      if (response.status === 200) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          })
+        );
+        authCtx.logout();
+      }
+    } catch (error) {
+      // navigation.navigate("login");
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        })
+      );
+      authCtx.logout();
+      console.log(error);
+      console.log("에러났쪄염");
+    }
   }
   return (
     <SafeAreaView style={{ flex: 1 }}>

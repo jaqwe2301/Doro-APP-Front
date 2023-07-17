@@ -24,11 +24,13 @@ function FindId({ route }) {
           <View style={styles.text}>
             <InputText text="가입된 아이디를 찾았어요." />
           </View>
-          <Text style={styles.idContainer}>{id}</Text>
+          <View style={styles.idContainer}>
+            <Text style={styles.idText}>{id}</Text>
+          </View>
           <View style={styles.pwContainer}>
             <Text style={styles.pwText}>비밀번호를 잊으셨나요?</Text>
-            <Pressable onPress={naviFindPW}>
-              <Text style={[styles.pwText, styles.pw]}>비밀번호 찾기</Text>
+            <Pressable onPress={naviFindPW} style={styles.pw}>
+              <Text style={[styles.pwText]}>비밀번호 찾기</Text>
             </Pressable>
           </View>
         </View>
@@ -64,13 +66,16 @@ const styles = StyleSheet.create({
     height: 49,
     borderRadius: 5.41,
     paddingLeft: 20,
+    justifyContent: "center",
+    marginHorizontal: 20,
+    marginTop: 25,
+    backgroundColor: GlobalStyles.colors.gray06,
+  },
+  idText: {
     textAlignVertical: "center",
     fontSize: 15,
     fontWeight: 600,
     lineHeight: 20,
-    marginHorizontal: 20,
-    marginTop: 25,
-    backgroundColor: GlobalStyles.colors.gray06,
   },
   pwContainer: {
     marginTop: 8,
