@@ -7,12 +7,13 @@ import {
   Pressable,
   Alert,
   Modal,
+  NativeModules,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import InputLine from "../components/ui/InputLine";
 import { useContext, useEffect, useState } from "react";
 import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
-import { useNavigation, useRoute } from "@react-navigation/native";
+
 import { getProfile2, updateProfile, updateUserImage } from "../utill/http";
 import { Ionicons } from "@expo/vector-icons";
 import ButtonBig from "../components/ui/ButtonBig";
@@ -21,6 +22,7 @@ import Timer from "../components/feat/Timer";
 import * as ImagePicker from "expo-image-picker";
 
 import Down from "../assets/down.svg";
+import { KeyboardAvoidingView } from "react-native";
 
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
@@ -95,7 +97,7 @@ function ProfileEdit({ navigation, route }) {
       });
       console.log(success);
       if (success.success) {
-        navigation.replace("myPage");
+        navigation.replace("myPageScreen");
       }
     } catch (error) {
       Alert.alert("ERROR", "Network Error");
@@ -221,106 +223,133 @@ function ProfileEdit({ navigation, route }) {
     }
   };
 
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.imageContainer}>
-          {imageUrl !== null ? (
-            <Image
-              style={styles.image}
-              source={{
-                uri: imageUrl,
-              }}
-            />
-          ) : (
-            <Image
-              style={styles.image}
-              source={require("../assets/profile.png")}
-            />
-          )}
-          <View style={{ marginTop: 4 }}>
-            <Pressable onPress={uploadImage}>
-              <Text style={styles.imgEditText}>사진 수정</Text>
-            </Pressable>
-          </View>
-        </View>
-        <View style={[styles.border, { marginTop: 16 }]}></View>
-        <View>
-          <Text style={styles.contentTitle}>기본정보</Text>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>이름</Text>
-            <Text style={styles.contentText}>{data.name}</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>생년월일</Text>
-            <Text style={styles.contentText}>{data.birth}</Text>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>휴대전화번호</Text>
-            <InputLine
-              onChangeText={handlePhoneChange}
-              value={phoneNum}
-              keyboardType="numeric"
-            />
-            <Pressable onPress={requestNumber}>
-              <View style={styles.authView}>
-                <Text style={styles.auth}>인증요청</Text>
-              </View>
-            </Pressable>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>인증번호</Text>
-            <InputLine
-              onChangeText={handleAuthChange}
-              value={authNum}
-              keyboardType="numeric"
-            />
-            {authVisible && (
-              <View style={{ marginTop: 0 }}>
-                <Timer
-                  count={count}
-                  setCount={setCount}
-                  smallStyle={styles.timer2}
-                />
-              </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
+    >
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.imageContainer}>
+            {imageUrl !== null ? (
+              <Image
+                style={styles.image}
+                source={{
+                  uri: imageUrl,
+                }}
+              />
+            ) : (
+              <Image
+                style={styles.image}
+                source={require("../assets/profile.png")}
+              />
             )}
-            <Pressable onPress={verifyAuthNum}>
-              <View style={styles.authView}>
-                <Text style={styles.auth}>인증확인</Text>
-              </View>
-            </Pressable>
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>학교</Text>
-            <InputLine onChangeText={handleSchoolChange} value={school} />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>전공</Text>
-            <InputLine onChangeText={handleMajorChange} value={major} />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>학번</Text>
-            <InputLine onChangeText={handleStudentIdChange} value={studentId} />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>재학 유무</Text>
-            <View style={styles.statusContainer2}>
-              <View
+            <View style={{ marginTop: 4 }}>
+              <Pressable
+                onPress={uploadImage}
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
+                  // backgroundColor: GlobalStyles.colors.green,
+                  paddingHorizontal: 10,
                 }}
               >
-                <Text style={styles.statusText2}>{status1}</Text>
-                <Pressable onPress={() => setVisible(!visible)}>
-                  {/* <View style={{ paddingBottom: 3 }}> */}
-                  <Down width={20} height={20} />
-                  {/* </View> */}
-                </Pressable>
-              </View>
+                <Text style={styles.imgEditText}>사진 수정</Text>
+              </Pressable>
             </View>
           </View>
-          {/* <View style={styles.contentContainer}>
+          <View style={[styles.border, { marginTop: 16 }]}></View>
+          <View>
+            <Text style={styles.contentTitle}>기본정보</Text>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>이름</Text>
+              <Text style={styles.contentText}>{data.name}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>생년월일</Text>
+              <Text style={styles.contentText}>{data.birth}</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>휴대전화번호</Text>
+              <InputLine
+                onChangeText={handlePhoneChange}
+                value={phoneNum}
+                keyboardType="numeric"
+              />
+              <Pressable
+                onPress={requestNumber}
+                // style={{ backgroundColor: GlobalStyles.colors.green }}
+              >
+                <View style={styles.authView}>
+                  <Text style={styles.auth}>인증요청</Text>
+                </View>
+              </Pressable>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>인증번호</Text>
+              <InputLine
+                onChangeText={handleAuthChange}
+                value={authNum}
+                keyboardType="numeric"
+              />
+              {authVisible && (
+                <View style={{ marginTop: 0 }}>
+                  <Timer
+                    count={count}
+                    setCount={setCount}
+                    smallStyle={styles.timer2}
+                  />
+                </View>
+              )}
+              <Pressable onPress={verifyAuthNum}>
+                <View style={styles.authView}>
+                  <Text style={styles.auth}>인증확인</Text>
+                </View>
+              </Pressable>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>학교</Text>
+              <InputLine onChangeText={handleSchoolChange} value={school} />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>전공</Text>
+              <InputLine onChangeText={handleMajorChange} value={major} />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>학번</Text>
+              <InputLine
+                onChangeText={handleStudentIdChange}
+                value={studentId}
+              />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>재학 유무</Text>
+              <View style={styles.statusContainer2}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text style={styles.statusText2}>{status1}</Text>
+                  <Pressable onPress={() => setVisible(!visible)}>
+                    {/* <View style={{ paddingBottom: 3 }}> */}
+                    <Down width={20} height={20} />
+                    {/* </View> */}
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+            {/* <View style={styles.contentContainer}>
             <Text style={styles.title}>기수</Text>
             <InputLine
               onChangeText={handleGenerationChange}
@@ -328,106 +357,107 @@ function ProfileEdit({ navigation, route }) {
               keyboardType="numeric"
             />
           </View> */}
-          <View style={styles.border}></View>
-        </View>
-        <View>
-          <Text style={styles.contentTitle}>로그인 정보</Text>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>아이디</Text>
-            <Text
-              style={[
-                styles.contentText,
-                { color: GlobalStyles.colors.gray01 },
-              ]}
-            >
-              {headerAccount}
-            </Text>
+            <View style={styles.border}></View>
           </View>
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>비밀번호</Text>
-            <Pressable onPress={navi}>
-              <View style={styles.contentTextView}>
-                <Text
-                  style={[
-                    styles.contentText,
-                    { marginLeft: 0, color: GlobalStyles.colors.gray01 },
-                  ]}
-                >
-                  비밀번호 수정
-                </Text>
-              </View>
-            </Pressable>
-          </View>
-        </View>
-        <View style={styles.border}></View>
-        <Modal
-          animationType="none"
-          transparent={true}
-          visible={visible}
-          statusBarTranslucent={true}
-          onRequestClose={() => setVisible(!visible)}
-        >
-          <Pressable
-            style={styles.modalOverlay}
-            onPress={() => setVisible(!visible)}
-          >
-            <Pressable>
-              <View
-                style={{
-                  backgroundColor: "white",
-
-                  height: 273,
-                  justifyContent: "space-between",
-
-                  borderTopEndRadius: 5.41,
-                  borderTopStartRadius: 5.41,
-                }}
+          <View>
+            <Text style={styles.contentTitle}>로그인 정보</Text>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>아이디</Text>
+              <Text
+                style={[
+                  styles.contentText,
+                  { color: GlobalStyles.colors.gray01 },
+                ]}
               >
-                <View>
-                  <View style={styles.statusTitleContainer}>
-                    <View style={styles.iconContainer}>
-                      <Pressable onPress={() => setVisible(!visible)}>
-                        <Ionicons name="close-outline" size={40} />
-                      </Pressable>
+                {headerAccount}
+              </Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.title}>비밀번호</Text>
+              <Pressable onPress={navi}>
+                <View style={styles.contentTextView}>
+                  <Text
+                    style={[
+                      styles.contentText,
+                      { marginLeft: 0, color: GlobalStyles.colors.gray01 },
+                    ]}
+                  >
+                    비밀번호 수정
+                  </Text>
+                </View>
+              </Pressable>
+            </View>
+          </View>
+          <View style={styles.border}></View>
+          <Modal
+            animationType="none"
+            transparent={true}
+            visible={visible}
+            statusBarTranslucent={true}
+            onRequestClose={() => setVisible(!visible)}
+          >
+            <Pressable
+              style={styles.modalOverlay}
+              onPress={() => setVisible(!visible)}
+            >
+              <Pressable>
+                <View
+                  style={{
+                    backgroundColor: "white",
+
+                    height: 273,
+                    justifyContent: "space-between",
+
+                    borderTopEndRadius: 5.41,
+                    borderTopStartRadius: 5.41,
+                  }}
+                >
+                  <View>
+                    <View style={styles.statusTitleContainer}>
+                      <View style={styles.iconContainer}>
+                        <Pressable onPress={() => setVisible(!visible)}>
+                          <Ionicons name="close-outline" size={40} />
+                        </Pressable>
+                      </View>
+                      <Text style={styles.statusTitle}>재학 유무</Text>
                     </View>
-                    <Text style={styles.statusTitle}>재학 유무</Text>
+                    <Pressable
+                      style={styles.statusTextContainer}
+                      onPress={statusSelect}
+                    >
+                      <Text style={styles.statusText}>재학</Text>
+                      <View
+                        style={[styles.iconContainer2, { display: display1 }]}
+                      >
+                        <Ionicons name="checkmark" size={30} />
+                      </View>
+                    </Pressable>
+                    <Pressable
+                      style={styles.statusTextContainer}
+                      onPress={statusSelect}
+                    >
+                      <Text style={styles.statusText}>휴학</Text>
+                      <View
+                        style={[styles.iconContainer2, { display: display2 }]}
+                      >
+                        <Ionicons name="checkmark" size={30} />
+                      </View>
+                    </Pressable>
                   </View>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={statusSelect}
-                  >
-                    <Text style={styles.statusText}>재학</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: display1 }]}
-                    >
-                      <Ionicons name="checkmark" size={30} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={statusSelect}
-                  >
-                    <Text style={styles.statusText}>휴학</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: display2 }]}
-                    >
-                      <Ionicons name="checkmark" size={30} />
-                    </View>
-                  </Pressable>
+                  <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                    <ButtonBig
+                      text="확인"
+                      style={GlobalStyles.colors.primaryDefault}
+                      onPress={okayBtn}
+                    />
+                  </View>
                 </View>
-                <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-                  <ButtonBig
-                    text="확인"
-                    style={GlobalStyles.colors.primaryDefault}
-                    onPress={okayBtn}
-                  />
-                </View>
-              </View>
+              </Pressable>
             </Pressable>
-          </Pressable>
-        </Modal>
-      </ScrollView>
-    </View>
+          </Modal>
+        </ScrollView>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -510,14 +540,17 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 15,
     color: GlobalStyles.colors.gray05,
-    marginLeft: 10,
+    // marginLeft: 10,
+    // backgroundColor: GlobalStyles.colors.green,
+    padding: 10,
   },
   completeText: {
-    fontWeight: "400",
+    fontWeight: 400,
     fontSize: 15,
     // lineHeight: 20,
     color: GlobalStyles.colors.primaryDefault,
-    marginRight: 10,
+    // marginRight: 10,
+    padding: 10,
   },
   statusContainer2: {
     // width: "100%",
