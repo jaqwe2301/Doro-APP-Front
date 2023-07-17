@@ -6,19 +6,26 @@ import {
   Pressable,
   Image,
   FlatList,
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
-import { getNotification, readNotification } from "../utill/http";
+import {
+  getAnnouncementId,
+  getNotification,
+  readNotification,
+} from "../utill/http";
 import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
-
+import Down from "../assets/smalldown.svg";
+import Right from "../assets/smallright.svg";
+import Up from "../assets/smallup.svg";
 function AlarmScreen({ navigation }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const [data, setData] = useState([]);
   const [pageNum, setPageNum] = useState(0);
   const [expandedItems, setExpandedItems] = useState([]);
-
+  const [clickedItems, setClickedItems] = useState([]);
   async function notiHandler() {
     try {
       const response = await getNotification({
@@ -29,6 +36,22 @@ function AlarmScreen({ navigation }) {
       if (response.success) {
         setData((prev) => [...prev, ...response.data]);
         setPageNum((prev) => prev + 1);
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async function refreshHandler() {
+    try {
+      const response = await getNotification({
+        userId: headerId,
+        page: 0,
+        size: 10,
+      });
+      if (response.success) {
+        setData(response.data);
+        setPageNum(1);
       }
       console.log(response);
     } catch (error) {
@@ -69,8 +92,31 @@ function AlarmScreen({ navigation }) {
     return formattedTime;
   }
 
-  const Item = ({ item, expandedItems, setExpandedItems }) => {
+  async function naviNotice(id) {
+    try {
+      const response = await getAnnouncementId({
+        id: id,
+      });
+      if (response !== undefined) {
+        navigation.navigate("noticeDetail", { data: response });
+      } else {
+        Alert.alert("삭제된 공지 입니다.");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const Item = ({
+    item,
+    expandedItems,
+    setExpandedItems,
+    clickedItems,
+    setClickedItems,
+  }) => {
     const isExpanded = expandedItems.includes(item.id);
+
+    const isClicked = clickedItems.includes(item.id);
     return item.notificationType === "NOTIFICATION" ? (
       <Pressable
         onPress={() => {
@@ -82,11 +128,14 @@ function AlarmScreen({ navigation }) {
           if (!item.isRead) {
             readHandler(item.id);
           }
+          if (!clickedItems.includes(item.id)) {
+            setClickedItems([...clickedItems, item.id]);
+          }
         }}
       >
         <View
           style={
-            item.isRead
+            item.isRead || isClicked
               ? [styles.contentContainer, { backgroundColor: "#F6F6F6" }]
               : styles.contentContainer
           }
@@ -94,7 +143,9 @@ function AlarmScreen({ navigation }) {
           <View style={styles.textTopContainer}>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.title}>알림</Text>
-              {!item.isRead && <View style={styles.circle}></View>}
+              {!item.isRead && !isClicked && (
+                <View style={styles.circle}></View>
+              )}
             </View>
             <Text style={styles.date}>
               {/* {moment(item.createdAt).format("YYYY-MM-DD A h:mm")} */}
@@ -109,14 +160,18 @@ function AlarmScreen({ navigation }) {
               {isExpanded ? "닫기" : "자세히 보기"}{" "}
             </Text>
             <View style={styles.svg}>
-              {/* <WithLocalSvg asset={Down} /> */}
-              <Image
+              {/* <Image
                 source={
                   isExpanded
                     ? require("../assets/smallup.png")
                     : require("../assets/smalldown.png")
                 }
-              />
+              /> */}
+              {isExpanded ? (
+                <Up width={10} height={10} />
+              ) : (
+                <Down width={10} height={10} />
+              )}
             </View>
           </View>
         </View>
@@ -124,15 +179,18 @@ function AlarmScreen({ navigation }) {
     ) : (
       <Pressable
         onPress={() => {
-          navigation.navigate("noticeScreen");
+          naviNotice(item.announcementId);
           if (!item.isRead) {
             readHandler(item.id);
+          }
+          if (!clickedItems.includes(item.id)) {
+            setClickedItems([...clickedItems, item.id]);
           }
         }}
       >
         <View
           style={
-            item.isRead
+            item.isRead || isClicked
               ? [styles.contentContainer, { backgroundColor: "#F6F6F6" }]
               : styles.contentContainer
           }
@@ -140,7 +198,9 @@ function AlarmScreen({ navigation }) {
           <View style={styles.textTopContainer}>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.title}>공지사항</Text>
-              {!item.isRead && <View style={styles.circle}></View>}
+              {!item.isRead && !isClicked && (
+                <View style={styles.circle}></View>
+              )}
             </View>
             <Text style={styles.date}>
               {/* {moment(item.createdAt).format("YYYY-MM-DD A h:mm")} */}
@@ -152,7 +212,8 @@ function AlarmScreen({ navigation }) {
           <View style={styles.linkConainer}>
             <Text style={styles.date}>게시글 이동 </Text>
             <View>
-              <Image source={require("../assets/smallright.png")} />
+              {/* <Image source={require("../assets/smallright.png")} /> */}
+              <Right width={10} height={10} />
             </View>
           </View>
         </View>
@@ -170,6 +231,8 @@ function AlarmScreen({ navigation }) {
             item={item}
             expandedItems={expandedItems}
             setExpandedItems={setExpandedItems}
+            clickedItems={clickedItems}
+            setClickedItems={setClickedItems}
           />
         )}
         keyExtractor={(item) => item.id}
@@ -179,6 +242,10 @@ function AlarmScreen({ navigation }) {
         ListHeaderComponentStyle={{ marginTop: 40 }}
         ListFooterComponent={<View />}
         ListFooterComponentStyle={{ marginBottom: 40 }}
+        onRefresh={() => {
+          refreshHandler();
+        }}
+        refreshing={false}
       />
       {/* </View> */}
     </View>

@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from "react";
 import { HeaderContext } from "../store/header-context";
 import { getAnnouncement, getNotification } from "../utill/http";
 import moment from "moment";
-import { WithLocalSvg } from "react-native-svg";
+
 import Add from "../assets/addNotice.svg";
 import Home from "../assets/home.svg";
 
@@ -26,6 +26,20 @@ function NoticeScreen({ navigation }) {
     notiHandler();
   }, []);
 
+  async function refreshHandler() {
+    try {
+      const response = await getAnnouncement({ page: 0, size: 10 });
+      if (response) {
+        setData(response);
+        setPageNum(1);
+        console.log("공지사항 전체 출력");
+        console.log(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   // let pageNum = 0;
   async function notiHandler() {
     try {
@@ -36,6 +50,8 @@ function NoticeScreen({ navigation }) {
         // pageNum++;
 
         console.log(pageNum);
+        console.log("공지사항 전체 출력");
+        console.log(response);
       }
       // console.log(response);
     } catch (error) {
@@ -43,42 +59,32 @@ function NoticeScreen({ navigation }) {
     }
   }
 
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => {
-  //       return (
-  //         <Pressable onPress={naviAlarmHandler}>
-  //           <View>
-  //             <WithLocalSvg asset={Home} />
-  //           </View>
-  //         </Pressable>
-  //       );
-  //     },
-  //   });
-  // }, [naviAlarmHandler]);
-
-  // function naviAlarmHandler() {
-  //   navigation.navigate("alarm");
-  // }
-
-  // navigation.setOptions({
-  //   headerRight: () => {
-  //     return (
-  //       <Pressable onPress={() => navigation.navigate("alarm")}>
-  //         <View>
-  //           <WithLocalSvg asset={Home} />
-  //         </View>
-  //       </Pressable>
-  //     );
-  //   },
-  // });
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={() => navigation.navigate("Home")}>
+            <View>
+              <Home width={24} height={24} />
+            </View>
+          </Pressable>
+        );
+      },
+    });
+  }, []);
 
   const navigHandler = (item) => {
-    navigation.navigate("noticeDetail", { data: item, role: headerRole });
+    setSelectedId(item.id);
+    navigation.navigate("noticeDetail", {
+      data: item,
+    });
+    console.log(selectedId + "선택");
   };
   function naviAddHandler() {
     navigation.navigate("noticeAdd");
   }
+
+  const [selectedId, setSelectedId] = useState();
 
   const Item = ({ item }) => (
     <View style={styles.content}>
@@ -100,15 +106,21 @@ function NoticeScreen({ navigation }) {
       <FlatList
         data={data}
         renderItem={Item}
+        extraData={selectedId}
         keyExtractor={(item) => item.id}
         onEndReached={notiHandler}
         onEndReachedThreshold={0.5}
+        onRefresh={() => {
+          refreshHandler();
+        }}
+        refreshing={false}
       />
       {headerRole === "ROLE_ADMIN" ? (
-        <View style={styles.plusBtn}>
+        <View style={styles.plusBtnContainer}>
           <Pressable onPress={naviAddHandler}>
-            {/* <Image source={require("../assets/plus.png")} /> */}
-            <WithLocalSvg asset={Add} />
+            <View style={styles.plusBtn}>
+              <Add width={24} height={24} />
+            </View>
           </Pressable>
         </View>
       ) : (
@@ -151,9 +163,18 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: GlobalStyles.colors.gray03,
   },
-  plusBtn: {
+  plusBtnContainer: {
     position: "absolute",
-    right: 16,
-    bottom: 12,
+    right: 10,
+    bottom: 17,
+  },
+  plusBtn: {
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+    borderRadius: 100,
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
 });

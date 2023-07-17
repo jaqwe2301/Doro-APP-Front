@@ -15,201 +15,28 @@ import { GlobalStyles } from "../constants/styles";
 import {
   createAnnouncement,
   createAnnouncement2,
+  getProfile,
   pushNotification,
 } from "../utill/http";
-import { useEffect, useState } from "react";
-import { WithLocalSvg } from "react-native-svg";
+import { useContext, useEffect, useState } from "react";
+
 import Camera from "../assets/camera.svg";
 import { URL } from "../utill/config";
 
 import * as ImagePicker from "expo-image-picker";
 import NoticeScreen from "./NoticeScreen";
 import axios from "axios";
+import { HeaderContext } from "../store/header-context";
 
 function AddNoticeScreen({ navigation }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [filename, setFileName] = useState("");
   const [result, setResult] = useState();
-
+  const { headerId, setHeaderId } = useContext(HeaderContext);
   const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
   const [imageUrl, setImageUrl] = useState("");
+  const [filename, setFileName] = useState("");
   const [type, setType] = useState("");
-
-  async function completeHandler2() {
-    const formData = new FormData();
-    const value = [
-      {
-        title: title,
-        body: body,
-      },
-    ];
-
-    var json = JSON.stringify({ title: "fgh", body: "hrt", writer: "hrt" });
-    // var json = JSON.stringify(value);
-
-    // // // Blob 객체로 JSON 데이터 생성
-    var blob = new Blob([json], { type: "application/json" });
-    // if (imageUrl) {
-    //   formData.append("picture", {
-    //     uri: imageUrl,
-    //     type: mime.getType(imageUrl),
-    //     name: filename,
-    //   });
-    //   console.log("이미지 들어갔니");
-    // }
-    // FormData에 Blob 객체 추가
-    formData.append(
-      "announcementReq",
-      json
-      // json
-      // // { title: title, body: body }
-      // {
-      //   contentType: "application/json",
-      // }
-    );
-    // console.log(formData);
-    // formData.append(
-    //   "announcementReq",
-    //   new Blob([JSON.stringify(value)], { type: "application/json" })
-    // );
-    // formData.append("announcementReq.title", title);
-    // // );
-    // formData.append("announcementReq.body", body);
-    // formData.append("announcementReq", "hi");
-
-    // for (const key of formData.keys()) {
-    //   console.log(key); // 각 키(key)를 출력
-    // }
-
-    // for (const value of formData.values()) {
-    //   console.log(value); // 각 값(value)을 출력
-    // }
-
-    // const response = await fetch(imageUrl);
-    // const blob = await response.blob();
-    // formData.append("picture", json);
-    // } else {
-    //   formData.append("picture", "");
-    // }
-    // console.log(formData);
-
-    // console.log(formData.get("announcementReq"));
-    // console.log(formData.keys);
-
-    const response = await createAnnouncement2({
-      formData: formData,
-      title: title,
-      body: body,
-      writer: "김동규",
-    });
-    // const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
-    // try {
-    //   const response = await axios.post(
-    //     `${URL}/announcements`,
-    //     // {
-    //     //   announcementReq: [
-    //     //     {
-    //     //       title: title,
-    //     //       body: body,
-    //     //     },
-    //     //   ],
-    //     //   picture: [
-    //     //     {
-    //     //       uri: imageUrl,
-    //     //       type: type,
-    //     //       name: filename,
-    //     //     },
-    //     //   ],
-    //     // },
-    //     // formData,
-    //     { announcementReq: json },
-    //     {
-    //       headers: {
-    //         // "Content-Type": `multipart/form-data`,
-    //         //  boundary=${boundary}`,
-    //         // Authorization: `Bearer ${token}`,
-    //       },
-    //     }
-    //   );
-    // fetch(`${URL}/announcements/`, {
-    //   method: "POST",
-    //   // headers: {
-    //   //   // "Content-Type": "multipart/form-data",
-    //   //   Accept: "application/json",
-    //   // },
-    //   body: formData,
-    // })
-    //   .then((response) => response.json()) // JSON 형식으로 응답 데이터를 파싱
-    //   .then((data) => {
-    //     // 응답 데이터 처리
-    //     console.log(data);
-    //   })
-    //   .catch((error) => {
-    //     // 에러 처리
-    //     console.log(error);
-    //   });
-    // console.log("성공?" + response);
-
-    // console.log(response);
-    // if (response.success) {
-    //   navigation.replace("noticeScreen");
-    // }
-
-    // let data = new FormData();
-    // data.append(
-    //   "announcementReq",
-    //   '{"title":"되냐 안되 ","body":"진아 모르겠나"}',
-    //   { contentType: "application/json" }
-    // );
-    // data.append("picture", {
-    //   uri: imageUrl,
-    //   type: type,
-    //   name: filename,
-    // });
-
-    // let config = {
-    //   method: "post",
-    //   maxBodyLength: Infinity,
-    //   url: "${URL}/announcements",
-    //   headers: {
-    //     ...data.getHeaders(),
-    //   },
-    //   data: data,
-    // };
-
-    // axios
-    //   .request(config)
-    //   .then((response) => {
-    //     console.log(JSON.stringify(response.data));
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   //   });
-    // } catch (error) {
-    //   console.log(error + "여기");
-    // }
-  }
-
-  // async function completeHandler() {
-  //   var formdata = new FormData();
-  //   formdata.append(
-  //     "announcementReq",
-  //     '{"title":"되냐 안되 ","body":"진아 모르겠나"}'
-  //   );
-  //   formdata.append("picture", fileInput.files[0], "/path/to/file");
-
-  //   var requestOptions = {
-  //     method: "POST",
-  //     body: formdata,
-  //     redirect: "follow",
-  //   };
-
-  //   fetch(`${URL}/announcements`, requestOptions)
-  //     .then((response) => response.text())
-  //     .then((result) => console.log(result))
-  //     .catch((error) => console.log("error", error));
-  // }
 
   //camera
 
@@ -268,29 +95,36 @@ function AddNoticeScreen({ navigation }) {
   //     console.log(error);
   //   }
   // }
-  
+
   async function completeHandler3() {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("body", body);
-    formData.append("writer", "김동규");
-    if (imageUrl) {
-      formData.append("picture", {
-        uri: imageUrl,
-        type: type,
-        name: filename,
-      });
-    }
     try {
-      const response = await createAnnouncement2({
-        formData: formData,
-      });
-      console.log(response);
-      if (response.code === "NOTI001" || response.success) {
-        navigation.replace("noticeScreen");
+      const response = await getProfile({ id: headerId });
+      const formData = new FormData();
+      formData.append("writer", response.data.name);
+      formData.append("title", title);
+      formData.append("body", body);
+
+      if (imageUrl) {
+        formData.append("picture", {
+          uri: imageUrl,
+          type: type,
+          name: filename,
+        });
+      }
+      try {
+        const response = await createAnnouncement2({
+          formData: formData,
+        });
+        console.log(response);
+        if (response.code === "NOTI001" || response.success) {
+          navigation.replace("noticeScreen");
+        }
+      } catch (error) {
+        console.log(JSON.stringify(formData));
+        console.log(error);
       }
     } catch (error) {
-      console.error('Error during announcement creation:', error);
+      console.error("Error during announcement creation:", error);
     }
   }
 
@@ -369,10 +203,14 @@ function AddNoticeScreen({ navigation }) {
             borderTopWidth: 0.8,
             borderTopColor: GlobalStyles.colors.gray04,
             justifyContent: "center",
-            paddingLeft: 16,
+            paddingLeft: 6,
           }}
         >
-          <WithLocalSvg asset={Camera} onPress={cameraHandler} />
+          <Pressable onPress={cameraHandler}>
+            <View style={{ margin: 10 }}>
+              <Camera width={24} height={24} />
+            </View>
+          </Pressable>
         </View>
       </View>
     </KeyboardAvoidingView>

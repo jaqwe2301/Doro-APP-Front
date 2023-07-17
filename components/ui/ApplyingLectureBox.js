@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import Xmark from "../../assets/xmark_gray.svg";
 
 function ApplyingLectureBox({
@@ -8,13 +8,15 @@ function ApplyingLectureBox({
   time,
   id,
   lectureIdHandler,
-  boxColor,
+  backgroundColor,
   colors,
   subTitle,
   place,
   tutorRole,
   dateTypeValue,
   onPressX,
+  onPress,
+  matchingText,
 }) {
   // console.log(date)
   const dateControl = (stringDate) => {
@@ -55,12 +57,24 @@ function ApplyingLectureBox({
 
   return (
     <Pressable key={id} onPress={lectureIdHandler}>
-      <View style={styles.whiteBox}>
+      <View
+        style={[
+          styles.whiteBox,
+          backgroundColor
+            ? { backgroundColor: backgroundColor }
+            : { backgroundColor: "white" },
+        ]}
+      >
         <View style={styles.titleContainer}>
           <Text style={styles.SubTitle}>{subTitle}</Text>
-          <Pressable onPress={onPressX}>
-            <WithLocalSvg asset={Xmark} />
-          </Pressable>
+
+          {onPressX ? (
+            <Pressable onPress={onPressX}>
+              <Xmark width={20} height={20} />
+            </Pressable>
+          ) : (
+            <Text style={{ fontSize: 10 }}>{matchingText}</Text>
+          )}
         </View>
         <View
           style={{
@@ -69,25 +83,16 @@ function ApplyingLectureBox({
           }}
         >
           <View>
-            <Text style={styles.role}>
-              {tutorRole === "MAIN_TUTOR"
-                ? "주강사"
-                : tutorRole === "SUB_TUTOR"
-                ? "보조강사"
-                : tutorRole === "STAFF"
-                ? "스태프"
-                : tutorRole}{" "}
-              신청
-            </Text>
+            <Text style={styles.role}>{tutorRole}</Text>
             <Text style={styles.enrollEndDate}>
               {typeof dateTypeValue === "object"
-                ? `신청마감 ${
+                ? `${
                     dateTypeValue?.getMonth() + 1
                   }월 ${dateTypeValue?.getDate()}일`
                 : dateTypeValue}
             </Text>
           </View>
-          <View>
+          <View style={{ alignItems: "flex-end" }}>
             <Text style={styles.place}>{place}</Text>
             <Text style={styles.date}>{time}</Text>
           </View>
@@ -110,10 +115,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     height: 128,
     borderRadius: 5.41,
-    elevation: 2,
+    elevation: 3,
     paddingLeft: 15,
     paddingRight: 11,
-    backgroundColor: "white",
+    // backgroundColor: "white",
     justifyContent: "space-between",
     shadowColor: "black",
     shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋

@@ -6,49 +6,75 @@ import {
   TextInput,
   Pressable,
   Image,
+  SafeAreaView,
+  NativeModules,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
-import { useEffect, useState } from "react";
-import { editAnnouncement } from "../utill/http";
-import { WithLocalSvg } from "react-native-svg";
+import { useContext, useEffect, useState } from "react";
+import { editAnnouncement, getAnnouncementId, getProfile } from "../utill/http";
+
 import Camera from "../assets/camera.svg";
 
 import * as ImagePicker from "expo-image-picker";
+import { KeyboardAvoidingView } from "react-native";
+import { HeaderContext } from "../store/header-context";
 
 function EditNoticeScreen({ navigation, route }) {
   const data = route.params.data;
   const [body, setBody] = useState(data.body);
   const [title, setTitle] = useState(data.title);
   // const [formData, setFormData] = useState(new FormData());
+  const [filename, setFileName] = useState("");
+  const [type, setType] = useState("");
+  const { headerId, setHeaderId } = useContext(HeaderContext);
 
   async function completeHandler() {
+    const response = await getProfile({ id: headerId });
     const formData = new FormData();
-    const value = [
-      {
-        title: title,
-        body: body,
-      },
-    ];
-
-    const blob = new Blob([JSON.stringify(value)], {
-      type: "application/json",
-    });
-    console.log(blob);
-    formData.append("announcementReq", blob);
+    formData.append("writer", response.data.name);
+    formData.append("title", title);
+    formData.append("body", body);
     // console.log(formData.get("announcementReq"));
-    if (imageUrl) {
-      formData.append("picture", null);
+    if (imageUrl && imageUrl !== data.picture) {
+      formData.append("picture", {
+        uri: imageUrl,
+        type: type,
+        name: filename,
+      });
+    } else if (
+      imageUrl === data.picture &&
+      imageUrl !== undefined &&
+      imageUrl !== null
+    ) {
+      const imagePath = imageUrl.split("/").pop();
+      const imageName = imagePath.split(".")[0];
+      const imageType = imagePath.split(".")[1];
+      formData.append("picture", {
+        uri: imageUrl,
+        type: imageType,
+        name: imageName,
+      });
+      console.log("이미지 넣음요");
     }
+    // }
     try {
+      console.log(JSON.stringify(formData));
       const response = await editAnnouncement({
         formData: formData,
         id: data.id,
       });
       console.log(response);
-      // if (response.success) {
-      //   navigation.replace("noticeScreen");
-      // }
+      if (response.success) {
+        try {
+          const response = await getAnnouncementId({
+            id: data.id,
+          });
+          navigation.navigate("noticeDetail", { data: response });
+        } catch (error) {
+          console.log(error);
+        }
+      }
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +85,9 @@ function EditNoticeScreen({ navigation, route }) {
       headerRight: () => {
         return (
           <Pressable onPress={completeHandler}>
-            <Text style={styles.completeText}>완료</Text>
+            <View style={styles.completeTextContainer}>
+              <Text style={styles.completeText}>완료</Text>
+            </View>
           </Pressable>
         );
       },
@@ -68,7 +96,7 @@ function EditNoticeScreen({ navigation, route }) {
 
   //camera
   const [statusCamera, requestPermission] = ImagePicker.useCameraPermissions();
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(data.picture);
 
   const cameraHandler = async () => {
     if (!statusCamera?.granted) {
@@ -86,71 +114,88 @@ function EditNoticeScreen({ navigation, route }) {
     });
 
     console.log(result);
-    console.log(!result.canceled);
 
     if (!result.canceled) {
-      const filename = result.assets[0].uri.split("/").pop();
-      console.log(filename);
-      formData.append("picture", {
-        uri: result.assets[0].uri,
-        type: "multipart/form-data",
-        name: filename,
-      });
+      setFileName(result.assets[0].uri.split("/").pop());
       setImageUrl(result.assets[0].uri);
+      let match = /\.(\w+)$/.exec(result.assets[0].uri.split("/").pop());
+      let imageType = match ? `image/${match[1]}` : `image`;
+      setType(imageType);
     } else {
       return null;
     }
   };
 
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
-    <View style={styles.container}>
-      <View style={styles.headerBar} />
-      <ScrollView>
-        <View style={styles.contentContainer}>
-          <TextInput
-            value={title}
-            style={styles.title}
-            multiline
-            onChangeText={(text) => setTitle(text)}
-          />
-          <View style={styles.nameContainer}>
-            <Text style={styles.name}>김동규 매니저</Text>
-            <Text style={styles.name}>
-              {moment(data.createdAt).format("YYYY-MM-DD")}
-            </Text>
-          </View>
-          <TextInput
-            value={body}
-            onChangeText={(text) => setBody(text)}
-            style={styles.subcontentContainer}
-            multiline
-          />
-        </View>
-        <View style={{ marginHorizontal: 20 }}>
-          {imageUrl && (
-            <Image
-              source={{ uri: imageUrl }}
-              style={{
-                width: "100%",
-                height: 500,
-                resizeMode: "contain",
-              }}
-            />
-          )}
-        </View>
-      </ScrollView>
-      <View
-        style={{
-          height: 42,
-          borderTopWidth: 0.8,
-          borderTopColor: GlobalStyles.colors.gray04,
-          justifyContent: "center",
-          paddingLeft: 16,
-        }}
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={
+          Platform.OS === "ios" ? 44 + statusBarHeight : 0
+        }
       >
-        <WithLocalSvg asset={Camera} onPress={cameraHandler} />
-      </View>
-    </View>
+        <View style={styles.container}>
+          <View style={styles.headerBar} />
+          <ScrollView>
+            <View style={styles.contentContainer}>
+              <TextInput
+                value={title}
+                style={styles.title}
+                multiline
+                onChangeText={(text) => setTitle(text)}
+              />
+              <View style={styles.nameContainer}>
+                <Text style={styles.name}>{data.writer} 매니저</Text>
+                <Text style={styles.name}>
+                  {moment(data.createdAt).format("YYYY-MM-DD")}
+                </Text>
+              </View>
+              <TextInput
+                value={body}
+                onChangeText={(text) => setBody(text)}
+                style={styles.subcontentContainer}
+                multiline
+              />
+            </View>
+            <View style={{ marginHorizontal: 20 }}>
+              {imageUrl && (
+                <Image
+                  source={{ uri: imageUrl }}
+                  style={{
+                    width: "100%",
+                    height: 500,
+                    resizeMode: "contain",
+                  }}
+                />
+              )}
+            </View>
+          </ScrollView>
+          <View
+            style={{
+              height: 42,
+              borderTopWidth: 0.8,
+              borderTopColor: GlobalStyles.colors.gray04,
+              justifyContent: "center",
+              paddingLeft: 16,
+            }}
+          >
+            <Pressable onPress={cameraHandler}>
+              <Camera width={24} height={24} />
+            </Pressable>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -201,16 +246,20 @@ const styles = StyleSheet.create({
   completeText: {
     fontWeight: "400",
     fontSize: 15,
-    // lineHeight: 20,
-    width: 50,
-    height: 30,
     borderRadius: 5.41,
     color: "white",
     textAlign: "center",
     textAlignVertical: "center",
+    lineHeight: 20,
+  },
+  completeTextContainer: {
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+
+    borderRadius: 5.41,
+    justifyContent: "center",
+    alignItems: "center",
     // marginLeft: -4,
     backgroundColor: GlobalStyles.colors.primaryDefault,
-
-    lineHeight: 20,
   },
 });

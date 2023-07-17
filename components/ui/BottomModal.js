@@ -5,13 +5,16 @@ import {
   StyleSheet,
   Pressable,
   FlatList,
+  Alert,
 } from "react-native";
+import { useEffect, useState } from "react";
 
-import { WithLocalSvg } from "react-native-svg";
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "./ButtonBig";
 import Xmark from "../../assets/xmark_black.svg";
 import Plus from "../../assets/plus.svg";
+import ModalCheck from "../../assets/modalcheck.svg";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 function BottomModal({
   visible,
@@ -19,9 +22,66 @@ function BottomModal({
   inVisible,
   plusVisible,
   data,
+  option,
   onPressPlus,
   onPress,
+  multiCheck, // 체크 복수 가능 여부
+  status,
 }) {
+  const [check, setCheck] = useState();
+  const [checkItem, setCheckItem] = useState();
+  const [date, setDate] = useState([
+    new Date(new Date().setMonth(new Date().getMonth() - 6)),
+    new Date(new Date().setMonth(new Date().getMonth() + 6)),
+  ]);
+  const [dateVisible, setDateVisible] = useState();
+  const [choice, setChoice] = useState(true);
+
+  useEffect(() => {
+    status === "recruitingDate" || status === "allocationDate"
+      ? setDate(data)
+      : "";
+  }, [status]);
+
+  const dateControl = (date) => {
+    const month =
+      date.getMonth() >= 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1);
+    const days = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
+    return `${date.getFullYear()}.${month}.${days}`;
+  };
+
+  const dateOnConfirm = (pick) => {
+    setDate((prev) => (choice ? [pick, prev[1]] : [prev[0], pick]));
+    setDateVisible(false);
+  };
+
+  const onConfirm = (item) => {
+    if (status === "recruitingDate" || status === "allocationDate") {
+      if (status === "recruitingDate") {
+      }
+      onPress(item);
+    } else if (!item) {
+      Alert.alert(
+        "주의",
+        "항목을 체크해주세요!",
+        [
+          {
+            text: "확인",
+            onPress: () => {
+              // console.log("강사 신청 완료");
+            },
+            style: "destructive",
+          },
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => {},
+        }
+      );
+    } else {
+      onPress(item);
+    }
+  };
   return (
     <Modal transparent={true} visible={visible}>
       <View style={styles.modalContainer}>
@@ -29,7 +89,7 @@ function BottomModal({
           <View style={styles.modalTop}>
             <Pressable onPress={inVisible}>
               <View style={styles.topButton}>
-                <WithLocalSvg asset={Xmark} />
+                <Xmark width={24} height={24} />
               </View>
             </Pressable>
             <Text style={{ fontSize: 17, fontWeight: "bold" }}>{title}</Text>
@@ -37,7 +97,7 @@ function BottomModal({
               <View style={styles.topButton}>
                 {plusVisible ? (
                   <Pressable onPress={onPressPlus}>
-                    <WithLocalSvg asset={Plus} />
+                    <Plus width={19} height={20} />
                   </Pressable>
                 ) : (
                   ""
@@ -45,25 +105,76 @@ function BottomModal({
               </View>
             </Pressable>
           </View>
-          <FlatList
-            style={styles.modalList}
-            data={data}
-            renderItem={(data) => {
-              return (
-                <Pressable onPress={() => onPress(data.item.id)}>
-                  <View style={styles.modalTextContainer}>
-                    <Text style={styles.modalText}>{data.item.kit}</Text>
-                  </View>
-                </Pressable>
-              );
-            }}
-            extraData={data}
-          />
+          {status === "recruitingDate" || status === "allocationDate" ? (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginHorizontal: 20,
+                marginVertical: 24,
+              }}
+            >
+              <Pressable
+                onPress={() => {
+                  setChoice(true);
+                  setDateVisible(true);
+                }}
+              >
+                <Text>{dateControl(date[0])}</Text>
+              </Pressable>
+              <Text>-</Text>
+              <Pressable
+                onPress={() => {
+                  setChoice(false);
+                  setDateVisible(true);
+                }}
+              >
+                <Text>{dateControl(date[1])}</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <FlatList
+              style={styles.modalList}
+              data={data}
+              renderItem={(data) => {
+                // onPress(data.item)
+                return (
+                  <Pressable
+                    onPress={() => {
+                      setCheck(data.index);
+                      setCheckItem(data.item);
+                    }}
+                  >
+                    <View style={styles.modalTextContainer}>
+                      <Text style={styles.modalText}>{data.item}</Text>
+                      {check === data.index ? <ModalCheck /> : ""}
+                    </View>
+                  </Pressable>
+                );
+              }}
+              extraData={data}
+            />
+          )}
           <View style={styles.modalButtonContainer}>
-            <ButtonBig text="확인" onPress={() => modalHandler(false)} />
+            <ButtonBig
+              text="확인"
+              onPress={() =>
+                status === "recruitingDate" || status === "allocationDate"
+                  ? onConfirm(date)
+                  : onConfirm(checkItem)
+              }
+            />
           </View>
         </View>
       </View>
+      <DateTimePickerModal
+        isVisible={dateVisible}
+        mode={"date"}
+        onConfirm={dateOnConfirm}
+        onCancel={() => setDateVisible(false)}
+        date={choice ? date[0] : date[1]}
+      />
     </Modal>
   );
 }
@@ -93,7 +204,9 @@ const styles = StyleSheet.create({
     marginBottom: 35,
   },
   modalTextContainer: {
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     height: 42,
     borderBottomWidth: 0.5,
@@ -119,4 +232,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  datebox: {},
 });

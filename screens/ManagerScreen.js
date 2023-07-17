@@ -12,8 +12,9 @@ import {
   Alert,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import Interceptor from "../utill/Interceptor";
 import { URL } from "../utill/config";
 import { AuthContext } from "../store/auth-context";
 import { useLectures } from "../store/LecturesProvider";
@@ -23,21 +24,23 @@ import FilterBox from "../components/ui/FilterBox";
 import TutorBox from "../components/ui/TutorBox";
 import ButtonBig from "../components/ui/ButtonBig";
 import LectureBox from "../components/ui/LectureBox";
+import BottomModal from "../components/ui/BottomModal";
 
 import { getProfile, logout, pushNotification } from "../utill/http";
 import { KRRegular } from "../constants/fonts";
 
 function ManagerScreen() {
   const [userData, setUserData] = useState([]);
-  const [users, setUsers] = useState([]);
+  // const [filterUser, setFilterUser] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const authCtx = useContext(AuthContext);
   const { lectures } = useLectures();
   const [lecturesData, setLectureData] = useState([]);
+  const instance = Interceptor();
 
   useEffect(() => {
-    axios
+    instance
       .get(`${URL}/users`, {
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +52,7 @@ function ManagerScreen() {
 
         // Map each user to a Promise
         const promises = data.map((user) =>
-          axios
+          instance
             .get(`${URL}/users-lectures/users/${user.id}`, {
               headers: {
                 "Content-Type": "application/json",
@@ -84,8 +87,8 @@ function ManagerScreen() {
         // Wait for all Promises to resolve
         await Promise.all(promises);
 
-        setUserData(tmp);
-        setUsers(data);
+        setUserData(tmp); // 유저 데이터
+        // setFilterUser(tmp);
       })
       .catch((error) => {
         console.log("에러");
@@ -183,6 +186,7 @@ function ManagerScreen() {
               />
             );
           })}
+        {i === lecturesTitle.length - 1 && <View style={{ height: 20 }} />}
       </View>
     );
   }
@@ -203,12 +207,23 @@ function ManagerScreen() {
       const response = await logout();
 
       console.log(response);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        })
+      );
       if (response.status === 200) {
         authCtx.logout();
       }
     } catch (error) {
       // navigation.navigate("login");
-
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        })
+      );
       authCtx.logout();
       console.log(error);
       console.log("에러났쪄염");
@@ -248,13 +263,27 @@ function ManagerScreen() {
     });
   }, [logoutHandler]);
 
+  const num = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const [filter, setFilter] = useState(false);
+  const [generation, setGeneration] = useState(num);
+  const filterYes = (generation) => {
+    setGeneration([generation]);
+    setFilter(false);
+  };
+
+  const filterUser = userData.filter((item) =>
+    generation.includes(item.generation)
+  );
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
         return (
           <View style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
             <View style={{ marginTop: 15, marginLeft: 20 }}>
-              <FilterBox text="기수 선택" />
+              <Pressable onPress={() => setFilter(true)}>
+                <FilterBox text="기수 선택" />
+              </Pressable>
             </View>
             <View
               style={{
@@ -263,7 +292,7 @@ function ManagerScreen() {
               }}
             >
               <FlatList
-                data={userData}
+                data={filterUser}
                 renderItem={(itemData) => {
                   const item = itemData.item;
 
@@ -351,7 +380,7 @@ function ManagerScreen() {
 
   return (
     <>
-      <View style={{ marginTop: 30 }}></View>
+      <View style={{ marginTop: 20 }} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -405,6 +434,13 @@ function ManagerScreen() {
             pressColor={"transparent"}
           />
         )}
+      />
+      <BottomModal
+        visible={filter}
+        inVisible={() => setFilter(false)}
+        title="기수 선택"
+        data={num}
+        onPress={filterYes}
       />
     </>
   );

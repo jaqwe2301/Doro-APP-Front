@@ -7,15 +7,18 @@ import {
   ScrollView,
   useWindowDimensions,
   Alert,
-  LayoutChangeEvent,
+  ActivityIndicator,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { Switch } from "react-native-switch";
+import SwitchSelector from "react-native-switch-selector";
+import SwitchToggle from "react-native-switch-toggle";
 import axios from "axios";
 
 import { getProfile } from "../utill/http";
 import { GlobalStyles } from "../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import { URL } from "../utill/config";
 import { HeaderContext } from "../store/header-context";
 import ApplyingTutorBox from "../components/ui/ApplyingTutorBox";
@@ -24,10 +27,16 @@ import FilterBox from "../components/ui/FilterBox";
 import LectureTop from "../components/ui/LectureTop";
 import CreactingLecture from "../assets/creatingLecture.svg";
 
+import Interceptor from "../utill/Interceptor";
+import { KRRegular } from "../constants/fonts";
+
 function DetailLectureScreen({ route }) {
   const navigation = useNavigation();
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const instance = Interceptor();
+  /** 강의 수정 후 리렌더링을 위해 사용 */
+  const isFocused = useIsFocused();
 
   const [lectureBasicInfo, setLectureBasicInfo] = useState({
     city: "",
@@ -47,6 +56,8 @@ function DetailLectureScreen({ route }) {
     subTitle: "",
     subTutor: "",
     time: "",
+    transportCost: "",
+    status: "",
   });
   const [lectureContent, setLectureContent] = useState({
     detail: "",
@@ -57,42 +68,115 @@ function DetailLectureScreen({ route }) {
   });
 
   const [tutor, setTutor] = useState([]);
+  const [assign, setAssign] = useState([]); // 강사 배정되었는지 체크
+  const [assignList, setAssignList] = useState([]); // 강의 배정 정보
+  const [apply, setApply] = useState([false, false, false]); // 강사가 강의를 신청했는지 체크
+  const [after, setAfter] = useState(false); // 강사 신청 후 리렌더링 위해 사용
 
-  // async function profileHandler() {
-  //   try {
-  //     const response = await getProfile({ id: 7 });
-  //     setData(response);
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  const data = route.params;
 
   useEffect(() => {
     // 기본 정보
-    axios
-      .get(`${URL}/lectures/${route.params.data}`, {
+    instance
+      .get(`/lectures/${data.id}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
           "Content-Type": "application/json",
         },
       })
       .then((res) => {
-        let nonSaveId = res.data.data.lectureDto;
-        nonSaveId["id"] = route.params.data;
-        setLectureBasicInfo(nonSaveId);
+        setLectureBasicInfo(() => {
+          let lecture = {
+            ...res.data.data.lectureDto,
+            id: data.id,
+            lectureContentId: res.data.data.lectureContentDto.id,
+          };
+          return lecture;
+        });
         setLectureContent(res.data.data.lectureContentDto);
-        // console.log("성공");
+
+        const assignedTutors = res.data.data.assignedTutors;
+
+        /** 강사 배정되었는지 체크 */
+        if (assignedTutors) {
+
+          setAssign(() => {
+            return assignedTutors.some((data) => {
+              const check =
+              data.userId === headerId && data.tutorStatus === "ASSIGNED";
+              if (check) {
+                setAssignList(() => {
+                  const mainTutor = assignedTutors
+                  .filter(
+                    (item) =>
+                    item.tutorRole === "MAIN_TUTOR" &&
+                    item.tutorStatus === "ASSIGNED"
+                    )
+                    .map((item) => {
+                      return item.name;
+                    })
+                    .join(", ");
+                    
+                    const subTutor = assignedTutors
+                    .filter(
+                      (item) =>
+                      item.tutorRole === "SUB_TUTOR" &&
+                      item.tutorStatus === "ASSIGNED"
+                      )
+                      .map((item) => {
+                        return item.name;
+                      })
+                      .join(", ");
+                      
+                      const staff = assignedTutors
+                      .filter(
+                        (item) =>
+                        item.tutorRole === "STAFF" &&
+                        item.tutorStatus === "ASSIGNED"
+                        )
+                        .map((item) => {
+                          return item.name;
+                        })
+                        .join(", ");
+                        
+                        return [mainTutor, subTutor, staff];
+                      });
+                    }
+                    return check;
+                  });
+                });
+                
+              }
+        /** 로그인한 강사가 강의를 신청했는지 체크 */
+        if (assignedTutors) {
+
+        setApply(() => {
+          return [
+            assignedTutors.some((item) => {
+              return (
+                item.userId === headerId && item.tutorRole === "MAIN_TUTOR"
+              );
+            }),
+            assignedTutors.some((item) => {
+              return item.userId === headerId && item.tutorRole === "SUB_TUTOR";
+            }),
+            assignedTutors.some((item) => {
+              return item.userId === headerId && item.tutorRole === "STAFF";
+            }),
+          ];
+        })
+      }
+      
       })
       .catch((error) => {
-        console.log("에러");
+        console.log("강의 세부 못 불러옴");
         console.log(error);
       });
 
     if (headerRole === "ROLE_ADMIN") {
       // 신청 강사 불러오기
-      axios
-        .get(`${URL}/users-lectures/lectures/${route.params.data}`, {
+      instance
+        .get(`${URL}/users-lectures/lectures/${data.id}`, {
           headers: {
             // 헤더에 필요한 데이터를 여기에 추가
             "Content-Type": "application/json",
@@ -100,6 +184,7 @@ function DetailLectureScreen({ route }) {
         })
         .then((res) => {
           // console.log("신청 강사 불러옴");
+          // console.log(res.data.data);
           setTutor(res.data.data);
         })
         .catch((error) => {
@@ -108,104 +193,124 @@ function DetailLectureScreen({ route }) {
           console.log(error);
         });
     }
-  }, []);
+
+    setStatus(data.status === "RECRUITING" ? true : false);
+  }, [isFocused, after]);
 
   /** 강의 신청 */
   const applyingTutor = (roles) => {
-    const role =
-      roles === "MAIN_TUTOR"
-        ? "주 강사"
-        : roles === "SUB_TUTOR"
-        ? "보조강사"
-        : "스태프";
-
-    Alert.alert(
-      lectureBasicInfo.subTitle,
-      `'${role}' 신청하시겠습니까?`,
-      [
-        { text: "취소", onPress: () => {}, style: "cancel" },
-        {
-          text: "확인",
-          onPress: () => {
-            console.log("강사 신청 완료");
-            axios
-              .post(
-                `${URL}/users-lectures/lectures/${route.params.data}`,
-                {
-                  tutorRole: roles,
-                  userId: headerId,
-                },
-                {
-                  headers: {
-                    // 헤더에 필요한 데이터를 여기에 추가
-                    "Content-Type": "application/json",
-                  },
-                }
-              )
-              .then((res) => {
-                // console.log(res);
-                // console.log("성공");
-              })
-              .catch((error) => {
-                console.log("에러");
-                console.log(error);
-              });
-
-            Alert.alert(
-              lectureBasicInfo.subTitle,
-              `${role} 신청이 완료되었습니다.`,
-              [
-                {
-                  text: "확인",
-                  onPress: () => {
-                    // console.log("강사 신청 완료");
-                  },
-                  style: "destructive",
-                },
-              ],
-              {
-                cancelable: true,
-                onDismiss: () => {},
-              }
-            );
+    let role = "";
+    let applyStatus = false;
+    if (roles === "MAIN_TUTOR") {
+      role = "주 강사";
+      applyStatus = apply[0];
+    } else if (roles === "SUB_TUTOR") {
+      role = "보조 강사";
+      applyStatus = apply[1];
+    } else {
+      role = "스태프";
+      applyStatus = apply[2];
+    }
+    console.log(applyStatus);
+    // const role =
+    //   roles === "MAIN_TUTOR"
+    //     ? "주 강사"
+    //     : roles === "SUB_TUTOR"
+    //     ? "보조강사"
+    //     : "스태프";
+    if (applyStatus) {
+      Alert.alert(
+        `이미 ${role}를 신청하셨습니다.`,
+        `취소는 신청내역에서 해주세요.`,
+        [
+          {
+            text: "확인",
+            onPress: () => {},
+            style: "destructive",
           },
-          style: "destructive",
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => {},
-      }
-    );
-  };
-
-  const choiceTutor = (value, name) => {
-    // 강사 배청 확인창
-    let role =
-      value === "MAIN_TUTOR"
-        ? "주 강사"
-        : value === "SUB_TUTOR"
-        ? "보조강사"
-        : "스태프";
-
-    Alert.alert(
-      lectureBasicInfo.subTitle,
-      role + " '" + name + "' 확정하겠습니까 ?",
-      [
-        { text: "취소", onPress: () => {}, style: "cancel" },
+        ],
         {
-          text: "확인",
-          onPress: () => {
-            console.log("강사 배정 완료");
+          cancelable: true,
+          onDismiss: () => {},
+        }
+      );
+    } else {
+      Alert.alert(
+        lectureBasicInfo.subTitle,
+        `'${role}' 신청하시겠습니까?`,
+        [
+          { text: "취소", onPress: () => {}, style: "cancel" },
+          {
+            text: "확인",
+            onPress: () => {
+              instance
+                .post(
+                  `${URL}/users-lectures/lectures/${data.id}`,
+                  {
+                    tutorRole: roles,
+                    userId: headerId,
+                  },
+                  {
+                    headers: {
+                      // 헤더에 필요한 데이터를 여기에 추가
+                      "Content-Type": "application/json",
+                    },
+                  }
+                )
+                .then((res) => {
+                  // console.log(res);
+                  // console.log("성공");
+                  // console.log("강사 신청 완료");
+                  Alert.alert(
+                    lectureBasicInfo.subTitle,
+                    `${role} 신청이 완료되었습니다.`,
+                    [
+                      {
+                        text: "확인",
+                        onPress: () => {
+                          // console.log("강사 신청 완료");
+                          setAfter((prev) => !prev);
+                        },
+                        style: "destructive",
+                      },
+                    ],
+                    {
+                      cancelable: true,
+                      onDismiss: () => {},
+                    }
+                  );
+                })
+                .catch((error) => {
+                  // console.log("강사 신청 실패");
+                  Alert.alert(
+                    lectureBasicInfo.subTitle,
+                    `강의 신청에 실패하였습니다. 다시 시도해주세요.`,
+                    [
+                      {
+                        text: "확인",
+                        onPress: () => {
+                          // console.log("강사 신청 완료");
+                        },
+                        style: "destructive",
+                      },
+                    ],
+                    {
+                      cancelable: true,
+                      onDismiss: () => {},
+                    }
+                  );
+                  console.log(error);
+                });
+            },
+            style: "destructive",
           },
-          style: "destructive",
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => {},
-      }
-    );
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => {},
+        }
+      );
+    }
   };
 
   const day = ["일", "월", "화", "수", "목", "금", "토"];
@@ -232,19 +337,21 @@ function DetailLectureScreen({ route }) {
   };
 
   /** 강사 배정 */
-  const assignment = (roles, role, id, name) => {
+  const assignment = (roles, role, id, name, status) => {
     Alert.alert(
       lectureBasicInfo.subTitle,
-      `'${role}' 주 강사 ${name} 확정하겠습니까?`,
+      `${role} '${name}' ${
+        status === "ASSIGNED" ? "배정취소하겠습니까 ?" : "확정하겠습니까 ?"
+      }`,
       [
         { text: "취소", onPress: () => {}, style: "cancel" },
         {
           text: "확인",
           onPress: () => {
-            console.log("강사 신청 완료");
-            axios
+            console.log("강사 배정 혹은 취소 완료");
+            instance
               .patch(
-                `${URL}/users-lectures/lectures/${route.params.data}`,
+                `${URL}/users-lectures/lectures/${data.id}`,
                 {
                   tutorRole: roles,
                   userId: id,
@@ -258,29 +365,31 @@ function DetailLectureScreen({ route }) {
               )
               .then((res) => {
                 // console.log(res);
+                Alert.alert(
+                  lectureBasicInfo.subTitle,
+                  `${role} '${name}' ${
+                    status === "ASSIGNED" ? "배정취소가 " : "확정이 "
+                  } 완료되었습니다.`,
+                  [
+                    {
+                      text: "확인",
+                      onPress: () => {
+                        // console.log("강사 신청 완료");
+                        setAfter((prev) => !prev);
+                      },
+                      style: "destructive",
+                    },
+                  ],
+                  {
+                    cancelable: true,
+                    onDismiss: () => {},
+                  }
+                );
               })
               .catch((error) => {
                 console.log("에러");
                 console.log(error);
               });
-
-            Alert.alert(
-              lectureBasicInfo.subTitle,
-              `${role} '${name}' 확정이 완료되었습니다.`,
-              [
-                {
-                  text: "확인",
-                  onPress: () => {
-                    // console.log("강사 신청 완료");
-                  },
-                  style: "destructive",
-                },
-              ],
-              {
-                cancelable: true,
-                onDismiss: () => {},
-              }
-            );
           },
           style: "destructive",
         },
@@ -291,6 +400,10 @@ function DetailLectureScreen({ route }) {
       }
     );
   };
+
+  const [toggle, setToggle] = useState(true);
+  const [status, setStatus] = useState();
+  // data.status === "RECRUITING" ? true : false
 
   // Use a custom renderScene function instead
   const renderScene = ({ route }) => {
@@ -326,7 +439,7 @@ function DetailLectureScreen({ route }) {
                           : "0" + date.getDate();
 
                       return (
-                        <Text key={i} style={styles.infoText}>
+                        <Text key={i} style={[styles.infoText]}>
                           {date.getFullYear()}.{month}.{days} (
                           {day[date.getDay()]})
                         </Text>
@@ -360,7 +473,7 @@ function DetailLectureScreen({ route }) {
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>모집 인원</Text>
-                  <Text style={styles.infoText}>
+                  {/* <Text style={styles.infoText}>
                     주강사 {lectureBasicInfo.mainTutor}
                     {lectureBasicInfo.subTutor === "0"
                       ? ""
@@ -368,7 +481,26 @@ function DetailLectureScreen({ route }) {
                     {lectureBasicInfo.staff === "0"
                       ? ""
                       : ", 스태프 " + lectureBasicInfo.staff}
-                  </Text>
+                  </Text> */}
+                  <View>
+                    <Text style={styles.infoText}>
+                      주 강사 : {lectureBasicInfo.mainTutor}
+                    </Text>
+                    {lectureBasicInfo.subTutor === "0" ? (
+                      ""
+                    ) : (
+                      <Text style={[styles.infoText, { marginTop: 2 }]}>
+                        보조 강사 : {lectureBasicInfo.subTutor}
+                      </Text>
+                    )}
+                    {lectureBasicInfo.staff === "0" ? (
+                      ""
+                    ) : (
+                      <Text style={[styles.infoText, { marginTop: 2 }]}>
+                        스태프 : {lectureBasicInfo.staff}
+                      </Text>
+                    )}
+                  </View>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>강사 급여</Text>
@@ -379,14 +511,14 @@ function DetailLectureScreen({ route }) {
                     {lectureBasicInfo.subPayment === "0" ? (
                       ""
                     ) : (
-                      <Text style={styles.infoText}>
+                      <Text style={[styles.infoText, { marginTop: 2 }]}>
                         보조 강사 : {lectureBasicInfo.subPayment}원
                       </Text>
                     )}
                     {lectureBasicInfo.staffPayment === "0" ? (
                       ""
                     ) : (
-                      <Text style={styles.infoText}>
+                      <Text style={[styles.infoText, { marginTop: 2 }]}>
                         스태프 : {lectureBasicInfo.staffPayment}원
                       </Text>
                     )}
@@ -406,8 +538,8 @@ function DetailLectureScreen({ route }) {
         );
       case "second":
         return (
-          <View style={{ marginTop: 40, flex: 1 }}>
-            <View style={{ paddingHorizontal: 20 }}>
+          <View style={{ marginTop: 40, flex: 1, paddingHorizontal: 20 }}>
+            <View style={{ marginBottom: 0 }}>
               <Text
                 style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
               >
@@ -438,10 +570,83 @@ function DetailLectureScreen({ route }) {
                 </View>
               </View>
             </View>
+            {assign ? (
+              <View>
+                <View
+                  style={{
+                    height: 0.5,
+                    backgroundColor: GlobalStyles.colors.gray04,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontWeight: "bold",
+                    marginTop: 44,
+                    marginBottom: 34,
+                  }}
+                >
+                  강의 배정 정보
+                </Text>
+                <View style={{ gap: 18 }}>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>주 강사</Text>
+                    <Text style={styles.infoText}>{assignList[0]}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>보조 강사</Text>
+                    <Text style={styles.infoText}>{assignList[1]}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>스태프</Text>
+                    <Text style={styles.infoText}>{assignList[2]}</Text>
+                  </View>
+                </View>
+              </View>
+            ) : (
+              ""
+            )}
           </View>
         );
 
       case "third":
+        /** 토글 관련 함수 */
+        const statusHandler = () => {
+          let lecture = lectureBasicInfo;
+          if (!lecture) {
+            console.error("lecture is undefined");
+            // return prev;
+          }
+
+          delete lecture.id;
+          if (status) {
+            lecture.status = "ALLOCATION_COMP";
+          } else {
+            lecture.status = "RECRUITING";
+          }
+
+          axios
+            .patch(`${URL}/lectures/${data.id}`, lecture, {
+              headers: {
+                // 헤더에 필요한 데이터를 여기에 추가
+                "Content-Type": "application/json",
+              },
+            })
+            .then((res) => {
+              console.log(
+                status
+                  ? "ALLOCATION_COMP" + "변경완료"
+                  : "RECRUITING" + "변경완료"
+              );
+              setStatus((prev) => !prev);
+            })
+            .catch((error) => {
+              console.log("에러");
+              console.log(error);
+              ㅌㅌㅌㅌㅌㅌ;
+            });
+        };
+
         return (
           <View style={{ marginTop: 40, flex: 1 }}>
             <View style={{ paddingHorizontal: 20 }}>
@@ -451,13 +656,91 @@ function DetailLectureScreen({ route }) {
                 신청 강사
               </Text>
               <View
-                style={[styles.flexDirectionRow, { gap: 8, marginBottom: 28 }]}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
               >
-                <FilterBox text="강사 타입" color="black" />
-                <FilterBox text="정렬 순서" color="black" />
+                <View
+                  style={[
+                    styles.flexDirectionRow,
+                    { gap: 8, marginBottom: 28 },
+                  ]}
+                >
+                  <Pressable>
+                    <FilterBox text="강사 타입" color="black" />
+                  </Pressable>
+                  <Pressable onPress={() => console.log(status)}>
+                    <FilterBox text="정렬 순서" color="black" />
+                  </Pressable>
+                </View>
+                {/* SwitchToggle 참고 링크 */}
+                {/* https://github.com/yujong-lee/react-native-switch-toggle */}
+
+                <SwitchToggle
+                  switchOn={status}
+                  onPress={() => {
+                    data.status === "FINISH"
+                      ? Alert.alert(
+                          "해당 강의는 끝난 강의입니다.",
+                          "상태를 변경할 수 없습니다.",
+                          [
+                            {
+                              text: "확인",
+                              onPress: () => {
+                                // console.log("강사 신청 완료");
+                              },
+                              style: "destructive",
+                            },
+                          ],
+                          {
+                            cancelable: true,
+                            onDismiss: () => {},
+                          }
+                        )
+                      : statusHandler();
+                  }}
+                  containerStyle={{
+                    width: 80,
+                    height: 36,
+                    borderRadius: 100,
+                    padding: 4,
+                  }}
+                  circleStyle={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 23,
+                  }}
+                  buttonStyle={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    position: "absolute",
+                  }}
+                  rightContainerStyle={{
+                    flex: 1,
+                    position: "absolute",
+                    marginLeft: 10,
+                    paddingBottom: 2,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  leftContainerStyle={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                  }}
+                  backTextRight={status ? "모집중" : ""}
+                  backTextLeft={!status ? "진행중" : ""}
+                  textRightStyle={{
+                    fontSize: 12,
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                  textLeftStyle={{ fontSize: 12 }}
+                />
               </View>
+
               {tutor.map((item) => {
-                // console.log(item)
                 const role =
                   item.tutorRole === "MAIN_TUTOR"
                     ? "주강사"
@@ -469,8 +752,17 @@ function DetailLectureScreen({ route }) {
                     key={item.id}
                     name={item.name}
                     role={role}
-                    major={item.major}
-                    onPress={() => assignment(item.tutorRole, role)}
+                    major={item.degree.major}
+                    onPress={() =>
+                      assignment(
+                        item.tutorRole,
+                        role,
+                        item.userId,
+                        item.name,
+                        item.tutorStatus
+                      )
+                    }
+                    status={item.tutorStatus}
                   />
                 );
               })}
@@ -494,14 +786,15 @@ function DetailLectureScreen({ route }) {
           city={lectureBasicInfo.city}
           date={lectureBasicInfo.lectureDates}
           time={lectureBasicInfo.time}
+          transportCost={lectureBasicInfo.transportCost}
         />
 
         <TabView
           style={{
-            marginTop: 50,
+            marginTop: 28,
             flex: 1,
             height:
-              layout["height"] - (headerRole === "ROLE_ADMIN" ? 188 : 174),
+              layout["height"] - (headerRole === "ROLE_ADMIN" ? 188 : 150),
           }}
           navigationState={{ index, routes }}
           renderScene={renderScene}
@@ -548,7 +841,9 @@ function DetailLectureScreen({ route }) {
             />
           )}
         />
-        {headerRole === "ROLE_ADMIN" ? (
+        {headerRole === "ROLE_ADMIN" ||
+        lectureBasicInfo.status === "ALLOCATION_COMP" ||
+        lectureBasicInfo.status === "FINISH" ? (
           ""
         ) : (
           <View style={styles.buttonContainer}>
@@ -559,6 +854,11 @@ function DetailLectureScreen({ route }) {
               <ButtonOneThird
                 onPress={() => applyingTutor("MAIN_TUTOR")}
                 text="주 강사 신청"
+                backgroundColor={
+                  apply[0]
+                    ? GlobalStyles.colors.gray05
+                    : GlobalStyles.colors.primaryDefault
+                }
               />
             )}
             {lectureBasicInfo.subTutor === "0" ? (
@@ -567,6 +867,11 @@ function DetailLectureScreen({ route }) {
               <ButtonOneThird
                 onPress={() => applyingTutor("SUB_TUTOR")}
                 text="보조 강사 신청"
+                backgroundColor={
+                  apply[1]
+                    ? GlobalStyles.colors.gray05
+                    : GlobalStyles.colors.primaryDefault
+                }
               />
             )}
             {lectureBasicInfo.staff === "0" ? (
@@ -575,6 +880,11 @@ function DetailLectureScreen({ route }) {
               <ButtonOneThird
                 onPress={() => applyingTutor("STAFF")}
                 text="스태프 신청"
+                backgroundColor={
+                  apply[2]
+                    ? GlobalStyles.colors.gray05
+                    : GlobalStyles.colors.primaryDefault
+                }
               />
             )}
           </View>
@@ -584,7 +894,7 @@ function DetailLectureScreen({ route }) {
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable
           onPress={() =>
-            navigation.navigate("UpdateLectureScreen", {
+            navigation.push("UpdateLectureScreen", {
               data: {
                 lectureContentDto: lectureContent,
                 lectureDto: lectureBasicInfo,
@@ -592,10 +902,11 @@ function DetailLectureScreen({ route }) {
               option: "update",
             })
           }
+          style={styles.BottomButton}
         >
-          <View style={styles.BottomButton}>
-            <WithLocalSvg asset={CreactingLecture} />
-          </View>
+          {/* <View style={styles.BottomButton}> */}
+          <CreactingLecture width={20} height={20} />
+          {/* </View> */}
         </Pressable>
       ) : (
         ""
@@ -611,6 +922,7 @@ export default DetailLectureScreen;
 const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
+    // position: "relative" ,
     marginBottom: 14,
     height: 40,
     justifyContent: "space-between",

@@ -13,6 +13,7 @@ const instance = Interceptor();
 export async function getProfile({ id }) {
   try {
     const response = await instance.get("/users/" + `${id}`);
+    // console.log(response);
     return response.data;
   } catch (error) {
     console.log(error + "api er");
@@ -123,8 +124,8 @@ export async function getNotification({ userId, page, size }) {
 }
 export async function readNotification({ notificationId }) {
   try {
-    const response = await axios.post(
-      URL + "/notifications/" + `${notificationId}` + "/doRead"
+    const response = await instance.post(
+      "/notifications/" + `${notificationId}` + "/doRead"
     );
     return response;
   } catch (error) {
@@ -167,6 +168,17 @@ export async function getAnnouncement({ page, size }) {
     const response = await instance.get(
       "/announcements?page=" + page + "&size=" + size
     );
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
+
+export async function getAnnouncementId({ id }) {
+  try {
+    const response = await instance.get("/announcements/" + `${id}`);
     return response.data.data;
   } catch (error) {
     console.log(error);
@@ -263,12 +275,27 @@ export async function createAnnouncement({ formData, title, body }) {
 
 export async function createAnnouncement2({ formData }) {
   try {
-    const response = await instance.post("/announcements/dto", formData, {
+    const response = await instance.post("/announcements", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(JSON.stringify(error.response.headers) + "response");
+    }
+    if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(JSON.stringify(error.request) + "리퀘스트");
+    }
+    // Something happened in setting up the request that triggered an Error
+    console.log("Error", error.message);
     console.log(error);
 
     throw error;
@@ -371,7 +398,13 @@ export async function alarmEdit({ id, notificationAgreement }) {
 
 export async function logout() {
   try {
-    const response = await instance.post("/logout");
+    const fcmToken = await AsyncStorage.getItem("fcmToken");
+    console.log(fcmToken + "로그아웃 fcm");
+    const response = await instance.post("/logout", undefined, {
+      headers: {
+        fcmToken: fcmToken,
+      },
+    });
     return response;
   } catch (error) {
     // if (error.response) {

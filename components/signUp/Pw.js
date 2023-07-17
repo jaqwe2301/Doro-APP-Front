@@ -6,6 +6,8 @@ import {
   Platform,
   NativeModules,
   SafeAreaView,
+  ScrollView,
+  Keyboard,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { GlobalStyles } from "../../constants/styles";
@@ -20,7 +22,7 @@ import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 
 function Pw({ navigation, route }) {
-  const statusBarHeight = route.params.h;
+  // const statusBarHeight = route.params.h;
   const [inputPw, setInputPw] = useState("");
   const [inputRePw, setInputRePw] = useState("");
   const [isNavi, setIsNavi] = useState(false);
@@ -29,7 +31,7 @@ function Pw({ navigation, route }) {
   const [num, setNum] = useState(GlobalStyles.colors.gray05);
   const [mark, setMark] = useState(GlobalStyles.colors.gray05);
   const [len, setLen] = useState(GlobalStyles.colors.gray05);
-
+  const [visible, setVisible] = useState(false);
   const { signData, setSignData } = useContext(SignContext);
 
   const handlePwChange = (text) => {
@@ -57,7 +59,6 @@ function Pw({ navigation, route }) {
     if (
       inputPw !== "" &&
       inputRePw !== "" &&
-      inputRePw === text &&
       text.length >= 8 &&
       text.length <= 20 &&
       /[a-zA-z]+/g.test(text) &&
@@ -76,7 +77,6 @@ function Pw({ navigation, route }) {
     setInputRePw(text);
 
     if (
-      inputPw === text &&
       text.length >= 8 &&
       text.length <= 20 &&
       /[a-zA-z]+/g.test(text) &&
@@ -92,22 +92,31 @@ function Pw({ navigation, route }) {
   };
 
   function navigatePw() {
-    if (isNavi) {
-      setSignData({ ...signData, password: inputPw, passwordCheck: inputRePw });
-
-      navigation.navigate("name", { h: statusBarHeight });
-    } else {
-    }
+    Keyboard.dismiss();
+    setTimeout(() => {
+      if (isNavi && inputPw === inputRePw) {
+        setSignData({
+          ...signData,
+          password: inputPw,
+          passwordCheck: inputRePw,
+        });
+        navigation.navigate("name", { h: statusBarHeight });
+      } else if (isNavi) {
+        setVisible(true);
+      } else {
+        // 다른 경우에 대한 처리
+      }
+    }, 100);
   }
-  // const { StatusBarManager } = NativeModules;
-  // const [statusBarHeight, setStatusBarHeight] = useState(0);
-  // useEffect(() => {
-  //   if (Platform.OS === "ios") {
-  //     StatusBarManager.getHeight((statusBarFrameData) => {
-  //       setStatusBarHeight(statusBarFrameData.height);
-  //     });
-  //   }
-  // }, []);
+  const { StatusBarManager } = NativeModules;
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      StatusBarManager.getHeight((statusBarFrameData) => {
+        setStatusBarHeight(statusBarFrameData.height);
+      });
+    }
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -120,37 +129,42 @@ function Pw({ navigation, route }) {
         <View style={{ flex: 1, backgroundColor: "white" }}>
           <Bar num={1} />
           <View style={{ flex: 1, justifyContent: "space-between" }}>
-            <View>
-              <View style={styles.textContainer}>
-                <InputText text="비밀번호를 입력해 주세요." />
+            <ScrollView>
+              <View>
+                <View style={styles.textContainer}>
+                  <InputText text="비밀번호를 입력해 주세요." />
+                </View>
+                <View style={styles.contentContainer}>
+                  <Text style={styles.id}>{signData.account}</Text>
+                  <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
+                </View>
+                <View style={styles.inputContainer}>
+                  <InputData
+                    hint="영문, 숫자, 특수문자 포함 8~20자"
+                    onChangeText={handlePwChange}
+                    value={inputPw}
+                    secureTextEntry={true}
+                  />
+                </View>
+                <View style={styles.pwBtn}>
+                  <PwBtn text="영문" btnColor={eng} />
+                  <PwBtn text="숫자" btnColor={num} />
+                  <PwBtn text="특수문자" btnColor={mark} />
+                  <PwBtn text="8~20자" btnColor={len} />
+                </View>
+                <View style={[styles.inputContainer, { marginTop: 0 }]}>
+                  <InputData
+                    hint="비밀번호 재입력"
+                    onChangeText={handleRePwChange}
+                    value={inputRePw}
+                    secureTextEntry={true}
+                  />
+                </View>
+                {visible && (
+                  <Text style={styles.failText}>비밀번호가 틀립니다.</Text>
+                )}
               </View>
-              <View style={styles.contentContainer}>
-                <Text style={styles.id}>{signData.account}</Text>
-                <Text style={styles.text}>계정의 비밀번호를 설정합니다.</Text>
-              </View>
-              <View style={styles.inputContainer}>
-                <InputData
-                  hint="영문, 숫자, 특수문자 포함 8~20자"
-                  onChangeText={handlePwChange}
-                  value={inputPw}
-                  secureTextEntry={true}
-                />
-              </View>
-              <View style={styles.pwBtn}>
-                <PwBtn text="영문" btnColor={eng} />
-                <PwBtn text="숫자" btnColor={num} />
-                <PwBtn text="특수문자" btnColor={mark} />
-                <PwBtn text="8~20자" btnColor={len} />
-              </View>
-              <View style={[styles.inputContainer, { marginTop: 0 }]}>
-                <InputData
-                  hint="비밀번호 재입력"
-                  onChangeText={handleRePwChange}
-                  value={inputRePw}
-                  secureTextEntry={true}
-                />
-              </View>
-            </View>
+            </ScrollView>
             <View style={styles.buttonContainer}>
               <ButtonBig text="다음" style={lbtnColor} onPress={navigatePw} />
             </View>
@@ -171,6 +185,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginHorizontal: 20,
     marginBottom: 34,
+  },
+  failText: {
+    color: GlobalStyles.colors.gray01,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 17,
+    marginLeft: 20,
+    marginTop: 3,
   },
   inputContainer: {
     marginHorizontal: 20,

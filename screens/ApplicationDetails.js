@@ -9,8 +9,11 @@ import {
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useEffect, useState, useContext } from "react";
 import { HeaderContext } from "../store/header-context";
-import { URL } from "../utill/config";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+
+import { URL } from "../utill/config";
+import Interceptor from "../utill/Interceptor";
 
 import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
@@ -18,15 +21,21 @@ import { KRRegular } from "../constants/fonts";
 
 function ApplicationDetails({ route }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const navigation = useNavigation();
 
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
   const [allocation, setAllocation] = useState([]);
   const [finished, setFinished] = useState([]);
+  const jump = route.params?.screen;
+  const instance = Interceptor();
 
   useEffect(() => {
-    console.log(headerId);
-    axios
+    setIndex(jump);
+  }, [jump]);
+
+  const getMyLectures = () => {
+    instance
       .get(`${URL}/users-lectures/users/${headerId}`, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -34,7 +43,7 @@ function ApplicationDetails({ route }) {
         },
       })
       .then((res) => {
-        // console.log(res.data.data);
+        console.log(res.data.data); 
         setRecruiting(() => {
           const data = res.data.data.filter(
             (item) => item.status === "RECRUITING"
@@ -48,32 +57,29 @@ function ApplicationDetails({ route }) {
           // console.log(data);
           return data;
         });
-        // finishLectureHandler(() => {
-        //   const data = res.data.data.filter(
-        //     (item) => item.status === "ALLOCATION_COMP"
-        //   );
-        //   console.log(data);
-        //   return data;
-        // });
+        setFinished(() => {
+          const data = res.data.data.filter((item) => item.status === "FINISH");
+          return data;
+        });
         // console.log("성공");
       })
       .catch((error) => {
         console.log("에러");
         console.log(error);
       });
-  }, []);
-
-  const controlfinished = (data) => {
-    setFinished(data);
   };
+
+  useEffect(() => {
+    getMyLectures();
+  }, []);
 
   const layout = useWindowDimensions();
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
-    { key: "first", title: "신청중(00)" },
-    { key: "second", title: "배정 완료(00)" },
-    { key: "third", title: "강의 완료(00)" },
+    { key: "first", title: "신청중(0)" },
+    { key: "second", title: "배정 완료(0)" },
+    { key: "third", title: "강의 완료(0)" },
   ]);
 
   useEffect(() => {
@@ -81,19 +87,22 @@ function ApplicationDetails({ route }) {
       {
         key: "first",
         title: `신청중(${
-          recruiting.length < 10 ? "0" + recruiting.length : recruiting.length
+          // recruiting.length < 10 ? "0" + recruiting.length :
+          recruiting.length
         })`,
       },
       {
         key: "second",
         title: `배정 완료(${
-          allocation.length < 10 ? "0" + allocation.length : allocation.length
+          // allocation.length < 10 ? "0" + allocation.length :
+          allocation.length
         })`,
       },
       {
         key: "third",
         title: `강의 완료(${
-          finished.length < 10 ? "0" + finished.length : finished.length
+          // finished.length < 10 ? "0" + finished.length :
+          finished.length
         })`,
       },
     ]);
@@ -119,34 +128,31 @@ function ApplicationDetails({ route }) {
     controlfinished(finished);
   };
 
-  const deleteLecture = (id, subTitle) => {
+  const deleteLecture = (id, subTitle, role) => {
     console.log(id);
     Alert.alert(
-      "주의!",
-      "동일한 강의 중 다른 역할로 신청한 내역도 취소됩니다. 괜찮으십니까?",
+      subTitle,
+      `${role} 신청을 취소하시겠습니까?`,
       [
         { text: "취소", onPress: () => {}, style: "cancel" },
         {
           text: "확인",
           onPress: () => {
-            Alert.alert(
-              subTitle,
-              "강의 신청을 취소하시겠습니까?",
-              [
-                { text: "취소", onPress: () => {}, style: "cancel" },
-                {
-                  text: "확인",
-                  onPress: () => {
-                    console.log("강의 취소 완료");
-                  },
-                  style: "destructive",
+            instance
+              .delete(`${URL}/users-lectures/lectures/${id}`, {
+                headers: {
+                  // 헤더에 필요한 데이터를 여기에 추가
+                  "Content-Type": "application/json",
                 },
-              ],
-              {
-                cancelable: true,
-                onDismiss: () => {},
-              }
-            );
+              })
+              .then((res) => {
+                console.log("강의 취소 완료");
+                getMyLectures();
+              })
+              .catch((error) => {
+                console.log("에러");
+                console.log(error);
+              });
           },
           style: "destructive",
         },
@@ -156,19 +162,6 @@ function ApplicationDetails({ route }) {
         onDismiss: () => {},
       }
     );
-
-    // axios
-    //   .delete(`${URL}/users-lectures/users/${id}`, {
-    //     headers: {
-    //       // 헤더에 필요한 데이터를 여기에 추가
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {})
-    //   .catch((error) => {
-    //     console.log("에러");
-    //     console.log(error);
-    //   });
   };
 
   const renderScene = ({ route }) => {
@@ -179,25 +172,36 @@ function ApplicationDetails({ route }) {
             style={styles.container}
             data={recruiting}
             renderItem={(data) => {
-              // console.log(data);
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
-              console.log(data);
+              const roles = data.item.tutorRole;
+              const role =
+                roles === "MAIN_TUTOR"
+                  ? "주강사"
+                  : roles === "SUB_TUTOR"
+                  ? "보조강사"
+                  : roles === "STAFF"
+                  ? "스태프"
+                  : "";
               return (
                 <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => console.log("클릭")}
+                  lectureIdHandler={() =>
+                    navigation.navigate("DetailLecture", {
+                      id: data.item.id,
+                    })
+                  }
                   id=""
-                  dateTypeValue={dateTypeValue}
+                  dateTypeValue={"신청마감 " + dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
-                  tutorRole={data.item.tutorRole}
+                  tutorRole={role + " 신청"}
                   onPressX={() =>
-                    deleteLecture(data.item.id, data.item.subTitle)
+                    deleteLecture(data.item.id, data.item.subTitle, role)
                   }
                 />
               );
@@ -213,18 +217,30 @@ function ApplicationDetails({ route }) {
               let dateTypeValue = dateControl(
                 data.item.lectureDate.enrollEndDate
               );
+              const backgroundColor =
+                data.item.tutorStatus === "WAITING"
+                  ? GlobalStyles.colors.gray06
+                  : "white";
               return (
                 <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
                   subTitle={data.item.subTitle}
                   date={data.item.lectureDates}
                   time={data.item.time}
-                  lectureIdHandler={() => {}}
+                  lectureIdHandler={() =>
+                    navigation.navigate("DetailLecture", {
+                      id: data.item.id,
+                    })
+                  }
                   id=""
-                  dateTypeValue={dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
-                  tutorRole={data.item.tutorRole}
+                  backgroundColor={backgroundColor}
+                  matchingText={
+                    data.item.tutorStatus === "WAITING"
+                      ? "매칭 실패"
+                      : "매칭 성공"
+                  }
                 />
               );
             }}
@@ -262,7 +278,7 @@ function ApplicationDetails({ route }) {
 
   return (
     <>
-      <View style={{ backgroundColor: "white", height: 30 }} />
+      <View style={{ backgroundColor: "white", height: 20 }} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -284,22 +300,6 @@ function ApplicationDetails({ route }) {
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
-            // renderLabel={({ route, focused, color }) => (
-            //   <Text
-            //     style={
-            //       focused
-            //         ? {
-            //             margin: 0,
-            //             fontSize: 15,
-            //             color: "black",
-            //             fontWeight: "bold",
-            //           }
-            //         : { margin: 0, fontSize: 15, color: "black" }
-            //     }
-            //   >
-            //     {route.title}
-            //   </Text>
-            // )}
             renderLabel={({ route, focused, color }) => (
               <Text
                 style={

@@ -8,13 +8,11 @@
     "userInterfaceStyle": "light",
     "schema": "com.doro.android",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash3.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFFFFF"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "net.doroedu.doroedu"
@@ -41,6 +39,12 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bb5bb381-6e53-435e-a139-7732a04c2365"
+      }
+    },
+    "owner": "si2238"
   }
 }

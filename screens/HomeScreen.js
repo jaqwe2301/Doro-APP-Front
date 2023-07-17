@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, ActivityIndicator } from "react";
 import {
   View,
   StyleSheet,
@@ -10,67 +10,152 @@ import {
   Text,
   ScrollView,
   useWindowDimensions,
+  SafeAreaView,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-
+import Logo from "../assets/Logo_main.svg";
+import AlarmAfter from "../assets/alarm_before.svg";
+import Right from "../assets/rightBlack.svg";
+import Megaphone from "../assets/megaphoneBlack.svg";
 import { GlobalStyles } from "../constants/styles";
-import { WithLocalSvg } from "react-native-svg";
+
 import CreactingLecture from "../assets/creatingLecture.svg";
 
 import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
+import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
-import { useLectures } from "../store/LecturesProvider";
+// import { useLectures } from "../store/LecturesProvider";
+import Swiper from "react-native-swiper";
+import { getAnnouncement } from "../utill/http";
 
-const HomeScreen = ({ lectureIdProps }) => {
+const HomeScreen = ({ lectureIdProps, navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
-  const [data, setData] = useState([]);
-  const [lectureData, setLectureData] = useState([]);
-  const navigation = useNavigation();
-  const { lectures } = useLectures();
+  const [response, setResponse] = useState([]);
+
+  const [lectureData, setLectureData] = useState([
+    {
+      lectureDates: [],
+    },
+  ]);
+  // const { lectures } = useLectures(null);
+
+  if (lectureData.lectureDates === []) {
+    // 로딩
+    return (
+      <ActivityIndicator
+        size="large"
+        color={GlobalStyles.colors.primaryDefault}
+      />
+    ); // or any other loading indicator
+  }
 
   useEffect(() => {
-    setLectureData(lectures);
+    async function fetchData() {
+      try {
+        const result = await getAnnouncement({ page: 0, size: 3 });
+        setResponse(result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-    // axios
-    //   .get(URL + "/lectures/", {
-    //     params: {
-    //       city: "",
-    //       endDate: "",
-    //       startDate: "",
-    //     },
-    //     headers: {
-    //       // 헤더에 필요한 데이터를 여기에 추가
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     // setLectureData(res.data.data);
-    //     // console.log(res.data.data)
-    //     // console.log("성공");
-    //   })
-    //   .catch((error) => {
-    //     console.log("에러");
-    //     console.log(error);
-    //   });
+    fetchData();
+  }, []);
 
-    // profileHandler();
-  }, [lectures]);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      axios
+        .get(URL + "/lectures/", {
+          params: {
+            city: "",
+            endDate: "",
+            startDate: "",
+          },
+          headers: {
+            // 헤더에 필요한 데이터를 여기에 추가
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          // console.log(res.data.data);
+          setLectureData(res.data.data);
+        })
+        .catch((error) => {
+          console.log("에러");
+          console.log(error);
+        });
+    });
 
-  const recruitingData = lectureData.filter(
-    (item) => item.status === "RECRUITING"
-  );
+    // Clean up the event listener on component unmount
+    return unsubscribe;
+  }, [navigation]); // navigation을 종속성 배열에 추가합니다
+
+  useEffect(() => {
+    setRecruitingCity(recruitingCityList);
+    setAllocationCity(allocationCityList);
+  }, [lectureData]);
+
+  const [filterDate, setFilterDate] = useState([
+    [
+      new Date(new Date().setMonth(new Date().getMonth() - 6)),
+      new Date(new Date().setMonth(new Date().getMonth() + 6)),
+    ],
+    [
+      new Date(new Date().setMonth(new Date().getMonth() - 6)),
+      new Date(new Date().setMonth(new Date().getMonth() + 6)),
+    ],
+  ]);
+
+  const recruitingCityList = lectureData
+    .filter((item) => item.status === "RECRUITING")
+    .map((item) => {
+      return item.city;
+    });
+
+  const [recruitingCity, setRecruitingCity] = useState(recruitingCityList);
+
+  const recruitingData = lectureData.filter((item) => {
+    const dateCheck = item.lectureDates.every((dateStr) => {
+      const date = new Date(dateStr);
+
+      return date >= filterDate[0][0] && date <= filterDate[0][1];
+    });
+    return (
+      item.status === "RECRUITING" &&
+      recruitingCity.includes(item.city) &&
+      dateCheck
+    );
+  });
+
   const recruitingTitle = [
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
 
-  const allocationDate = lectureData.filter(
-    (item) => item.status === "ALLOCATION_COMP"
-  );
+  const allocationCityList = lectureData
+    .filter((item) => item.status === "ALLOCATION_COMP")
+    .map((item) => {
+      return item.city;
+    });
+
+  const [allocationCity, setAllocationCity] = useState(allocationCityList);
+
+  const allocationDate = lectureData.filter((item) => {
+    const dateCheck = item.lectureDates.every((dateStr) => {
+      const date = new Date(dateStr);
+      return date >= filterDate[1][0] && date <= filterDate[1][1];
+    });
+
+    return (
+      item.status === "ALLOCATION_COMP" &&
+      allocationCity.includes(item.city) &&
+      dateCheck
+    );
+  });
 
   const allocationTitle = [
     ...new Set(allocationDate.map((item) => item.mainTitle)),
@@ -97,6 +182,7 @@ const HomeScreen = ({ lectureIdProps }) => {
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
             // console.log(filteringItem.staff);
+            // console.log(filteringItem.status);
             return (
               <LectureBox
                 key={filteringItem.id}
@@ -113,13 +199,14 @@ const HomeScreen = ({ lectureIdProps }) => {
                 place={filteringItem.place}
                 lectureIdHandler={() =>
                   navigation.navigate("DetailLecture", {
-                    data: filteringItem.id,
+                    id: filteringItem.id,
+                    status: filteringItem.status,
                   })
                 }
-                // date={dateText}
               />
             );
           })}
+        {i === recruitingTitle.length - 1 && <View style={{ height: 20 }} />}
       </View>
     );
   }
@@ -156,7 +243,8 @@ const HomeScreen = ({ lectureIdProps }) => {
                 place={filteringItem.place}
                 lectureIdHandler={() =>
                   navigation.navigate("DetailLecture", {
-                    data: filteringItem.id,
+                    id: filteringItem.id,
+                    status: filteringItem.status,
                   })
                 }
                 // date={dateText}
@@ -167,9 +255,26 @@ const HomeScreen = ({ lectureIdProps }) => {
     );
   }
 
-  const lectureIdHomeScreen = (id) => {
-    // 강의 클릭하면 id 값 state로 넘어옴
-    lectureIdProps(id);
+  const [filter, setFilter] = useState(false);
+  const [title, setTitle] = useState("");
+  const [status, setStatus] = useState();
+
+  const onFilter = (title, status) => {
+    setFilter(true);
+    setStatus(status);
+    setTitle(title);
+  };
+
+  const applyCityFilter = (city) => {
+    status === "RECRUITING" ? setRecruitingCity(city) : setAllocationCity(city);
+    setFilter(false);
+  };
+
+  const applyDateFilter = (date) => {
+    status === "recruitingDate"
+      ? setFilterDate((prev) => [date, prev[1]])
+      : setFilterDate((prev) => [prev[0], date]);
+    setFilter(false);
   };
 
   const layout = useWindowDimensions();
@@ -193,8 +298,20 @@ const HomeScreen = ({ lectureIdProps }) => {
                 marginBottom: 5,
               }}
             >
-              <FilterBox text="교육 지역" />
-              <FilterBox text="교육 날짜" />
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 지역", "RECRUITING");
+                }}
+              >
+                <FilterBox text="교육 지역" />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 날짜", "recruitingDate");
+                }}
+              >
+                <FilterBox text="교육 날짜" />
+              </Pressable>
             </View>
             {recruitingElements}
           </ScrollView>
@@ -210,8 +327,20 @@ const HomeScreen = ({ lectureIdProps }) => {
                 marginBottom: 5,
               }}
             >
-              <FilterBox text="교육 지역" />
-              <FilterBox text="교육 날짜" />
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 지역", "ALLOCATION_COMP");
+                }}
+              >
+                <FilterBox text="교육 지역" />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  onFilter("교육 날짜", "allocationDate");
+                }}
+              >
+                <FilterBox text="교육 날짜" />
+              </Pressable>
             </View>
             {allocationElements}
           </ScrollView>
@@ -224,6 +353,63 @@ const HomeScreen = ({ lectureIdProps }) => {
 
   return (
     <>
+      <View style={styles.noticeContainer}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Megaphone width={24} height={24} />
+          {/* <View> */}
+          <Swiper
+            autoplay={true}
+            autoplayTimeout={3}
+            horizontal={false}
+            showsPagination={false}
+            width={250}
+            height={25}
+          >
+            {response.map((data) => {
+              return (
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("noticeDetail", { data: data })
+                  }
+                  key={data.id}
+                  style={{ justifyContent: "center" }}
+                >
+                  <Text
+                    key={data.id}
+                    style={{
+                      marginTop: 2,
+                      marginLeft: 16,
+                      fontStyle: GlobalStyles.gray01,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      textAlignVertical: "center",
+                      lineHeight: 20,
+                    }}
+                  >
+                    {data.title}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </Swiper>
+          {/* </View> */}
+          <Right width={24} height={24} />
+        </View>
+        {/* <Pressable
+          onPress={() => {
+            navigation.navigate("Notice");
+          }}
+          // style={{ flex: 1 }}
+        > */}
+
+        {/* </Pressable> */}
+      </View>
+
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -243,7 +429,7 @@ const HomeScreen = ({ lectureIdProps }) => {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
-              height: 34,
+              height: 30,
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
@@ -290,16 +476,37 @@ const HomeScreen = ({ lectureIdProps }) => {
           />
         )}
       />
+
+      <BottomModal
+        visible={filter}
+        inVisible={() => setFilter(false)}
+        title={title}
+        data={
+          status === "RECRUITING"
+            ? recruitingCityList
+            : status === "recruitingDate"
+            ? filterDate[0]
+            : status === "allocationDate"
+            ? filterDate[1]
+            : allocationCityList
+        }
+        status={status}
+        onPress={
+          status === "recruitingDate" || status === "allocationDate"
+            ? applyDateFilter
+            : applyCityFilter
+        }
+      />
+
       {headerRole === "ROLE_ADMIN" ? (
-        <View style={styles.BottomButton}>
-          <Pressable
-            onPress={() =>
-              navigation.navigate("UpdateLectureScreen", { data: "" })
-            }
-          >
-            <WithLocalSvg asset={CreactingLecture} />
-          </Pressable>
-        </View>
+        <Pressable
+          onPress={() => navigation.push("UpdateLectureScreen", { data: "" })}
+          style={[styles.BottomButtonContainer]}
+        >
+          <View style={styles.BottomButton}>
+            <CreactingLecture width={28} height={28} />
+          </View>
+        </Pressable>
       ) : (
         ""
       )}
@@ -329,20 +536,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: GlobalStyles.colors.gray07,
   },
-  BottomButton: {
+  BottomButtonContainer: {
     position: "absolute",
+    height: 76,
+    width: 76,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: GlobalStyles.colors.green,
+    bottom: 17,
+    right: 10,
+  },
+  BottomButton: {
     height: 56,
     width: 56,
     borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: GlobalStyles.colors.primaryDefault,
-    bottom: 27,
-    right: 20,
   },
   mainTitle: {
     marginTop: 15,
+
     fontSize: 17,
     fontWeight: "bold",
+  },
+  noticeContainer: {
+    marginTop: 20,
+    marginHorizontal: 20,
+    marginBottom: 54,
+    backgroundColor: "#F4F4F4",
+    flexDirection: "row",
+    // height: 44,
+    paddingVertical: 10,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    borderRadius: 5.41,
   },
 });
