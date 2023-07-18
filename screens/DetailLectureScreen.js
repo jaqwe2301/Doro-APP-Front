@@ -11,8 +11,6 @@ import {
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
-import { Switch } from "react-native-switch";
-import SwitchSelector from "react-native-switch-selector";
 import SwitchToggle from "react-native-switch-toggle";
 import axios from "axios";
 
@@ -25,7 +23,8 @@ import ApplyingTutorBox from "../components/ui/ApplyingTutorBox";
 import ButtonOneThird from "../components/ui/ButtonOneThird";
 import FilterBox from "../components/ui/FilterBox";
 import LectureTop from "../components/ui/LectureTop";
-import CreactingLecture from "../assets/creatingLecture.svg";
+import AddLecture from "../assets/creatingLecture.svg";
+import Delete from "../assets/delete.svg";
 
 import Interceptor from "../utill/Interceptor";
 import { KRRegular } from "../constants/fonts";
@@ -71,6 +70,7 @@ function DetailLectureScreen({ route }) {
   const [assign, setAssign] = useState([]); // 강사 배정되었는지 체크
   const [assignList, setAssignList] = useState([]); // 강의 배정 정보
   const [apply, setApply] = useState([false, false, false]); // 강사가 강의를 신청했는지 체크
+  const [after, setAfter] = useState(false); // 강사 신청 후 리렌더링 위해 사용
 
   const data = route.params;
 
@@ -97,68 +97,74 @@ function DetailLectureScreen({ route }) {
         const assignedTutors = res.data.data.assignedTutors;
 
         /** 강사 배정되었는지 체크 */
-        setAssign(() => {
-          return assignedTutors.some((data) => {
-            const check =
-              data.userId === headerId && data.tutorStatus === "ASSIGNED";
-            if (check) {
-              setAssignList(() => {
-                const mainTutor = assignedTutors
-                  .filter(
-                    (item) =>
-                      item.tutorRole === "MAIN_TUTOR" &&
-                      item.tutorStatus === "ASSIGNED"
-                  )
-                  .map((item) => {
-                    return item.name;
-                  })
-                  .join(", ");
+        if (assignedTutors) {
+          setAssign(() => {
+            return assignedTutors.some((data) => {
+              const check =
+                data.userId === headerId && data.tutorStatus === "ASSIGNED";
+              if (check) {
+                setAssignList(() => {
+                  const mainTutor = assignedTutors
+                    .filter(
+                      (item) =>
+                        item.tutorRole === "MAIN_TUTOR" &&
+                        item.tutorStatus === "ASSIGNED"
+                    )
+                    .map((item) => {
+                      return item.name;
+                    })
+                    .join(", ");
 
-                const subTutor = assignedTutors
-                  .filter(
-                    (item) =>
-                      item.tutorRole === "SUB_TUTOR" &&
-                      item.tutorStatus === "ASSIGNED"
-                  )
-                  .map((item) => {
-                    return item.name;
-                  })
-                  .join(", ");
+                  const subTutor = assignedTutors
+                    .filter(
+                      (item) =>
+                        item.tutorRole === "SUB_TUTOR" &&
+                        item.tutorStatus === "ASSIGNED"
+                    )
+                    .map((item) => {
+                      return item.name;
+                    })
+                    .join(", ");
 
-                const staff = assignedTutors
-                  .filter(
-                    (item) =>
-                      item.tutorRole === "STAFF" &&
-                      item.tutorStatus === "ASSIGNED"
-                  )
-                  .map((item) => {
-                    return item.name;
-                  })
-                  .join(", ");
+                  const staff = assignedTutors
+                    .filter(
+                      (item) =>
+                        item.tutorRole === "STAFF" &&
+                        item.tutorStatus === "ASSIGNED"
+                    )
+                    .map((item) => {
+                      return item.name;
+                    })
+                    .join(", ");
 
-                return [mainTutor, subTutor, staff];
-              });
-            }
-            return check;
+                  return [mainTutor, subTutor, staff];
+                });
+              }
+              return check;
+            });
           });
-        });
+        }
 
         /** 로그인한 강사가 강의를 신청했는지 체크 */
-        setApply(() => {
-          return [
-            assignedTutors.some((item) => {
-              return (
-                item.userId === headerId && item.tutorRole === "MAIN_TUTOR"
-              );
-            }),
-            assignedTutors.some((item) => {
-              return item.userId === headerId && item.tutorRole === "SUB_TUTOR";
-            }),
-            assignedTutors.some((item) => {
-              return item.userId === headerId && item.tutorRole === "STAFF";
-            }),
-          ];
-        });
+        if (assignedTutors) {
+          setApply(() => {
+            return [
+              assignedTutors.some((item) => {
+                return (
+                  item.userId === headerId && item.tutorRole === "MAIN_TUTOR"
+                );
+              }),
+              assignedTutors.some((item) => {
+                return (
+                  item.userId === headerId && item.tutorRole === "SUB_TUTOR"
+                );
+              }),
+              assignedTutors.some((item) => {
+                return item.userId === headerId && item.tutorRole === "STAFF";
+              }),
+            ];
+          });
+        }
       })
       .catch((error) => {
         console.log("강의 세부 못 불러옴");
@@ -187,7 +193,7 @@ function DetailLectureScreen({ route }) {
     }
 
     setStatus(data.status === "RECRUITING" ? true : false);
-  }, [isFocused]);
+  }, [isFocused, after]);
 
   /** 강의 신청 */
   const applyingTutor = (roles) => {
@@ -261,6 +267,7 @@ function DetailLectureScreen({ route }) {
                         text: "확인",
                         onPress: () => {
                           // console.log("강사 신청 완료");
+                          setAfter((prev) => !prev);
                         },
                         style: "destructive",
                       },
@@ -356,33 +363,33 @@ function DetailLectureScreen({ route }) {
               )
               .then((res) => {
                 // console.log(res);
+                Alert.alert(
+                  lectureBasicInfo.subTitle,
+                  `${role} '${name}' ${
+                    status === "ASSIGNED" ? "배정취소가 " : "확정이 "
+                  } 완료되었습니다.`,
+                  [
+                    {
+                      text: "확인",
+                      onPress: () => {
+                        // console.log("강사 신청 완료");
+                        setAfter((prev) => !prev);
+                      },
+                      style: "destructive",
+                    },
+                  ],
+                  {
+                    cancelable: true,
+                    onDismiss: () => {},
+                  }
+                );
               })
               .catch((error) => {
                 console.log("에러");
                 console.log(error);
               });
-
-            Alert.alert(
-              lectureBasicInfo.subTitle,
-              `${role} '${name}' ${
-                status === "ASSIGNED" ? "배정취소가 " : "확정이 "
-              } 완료되었습니다.`,
-              [
-                {
-                  text: "확인",
-                  onPress: () => {
-                    // console.log("강사 신청 완료");
-                  },
-                  style: "destructive",
-                },
-              ],
-              {
-                cancelable: true,
-                onDismiss: () => {},
-              }
-            );
           },
-          style: "destructive",
+          style: "default",
         },
       ],
       {
@@ -394,7 +401,65 @@ function DetailLectureScreen({ route }) {
 
   const [toggle, setToggle] = useState(true);
   const [status, setStatus] = useState();
-  // data.status === "RECRUITING" ? true : false
+
+  const deleteLecture = () => {
+    console.log(data.id);
+    Alert.alert(
+      lectureBasicInfo.subTitle,
+      "강의를 삭제하시겠습니까?",
+      [
+        { text: "취소", onPress: () => {}, style: "cancel" },
+        {
+          text: "삭제",
+          onPress: () => {
+            instance
+              .delete(`${URL}/lectures/${data.id}`, {
+                headers: {
+                  // 헤더에 필요한 데이터를 여기에 추가
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((res) => {
+                Alert.alert(
+                  lectureBasicInfo.subTitle,
+                  "강의가 삭제되었습니다.",
+                  [
+                    {
+                      text: "확인",
+                      onPress: () => {
+                        // console.log("강사 신청 완료");
+                        navigation.reset();
+                      },
+                      style: "default",
+                    },
+                  ]
+                );
+              })
+              .catch((error) => {
+                // console.log("강사 신청 실패");
+                Alert.alert(
+                  lectureBasicInfo.subTitle,
+                  "강의 삭제에 실패하였습니다. 다시 시도해주세요.",
+                  [
+                    {
+                      text: "확인",
+                      onPress: () => {},
+                      style: "default",
+                    },
+                  ]
+                );
+                console.log(error);
+              });
+          },
+          style: "destructive",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      }
+    );
+  };
 
   // Use a custom renderScene function instead
   const renderScene = ({ route }) => {
@@ -681,13 +746,9 @@ function DetailLectureScreen({ route }) {
                               onPress: () => {
                                 // console.log("강사 신청 완료");
                               },
-                              style: "destructive",
+                              style: "default",
                             },
-                          ],
-                          {
-                            cancelable: true,
-                            onDismiss: () => {},
-                          }
+                          ]
                         )
                       : statusHandler();
                   }}
@@ -698,15 +759,26 @@ function DetailLectureScreen({ route }) {
                     padding: 4,
                   }}
                   circleStyle={{
-                    width: 24,
-                    height: 24,
+                    width: 22,
+                    height: 22,
                     borderRadius: 23,
                   }}
-                  buttonStyle={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "absolute",
-                  }}
+                  backgroundColorOn={GlobalStyles.colors.primaryDefault}
+                  backgroundColorOff={GlobalStyles.colors.gray05}
+                  buttonStyle={
+                    !status
+                      ? {
+                          alignItems: "center",
+                          justifyContent: "center",
+                          position: "absolute",
+                          marginLeft: 8,
+                        }
+                      : {
+                          alignItems: "center",
+                          justifyContent: "center",
+                          position: "absolute",
+                        }
+                  }
                   rightContainerStyle={{
                     flex: 1,
                     position: "absolute",
@@ -717,8 +789,10 @@ function DetailLectureScreen({ route }) {
                   }}
                   leftContainerStyle={{
                     flex: 1,
-                    alignItems: "center",
-                    justifyContent: "flex-start",
+                    alignItems: "flex-end",
+                    marginRight: 8,
+                    marginBottom: 2,
+                    justifyContent: "center",
                   }}
                   backTextRight={status ? "모집중" : ""}
                   backTextLeft={!status ? "진행중" : ""}
@@ -832,7 +906,9 @@ function DetailLectureScreen({ route }) {
             />
           )}
         />
-        {headerRole === "ROLE_ADMIN" ? (
+        {headerRole === "ROLE_ADMIN" ||
+        lectureBasicInfo.status === "ALLOCATION_COMP" ||
+        lectureBasicInfo.status === "FINISH" ? (
           ""
         ) : (
           <View style={styles.buttonContainer}>
@@ -881,22 +957,28 @@ function DetailLectureScreen({ route }) {
       </ScrollView>
 
       {headerRole === "ROLE_ADMIN" ? (
-        <Pressable
-          onPress={() =>
-            navigation.push("UpdateLectureScreen", {
-              data: {
-                lectureContentDto: lectureContent,
-                lectureDto: lectureBasicInfo,
-              },
-              option: "update",
-            })
-          }
-          style={styles.BottomButton}
-        >
-          {/* <View style={styles.BottomButton}> */}
-          <CreactingLecture width={20} height={20} />
-          {/* </View> */}
-        </Pressable>
+        <View style={styles.btnContainer}>
+          <Pressable
+            onPress={() =>
+              navigation.push("UpdateLectureScreen", {
+                data: {
+                  lectureContentDto: lectureContent,
+                  lectureDto: lectureBasicInfo,
+                },
+                option: "update",
+              })
+            }
+          >
+            <View style={[styles.btn, { marginRight: 2 }]}>
+              <AddLecture width={22} height={22} />
+            </View>
+          </Pressable>
+          <Pressable onPress={deleteLecture}>
+            <View style={styles.btn}>
+              <Delete width={26} height={26} />
+            </View>
+          </Pressable>
+        </View>
       ) : (
         ""
       )}
@@ -945,5 +1027,20 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 15,
+  },
+  btnContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    bottom: 6,
+    right: 6,
+  },
+  btn: {
+    backgroundColor: GlobalStyles.colors.primaryDefault,
+    borderRadius: 100,
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
 });
