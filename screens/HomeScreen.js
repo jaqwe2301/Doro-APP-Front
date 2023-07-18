@@ -68,29 +68,32 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(URL + "/lectures/", {
-        params: {
-          city: "",
-          endDate: "",
-          startDate: "",
-        },
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        // console.log(res.data.data);
-        setLectureData(res.data.data);
-      })
-      .catch((error) => {
-        console.log("에러");
-        console.log(error);
-      });
+    const unsubscribe = navigation.addListener("focus", () => {
+      axios
+        .get(URL + "/lectures/", {
+          params: {
+            city: "",
+            endDate: "",
+            startDate: "",
+          },
+          headers: {
+            // 헤더에 필요한 데이터를 여기에 추가
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          // console.log(res.data.data);
+          setLectureData(res.data.data);
+        })
+        .catch((error) => {
+          console.log("에러");
+          console.log(error);
+        });
+    });
 
-    // setLectureData(lectures);
-  }, []);
+    // Clean up the event listener on component unmount
+    return unsubscribe;
+  }, [navigation]); // navigation을 종속성 배열에 추가합니다
 
   useEffect(() => {
     setRecruitingCity(recruitingCityList);
