@@ -303,14 +303,20 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                   onFilter("교육 지역", "RECRUITING");
                 }}
               >
-                <FilterBox text="교육 지역" />
+                <FilterBox
+                  text="교육 지역"
+                  on={status === "RECRUITING" ? true : false}
+                />
               </Pressable>
               <Pressable
                 onPress={() => {
                   onFilter("교육 날짜", "recruitingDate");
                 }}
               >
-                <FilterBox text="교육 날짜" />
+                <FilterBox
+                  text="교육 날짜"
+                  on={status === "recruitingDate" ? true : false}
+                />
               </Pressable>
             </View>
             {recruitingElements}
@@ -332,14 +338,20 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                   onFilter("교육 지역", "ALLOCATION_COMP");
                 }}
               >
-                <FilterBox text="교육 지역" />
+                <FilterBox
+                  text="교육 지역"
+                  on={status === "ALLOCATION_COMP" ? true : false}
+                />
               </Pressable>
               <Pressable
                 onPress={() => {
                   onFilter("교육 날짜", "allocationDate");
                 }}
               >
-                <FilterBox text="교육 날짜" />
+                <FilterBox
+                  text="교육 날짜"
+                  on={status === "allocationDate" ? true : false}
+                />
               </Pressable>
             </View>
             {allocationElements}
