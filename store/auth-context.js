@@ -34,9 +34,9 @@ function AuthContextProvider({ children }) {
     setAuthToken(null);
     setReToken(null);
     setFcmToken(null);
-    // AsyncStorage.removeItem("token");
-    // AsyncStorage.removeItem("refreshToken");
-    // AsyncStorage.removeItem("fcmToken");
+    AsyncStorage.removeItem("token");
+    AsyncStorage.removeItem("refreshToken");
+    AsyncStorage.removeItem("fcmToken");
     await AsyncStorage.clear();
   }
 

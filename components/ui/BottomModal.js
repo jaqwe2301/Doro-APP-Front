@@ -6,6 +6,8 @@ import {
   Pressable,
   FlatList,
   Alert,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import { useEffect, useState } from "react";
 
@@ -84,97 +86,114 @@ function BottomModal({
   };
   return (
     <Modal transparent={true} visible={visible}>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalWhiteBox}>
-          <View style={styles.modalTop}>
-            <Pressable onPress={inVisible}>
-              <View style={styles.topButton}>
-                <Xmark width={24} height={24} />
-              </View>
-            </Pressable>
-            <Text style={{ fontSize: 17, fontWeight: "bold" }}>{title}</Text>
-            <Pressable onPress={onPressPlus}>
-              <View style={styles.topButton}>
-                {plusVisible ? (
-                  <Pressable onPress={onPressPlus}>
-                    <Plus width={19} height={20} />
-                  </Pressable>
-                ) : (
-                  ""
-                )}
-              </View>
-            </Pressable>
-          </View>
-          {status === "recruitingDate" || status === "allocationDate" ? (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginHorizontal: 20,
-                marginVertical: 24,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  setChoice(true);
-                  setDateVisible(true);
-                }}
-              >
-                <Text>{dateControl(date[0])}</Text>
+      {/* <SafeAreaView style={{ flex: 1 }}> */}
+      <Pressable style={styles.modalContainer} onPress={inVisible}>
+        {/* <View style={styles.modalContainer}> */}
+        <Pressable>
+          <View style={styles.modalWhiteBox}>
+            <View style={styles.modalTop}>
+              <Pressable onPress={inVisible}>
+                <View style={styles.topButton}>
+                  <Xmark width={24} height={24} />
+                </View>
               </Pressable>
-              <Text>-</Text>
-              <Pressable
-                onPress={() => {
-                  setChoice(false);
-                  setDateVisible(true);
-                }}
-              >
-                <Text>{dateControl(date[1])}</Text>
+              <Text style={{ fontSize: 17, fontWeight: "bold" }}>{title}</Text>
+              <Pressable onPress={onPressPlus}>
+                <View style={styles.topButton}>
+                  {plusVisible ? (
+                    <Pressable onPress={onPressPlus}>
+                      <Plus width={19} height={20} />
+                    </Pressable>
+                  ) : (
+                    ""
+                  )}
+                </View>
               </Pressable>
             </View>
-          ) : (
-            <FlatList
-              style={styles.modalList}
-              data={data}
-              renderItem={(data) => {
-                // onPress(data.item)
-                return (
-                  <Pressable
-                    onPress={() => {
-                      setCheck(data.index);
-                      setCheckItem(data.item);
-                    }}
-                  >
-                    <View style={styles.modalTextContainer}>
-                      <Text style={styles.modalText}>{data.item}</Text>
-                      {check === data.index ? <ModalCheck /> : ""}
-                    </View>
-                  </Pressable>
-                );
-              }}
-              extraData={data}
-            />
-          )}
-          <View style={styles.modalButtonContainer}>
-            <ButtonBig
-              text="확인"
-              onPress={() =>
-                status === "recruitingDate" || status === "allocationDate"
-                  ? onConfirm(date)
-                  : onConfirm(checkItem)
-              }
-            />
+            {status === "recruitingDate" || status === "allocationDate" ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginHorizontal: 10,
+                  marginVertical: 14,
+                }}
+              >
+                <Pressable
+                  onPress={() => {
+                    setChoice(true);
+                    setDateVisible(true);
+                  }}
+                  style={{
+                    // backgroundColor: GlobalStyles.colors.gray01,
+                    padding: 10,
+                  }}
+                >
+                  <Text>{dateControl(date[0])}</Text>
+                </Pressable>
+                <Text>-</Text>
+                <Pressable
+                  onPress={() => {
+                    setChoice(false);
+                    setDateVisible(true);
+                  }}
+                  style={{ padding: 10 }}
+                >
+                  <Text>{dateControl(date[1])}</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <FlatList
+                style={styles.modalList}
+                data={data}
+                renderItem={(data) => {
+                  // onPress(data.item)
+                  return (
+                    <Pressable
+                      onPress={() => {
+                        setCheck(data.index);
+                        setCheckItem(data.item);
+                      }}
+                    >
+                      <View style={styles.modalTextContainer}>
+                        <Text style={styles.modalText}>{data.item}</Text>
+                        {check === data.index ? <ModalCheck /> : ""}
+                      </View>
+                    </Pressable>
+                  );
+                }}
+                extraData={data}
+              />
+            )}
+            <View style={styles.modalButtonContainer}>
+              <ButtonBig
+                text="확인"
+                onPress={() =>
+                  status === "recruitingDate" || status === "allocationDate"
+                    ? onConfirm(date)
+                    : onConfirm(checkItem)
+                }
+              />
+            </View>
           </View>
-        </View>
-      </View>
-      <DateTimePickerModal
-        isVisible={dateVisible}
-        mode={"date"}
-        onConfirm={dateOnConfirm}
-        onCancel={() => setDateVisible(false)}
-        date={choice ? date[0] : date[1]}
-      />
+          {/* </View> */}
+          <DateTimePickerModal
+            isVisible={dateVisible}
+            mode={"date"}
+            onConfirm={dateOnConfirm}
+            onCancel={() => setDateVisible(false)}
+            date={choice ? date[0] : date[1]}
+            textColor={GlobalStyles.colors.gray01}
+            locale="ko"
+            customCancelButtonIOS={() => {
+              <View />;
+            }}
+            confirmTextIOS="확인"
+          />
+        </Pressable>
+      </Pressable>
+      {/* </SafeAreaView> */}
     </Modal>
   );
 }
@@ -218,6 +237,7 @@ const styles = StyleSheet.create({
   modalButtonContainer: {
     // height: 45,
     paddingHorizontal: 20,
+    paddingBottom: Platform.OS === "ios" ? 34 : 0,
   },
   modalButton: {
     height: 45,
