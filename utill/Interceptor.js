@@ -15,7 +15,7 @@ function Interceptor() {
   instance.interceptors.request.use(
     async function (config) {
       const token = await AsyncStorage.getItem("token");
-      console.log(token);
+      console.log(token + "토큰");
 
       if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
