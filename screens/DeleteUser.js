@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 
 import InputText from "../components/ui/InputText";
 import InputData from "../components/ui/InputData";
@@ -44,6 +44,12 @@ function DeleteUser({ navigation, route }) {
     try {
       const response = await deleteUser();
       console.log("갔니" + response);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        })
+      );
       authCtx.logout();
     } catch (error) {
       console.log("유저삭제 에러" + error);

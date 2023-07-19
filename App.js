@@ -360,6 +360,13 @@ function MyPageNavigator() {
         }}
       />
       <Stack.Screen
+        name="finishPw"
+        component={FinishPw}
+        options={{
+          title: "비밀번호 변경",
+        }}
+      />
+      <Stack.Screen
         name="deleteUser"
         component={DeleteUser}
         options={{
@@ -376,7 +383,7 @@ function MyPageNavigator() {
         component={TutorScreen}
         options={{ title: "매니저 페이지" }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="login"
         component={LoginScreen}
         options={{
@@ -384,7 +391,7 @@ function MyPageNavigator() {
           headerBackVisible: false,
           // headerTitleAlign: "left",
         }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }
@@ -579,7 +586,7 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="MyPage"
         component={MyPageNavigator}
-        options={{
+        options={({ route }) => ({
           title: "마이 페이지",
           header: () => {
             return (
@@ -604,12 +611,25 @@ function BottomTabNavigator() {
           tabBarIconStyle: {
             marginTop: 6,
           },
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+
+            if (
+              routeName === "searchPw" ||
+              routeName === "changePw" ||
+              routeName === "finishPw" ||
+              routeName === "deleteUser"
+            ) {
+              return { display: "none" };
+            }
+            return Platform.OS === "android" && { height: 60 };
+          })(route),
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: 600,
             marginBottom: Platform.OS === "android" ? 9 : 0,
           },
-        }}
+        })}
       />
     </BottomTab.Navigator>
   );
