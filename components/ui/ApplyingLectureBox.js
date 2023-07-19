@@ -73,7 +73,7 @@ function ApplyingLectureBox({
               <Xmark width={20} height={20} />
             </Pressable>
           ) : (
-            <Text style={{ fontSize: 10 }}>{matchingText}</Text>
+            <Text style={{ fontSize: 10, marginTop: 5 }}>{matchingText}</Text>
           )}
         </View>
         <View
@@ -86,7 +86,8 @@ function ApplyingLectureBox({
             <Text style={styles.role}>{tutorRole}</Text>
             <Text style={styles.enrollEndDate}>
               {typeof dateTypeValue === "object"
-                ? `${
+                ? "신청마감 " +
+                  `${
                     dateTypeValue?.getMonth() + 1
                   }월 ${dateTypeValue?.getDate()}일`
                 : dateTypeValue}
@@ -94,7 +95,7 @@ function ApplyingLectureBox({
           </View>
           <View style={{ alignItems: "flex-end" }}>
             <Text style={styles.place}>{place}</Text>
-            <Text style={styles.date}>{time}</Text>
+            <Text style={styles.date}>{dateText}</Text>
           </View>
         </View>
       </View>
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: GlobalStyles.colors.gray03,
     fontWeight: "bold",
+    lineHeight: 20,
   },
   enrollEndDate: {
     color: GlobalStyles.colors.gray03,
@@ -146,10 +148,12 @@ const styles = StyleSheet.create({
   place: {
     color: GlobalStyles.colors.gray03,
     fontSize: 10,
+    lineHeight: 20,
     fontWeight: "bold",
   },
   date: {
     fontSize: 12,
+
     fontWeight: "bold",
     color: GlobalStyles.colors.primaryDefault,
   },

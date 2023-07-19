@@ -146,7 +146,7 @@ function BottomModal({
             ) : (
               <FlatList
                 style={styles.modalList}
-                data={data}
+                data={Array.from(new Set(data))}
                 renderItem={(data) => {
                   // onPress(data.item)
                   return (
