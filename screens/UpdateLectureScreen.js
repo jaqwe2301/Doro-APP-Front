@@ -24,6 +24,7 @@ import { useNavigation } from "@react-navigation/native";
 import Xmark from "../assets/plusmark.svg";
 import ModalX from "../assets/xmark_black.svg";
 import Plus from "../assets/plus.svg";
+import Minus from "../assets/minus.svg";
 import ModalCheck from "../assets/modalcheck.svg";
 // import { format } from "date-fns";
 // import ko from "date-fns/esm/locale/ko/index.js";
@@ -275,6 +276,21 @@ function UpdateLectureScreen({ route }) {
   const handleAddInput = () => {
     const newList = [...inputList, ""];
     setInputList(newList);
+  };
+
+  const handleDeleteInput = (index) => {
+    const newList = [...inputList];
+    newList.splice(index, 1);
+    setInputList(newList);
+    console.log(newList);
+    setLectureData((prev) => {
+      const newDates = [...prev.lectureDates];
+      newDates.splice(inputIdx, 1);
+      return {
+        ...prev,
+        lectureDates: newDates,
+      };
+    });
   };
 
   const layout = useWindowDimensions();
@@ -951,7 +967,17 @@ function UpdateLectureScreen({ route }) {
                         <Xmark width={17} height={17} />
                       </Pressable>
                     ) : (
-                      ""
+                      <Pressable
+                        onPress={() => handleDeleteInput(index)}
+                        style={{
+                          // backgroundColor: GlobalStyles.colors.red,
+                          padding: 5,
+                          paddingRight: 11,
+                          // marginRight: 3,
+                        }}
+                      >
+                        <Minus width={12.5} height={12.5} />
+                      </Pressable>
                     )}
                   </Pressable>
                   // </View>

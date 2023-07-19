@@ -196,7 +196,7 @@ function ApplicationDetails({ route }) {
                     })
                   }
                   id=""
-                  dateTypeValue={"신청마감 " + dateTypeValue}
+                  dateTypeValue={dateTypeValue}
                   mainTutor={data.item.mainTutor}
                   place={data.item.place}
                   tutorRole={role + " 신청"}
