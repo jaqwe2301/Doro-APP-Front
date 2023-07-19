@@ -11,6 +11,7 @@ import {
   ScrollView,
   useWindowDimensions,
   SafeAreaView,
+  FlatList,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
@@ -32,12 +33,20 @@ import { KRRegular } from "../constants/fonts";
 // import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
 import { getAnnouncement } from "../utill/http";
+import Interceptor from "../utill/Interceptor";
+const instance = Interceptor();
 
 const HomeScreen = ({ lectureIdProps, navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
 
   const [lectureData, setLectureData] = useState([
+    {
+      lectureDates: [],
+    },
+  ]);
+
+  const [lectureData2, setLectureData2] = useState([
     {
       lectureDates: [],
     },
@@ -59,6 +68,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       try {
         const result = await getAnnouncement({ page: 0, size: 3 });
         setResponse(result);
+        console.log(result);
       } catch (error) {
         console.error(error);
       }
@@ -67,38 +77,111 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      axios
-        .get(URL + "/lectures/", {
-          params: {
-            city: "",
-            endDate: "",
-            startDate: "",
-          },
-          headers: {
-            // 헤더에 필요한 데이터를 여기에 추가
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
-          // console.log(res.data.data);
-          setLectureData(res.data.data);
-        })
-        .catch((error) => {
-          console.log("에러");
-          console.log(error);
-        });
-    });
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("focus", () => {
+  //     axios
+  //       .get(URL + "/lectures/", {
+  //         params: {
+  //           city: "",
+  //           endDate: "",
+  //           startDate: "",
+  //           page: 0,
+  //           size: 5,
+  //         },
+  //         headers: {
+  //           // 헤더에 필요한 데이터를 여기에 추가
+  //           "Content-Type": "application/json",
+  //         },
+  //       })
+  //       .then((res) => {
+  //         // console.log(res.data.data);
+  //         console.log("여기인가?");
+  //         setLectureData(res.data.data);
+  //       })
+  //       .catch((error) => {
+  //         console.log("에러");
+  //         console.log(error);
+  //       });
+  //   });
+  //   return unsubscribe;
+  //   // Clean up the event listener on component unmount
+  // }, [navigation]); // navigation을 종속성 배열에 추가합니다
 
-    // Clean up the event listener on component unmount
-    return unsubscribe;
-  }, [navigation]); // navigation을 종속성 배열에 추가합니다
+  useEffect(() => {
+    lectureHandler(true);
+    lectureHandler2(false);
+  }, []);
+
+  const [pageNum, setPageNum] = useState(0);
+  const [pageNum2, setPageNum2] = useState(0);
+  async function lectureHandler(type) {
+    instance
+      .get("/lectures/", {
+        params: {
+          city: "",
+          endDate: "",
+          startDate: "",
+          page: pageNum,
+          size: 5,
+        },
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        console.log("여기인가?");
+        type
+          ? setLectureData((prev) => [...prev, ...res.data.data])
+          : setLectureData2((prev) => [...prev, ...res.data.data]);
+        console.log(lectureData);
+        setPageNum((prev) => prev + 1);
+        console.log(pageNum);
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+      });
+  }
+  async function lectureHandler2(type) {
+    axios
+      .get(URL + "/lectures/", {
+        params: {
+          city: "",
+          endDate: "",
+          startDate: "",
+          page: pageNum2,
+          size: 10,
+        },
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        console.log("여기인가?");
+        type
+          ? setLectureData((prev) => [...prev, ...res.data.data])
+          : setLectureData2((prev) => [...prev, ...res.data.data]);
+        console.log(lectureData);
+        setPageNum2((prev) => prev + 1);
+        console.log(pageNum2);
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+      });
+  }
 
   useEffect(() => {
     setRecruitingCity(recruitingCityList);
-    setAllocationCity(allocationCityList);
   }, [lectureData]);
+
+  useEffect(() => {
+    setAllocationCity(allocationCityList);
+  }, [lectureData2]);
 
   const [filterDate, setFilterDate] = useState([
     [
@@ -136,7 +219,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     ...new Set(recruitingData.map((item) => item.mainTitle)),
   ];
 
-  const allocationCityList = lectureData
+  const allocationCityList = lectureData2
     .filter((item) => item.status === "ALLOCATION_COMP")
     .map((item) => {
       return item.city;
@@ -144,7 +227,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
 
   const [allocationCity, setAllocationCity] = useState(allocationCityList);
 
-  const allocationDate = lectureData.filter((item) => {
+  const allocationDate = lectureData2.filter((item) => {
     const dateCheck = item.lectureDates.every((dateStr) => {
       const date = new Date(dateStr);
       return date >= filterDate[1][0] && date <= filterDate[1][1];
@@ -166,94 +249,94 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     return new Date(stringDate);
   };
 
-  let recruitingElements = [];
+  // let recruitingElements = [];
 
-  for (let i = 0; i < recruitingTitle.length; i++) {
-    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+  // for (let i = 0; i < recruitingTitle.length; i++) {
+  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
 
-    recruitingElements.push(
-      <View key={i}>
-        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-          {recruitingTitle[i]}
-        </Text>
+  //   recruitingElements.push(
+  //     <View key={i}>
+  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+  //         {recruitingTitle[i]}
+  //       </Text>
 
-        {recruitingData
-          .filter((item) => item.mainTitle === recruitingTitle[i])
-          .map((filteringItem, i) => {
-            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            // console.log(filteringItem.staff);
-            // console.log(filteringItem.status);
-            return (
-              <LectureBox
-                key={filteringItem.id}
-                colors={SelectedColor}
-                subTitle={filteringItem.subTitle}
-                date={filteringItem.lectureDates}
-                time={filteringItem.time}
-                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-                id={filteringItem.id}
-                dateTypeValue={dateTypeValue}
-                mainTutor={filteringItem.mainTutor}
-                subTutor={filteringItem.subTutor}
-                staff={filteringItem.staff}
-                place={filteringItem.place}
-                lectureIdHandler={() =>
-                  navigation.navigate("DetailLecture", {
-                    id: filteringItem.id,
-                    status: filteringItem.status,
-                  })
-                }
-              />
-            );
-          })}
-        {i === recruitingTitle.length - 1 && <View style={{ height: 20 }} />}
-      </View>
-    );
-  }
+  //       {recruitingData
+  //         .filter((item) => item.mainTitle === recruitingTitle[i])
+  //         .map((filteringItem, i) => {
+  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+  //           // console.log(filteringItem.staff);
+  //           // console.log(filteringItem.status);
+  //           return (
+  //             <LectureBox
+  //               key={filteringItem.id}
+  //               colors={SelectedColor}
+  //               subTitle={filteringItem.subTitle}
+  //               date={filteringItem.lectureDates}
+  //               time={filteringItem.time}
+  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+  //               id={filteringItem.id}
+  //               dateTypeValue={dateTypeValue}
+  //               mainTutor={filteringItem.mainTutor}
+  //               subTutor={filteringItem.subTutor}
+  //               staff={filteringItem.staff}
+  //               place={filteringItem.place}
+  //               lectureIdHandler={() =>
+  //                 navigation.navigate("DetailLecture", {
+  //                   id: filteringItem.id,
+  //                   status: filteringItem.status,
+  //                 })
+  //               }
+  //             />
+  //           );
+  //         })}
+  //       {i === recruitingTitle.length - 1 && <View style={{ height: 20 }} />}
+  //     </View>
+  //   );
+  // }
 
-  let allocationElements = [];
+  // let allocationElements = [];
 
-  for (let i = 0; i < allocationTitle.length; i++) {
-    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+  // for (let i = 0; i < allocationTitle.length; i++) {
+  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
 
-    allocationElements.push(
-      <View key={i}>
-        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-          {allocationTitle[i]}
-        </Text>
+  //   allocationElements.push(
+  //     <View key={i}>
+  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+  //         {allocationTitle[i]}
+  //       </Text>
 
-        {allocationDate
-          .filter((item) => item.mainTitle === allocationTitle[i])
-          .map((filteringItem, i) => {
-            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            // console.log(filteringItem.staff);
-            return (
-              <LectureBox
-                key={filteringItem.id}
-                colors={SelectedColor}
-                subTitle={filteringItem.subTitle}
-                date={filteringItem.lectureDates}
-                time={filteringItem.time}
-                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-                id={filteringItem.id}
-                dateTypeValue={dateTypeValue}
-                mainTutor={filteringItem.mainTutor}
-                subTutor={filteringItem.subTutor}
-                staff={filteringItem.staff}
-                place={filteringItem.place}
-                lectureIdHandler={() =>
-                  navigation.navigate("DetailLecture", {
-                    id: filteringItem.id,
-                    status: filteringItem.status,
-                  })
-                }
-                // date={dateText}
-              />
-            );
-          })}
-      </View>
-    );
-  }
+  //       {allocationDate
+  //         .filter((item) => item.mainTitle === allocationTitle[i])
+  //         .map((filteringItem, i) => {
+  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+  //           // console.log(filteringItem.staff);
+  //           return (
+  //             <LectureBox
+  //               key={filteringItem.id}
+  //               colors={SelectedColor}
+  //               subTitle={filteringItem.subTitle}
+  //               date={filteringItem.lectureDates}
+  //               time={filteringItem.time}
+  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+  //               id={filteringItem.id}
+  //               dateTypeValue={dateTypeValue}
+  //               mainTutor={filteringItem.mainTutor}
+  //               subTutor={filteringItem.subTutor}
+  //               staff={filteringItem.staff}
+  //               place={filteringItem.place}
+  //               lectureIdHandler={() =>
+  //                 navigation.navigate("DetailLecture", {
+  //                   id: filteringItem.id,
+  //                   status: filteringItem.status,
+  //                 })
+  //               }
+  //               // date={dateText}
+  //             />
+  //           );
+  //         })}
+  //     </View>
+  //   );
+  // }
 
   const [filter, setFilter] = useState(false);
   const [title, setTitle] = useState("");
@@ -289,73 +372,172 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     switch (route.key) {
       case "first":
         return (
-          <ScrollView style={styles.lectureListContainer}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 7,
-                marginTop: 15,
-                marginBottom: 5,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  onFilter("교육 지역", "RECRUITING");
-                }}
-              >
-                <FilterBox
-                  text="교육 지역"
-                  on={status === "RECRUITING" ? true : false}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  onFilter("교육 날짜", "recruitingDate");
-                }}
-              >
-                <FilterBox
-                  text="교육 날짜"
-                  on={status === "recruitingDate" ? true : false}
-                />
-              </Pressable>
-            </View>
-            {recruitingElements}
-          </ScrollView>
+          <View style={styles.lectureListContainer}>
+            <FlatList
+              data={recruitingTitle}
+              keyExtractor={(item, index) => `${item}-${index}`}
+              onEndReached={() => lectureHandler(true)}
+              onEndReachedThreshold={0.2}
+              ListHeaderComponent={
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 7,
+                    marginTop: 15,
+                    marginBottom: 5,
+                    marginHorizontal: 20,
+                  }}
+                >
+                  <Pressable
+                    onPress={() => {
+                      onFilter("교육 지역", "RECRUITING");
+                    }}
+                  >
+                    <FilterBox
+                      text="교육 지역"
+                      on={status === "RECRUITING" ? true : false}
+                    />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      onFilter("교육 날짜", "recruitingDate");
+                    }}
+                  >
+                    <FilterBox
+                      text="교육 날짜"
+                      on={status === "recruitingDate" ? true : false}
+                    />
+                  </Pressable>
+                </View>
+              }
+              ListFooterComponent={<View style={{ height: 20 }} />}
+              renderItem={({ item: title, index }) => (
+                <View key={index} style={{ marginHorizontal: 20 }}>
+                  <Text
+                    style={[
+                      styles.mainTitle,
+                      { color: GlobalStyles.indicationColors[index % 4] },
+                    ]}
+                  >
+                    {title}
+                  </Text>
+                  <FlatList
+                    data={recruitingData.filter(
+                      (item) => item.mainTitle === title
+                    )}
+                    // keyExtractor={(item) => item.id}
+                    keyExtractor={(item, index) => `${item}_${index}`}
+                    renderItem={({ item: filteringItem }) => (
+                      <LectureBox
+                        key={filteringItem.id}
+                        colors={GlobalStyles.indicationColors[index % 4]}
+                        subTitle={filteringItem.subTitle}
+                        date={filteringItem.lectureDates}
+                        time={filteringItem.time}
+                        id={filteringItem.id}
+                        dateTypeValue={dateControl(filteringItem.enrollEndDate)}
+                        mainTutor={filteringItem.mainTutor}
+                        subTutor={filteringItem.subTutor}
+                        staff={filteringItem.staff}
+                        place={filteringItem.place}
+                        lectureIdHandler={() =>
+                          navigation.navigate("DetailLecture", {
+                            id: filteringItem.id,
+                            status: filteringItem.status,
+                          })
+                        }
+                      />
+                    )}
+                  />
+                </View>
+              )}
+            />
+          </View>
         );
       case "second":
         return (
-          <ScrollView style={styles.lectureListContainer}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 7,
-                marginTop: 15,
-                marginBottom: 5,
+          <View style={styles.lectureListContainer}>
+            <FlatList
+              data={allocationTitle}
+              keyExtractor={(item, index) => `${item}-${index}`}
+              onEndReached={() => lectureHandler2(false)}
+              onEndReachedThreshold={0.2}
+              ListHeaderComponent={
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 7,
+                    marginTop: 15,
+                    marginBottom: 5,
+                    marginHorizontal: 20,
+                  }}
+                >
+                  <Pressable
+                    onPress={() => {
+                      onFilter("교육 지역", "ALLOCATION_COMP");
+                    }}
+                  >
+                    <FilterBox
+                      text="교육 지역"
+                      on={status === "ALLOCATION_COMP" ? true : false}
+                    />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      onFilter("교육 날짜", "allocationDate");
+                    }}
+                  >
+                    <FilterBox
+                      text="교육 날짜"
+                      on={status === "allocationDate" ? true : false}
+                    />
+                  </Pressable>
+                </View>
+              }
+              ListFooterComponent={<View style={{ height: 20 }} />}
+              renderItem={({ item: title, index }) => {
+                let SelectedColor = GlobalStyles.indicationColors[index % 4];
+                console.log(allocationTitle);
+
+                return (
+                  <View key={index} style={{ marginHorizontal: 20 }}>
+                    <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+                      {title}
+                    </Text>
+                    <FlatList
+                      data={allocationDate.filter(
+                        (item) => item.mainTitle === title
+                      )}
+                      keyExtractor={(item, index) => `${item}_${index}`}
+                      renderItem={({ item: filteringItem }) => (
+                        <LectureBox
+                          key={filteringItem.id}
+                          colors={SelectedColor}
+                          subTitle={filteringItem.subTitle}
+                          date={filteringItem.lectureDates}
+                          time={filteringItem.time}
+                          id={filteringItem.id}
+                          dateTypeValue={dateControl(
+                            filteringItem.enrollEndDate
+                          )}
+                          mainTutor={filteringItem.mainTutor}
+                          subTutor={filteringItem.subTutor}
+                          staff={filteringItem.staff}
+                          place={filteringItem.place}
+                          lectureIdHandler={() =>
+                            navigation.navigate("DetailLecture", {
+                              id: filteringItem.id,
+                              status: filteringItem.status,
+                            })
+                          }
+                        />
+                      )}
+                    />
+                  </View>
+                );
               }}
-            >
-              <Pressable
-                onPress={() => {
-                  onFilter("교육 지역", "ALLOCATION_COMP");
-                }}
-              >
-                <FilterBox
-                  text="교육 지역"
-                  on={status === "ALLOCATION_COMP" ? true : false}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  onFilter("교육 날짜", "allocationDate");
-                }}
-              >
-                <FilterBox
-                  text="교육 날짜"
-                  on={status === "allocationDate" ? true : false}
-                />
-              </Pressable>
-            </View>
-            {allocationElements}
-          </ScrollView>
+            />
+          </View>
         );
 
       default:
@@ -452,23 +634,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               padding: 0,
             }}
             pressColor={"transparent"}
-            // 탭바(tap bar) 텍스트 스타일링
-            // renderLabel={({ route, focused, color }) => (
-            //   <Text
-            //     style={
-            //       focused
-            //         ? {
-            //             margin: 0,
-            //             fontSize: 15,
-            //             color: "black",
-            //             fontWeight: "bold",
-            //           }
-            //         : { margin: 0, fontSize: 15, color: "black" }
-            //     }
-            //   >
-            //     {route.title}
-            //   </Text>
-            // )}
             renderLabel={({ route, focused, color }) => (
               <Text
                 style={
@@ -546,7 +711,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   lectureListContainer: {
-    paddingHorizontal: 20,
+    // marginHorizontal: 20,
     backgroundColor: GlobalStyles.colors.gray07,
   },
   BottomButtonContainer: {
