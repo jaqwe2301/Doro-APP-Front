@@ -645,23 +645,10 @@ function UpdateLectureScreen({ route }) {
                 >
                   교육 내용
                 </Text>
-                <View style={styles.inputBox}>
+                <View style={[styles.inputBox, styles.dateBox]}>
                   <Text style={KRRegular.Subheadline}>
                     {selectedLectureContents.content}
                   </Text>
-                </View>
-              </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  교육 키트
-                </Text>
-                <View style={[styles.inputBox, styles.dateBox]}>
-                  <Text style={{ flex: 1 }}>{selectedLectureContents.kit}</Text>
                   <Pressable
                     onPress={() => {
                       setModalVisible(!modalVisible);
@@ -677,6 +664,19 @@ function UpdateLectureScreen({ route }) {
 
                     <Xmark width={17} height={17} />
                   </Pressable>
+                </View>
+              </View>
+              <View style={styles.lectureInfoContainer}>
+                <Text
+                  style={[
+                    KRRegular.Subheadline,
+                    { color: GlobalStyles.colors.gray03 },
+                  ]}
+                >
+                  키트
+                </Text>
+                <View style={[styles.inputBox, styles.dateBox]}>
+                  <Text style={{ flex: 1 }}>{selectedLectureContents.kit}</Text>
                 </View>
               </View>
               <View style={styles.lectureInfoContainer}>
@@ -1354,7 +1354,7 @@ function UpdateLectureScreen({ route }) {
           <Text
             style={[
               KRBold.Subbody,
-              { color: GlobalStyles.colors.gray05, marginBottom: -3 },
+              { color: GlobalStyles.colors.gray05, marginBottom: 5 },
             ]}
           >
             메인타이틀
@@ -1364,6 +1364,7 @@ function UpdateLectureScreen({ route }) {
             onChangeText={(text) => {
               handleSingleInputChange(text, "mainTitle");
             }}
+            textAlignVertical="center"
             value={lecturedata.mainTitle ? lecturedata.mainTitle : ""}
           />
           <Text
@@ -1372,7 +1373,7 @@ function UpdateLectureScreen({ route }) {
               {
                 color: GlobalStyles.colors.gray05,
                 marginTop: 10,
-                marginBottom: -3,
+                marginBottom: 5,
               },
             ]}
           >
@@ -1400,6 +1401,7 @@ function UpdateLectureScreen({ route }) {
               // 밑에 막대기(line) 스타일링
               indicatorStyle={{
                 backgroundColor: GlobalStyles.colors.primaryDefault,
+                height: 2,
                 border: "none",
               }}
               style={{
@@ -1414,7 +1416,10 @@ function UpdateLectureScreen({ route }) {
                 <Text
                   style={
                     focused
-                      ? [KRBold.Subheadline]
+                      ? [
+                          KRRegular.Subheadline,
+                          { color: GlobalStyles.colors.gray01 },
+                        ]
                       : [
                           KRRegular.Subheadline,
                           { color: GlobalStyles.colors.gray05 },
@@ -1455,22 +1460,27 @@ const styles = StyleSheet.create({
   },
   titleInput2: {
     width: "100%",
-    fontSize: 17,
-    height: 46,
+    height: 45,
+    textAlignVertical: "center",
+    fontSize: 15,
     fontWeight: "600",
-    lineHeight: 22,
-    marginBottom: 22,
-    textAlignVertical: "top",
+    // lineHeight: 20,
+    letterSpacing: 0.3,
+    paddingLeft: 19,
+
     borderRadius: 5.41,
     backgroundColor: GlobalStyles.colors.gray07,
+    marginBottom: 39,
   },
   titleInput: {
     width: "100%",
-    height: 28,
-    fontSize: 22,
+    height: 30,
+    fontSize: 15,
     fontWeight: "600",
-    lineHeight: 28,
-    textAlignVertical: "center",
+    // lineHeight: 20,
+    letterSpacing: 0.3,
+    paddingLeft: 19,
+
     borderRadius: 5.41,
     backgroundColor: GlobalStyles.colors.gray07,
   },
@@ -1581,6 +1591,7 @@ const styles = StyleSheet.create({
   },
   modalList: {
     marginBottom: 35,
+    maxHeight: 252,
   },
   modalTextContainer: {
     justifyContent: "center",
@@ -1636,9 +1647,7 @@ const styles = StyleSheet.create({
     height: 54,
     alignItems: "center",
   },
-  modalList: {
-    marginBottom: 35,
-  },
+
   modalTextContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
