@@ -854,12 +854,53 @@ function DetailLectureScreen({ route }) {
     );
   };
 
+  const statusHandler = () => {
+    let lecture = lectureBasicInfo;
+    if (!lecture) {
+      console.error("lecture is undefined");
+      // return prev;
+    }
+
+    delete lecture.id;
+    if (status) {
+      lecture.status = "ALLOCATION_COMP";
+    } else {
+      lecture.status = "RECRUITING";
+    }
+
+    axios
+      .patch(`${URL}/lectures/${data.id}`, lecture, {
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(
+          status ? "ALLOCATION_COMP" + "변경완료" : "RECRUITING" + "변경완료"
+        );
+        setStatus((prev) => !prev);
+      })
+      .catch((error) => {
+        console.log("에러");
+        console.log(error);
+        ㅌㅌㅌㅌㅌㅌ;
+      });
+  };
+
   return (
     <>
       <Tabs.Container renderHeader={MyHeader}>
-        <Tabs.Tab name="A">
+        <Tabs.Tab name="기본 정보">
           <Tabs.ScrollView>
-            <View style={{ marginTop: 40, flex: 1 }} onLayout={onLayout}>
+            <View
+              style={{
+                marginTop: 40,
+                justifyContent: "space-between",
+                flex: 1,
+                marginBottom: 30.84,
+              }}
+            >
               <View style={{ paddingHorizontal: 20 }}>
                 <Text
                   style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
@@ -977,20 +1018,67 @@ function DetailLectureScreen({ route }) {
                   </View>
                 </View>
               </View>
-              <View
-                style={{
-                  height: 0.5,
-                  width: layout.width,
-                  backgroundColor: GlobalStyles.colors.gray04,
-                  marginBottom: 9,
-                }}
-              />
+              {headerRole === "ROLE_ADMIN" ||
+              lectureBasicInfo.status === "ALLOCATION_COMP" ||
+              lectureBasicInfo.status === "FINISH" ? (
+                ""
+              ) : (
+                <View style={styles.buttonContainer}>
+                  {lectureBasicInfo.mainTutor === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("MAIN_TUTOR")}
+                      text="주 강사 신청"
+                      backgroundColor={
+                        apply[0]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                  {lectureBasicInfo.subTutor === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("SUB_TUTOR")}
+                      text="보조 강사 신청"
+                      backgroundColor={
+                        apply[1]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                  {lectureBasicInfo.staff === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("STAFF")}
+                      text="스태프 신청"
+                      backgroundColor={
+                        apply[2]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                </View>
+              )}
             </View>
           </Tabs.ScrollView>
         </Tabs.Tab>
-        <Tabs.Tab name="B">
+        <Tabs.Tab name="강의 관련 정보">
           <Tabs.ScrollView>
-            <View style={{ marginTop: 40, flex: 1, paddingHorizontal: 20 }}>
+            <View
+              style={{
+                marginTop: 40,
+                paddingHorizontal: 20,
+                justifyContent: "space-between",
+                flex: 1,
+                marginBottom: 30.84,
+              }}
+            >
               <View style={{ marginBottom: 0 }}>
                 <Text
                   style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
@@ -1060,9 +1148,197 @@ function DetailLectureScreen({ route }) {
               ) : (
                 ""
               )}
+              {headerRole === "ROLE_ADMIN" ||
+              lectureBasicInfo.status === "ALLOCATION_COMP" ||
+              lectureBasicInfo.status === "FINISH" ? (
+                ""
+              ) : (
+                <View style={styles.buttonContainer}>
+                  {lectureBasicInfo.mainTutor === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("MAIN_TUTOR")}
+                      text="주 강사 신청"
+                      backgroundColor={
+                        apply[0]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                  {lectureBasicInfo.subTutor === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("SUB_TUTOR")}
+                      text="보조 강사 신청"
+                      backgroundColor={
+                        apply[1]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                  {lectureBasicInfo.staff === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("STAFF")}
+                      text="스태프 신청"
+                      backgroundColor={
+                        apply[2]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                </View>
+              )}
             </View>
           </Tabs.ScrollView>
         </Tabs.Tab>
+        {headerRole === "ROLE_ADMIN" ? (
+          <Tabs.Tab name="신청 강사">
+            <Tabs.ScrollView>
+              <View style={{ marginTop: 40, flex: 1 }}>
+                <View style={{ paddingHorizontal: 20 }}>
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      fontWeight: "bold",
+                      marginBottom: 32,
+                    }}
+                  >
+                    신청 강사
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View
+                      style={[
+                        styles.flexDirectionRow,
+                        { gap: 8, marginBottom: 28 },
+                      ]}
+                    >
+                      {/* <Pressable>
+                        <FilterBox text="강사 타입" color="black" />
+                      </Pressable>
+                      <Pressable onPress={() => console.log(status)}>
+                        <FilterBox text="정렬 순서" color="black" />
+                      </Pressable> */}
+                    </View>
+                    {/* SwitchToggle 참고 링크 */}
+                    {/* https://github.com/yujong-lee/react-native-switch-toggle */}
+
+                    <SwitchToggle
+                      switchOn={status}
+                      onPress={() => {
+                        data.status === "FINISH"
+                          ? Alert.alert(
+                              "해당 강의는 끝난 강의입니다.",
+                              "상태를 변경할 수 없습니다.",
+                              [
+                                {
+                                  text: "확인",
+                                  onPress: () => {
+                                    // console.log("강사 신청 완료");
+                                  },
+                                  style: "default",
+                                },
+                              ]
+                            )
+                          : statusHandler();
+                      }}
+                      containerStyle={{
+                        width: 80,
+                        height: 36,
+                        borderRadius: 100,
+                        padding: 4,
+                      }}
+                      circleStyle={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: 23,
+                      }}
+                      backgroundColorOn={GlobalStyles.colors.primaryDefault}
+                      backgroundColorOff={GlobalStyles.colors.gray05}
+                      buttonStyle={
+                        !status
+                          ? {
+                              alignItems: "center",
+                              justifyContent: "center",
+                              position: "absolute",
+                              marginLeft: 8,
+                            }
+                          : {
+                              alignItems: "center",
+                              justifyContent: "center",
+                              position: "absolute",
+                            }
+                      }
+                      rightContainerStyle={{
+                        flex: 1,
+                        position: "absolute",
+                        marginLeft: 10,
+                        paddingBottom: 2,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      leftContainerStyle={{
+                        flex: 1,
+                        alignItems: "flex-end",
+                        marginRight: 8,
+                        marginBottom: 2,
+                        justifyContent: "center",
+                      }}
+                      backTextRight={status ? "모집중" : ""}
+                      backTextLeft={!status ? "진행중" : ""}
+                      textRightStyle={{
+                        fontSize: 12,
+                        color: "white",
+                        fontWeight: "bold",
+                      }}
+                      textLeftStyle={{ fontSize: 12 }}
+                    />
+                  </View>
+
+                  {tutor.map((item) => {
+                    const role =
+                      item.tutorRole === "MAIN_TUTOR"
+                        ? "주강사"
+                        : item.tutorRole === "SUB_TUTOR"
+                        ? "보조강사"
+                        : "스태프";
+                    return (
+                      <ApplyingTutorBox
+                        key={item.id}
+                        name={item.name}
+                        role={role}
+                        major={item.degree.major}
+                        onPress={() =>
+                          assignment(
+                            item.tutorRole,
+                            role,
+                            item.userId,
+                            item.name,
+                            item.tutorStatus
+                          )
+                        }
+                        status={item.tutorStatus}
+                      />
+                    );
+                  })}
+                </View>
+              </View>
+            </Tabs.ScrollView>
+          </Tabs.Tab>
+        ) : (
+          ""
+        )}
       </Tabs.Container>
 
       {/* <ScrollView
@@ -1218,28 +1494,31 @@ export default DetailLectureScreen;
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    flex: 1,
-    // position: "relative" ,
-    marginBottom: 14,
-    height: 40,
+    // position: "absolute",
+    // bottom: -10,
+    // flex: 1,
+    // marginBottom: 14,
+    // height: 40,
+    marginTop: 70,
     justifyContent: "space-between",
     paddingHorizontal: 20,
     flexDirection: "row",
+    // marginBottom: 30.84,
   },
   BottomButton: {
-    position: "absolute",
+    // position: "absolute",
     height: 56,
     width: 56,
     borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: GlobalStyles.colors.primaryDefault,
-    bottom: 27,
-    right: 20,
+    // bottom: 27,
+    // right: 20,
   },
   infoContainer: {
     gap: 18,
-    marginBottom: 56,
+    // marginBottom: 56,
     // paddingBottom: 56,
     // borderBottomColor: GlobalStyles.colors.gray04,
     // borderBottomWidth: 0.5,
