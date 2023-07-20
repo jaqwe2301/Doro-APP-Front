@@ -1340,6 +1340,32 @@ function DetailLectureScreen({ route }) {
           ""
         )}
       </Tabs.Container>
+      {headerRole === "ROLE_ADMIN" ? (
+        <View style={styles.btnContainer}>
+          <Pressable
+            onPress={() =>
+              navigation.push("UpdateLectureScreen", {
+                data: {
+                  lectureContentDto: lectureContent,
+                  lectureDto: lectureBasicInfo,
+                },
+                option: "update",
+              })
+            }
+          >
+            <View style={[styles.btn, { marginRight: 2 }]}>
+              <AddLecture width={22} height={22} />
+            </View>
+          </Pressable>
+          <Pressable onPress={deleteLecture}>
+            <View style={styles.btn}>
+              <Delete width={26} height={26} />
+            </View>
+          </Pressable>
+        </View>
+      ) : (
+        ""
+      )}
 
       {/* <ScrollView
         style={{ backgroundColor: "white", flex: 1 }}
