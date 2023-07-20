@@ -318,18 +318,18 @@ function DetailLectureScreen({ route }) {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = useState(0);
-  const [routes] = useState(
-    headerRole === "ROLE_ADMIN"
-      ? [
-          { key: "first", title: "기본정보" },
-          { key: "second", title: "강의 관련 정보" },
-          { key: "third", title: "신청 강사" },
-        ]
-      : [
-          { key: "first", title: "기본정보" },
-          { key: "second", title: "강의 관련 정보" },
-        ]
-  );
+  // const [routes] = useState(
+  //   headerRole === "ROLE_ADMIN"
+  //     ? [
+  //         { key: "first", title: "기본정보" },
+  //         { key: "second", title: "강의 관련 정보" },
+  //         { key: "third", title: "신청 강사" },
+  //       ]
+  //     : [
+  //         { key: "first", title: "기본정보" },
+  //         { key: "second", title: "강의 관련 정보" },
+  //       ]
+  // );
 
   const onLayout = (e) => {
     const { layout } = e.nativeEvent; // layout 추출
@@ -701,7 +701,6 @@ function DetailLectureScreen({ route }) {
             .catch((error) => {
               console.log("에러");
               console.log(error);
-              ㅌㅌㅌㅌㅌㅌ;
             });
         };
 
@@ -884,7 +883,6 @@ function DetailLectureScreen({ route }) {
       .catch((error) => {
         console.log("에러");
         console.log(error);
-        ㅌㅌㅌㅌㅌㅌ;
       });
   };
 

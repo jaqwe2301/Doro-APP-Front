@@ -81,7 +81,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       },
     })
     .then((res) => {
-      console.log(res.data.data);
+      // console.log(res.data.data);
       setLectureData(res.data.data);
     })
     .catch((error) => {

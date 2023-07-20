@@ -185,7 +185,7 @@ function UpdateLectureScreen({ route }) {
           },
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           Alert.alert(
             "강의 업데이트",
             `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.`,
@@ -224,7 +224,7 @@ function UpdateLectureScreen({ route }) {
               {
                 text: "확인",
                 onPress: () => {
-                  navigation.reset();
+                  navigation.reset({routes: [{name: "HomePage"}]});
                 },
               },
             ]
