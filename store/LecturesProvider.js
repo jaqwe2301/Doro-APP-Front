@@ -18,6 +18,7 @@ export const LecturesProvider = ({ children }) => {
           city: "",
           endDate: "",
           startDate: "",
+          size: 50,
         },
         headers: {
           "Content-Type": "application/json",

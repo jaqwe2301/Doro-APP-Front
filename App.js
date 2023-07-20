@@ -16,12 +16,10 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GlobalStyles } from "./constants/styles";
-import { Ionicons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import NoticeScreen from "./screens/NoticeScreen";
-import HistoryScreen from "./screens/HistoryScreen";
 import HomeScreen from "./screens/HomeScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import LoginScreen from "./screens/LoginScreen";
@@ -312,7 +310,7 @@ function HomeNavigator({ navigation }) {
   );
 }
 
-function MyPageNavigator() {
+function MyPageNavigator({ route, navigation }) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -395,6 +393,7 @@ function MyPageNavigator() {
     </Stack.Navigator>
   );
 }
+
 function NoticeNavigator({ navigation }) {
   return (
     <Stack.Navigator
@@ -447,6 +446,38 @@ function NoticeNavigator({ navigation }) {
             return <Text style={styles.completeText2}>완료</Text>;
           },
         }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function HistoryNavigator({ navigation }) {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+          // lineHeight: 22,
+        },
+        headerBackTitleVisible: false,
+        headerTintColor: "#000000",
+      }}
+      initialRouteName="applicationDetail"
+    >
+      <Stack.Screen
+        name="applicationDetail"
+        component={ApplicationDetails}
+        options={{
+          title: "신청 내역",
+        }}
+      />
+      <Stack.Screen
+        name="DetailLecture"
+        component={DetailLectureScreen}
+        options={{ title: "" }}
       />
     </Stack.Navigator>
   );
@@ -555,10 +586,10 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="History"
         // children={() => <ApplicationDetails header={true} />}
-        component={ApplicationDetails}
+        component={HistoryNavigator}
         options={{
           title: "신청 내역",
-          headerShown: true,
+          headerShown: false,
           headerShadowVisible: false,
           headerTitleAlign: "center",
           headerTitleAllowFontScaling: true,
