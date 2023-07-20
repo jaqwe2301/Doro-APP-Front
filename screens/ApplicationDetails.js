@@ -19,20 +19,20 @@ import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 import { KRRegular } from "../constants/fonts";
 
-function ApplicationDetails({ route }) {
+function ApplicationDetails({ route, navigation }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
-  const navigation = useNavigation();
+  const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
 
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
   const [allocation, setAllocation] = useState([]);
   const [finished, setFinished] = useState([]);
-  const jump = route.params?.screen;
+
   const instance = Interceptor();
 
   useEffect(() => {
-    setIndex(jump);
-  }, [jump]);
+    setIndex(historyIndex);
+  }, [historyIndex]);
 
   const getMyLectures = () => {
     instance

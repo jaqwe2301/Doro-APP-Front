@@ -11,6 +11,7 @@ function HeaderContextProvider({ children }) {
   const [headerRole, setHeaderRole] = useState("");
   const [headerId, setHeaderId] = useState("");
   const [headerAccount, setHeaderAccount] = useState("");
+  const [historyIndex, setHistoryIndex] = useState(0);
   //   const [headerPayload, setHeaderPayload] = useState();
 
   //   function getRole(decoded) {
@@ -26,6 +27,8 @@ function HeaderContextProvider({ children }) {
     setHeaderId,
     headerAccount,
     setHeaderAccount,
+    historyIndex,
+    setHistoryIndex,
   };
 
   return (

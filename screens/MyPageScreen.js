@@ -31,6 +31,7 @@ function MyPageScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
+  const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
   const [notificationAgreement, setNotificationAgreement] = useState();
   const [recruiting, setRecruiting] = useState([]);
   const [allocation, setAllocation] = useState([]);
@@ -209,7 +210,10 @@ function MyPageScreen({ navigation }) {
               )}
               <View style={styles.statusContainer}>
                 <Pressable
-                  onPress={() => navigation.navigate("History", { screen: 0 })}
+                  onPress={() => {
+                    navigation.jumpTo("History");
+                    setHistoryIndex(0);
+                  }}
                 >
                   <View style={styles.textContainer}>
                     <Text style={styles.text}>강의 신청</Text>
@@ -221,11 +225,10 @@ function MyPageScreen({ navigation }) {
                   </View>
                 </Pressable>
                 <Pressable
-                  onPress={() =>
-                    navigation.navigate("History", {
-                      screen: 1,
-                    })
-                  }
+                  onPress={() => {
+                    navigation.jumpTo("History");
+                    setHistoryIndex(1);
+                  }}
                 >
                   <View
                     style={[styles.textContainer, { marginHorizontal: 26 }]}
@@ -239,7 +242,10 @@ function MyPageScreen({ navigation }) {
                   </View>
                 </Pressable>
                 <Pressable
-                  onPress={() => navigation.navigate("History", { screen: 2 })}
+                  onPress={() => {
+                    navigation.jumpTo("History");
+                    setHistoryIndex(2);
+                  }}
                 >
                   <View style={styles.textContainer}>
                     <Text style={styles.text}>강의 완료</Text>
