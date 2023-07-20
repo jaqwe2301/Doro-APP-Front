@@ -1,8 +1,12 @@
 import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { KRBold } from "../../constants/fonts";
 
 function LectureBox(props) {
+  useEffect(() => {
+    // console.log(props);
+  });
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
     return new Date(stringDate);
@@ -57,39 +61,50 @@ function LectureBox(props) {
             },
           ]}
         >
-          <View style={styles.titleContainer}>
-            <Text style={styles.SubTitle}>{props.subTitle}</Text>
-            <Text style={styles.enrollEndDate}>
-              {typeof props.dateTypeValue === "object"
-                ? `신청마감 ${
-                    props.dateTypeValue?.getMonth() + 1
-                  }월 ${props.dateTypeValue?.getDate()}일`
-                : props.dateTypeValue}
-            </Text>
-          </View>
-          <Text style={styles.tutor}>
-            주강사 {props.mainTutor}
-            {!props.subTutor ? "" : ", 보조강사 " + props.subTutor}
-            {!props.staff ? "" : ", 스태프 " + props.staff}
-          </Text>
-          <View style={styles.placeContainer}>
-            <Text style={styles.place}>{props.place}</Text>
-          </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontSize: 12 }}>
-              {props.tutorRole === "MAIN_TUTOR"
-                ? "주강사 신청중"
-                : props.tutorRole === "SUB_TUTOR"
-                ? "보조강사 신청중"
-                : props.tutorRole === "STAFF"
-                ? "스태프 신청중"
-                : props.tutorRole}
-            </Text>
-            <Text style={[styles.date, { color: props.colors }]}>
-              {dateText}
-            </Text>
+          <View style={{ justifyContent: "space-between", flex: 1 }}>
+            <View>
+              <View style={styles.titleContainer}>
+                <Text style={styles.SubTitle}>{props.subTitle}</Text>
+                <Text style={styles.enrollEndDate}>
+                  {typeof props.dateTypeValue === "object"
+                    ? `신청마감 ${
+                        props.dateTypeValue?.getMonth() + 1
+                      }월 ${props.dateTypeValue?.getDate()}일`
+                    : props.dateTypeValue}
+                </Text>
+              </View>
+              <Text style={styles.tutor}>
+                주강사 {props.mainTutor}
+                {!props.subTutor ? "" : ", 보조강사 " + props.subTutor}
+                {!props.staff ? "" : ", 스태프 " + props.staff}
+              </Text>
+            </View>
+            <View>
+              <View style={styles.placeContainer}>
+                <Text style={styles.place}>{props.place}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ fontSize: 12 }}>
+                  {props.tutorRole === "MAIN_TUTOR"
+                    ? "주강사 신청중"
+                    : props.tutorRole === "SUB_TUTOR"
+                    ? "보조강사 신청중"
+                    : props.tutorRole === "STAFF"
+                    ? "스태프 신청중"
+                    : props.tutorRole}
+                </Text>
+                <Text
+                  style={[styles.date, { color: props.colors }, KRBold.Subbody]}
+                >
+                  {dateText}
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
       </View>
@@ -131,20 +146,28 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    // alignItems: "center",
   },
   SubTitle: {
     marginTop: 10,
     fontSize: 15,
     fontWeight: "bold",
+
+    lineHeight: 20,
     color: GlobalStyles.colors.gray01,
   },
   enrollEndDate: {
     marginTop: 10,
     color: GlobalStyles.colors.gray03,
     fontSize: 10,
+    height: 20,
+    lineHeight: 20,
+    // backgroundColor: GlobalStyles.colors.green,
   },
   tutor: {
     fontSize: 10,
+    height: 20,
+    lineHeight: 20,
     color: GlobalStyles.colors.gray03,
   },
   placeContainer: {
@@ -154,8 +177,10 @@ const styles = StyleSheet.create({
   place: {
     color: GlobalStyles.colors.gray03,
     fontSize: 10,
+    fontWeight: 600,
   },
   date: {
     fontSize: 12,
+    marginBottom: 10,
   },
 });
