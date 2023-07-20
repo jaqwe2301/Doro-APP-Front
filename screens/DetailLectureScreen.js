@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { Tabs } from "react-native-collapsible-tab-view";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import SwitchToggle from "react-native-switch-toggle";
 import axios from "axios";
@@ -837,12 +838,236 @@ function DetailLectureScreen({ route }) {
     }
   };
 
+  const MyHeader = () => {
+    return (
+      <LectureTop
+        subTitle={lectureBasicInfo.subTitle}
+        mainPayment={lectureBasicInfo.mainPayment}
+        subPayment={lectureBasicInfo.subPayment}
+        staffPayment={lectureBasicInfo.staffPayment}
+        city={lectureBasicInfo.city}
+        date={lectureBasicInfo.lectureDates}
+        time={lectureBasicInfo.time}
+        transportCost={lectureBasicInfo.transportCost}
+      />
+    );
+  };
+
   return (
     <>
-      <ScrollView
+      <Tabs.Container renderHeader={MyHeader}>
+        <Tabs.Tab name="A">
+          <Tabs.ScrollView>
+            <View style={{ marginTop: 40, flex: 1 }} onLayout={onLayout}>
+              <View style={{ paddingHorizontal: 20 }}>
+                <Text
+                  style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
+                >
+                  기본정보
+                </Text>
+                <View style={styles.infoContainer}>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>주최 및 주관</Text>
+                    <Text style={styles.infoText}>
+                      {lectureBasicInfo.institution}
+                    </Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>일자</Text>
+                    <View>
+                      {lectureBasicInfo.lectureDates.map((item, i) => {
+                        const date = new Date(item);
+                        const month =
+                          date.getMonth() >= 9
+                            ? date.getMonth() + 1
+                            : "0" + (date.getMonth() + 1);
+                        const days =
+                          date.getDate() > 9
+                            ? date.getDate()
+                            : "0" + date.getDate();
+
+                        return (
+                          <Text key={i} style={[styles.infoText]}>
+                            {date.getFullYear()}.{month}.{days} (
+                            {day[date.getDay()]})
+                          </Text>
+                        );
+                      })}
+                    </View>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>시간</Text>
+                    <Text style={styles.infoText}>{lectureBasicInfo.time}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>지역</Text>
+                    <Text style={styles.infoText}>{lectureBasicInfo.city}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>장소</Text>
+                    <Text style={styles.infoText}>
+                      {lectureBasicInfo.place}
+                    </Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>강의 대상</Text>
+                    <Text style={styles.infoText}>
+                      {lectureBasicInfo.studentGrade}
+                    </Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>인원수</Text>
+                    <Text style={styles.infoText}>
+                      {lectureBasicInfo.studentNumber}명
+                    </Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>모집 인원</Text>
+                    {/* <Text style={styles.infoText}>
+                    주강사 {lectureBasicInfo.mainTutor}
+                    {lectureBasicInfo.subTutor === "0"
+                      ? ""
+                      : ", 보조강사 " + lectureBasicInfo.subTutor}
+                    {lectureBasicInfo.staff === "0"
+                      ? ""
+                      : ", 스태프 " + lectureBasicInfo.staff}
+                  </Text> */}
+                    <View>
+                      <Text style={styles.infoText}>
+                        주 강사 : {lectureBasicInfo.mainTutor}
+                      </Text>
+                      {lectureBasicInfo.subTutor === "0" ? (
+                        ""
+                      ) : (
+                        <Text style={[styles.infoText, { marginTop: 2 }]}>
+                          보조 강사 : {lectureBasicInfo.subTutor}
+                        </Text>
+                      )}
+                      {lectureBasicInfo.staff === "0" ? (
+                        ""
+                      ) : (
+                        <Text style={[styles.infoText, { marginTop: 2 }]}>
+                          스태프 : {lectureBasicInfo.staff}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>강사 급여</Text>
+                    <View>
+                      <Text style={styles.infoText}>
+                        주 강사 : {lectureBasicInfo.mainPayment}원
+                      </Text>
+                      {lectureBasicInfo.subPayment === "0" ? (
+                        ""
+                      ) : (
+                        <Text style={[styles.infoText, { marginTop: 2 }]}>
+                          보조 강사 : {lectureBasicInfo.subPayment}원
+                        </Text>
+                      )}
+                      {lectureBasicInfo.staffPayment === "0" ? (
+                        ""
+                      ) : (
+                        <Text style={[styles.infoText, { marginTop: 2 }]}>
+                          스태프 : {lectureBasicInfo.staffPayment}원
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                </View>
+              </View>
+              <View
+                style={{
+                  height: 0.5,
+                  width: layout.width,
+                  backgroundColor: GlobalStyles.colors.gray04,
+                  marginBottom: 9,
+                }}
+              />
+            </View>
+          </Tabs.ScrollView>
+        </Tabs.Tab>
+        <Tabs.Tab name="B">
+          <Tabs.ScrollView>
+            <View style={{ marginTop: 40, flex: 1, paddingHorizontal: 20 }}>
+              <View style={{ marginBottom: 0 }}>
+                <Text
+                  style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
+                >
+                  강의 관련 정보
+                </Text>
+                <View style={styles.infoContainer}>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>교육 내용</Text>
+                    <Text style={styles.infoText}>
+                      {lectureContent.content}
+                    </Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>키트</Text>
+                    <Text style={styles.infoText}>{lectureContent.kit}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>기본 강의 구성</Text>
+                    <Text style={styles.infoText}>{lectureContent.detail}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>기타 특이사항</Text>
+                    <Text style={styles.infoText}>{lectureContent.remark}</Text>
+                  </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>자격 요건</Text>
+                    <Text style={styles.infoText}>
+                      {lectureContent.requirement}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              {assign ? (
+                <View>
+                  <View
+                    style={{
+                      height: 0.5,
+                      backgroundColor: GlobalStyles.colors.gray04,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      fontWeight: "bold",
+                      marginTop: 44,
+                      marginBottom: 34,
+                    }}
+                  >
+                    강의 배정 정보
+                  </Text>
+                  <View style={{ gap: 18 }}>
+                    <View style={styles.flexDirectionRow}>
+                      <Text style={styles.infoTitle}>주 강사</Text>
+                      <Text style={styles.infoText}>{assignList[0]}</Text>
+                    </View>
+                    <View style={styles.flexDirectionRow}>
+                      <Text style={styles.infoTitle}>보조 강사</Text>
+                      <Text style={styles.infoText}>{assignList[1]}</Text>
+                    </View>
+                    <View style={styles.flexDirectionRow}>
+                      <Text style={styles.infoTitle}>스태프</Text>
+                      <Text style={styles.infoText}>{assignList[2]}</Text>
+                    </View>
+                  </View>
+                </View>
+              ) : (
+                ""
+              )}
+            </View>
+          </Tabs.ScrollView>
+        </Tabs.Tab>
+      </Tabs.Container>
+
+      {/* <ScrollView
         style={{ backgroundColor: "white", flex: 1 }}
         // contentContainerStyle={{ flexGrow: 1 }}
-      >
+        >
         <LectureTop
           subTitle={lectureBasicInfo.subTitle}
           mainPayment={lectureBasicInfo.mainPayment}
@@ -913,7 +1138,6 @@ function DetailLectureScreen({ route }) {
           ""
         ) : (
           <View style={styles.buttonContainer}>
-            {/* 강사 신청 [MAIN_TUTOR, SUB_TUTOR, STAFF] */}
             {lectureBasicInfo.mainTutor === "0" ? (
               ""
             ) : (
@@ -955,9 +1179,9 @@ function DetailLectureScreen({ route }) {
             )}
           </View>
         )}
-      </ScrollView>
+      </ScrollView> */}
 
-      {headerRole === "ROLE_ADMIN" ? (
+      {/* {headerRole === "ROLE_ADMIN" ? (
         <View style={styles.btnContainer}>
           <Pressable
             onPress={() =>
@@ -982,7 +1206,7 @@ function DetailLectureScreen({ route }) {
         </View>
       ) : (
         ""
-      )}
+      )} */}
     </>
 
     // </View>
