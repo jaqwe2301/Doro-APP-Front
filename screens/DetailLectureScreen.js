@@ -885,13 +885,14 @@ function DetailLectureScreen({ route }) {
                 <Text
                   style={
                     focused
-                      ? {
-                          margin: 0,
-                          fontSize: 15,
-                          color: "black",
-                          fontWeight: "bold",
-                        }
-                      : { margin: 0, fontSize: 15, color: "black" }
+                      ? [
+                          KRRegular.Subheadline,
+                          { color: GlobalStyles.colors.gray01 },
+                        ]
+                      : [
+                          KRRegular.Subheadline,
+                          { color: GlobalStyles.colors.gray05 },
+                        ]
                   }
                 >
                   {route.title}
