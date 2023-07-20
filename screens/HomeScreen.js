@@ -11,6 +11,7 @@ import {
   ScrollView,
   useWindowDimensions,
   SafeAreaView,
+  FlatList,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
@@ -32,33 +33,64 @@ import { KRRegular } from "../constants/fonts";
 // import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
 import { getAnnouncement } from "../utill/http";
+import Interceptor from "../utill/Interceptor";
+const instance = Interceptor();
 
 const HomeScreen = ({ lectureIdProps, navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
 
+  const [rlectureData, setRLectureData] = useState([]);
+  const [alectureData, setALectureData] = useState([]);
+  const [recruitingTitles, setRecruitingTitles] = useState([]);
+  const [recruitingContents, setRecruitingContents] = useState([]);
+  const [allocationTitles, setAllocationTitles] = useState([]);
   const [lectureData, setLectureData] = useState([
     {
       lectureDates: [],
     },
   ]);
+
+  const [lectureData2, setLectureData2] = useState([
+    {
+      lectureDates: [],
+    },
+  ]);
+
+  const groupDataByMainTitle = (data) => {
+    const groupedData = data.reduce((acc, item) => {
+      if (!acc[item.mainTitle]) {
+        acc[item.mainTitle] = [item];
+      } else {
+        acc[item.mainTitle].push(item);
+      }
+      return acc;
+    }, {});
+    return Object.keys(groupedData).map((key) => ({
+      mainTitle: key,
+      data: groupedData[key],
+      color: GlobalStyles.indicationColors[index % 4],
+    }));
+  };
+
   // const { lectures } = useLectures(null);
 
-  if (lectureData.lectureDates === []) {
-    // 로딩
-    return (
-      <ActivityIndicator
-        size="large"
-        color={GlobalStyles.colors.primaryDefault}
-      />
-    ); // or any other loading indicator
-  }
+  // if (lectureData.lectureDates === []) {
+  //   // 로딩
+  //   return (
+  //     <ActivityIndicator
+  //       size="large"
+  //       color={GlobalStyles.colors.primaryDefault}
+  //     />
+  //   ); // or any other loading indicator
+  // }
 
   useEffect(() => {
     async function fetchData() {
       try {
         const result = await getAnnouncement({ page: 0, size: 3 });
         setResponse(result);
+        console.log(result);
       } catch (error) {
         console.error(error);
       }
@@ -67,39 +99,140 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      axios
-        .get(URL + "/lectures/", {
-          params: {
-            city: "",
-            endDate: "",
-            startDate: "",
-            size: 50,
-          },
-          headers: {
-            // 헤더에 필요한 데이터를 여기에 추가
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
-          // console.log(res.data.data);
-          setLectureData(res.data.data);
-        })
-        .catch((error) => {
-          console.log("에러");
-          console.log(error);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("focus", () => {
+  //     axios
+  //       .get(URL + "/lectures/", {
+  //         params: {
+  //           city: "",
+  //           endDate: "",
+  //           startDate: "",
+  //           page: 0,
+  //           size: 5,
+  //         },
+  //         headers: {
+  //           // 헤더에 필요한 데이터를 여기에 추가
+  //           "Content-Type": "application/json",
+  //         },
+  //       })
+  //       .then((res) => {
+  //         // console.log(res.data.data);
+  //         console.log("여기인가?");
+  //         setLectureData(res.data.data);
+  //       })
+  //       .catch((error) => {
+  //         console.log("에러");
+  //         console.log(error);
+  //       });
+  //   });
+  //   return unsubscribe;
+  //   // Clean up the event listener on component unmount
+  // }, [navigation]); // navigation을 종속성 배열에 추가합니다
+
+  // useEffect(() => {
+  //   lectureHandler();
+  //   // lectureHandler2();
+  // }, []);
+
+  const [pageNum, setPageNum] = useState(0);
+  const [pageNum2, setPageNum2] = useState(0);
+
+  async function lectureHandler() {
+    instance
+      .get("/lectures/", {
+        params: {
+          city: "",
+          endDate: "",
+          startDate: "",
+          page: pageNum,
+          size: 10,
+          lectureStatus: "RECRUITING",
+        },
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        console.log("여기인가? 여긴 모집중인코드");
+        const recruitingData = res.data.data.lecturesInfos;
+
+        // 중복 없는 메인타이틀 값들
+
+        // const mainTitleSet = new Set(
+        //   recruitingData.map((item) => item.mainTitle)
+        // );
+        // console.log(mainTitleSet);
+
+        // setRecruitingTitles((prev) => [...prev, ...mainTitleSet]);
+        const data = groupDataByMainTitle(recruitingData);
+
+        setRLectureData((prev) => [...prev, ...data]);
+        console.log("모집중ㄱ" + JSON.stringify(recruitingData));
+        setPageNum((prev) => prev + 1);
+        console.log(pageNum);
+      })
+      .catch((error) => {
+        console.log("에러 모집중");
+        console.log(error);
+      });
+  }
+  async function lectureHandler2() {
+    instance
+      .get("/lectures/", {
+        params: {
+          city: "",
+          endDate: "",
+          startDate: "",
+          page: pageNum2,
+          size: 30,
+        },
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        console.log("여기인가? 여긴 모집중인코드");
+        const allocationgData = res.data.data.lecturesInfos.filter(
+          (item) => item.status === "ALLOCATION_COMP"
+        );
+        setALectureData((prev) => {
+          const uniqueTitlesSet = new Set([
+            ...prev.map((item) => item.mainTitle),
+          ]);
+          const newAllocationData = allocationgData.filter(
+            (item) => !uniqueTitlesSet.has(item.mainTitle)
+          );
+
+          // Update recruitingTitles state with new unique titles
+          setAllocationTitles((prevTitles) => [
+            ...prevTitles,
+            ...newAllocationData.map((item) => item.mainTitle),
+          ]);
+
+          return [...prev, ...newAllocationData];
         });
-    });
 
-    // Clean up the event listener on component unmount
-    return unsubscribe;
-  }, [navigation]); // navigation을 종속성 배열에 추가합니다
+        console.log(allocationgData + "모집중ㄱ");
+        setPageNum2((prev) => prev + 1);
+        console.log(pageNum);
+      })
+      .catch((error) => {
+        console.log("에러 진행중");
+        console.log(error);
+      });
+  }
 
-  useEffect(() => {
-    setRecruitingCity(recruitingCityList);
-    setAllocationCity(allocationCityList);
-  }, [lectureData]);
+  // useEffect(() => {
+  //   setRecruitingCity(recruitingCityList);
+  // }, [lectureData]);
+
+  // useEffect(() => {
+  //   setAllocationCity(allocationCityList);
+  // }, [lectureData2]);
 
   const [filterDate, setFilterDate] = useState([
     [
@@ -112,149 +245,149 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     ],
   ]);
 
-  const recruitingCityList = lectureData
-    .filter((item) => item.status === "RECRUITING")
-    .map((item) => {
-      return item.city;
-    });
+  // const recruitingCityList = lectureData
+  //   .filter((item) => item.status === "RECRUITING")
+  //   .map((item) => {
+  //     return item.city;
+  //   });
 
-  const [recruitingCity, setRecruitingCity] = useState(recruitingCityList);
+  // const [recruitingCity, setRecruitingCity] = useState(recruitingCityList);
 
-  const recruitingData = lectureData.filter((item) => {
-    const dateCheck = item.lectureDates.every((dateStr) => {
-      const date = new Date(dateStr);
+  // const recruitingData = lectureData.filter((item) => {
+  //   const dateCheck = item.lectureDates.every((dateStr) => {
+  //     const date = new Date(dateStr);
 
-      return date >= filterDate[0][0] && date <= filterDate[0][1];
-    });
-    return (
-      item.status === "RECRUITING" &&
-      recruitingCity.includes(item.city) &&
-      dateCheck
-    );
-  });
+  //     return date >= filterDate[0][0] && date <= filterDate[0][1];
+  //   });
+  //   return (
+  //     item.status === "RECRUITING" &&
+  //     recruitingCity.includes(item.city) &&
+  //     dateCheck
+  //   );
+  // });
 
-  const recruitingTitle = [
-    ...new Set(recruitingData.map((item) => item.mainTitle)),
-  ];
+  // const recruitingTitle = [
+  //   ...new Set(recruitingData.map((item) => item.mainTitle)),
+  // ];
 
-  const allocationCityList = lectureData
+  const allocationCityList = lectureData2
     .filter((item) => item.status === "ALLOCATION_COMP")
     .map((item) => {
       return item.city;
     });
 
-  const [allocationCity, setAllocationCity] = useState(allocationCityList);
+  // const [allocationCity, setAllocationCity] = useState(allocationCityList);
 
-  const allocationDate = lectureData.filter((item) => {
-    const dateCheck = item.lectureDates.every((dateStr) => {
-      const date = new Date(dateStr);
-      return date >= filterDate[1][0] && date <= filterDate[1][1];
-    });
+  // const allocationDate = lectureData2.filter((item) => {
+  //   const dateCheck = item.lectureDates.every((dateStr) => {
+  //     const date = new Date(dateStr);
+  //     return date >= filterDate[1][0] && date <= filterDate[1][1];
+  //   });
 
-    return (
-      item.status === "ALLOCATION_COMP" &&
-      allocationCity.includes(item.city) &&
-      dateCheck
-    );
-  });
+  //   return (
+  //     item.status === "ALLOCATION_COMP" &&
+  //     allocationCity.includes(item.city) &&
+  //     dateCheck
+  //   );
+  // });
 
-  const allocationTitle = [
-    ...new Set(allocationDate.map((item) => item.mainTitle)),
-  ];
+  // const allocationTitle = [
+  //   ...new Set(allocationDate.map((item) => item.mainTitle)),
+  // ];
 
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
     return new Date(stringDate);
   };
 
-  let recruitingElements = [];
+  // let recruitingElements = [];
 
-  for (let i = 0; i < recruitingTitle.length; i++) {
-    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+  // for (let i = 0; i < recruitingTitle.length; i++) {
+  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
 
-    recruitingElements.push(
-      <View key={i}>
-        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-          {recruitingTitle[i]}
-        </Text>
+  //   recruitingElements.push(
+  //     <View key={i}>
+  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+  //         {recruitingTitle[i]}
+  //       </Text>
 
-        {recruitingData
-          .filter((item) => item.mainTitle === recruitingTitle[i])
-          .map((filteringItem, i) => {
-            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            console.log(filteringItem);
-            // console.log(filteringItem.status);
-            return (
-              <LectureBox
-                key={filteringItem.id}
-                colors={SelectedColor}
-                subTitle={filteringItem.subTitle}
-                date={filteringItem.lectureDates}
-                time={filteringItem.time}
-                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-                id={filteringItem.id}
-                dateTypeValue={dateTypeValue}
-                mainTutor={filteringItem.mainTutor}
-                subTutor={filteringItem.subTutor}
-                staff={filteringItem.staff}
-                place={filteringItem.place}
-                lectureIdHandler={() =>
-                  navigation.navigate("DetailLecture", {
-                    id: filteringItem.id,
-                    status: filteringItem.status,
-                  })
-                }
-              />
-            );
-          })}
-        {i === recruitingTitle.length - 1 && <View style={{ height: 20 }} />}
-      </View>
-    );
-  }
+  //       {recruitingData
+  //         .filter((item) => item.mainTitle === recruitingTitle[i])
+  //         .map((filteringItem, i) => {
+  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+  //           // console.log(filteringItem.staff);
+  //           // console.log(filteringItem.status);
+  //           return (
+  //             <LectureBox
+  //               key={filteringItem.id}
+  //               colors={SelectedColor}
+  //               subTitle={filteringItem.subTitle}
+  //               date={filteringItem.lectureDates}
+  //               time={filteringItem.time}
+  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+  //               id={filteringItem.id}
+  //               dateTypeValue={dateTypeValue}
+  //               mainTutor={filteringItem.mainTutor}
+  //               subTutor={filteringItem.subTutor}
+  //               staff={filteringItem.staff}
+  //               place={filteringItem.place}
+  //               lectureIdHandler={() =>
+  //                 navigation.navigate("DetailLecture", {
+  //                   id: filteringItem.id,
+  //                   status: filteringItem.status,
+  //                 })
+  //               }
+  //             />
+  //           );
+  //         })}
+  //       {i === recruitingTitle.length - 1 && <View style={{ height: 20 }} />}
+  //     </View>
+  //   );
+  // }
 
-  let allocationElements = [];
+  // let allocationElements = [];
 
-  for (let i = 0; i < allocationTitle.length; i++) {
-    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+  // for (let i = 0; i < allocationTitle.length; i++) {
+  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
 
-    allocationElements.push(
-      <View key={i}>
-        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-          {allocationTitle[i]}
-        </Text>
+  //   allocationElements.push(
+  //     <View key={i}>
+  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+  //         {allocationTitle[i]}
+  //       </Text>
 
-        {allocationDate
-          .filter((item) => item.mainTitle === allocationTitle[i])
-          .map((filteringItem, i) => {
-            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            // console.log(filteringItem.staff);
-            return (
-              <LectureBox
-                key={filteringItem.id}
-                colors={SelectedColor}
-                subTitle={filteringItem.subTitle}
-                date={filteringItem.lectureDates}
-                time={filteringItem.time}
-                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-                id={filteringItem.id}
-                dateTypeValue={dateTypeValue}
-                mainTutor={filteringItem.mainTutor}
-                subTutor={filteringItem.subTutor}
-                staff={filteringItem.staff}
-                place={filteringItem.place}
-                lectureIdHandler={() =>
-                  navigation.navigate("DetailLecture", {
-                    id: filteringItem.id,
-                    status: filteringItem.status,
-                  })
-                }
-                // date={dateText}
-              />
-            );
-          })}
-      </View>
-    );
-  }
+  //       {allocationDate
+  //         .filter((item) => item.mainTitle === allocationTitle[i])
+  //         .map((filteringItem, i) => {
+  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+  //           // console.log(filteringItem.staff);
+  //           return (
+  //             <LectureBox
+  //               key={filteringItem.id}
+  //               colors={SelectedColor}
+  //               subTitle={filteringItem.subTitle}
+  //               date={filteringItem.lectureDates}
+  //               time={filteringItem.time}
+  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+  //               id={filteringItem.id}
+  //               dateTypeValue={dateTypeValue}
+  //               mainTutor={filteringItem.mainTutor}
+  //               subTutor={filteringItem.subTutor}
+  //               staff={filteringItem.staff}
+  //               place={filteringItem.place}
+  //               lectureIdHandler={() =>
+  //                 navigation.navigate("DetailLecture", {
+  //                   id: filteringItem.id,
+  //                   status: filteringItem.status,
+  //                 })
+  //               }
+  //               // date={dateText}
+  //             />
+  //           );
+  //         })}
+  //     </View>
+  //   );
+  // }
 
   const [filter, setFilter] = useState(false);
   const [title, setTitle] = useState("");
@@ -290,73 +423,164 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     switch (route.key) {
       case "first":
         return (
-          <ScrollView style={styles.lectureListContainer}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 7,
-                marginTop: 15,
-                marginBottom: 5,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  onFilter("교육 지역", "RECRUITING");
-                }}
-              >
-                <FilterBox
-                  text="교육 지역"
-                  on={status === "RECRUITING" ? true : false}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  onFilter("교육 날짜", "recruitingDate");
-                }}
-              >
-                <FilterBox
-                  text="교육 날짜"
-                  on={status === "recruitingDate" ? true : false}
-                />
-              </Pressable>
-            </View>
-            {recruitingElements}
-          </ScrollView>
+          <View style={styles.lectureListContainer}>
+            <FlatList
+              data={rlectureData}
+              keyExtractor={(item, index) => index.toString()}
+              onEndReached={lectureHandler}
+              onEndReachedThreshold={0.2}
+              ListHeaderComponent={
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 7,
+                    marginTop: 15,
+                    marginBottom: 5,
+                    marginHorizontal: 20,
+                  }}
+                >
+                  <Pressable
+                    onPress={() => {
+                      onFilter("교육 지역", "RECRUITING");
+                    }}
+                  >
+                    <FilterBox
+                      text="교육 지역"
+                      on={status === "RECRUITING" ? true : false}
+                    />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      onFilter("교육 날짜", "recruitingDate");
+                    }}
+                  >
+                    <FilterBox
+                      text="교육 날짜"
+                      on={status === "recruitingDate" ? true : false}
+                    />
+                  </Pressable>
+                </View>
+              }
+              ListFooterComponent={<View style={{ height: 23 }} />}
+              renderItem={({ item }) => (
+                <View style={{ marginHorizontal: 20 }}>
+                  <Text style={[styles.mainTitle, { color: item.color }]}>
+                    {item.mainTitle}
+                  </Text>
+                  <FlatList
+                    data={item.data}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                      <LectureBox
+                        key={item.id}
+                        colors={GlobalStyles.indicationColors[index % 4]}
+                        subTitle={item.subTitle}
+                        date={item.lectureDates}
+                        time={item.time}
+                        id={item.id}
+                        dateTypeValue={dateControl(item.enrollEndDate)}
+                        mainTutor={item.mainTutor}
+                        subTutor={item.subTutor}
+                        staff={item.staff}
+                        place={item.place}
+                        lectureIdHandler={() =>
+                          navigation.navigate("DetailLecture", {
+                            id: item.id,
+                            status: item.status,
+                          })
+                        }
+                      />
+                    )}
+                  />
+                </View>
+              )}
+            />
+          </View>
         );
       case "second":
         return (
-          <ScrollView style={styles.lectureListContainer}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 7,
-                marginTop: 15,
-                marginBottom: 5,
+          <View style={styles.lectureListContainer}>
+            {/* <FlatList
+              data={allocationTitles}
+              keyExtractor={(item, index) => `${item}-${index}`}
+              onEndReached={lectureHandler2}
+              onEndReachedThreshold={0.2}
+              ListHeaderComponent={
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 7,
+                    marginTop: 15,
+                    marginBottom: 5,
+                    marginHorizontal: 20,
+                  }}
+                >
+                  <Pressable
+                    onPress={() => {
+                      onFilter("교육 지역", "ALLOCATION_COMP");
+                    }}
+                  >
+                    <FilterBox
+                      text="교육 지역"
+                      on={status === "ALLOCATION_COMP" ? true : false}
+                    />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      onFilter("교육 날짜", "allocationDate");
+                    }}
+                  >
+                    <FilterBox
+                      text="교육 날짜"
+                      on={status === "allocationDate" ? true : false}
+                    />
+                  </Pressable>
+                </View>
+              }
+              ListFooterComponent={<View style={{ height: 20 }} />}
+              renderItem={({ item: title, index }) => {
+                const filteredAllocationgData = alectureData.filter(
+                  (item) => item.mainTitle === title
+                );
+                let SelectedColor = GlobalStyles.indicationColors[index % 4];
+
+                return (
+                  <View key={index} style={{ marginHorizontal: 20 }}>
+                    <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+                      {title}
+                    </Text>
+                    <FlatList
+                      data={filteredAllocationgData}
+                      keyExtractor={(item, index) => `${item}_${index}`}
+                      renderItem={({ item: filteringItem }) => (
+                        <LectureBox
+                          key={filteringItem.id}
+                          colors={SelectedColor}
+                          subTitle={filteringItem.subTitle}
+                          date={filteringItem.lectureDates}
+                          time={filteringItem.time}
+                          id={filteringItem.id}
+                          dateTypeValue={dateControl(
+                            filteringItem.enrollEndDate
+                          )}
+                          mainTutor={filteringItem.mainTutor}
+                          subTutor={filteringItem.subTutor}
+                          staff={filteringItem.staff}
+                          place={filteringItem.place}
+                          lectureIdHandler={() =>
+                            navigation.navigate("DetailLecture", {
+                              id: filteringItem.id,
+                              status: filteringItem.status,
+                            })
+                          }
+                        />
+                      )}
+                    />
+                  </View>
+                );
               }}
-            >
-              <Pressable
-                onPress={() => {
-                  onFilter("교육 지역", "ALLOCATION_COMP");
-                }}
-              >
-                <FilterBox
-                  text="교육 지역"
-                  on={status === "ALLOCATION_COMP" ? true : false}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  onFilter("교육 날짜", "allocationDate");
-                }}
-              >
-                <FilterBox
-                  text="교육 날짜"
-                  on={status === "allocationDate" ? true : false}
-                />
-              </Pressable>
-            </View>
-            {allocationElements}
-          </ScrollView>
+            /> */}
+          </View>
         );
 
       default:
@@ -443,7 +667,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
-              height: 31,
+              height: 30,
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
@@ -532,6 +756,7 @@ const styles = StyleSheet.create({
   lectureListContainer: {
     paddingHorizontal: 20,
     backgroundColor: GlobalStyles.colors.gray07,
+    flex: 1,
   },
   BottomButtonContainer: {
     position: "absolute",
