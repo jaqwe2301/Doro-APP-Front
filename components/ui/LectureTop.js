@@ -63,7 +63,10 @@ function LectureTop({
   }
 
   return (
-    <View style={{ alignItems: "center", paddingHorizontal: 20 }}>
+    <View
+      style={{ alignItems: "center", paddingHorizontal: 20 }}
+      pointerEvents="none"
+    >
       <Text style={styles.Title}>{subTitle}</Text>
       <View style={styles.boxContainer}>
         <SummaryBoxSmall svg={Bus} title="교통비" text={transportCost + "원"} />
