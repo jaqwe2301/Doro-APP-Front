@@ -430,7 +430,7 @@ function DetailLectureScreen({ route }) {
                       text: "확인",
                       onPress: () => {
                         // console.log("강사 신청 완료");
-                        navigation.reset();
+                        navigation.reset({ routes: [{ name: "HomePage" }] });
                       },
                       style: "default",
                     },
