@@ -209,7 +209,7 @@ function DetailLectureScreen({ route }) {
       role = "스태프";
       applyStatus = apply[2];
     }
-    console.log(applyStatus);
+    // console.log(applyStatus);
     // const role =
     //   roles === "MAIN_TUTOR"
     //     ? "주 강사"
