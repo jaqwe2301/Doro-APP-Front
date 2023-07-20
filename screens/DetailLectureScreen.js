@@ -1224,7 +1224,8 @@ function DetailLectureScreen({ route }) {
                         style={{
                           fontSize: 18,
                           fontWeight: "bold",
-                          marginBottom: 32,
+                          paddingTop: 4,
+                          // marginBottom: 32,
                         }}
                       >
                         신청 강사
