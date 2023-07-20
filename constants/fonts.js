@@ -5,6 +5,7 @@ export const KRRegular = StyleSheet.create({
     // fontFamily: 'Roboto',
     fontSize: 34,
     lineHeight: 41,
+
     letterSpacing: -0.5,
     fontWeight: 400,
   },

@@ -182,7 +182,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
           .filter((item) => item.mainTitle === recruitingTitle[i])
           .map((filteringItem, i) => {
             let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            // console.log(filteringItem.staff);
+            console.log(filteringItem);
             // console.log(filteringItem.status);
             return (
               <LectureBox
@@ -443,7 +443,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               backgroundColor: "white",
               shadowOffset: { height: 0, width: 0 },
               shadowColor: "transparent",
-              height: 30,
+              height: 31,
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
@@ -453,23 +453,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
               padding: 0,
             }}
             pressColor={"transparent"}
-            // 탭바(tap bar) 텍스트 스타일링
-            // renderLabel={({ route, focused, color }) => (
-            //   <Text
-            //     style={
-            //       focused
-            //         ? {
-            //             margin: 0,
-            //             fontSize: 15,
-            //             color: "black",
-            //             fontWeight: "bold",
-            //           }
-            //         : { margin: 0, fontSize: 15, color: "black" }
-            //     }
-            //   >
-            //     {route.title}
-            //   </Text>
-            // )}
             renderLabel={({ route, focused, color }) => (
               <Text
                 style={
@@ -570,7 +553,7 @@ const styles = StyleSheet.create({
     backgroundColor: GlobalStyles.colors.primaryDefault,
   },
   mainTitle: {
-    marginTop: 15,
+    marginTop: 23,
 
     fontSize: 17,
     fontWeight: "bold",

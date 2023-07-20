@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   text: {
     // marginBottom: 3,
     fontSize: 15,
+    fontWeight: "600",
     color: GlobalStyles.colors.gray03,
   },
 });
