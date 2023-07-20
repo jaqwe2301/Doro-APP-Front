@@ -808,7 +808,6 @@ function UpdateLectureScreen({ route }) {
                         text="확인"
                         onPress={() => onConfirm2(checkItem)}
                       />
-                      <View style={{ height: 24 }} />
                     </View>
                   </View>
                 </View>
@@ -1594,7 +1593,7 @@ const styles = StyleSheet.create({
   modalButtonContainer: {
     // height: 45,
     paddingHorizontal: 20,
-    paddingBottom: 14,
+    paddingBottom: Platform.OS === "ios" ? 34 : 0,
   },
   modalButton: {
     height: 45,
@@ -1652,10 +1651,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
   },
-  modalButtonContainer: {
-    // height: 45,
-    paddingHorizontal: 20,
-  },
+
   modalButton: {
     height: 45,
     justifyContent: "center",

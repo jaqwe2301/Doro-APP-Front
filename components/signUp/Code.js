@@ -33,7 +33,6 @@ import Xmark from "../../assets/xmark_black.svg";
 import Modalx from "../../assets/modalx.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import { KeyboardAvoidingView } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import GenerationModal from "../ui/GenerationModal";
 
 function Code({ navigation, route }) {
@@ -322,74 +321,67 @@ function Code({ navigation, route }) {
           statusBarTranslucent={true}
           onRequestClose={() => setVisible(!visible)}
         >
-          <Pressable
-            style={styles.modalOverlay}
-            onPress={() => setVisible(!visible)}
-          >
-            <Pressable>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  height: 273,
-                  justifyContent: "space-between",
+          <SafeAreaView style={{ flex: 1 }}>
+            <Pressable
+              style={styles.modalOverlay}
+              onPress={() => setVisible(!visible)}
+            >
+              <Pressable>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    height: 273,
+                    justifyContent: "space-between",
 
-                  borderTopEndRadius: 5.41,
-                  borderTopStartRadius: 5.41,
-                }}
-              >
-                <View>
-                  <View style={styles.statusTitleContainer}>
-                    <View style={styles.iconContainer}>
-                      <Pressable onPress={() => setVisible(!visible)}>
-                        <Xmark width={24} height={24} />
-                      </Pressable>
+                    borderTopEndRadius: 5.41,
+                    borderTopStartRadius: 5.41,
+                  }}
+                >
+                  <View>
+                    <View style={styles.statusTitleContainer}>
+                      <View style={styles.iconContainer}>
+                        <Pressable onPress={() => setVisible(!visible)}>
+                          <Xmark width={24} height={24} />
+                        </Pressable>
+                      </View>
+                      <Text style={styles.statusTitle}>가입 유형</Text>
                     </View>
-                    <Text style={styles.statusTitle}>가입 유형</Text>
+                    <Pressable
+                      style={styles.statusTextContainer}
+                      onPress={statusSelect}
+                    >
+                      <Text style={styles.statusText}>강사</Text>
+                      <View
+                        style={[styles.iconContainer2, { display: display1 }]}
+                      >
+                        <ModalCheck width={20} height={20} />
+                      </View>
+                    </Pressable>
+                    <Pressable
+                      style={styles.statusTextContainer}
+                      onPress={statusSelect}
+                    >
+                      <Text style={styles.statusText}>매니저</Text>
+                      <View
+                        style={[styles.iconContainer2, { display: display2 }]}
+                      >
+                        <ModalCheck width={20} height={20} />
+                      </View>
+                    </Pressable>
                   </View>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={statusSelect}
-                  >
-                    <Text style={styles.statusText}>강사</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: display1 }]}
-                    >
-                      <ModalCheck width={20} height={20} />
-                    </View>
-                  </Pressable>
-                  <Pressable
-                    style={styles.statusTextContainer}
-                    onPress={statusSelect}
-                  >
-                    <Text style={styles.statusText}>매니저</Text>
-                    <View
-                      style={[styles.iconContainer2, { display: display2 }]}
-                    >
-                      <ModalCheck width={20} height={20} />
-                    </View>
-                  </Pressable>
+                  <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                    <ButtonBig
+                      text="확인"
+                      style={GlobalStyles.colors.primaryDefault}
+                      onPress={okayBtn}
+                    />
+                  </View>
                 </View>
-                <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
-                  <ButtonBig
-                    text="확인"
-                    style={GlobalStyles.colors.primaryDefault}
-                    onPress={okayBtn}
-                  />
-                </View>
-              </View>
+              </Pressable>
             </Pressable>
-          </Pressable>
+          </SafeAreaView>
         </Modal>
-        {/* <GenerationModal
-          setVisibleCode={setVisibleCode}
-          visibleCode={visibleCode}
-          title="기수"
-          inputGeneration={inputGeneration}
-          setInputGeneration={setInputGeneration}
-          setSelectCode={setSelectCode}
-          setStatusGStyle={setStatusGStyle}
-          type={true}
-        /> */}
+
         <Modal
           animationType="none"
           transparent={true}
@@ -422,41 +414,17 @@ function Code({ navigation, route }) {
                       </View>
                       <Text style={styles.statusTitle}>기수</Text>
                     </View>
-                    <Picker
-                      selectedValue={inputGeneration}
-                      onValueChange={(itemValue, itemIndex) => {
-                        setInputGeneration(itemValue);
-                        setSelectCode(itemValue + "기");
-                        setStatusGStyle(styles.textInputText);
-                      }}
-                      itemStyle={{
-                        marginHorizontal: 10,
-                      }}
-                      mode="dropdown"
-                      // prompt="기수 선택"
-                    >
-                      <Picker.Item label="1" value="1" />
-                      <Picker.Item label="2" value="2" />
-                      <Picker.Item label="3" value="3" />
-                      <Picker.Item label="4" value="4" />
-                      <Picker.Item label="5" value="5" />
-                      <Picker.Item label="6" value="6" />
-                      <Picker.Item label="7" value="7" />
-                      <Picker.Item label="8" value="8" />
-                      <Picker.Item label="9" value="9" />
-                      <Picker.Item label="10" value="10" />
-                      <Picker.Item label="11" value="11" />
-                      <Picker.Item label="12" value="12" />
-                      <Picker.Item label="13" value="13" />
-                      <Picker.Item label="14" value="14" />
-                      <Picker.Item label="15" value="15" />
-                      <Picker.Item label="16" value="16" />
-                      <Picker.Item label="17" value="17" />
-                      <Picker.Item label="18" value="18" />
-                      <Picker.Item label="19" value="19" />
-                      <Picker.Item label="20" value="20" />
-                    </Picker>
                   </View>
+                  <GenerationModal
+                    setVisibleCode={setVisibleCode}
+                    visibleCode={visibleCode}
+                    title="기수"
+                    inputGeneration={inputGeneration}
+                    setInputGeneration={setInputGeneration}
+                    setSelectCode={setSelectCode}
+                    setStatusGStyle={setStatusGStyle}
+                    type={true}
+                  />
                   <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
                     <ButtonBig
                       text="확인"

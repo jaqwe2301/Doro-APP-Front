@@ -274,8 +274,8 @@ function TutorScreen({ route, navigation }) {
                 <View
                   style={{
                     backgroundColor: "white",
-                    height: 273,
-                    justifyContent: "space-between",
+                    // height: 273,
+                    // justifyContent: "space-between",
                     borderTopEndRadius: 5.41,
                     borderTopStartRadius: 5.41,
                   }}
@@ -312,7 +312,7 @@ function TutorScreen({ route, navigation }) {
                       </View>
                     </Pressable>
                   </View>
-                  <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                  <View style={styles.modalButtonContainer}>
                     <ButtonBig
                       text="확인"
                       style={GlobalStyles.colors.primaryDefault}
@@ -351,6 +351,13 @@ const styles = StyleSheet.create({
     color: GlobalStyles.colors.primaryDefault,
     fontWeight: 400,
     fontSize: 12,
+  },
+  modalButtonContainer: {
+    // height: 45,
+    paddingHorizontal: 20,
+    paddingBottom: Platform.OS === "ios" ? 24 : 0,
+    marginBottom: 14,
+    marginTop: 53,
   },
   border: {
     borderBottomColor: GlobalStyles.colors.gray05,
@@ -407,7 +414,7 @@ const styles = StyleSheet.create({
   cancelText: {
     fontWeight: 400,
     fontSize: 15,
-    color: GlobalStyles.colors.gray05,
+    color: GlobalStyles.colors.gray01,
     marginLeft: 10,
   },
   completeText: {

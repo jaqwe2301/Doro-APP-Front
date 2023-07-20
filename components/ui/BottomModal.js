@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
   },
   modalList: {
     marginBottom: 35,
+    maxHeight: 252,
   },
   modalTextContainer: {
     flexDirection: "row",
