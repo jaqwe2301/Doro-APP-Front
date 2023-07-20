@@ -707,11 +707,6 @@ function DetailLectureScreen({ route }) {
         return (
           <View style={{ marginTop: 40, flex: 1 }}>
             <View style={{ paddingHorizontal: 20 }}>
-              <Text
-                style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
-              >
-                신청 강사
-              </Text>
               <View
                 style={{
                   flexDirection: "row",
@@ -724,12 +719,17 @@ function DetailLectureScreen({ route }) {
                     { gap: 8, marginBottom: 28 },
                   ]}
                 >
-                  <Pressable>
+                  {/* <Pressable>
                     <FilterBox text="강사 타입" color="black" />
                   </Pressable>
                   <Pressable onPress={() => console.log(status)}>
                     <FilterBox text="정렬 순서" color="black" />
-                  </Pressable>
+                  </Pressable> */}
+                <Text
+                style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
+              >
+                신청 강사
+              </Text>
                 </View>
                 {/* SwitchToggle 참고 링크 */}
                 {/* https://github.com/yujong-lee/react-native-switch-toggle */}
