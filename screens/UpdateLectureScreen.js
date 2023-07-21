@@ -43,8 +43,7 @@ import { G } from "react-native-svg";
 import { KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native";
 
-function UpdateLectureScreen({ route }) {
-  const navigation = useNavigation();
+function UpdateLectureScreen({ route, navigation }) {
   const instance = Interceptor();
 
   const { StatusBarManager } = NativeModules;
@@ -225,7 +224,7 @@ function UpdateLectureScreen({ route }) {
               {
                 text: "확인",
                 onPress: () => {
-                  navigation.reset();
+                  navigation.navigate("HomePage");
                 },
               },
             ]

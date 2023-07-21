@@ -36,7 +36,7 @@ import { getAnnouncement } from "../utill/http";
 import Interceptor from "../utill/Interceptor";
 const instance = Interceptor();
 
-const HomeScreen = ({ lectureIdProps, navigation }) => {
+const HomeScreen = ({ navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
 
@@ -56,6 +56,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       lectureDates: [],
     },
   ]);
+  const [filter, setFilter] = useState(false);
 
   const groupDataByMainTitle = (data) => {
     const groupedData = data.reduce((acc, item) => {
@@ -73,17 +74,15 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     }));
   };
 
-  // const { lectures } = useLectures(null);
-
-  // if (lectureData.lectureDates === []) {
-  //   // 로딩
-  //   return (
-  //     <ActivityIndicator
-  //       size="large"
-  //       color={GlobalStyles.colors.primaryDefault}
-  //     />
-  //   ); // or any other loading indicator
-  // }
+  if (rlectureData === []) {
+    // 로딩
+    return (
+      <ActivityIndicator
+        size="large"
+        color={GlobalStyles.colors.primaryDefault}
+      />
+    ); // or any other loading indicator
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -98,41 +97,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
 
     fetchData();
   }, []);
-
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener("focus", () => {
-  //     axios
-  //       .get(URL + "/lectures/", {
-  //         params: {
-  //           city: "",
-  //           endDate: "",
-  //           startDate: "",
-  //           page: 0,
-  //           size: 5,
-  //         },
-  //         headers: {
-  //           // 헤더에 필요한 데이터를 여기에 추가
-  //           "Content-Type": "application/json",
-  //         },
-  //       })
-  //       .then((res) => {
-  //         // console.log(res.data.data);
-  //         console.log("여기인가?");
-  //         setLectureData(res.data.data);
-  //       })
-  //       .catch((error) => {
-  //         console.log("에러");
-  //         console.log(error);
-  //       });
-  //   });
-  //   return unsubscribe;
-  //   // Clean up the event listener on component unmount
-  // }, [navigation]); // navigation을 종속성 배열에 추가합니다
-
-  // useEffect(() => {
-  //   lectureHandler();
-  //   // lectureHandler2();
-  // }, []);
 
   const [pageNum, setPageNum] = useState(0);
   const [pageNum2, setPageNum2] = useState(0);
@@ -154,25 +118,13 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         },
       })
       .then((res) => {
-        // console.log(res.data.data);
-        console.log("여기인가? 여긴 모집중인코드");
         const recruitingData = res.data.data.lecturesInfos;
-        console.log(recruitingData);
 
-        // 중복 없는 메인타이틀 값들
-
-        // const mainTitleSet = new Set(
-        //   recruitingData.map((item) => item.mainTitle)
-        // );
-        // console.log(mainTitleSet);
-
-        // setRecruitingTitles((prev) => [...prev, ...mainTitleSet]);
         const data = groupDataByMainTitle(recruitingData);
 
         setRLectureData((prev) => [...prev, ...data]);
-        console.log(data);
+
         setPageNum((prev) => prev + 1);
-        console.log(pageNum);
       })
       .catch((error) => {
         console.log("에러 모집중");
@@ -214,14 +166,6 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       });
   }
 
-  // useEffect(() => {
-  //   setRecruitingCity(recruitingCityList);
-  // }, [lectureData]);
-
-  // useEffect(() => {
-  //   setAllocationCity(allocationCityList);
-  // }, [lectureData2]);
-
   const [filterDate, setFilterDate] = useState([
     [
       new Date(new Date().setMonth(new Date().getMonth() - 6)),
@@ -233,170 +177,9 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     ],
   ]);
 
-  // const recruitingCityList = lectureData
-  //   .filter((item) => item.status === "RECRUITING")
-  //   .map((item) => {
-  //     return item.city;
-  //   });
-
-  // const [recruitingCity, setRecruitingCity] = useState(recruitingCityList);
-
-  // const recruitingData = lectureData.filter((item) => {
-  //   const dateCheck = item.lectureDates.every((dateStr) => {
-  //     const date = new Date(dateStr);
-
-  //     return date >= filterDate[0][0] && date <= filterDate[0][1];
-  //   });
-  //   return (
-  //     item.status === "RECRUITING" &&
-  //     recruitingCity.includes(item.city) &&
-  //     dateCheck
-  //   );
-  // });
-
-  // const recruitingTitle = [
-  //   ...new Set(recruitingData.map((item) => item.mainTitle)),
-  // ];
-
-  const allocationCityList = lectureData2
-    .filter((item) => item.status === "ALLOCATION_COMP")
-    .map((item) => {
-      return item.city;
-    });
-
-  // const [allocationCity, setAllocationCity] = useState(allocationCityList);
-
-  // const allocationDate = lectureData2.filter((item) => {
-  //   const dateCheck = item.lectureDates.every((dateStr) => {
-  //     const date = new Date(dateStr);
-  //     return date >= filterDate[1][0] && date <= filterDate[1][1];
-  //   });
-
-  //   return (
-  //     item.status === "ALLOCATION_COMP" &&
-  //     allocationCity.includes(item.city) &&
-  //     dateCheck
-  //   );
-  // });
-
-  // const allocationTitle = [
-  //   ...new Set(allocationDate.map((item) => item.mainTitle)),
-  // ];
-
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
     return new Date(stringDate);
-  };
-
-  // let recruitingElements = [];
-
-  // for (let i = 0; i < recruitingTitle.length; i++) {
-  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
-
-  //   recruitingElements.push(
-  //     <View key={i}>
-  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-  //         {recruitingTitle[i]}
-  //       </Text>
-
-  //       {recruitingData
-  //         .filter((item) => item.mainTitle === recruitingTitle[i])
-  //         .map((filteringItem, i) => {
-  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-  //           // console.log(filteringItem.staff);
-  //           // console.log(filteringItem.status);
-  //           return (
-  //             <LectureBox
-  //               key={filteringItem.id}
-  //               colors={SelectedColor}
-  //               subTitle={filteringItem.subTitle}
-  //               date={filteringItem.lectureDates}
-  //               time={filteringItem.time}
-  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-  //               id={filteringItem.id}
-  //               dateTypeValue={dateTypeValue}
-  //               mainTutor={filteringItem.mainTutor}
-  //               subTutor={filteringItem.subTutor}
-  //               staff={filteringItem.staff}
-  //               place={filteringItem.place}
-  //               lectureIdHandler={() =>
-  //                 navigation.navigate("DetailLecture", {
-  //                   id: filteringItem.id,
-  //                   status: filteringItem.status,
-  //                 })
-  //               }
-  //             />
-  //           );
-  //         })}
-  //       {i === recruitingTitle.length - 1 && <View style={{ height: 20 }} />}
-  //     </View>
-  //   );
-  // }
-
-  // let allocationElements = [];
-
-  // for (let i = 0; i < allocationTitle.length; i++) {
-  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
-
-  //   allocationElements.push(
-  //     <View key={i}>
-  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-  //         {allocationTitle[i]}
-  //       </Text>
-
-  //       {allocationDate
-  //         .filter((item) => item.mainTitle === allocationTitle[i])
-  //         .map((filteringItem, i) => {
-  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-  //           // console.log(filteringItem.staff);
-  //           return (
-  //             <LectureBox
-  //               key={filteringItem.id}
-  //               colors={SelectedColor}
-  //               subTitle={filteringItem.subTitle}
-  //               date={filteringItem.lectureDates}
-  //               time={filteringItem.time}
-  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-  //               id={filteringItem.id}
-  //               dateTypeValue={dateTypeValue}
-  //               mainTutor={filteringItem.mainTutor}
-  //               subTutor={filteringItem.subTutor}
-  //               staff={filteringItem.staff}
-  //               place={filteringItem.place}
-  //               lectureIdHandler={() =>
-  //                 navigation.navigate("DetailLecture", {
-  //                   id: filteringItem.id,
-  //                   status: filteringItem.status,
-  //                 })
-  //               }
-  //               // date={dateText}
-  //             />
-  //           );
-  //         })}
-  //     </View>
-  //   );
-  // }
-
-  const [filter, setFilter] = useState(false);
-  const [title, setTitle] = useState("");
-  const [status, setStatus] = useState();
-
-  const onFilter = (title, status) => {
-    setFilter(true);
-    setStatus(status);
-    setTitle(title);
-  };
-
-  const applyCityFilter = (city) => {
-    status === "RECRUITING" ? setRecruitingCity(city) : setAllocationCity(city);
-    setFilter(false);
-  };
-
-  const applyDateFilter = (date) => {
-    status === "recruitingDate"
-      ? setFilterDate((prev) => [date, prev[1]])
-      : setFilterDate((prev) => [prev[0], date]);
-    setFilter(false);
   };
 
   const layout = useWindowDimensions();
@@ -429,22 +212,22 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 >
                   <Pressable
                     onPress={() => {
-                      onFilter("교육 지역", "RECRUITING");
+                      // onFilter("교육 지역", "RECRUITING");
                     }}
                   >
                     <FilterBox
                       text="교육 지역"
-                      on={status === "RECRUITING" ? true : false}
+                      // on={status === "RECRUITING" ? true : false}
                     />
                   </Pressable>
                   <Pressable
                     onPress={() => {
-                      onFilter("교육 날짜", "recruitingDate");
+                      // onFilter("교육 날짜", "recruitingDate");
                     }}
                   >
                     <FilterBox
                       text="교육 날짜"
-                      on={status === "recruitingDate" ? true : false}
+                      // on={status === "recruitingDate" ? true : false}
                     />
                   </Pressable>
                 </View>
@@ -510,22 +293,22 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 >
                   <Pressable
                     onPress={() => {
-                      onFilter("교육 지역", "RECRUITING");
+                      // onFilter("교육 지역", "RECRUITING");
                     }}
                   >
                     <FilterBox
                       text="교육 지역"
-                      on={status === "RECRUITING" ? true : false}
+                      // on={status === "RECRUITING" ? true : false}
                     />
                   </Pressable>
                   <Pressable
                     onPress={() => {
-                      onFilter("교육 날짜", "recruitingDate");
+                      // onFilter("교육 날짜", "recruitingDate");
                     }}
                   >
                     <FilterBox
                       text="교육 날짜"
-                      on={status === "recruitingDate" ? true : false}
+                      // on={status === "recruitingDate" ? true : false}
                     />
                   </Pressable>
                 </View>
@@ -687,7 +470,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         )}
       />
 
-      <BottomModal
+      {/* <BottomModal
         visible={filter}
         inVisible={() => setFilter(false)}
         title={title}
@@ -706,7 +489,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
             ? applyDateFilter
             : applyCityFilter
         }
-      />
+      /> */}
 
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable

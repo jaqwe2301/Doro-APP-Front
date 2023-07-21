@@ -427,7 +427,7 @@ function DetailLectureScreen({ route, navigation }) {
                       text: "확인",
                       onPress: () => {
                         // console.log("강사 신청 완료");
-                        navigation.navigate("homepage");
+                        navigation.navigate("HomePage");
                       },
                       style: "default",
                     },
