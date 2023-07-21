@@ -106,7 +106,7 @@ function Pw({ navigation, route }) {
       } else {
         // 다른 경우에 대한 처리
       }
-    }, 100);
+    }, 50);
   }
   const { StatusBarManager } = NativeModules;
   const [statusBarHeight, setStatusBarHeight] = useState(0);
@@ -132,7 +132,7 @@ function Pw({ navigation, route }) {
             <ScrollView>
               <View>
                 <View style={styles.textContainer}>
-                  <InputText text="비밀번호를 입력해 주세요." />
+                  <InputText text="비밀번호를 입력해 주세요" />
                 </View>
                 <View style={styles.contentContainer}>
                   <Text style={styles.id}>{signData.account}</Text>

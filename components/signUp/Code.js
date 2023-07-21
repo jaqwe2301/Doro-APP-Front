@@ -159,7 +159,7 @@ function Code({ navigation, route }) {
           <View style={{ flex: 1, justifyContent: "space-between" }}>
             <ScrollView>
               <View style={[styles.textContainer, { marginTop: 35 }]}>
-                <InputText text="기수를 입력해 주세요." />
+                <InputText text="기수를 입력해 주세요" />
               </View>
               <View style={styles.inputContainer}>
                 <Pressable onPress={() => setVisibleCode(!visibleCode)}>
@@ -172,7 +172,7 @@ function Code({ navigation, route }) {
                 </Pressable>
               </View>
               <View style={styles.textContainer}>
-                <InputText text="가입코드를 입력해 주세요." />
+                <InputText text="가입코드를 입력해 주세요" />
               </View>
               <View style={styles.inputContainer}>
                 {/* <InputData

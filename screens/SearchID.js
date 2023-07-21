@@ -8,6 +8,7 @@ import {
   NativeModules,
   SafeAreaView,
   ScrollView,
+  Keyboard,
 } from "react-native";
 
 import { GlobalStyles } from "../constants/styles";

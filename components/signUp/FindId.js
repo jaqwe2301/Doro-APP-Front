@@ -34,7 +34,7 @@ function FindId({ route }) {
             </Pressable>
           </View>
         </View>
-        <View style={{ marginHorizontal: 20, marginBottom: 83 }}>
+        <View style={{ marginHorizontal: 20, marginBottom: 34 }}>
           <ButtonBig
             text="로그인 하기"
             style={GlobalStyles.colors.primaryAccent}

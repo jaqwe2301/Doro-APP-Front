@@ -87,7 +87,7 @@ function Name({ navigation, route }) {
         navigation.navigate("school", { h: statusBarHeight });
       } else {
       }
-    }, 100);
+    }, 50);
   }
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   const { StatusBarManager } = NativeModules;
@@ -115,7 +115,7 @@ function Name({ navigation, route }) {
             <ScrollView>
               <View>
                 <View style={styles.textContainer}>
-                  <InputText text="이름을 입력해 주세요." />
+                  <InputText text="이름을 입력해 주세요" />
                 </View>
                 <View style={styles.inputContainer}>
                   <InputData
@@ -125,7 +125,7 @@ function Name({ navigation, route }) {
                   />
                 </View>
                 <View style={[styles.textContainer, { marginTop: 50 }]}>
-                  <InputText text="생년월일을 입력해 주세요." />
+                  <InputText text="생년월일을 입력해 주세요" />
                 </View>
                 <View>
                   <Pressable onPress={() => setShow(!show)}>
