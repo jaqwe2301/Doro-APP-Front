@@ -134,13 +134,13 @@ function AuthPhone() {
                       keyboardType="numeric"
                     />
                   </View>
-                  {/* <View> */}
-                  <ButtonSmall
-                    title={btnTitle}
-                    onPress={requestNumber}
-                    style={sbtnColor}
-                  />
-                  {/* </View> */}
+                  <View>
+                    <ButtonSmall
+                      title={btnTitle}
+                      onPress={requestNumber}
+                      style={sbtnColor}
+                    />
+                  </View>
                 </View>
                 {isVisible && (
                   <>
