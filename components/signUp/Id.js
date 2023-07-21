@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     color: GlobalStyles.colors.gray04,
     marginLeft: 23,
     marginTop: 6,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   textSend: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   failText: {
     color: GlobalStyles.colors.red,
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     marginLeft: 10,
     marginTop: 3,

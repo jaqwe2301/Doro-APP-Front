@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     marginTop: 28,
     marginBottom: 28,
     fontSize: 22,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 28,
   },
   boxContainer: {

@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   idText: {
     textAlignVertical: "center",
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 20,
   },
   pwContainer: {
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   pwText: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     color: GlobalStyles.colors.gray05,
   },
