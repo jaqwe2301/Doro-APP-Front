@@ -111,7 +111,7 @@ function School({ navigation, route }) {
         navigation.navigate("code");
       } else {
       }
-    }, 100);
+    }, 50);
   }
 
   function statusSelect() {
@@ -165,7 +165,7 @@ function School({ navigation, route }) {
           <View style={{ flex: 1, justifyContent: "space-between" }}>
             <ScrollView>
               <View style={[styles.textContainer, { marginTop: 35 }]}>
-                <InputText text="학교를 입력해 주세요." />
+                <InputText text="학교를 입력해 주세요" />
               </View>
               <View style={styles.inputContainer}>
                 <InputData
@@ -175,7 +175,7 @@ function School({ navigation, route }) {
                 />
               </View>
               <View style={styles.textContainer}>
-                <InputText text="전공을 입력해 주세요." />
+                <InputText text="전공을 입력해 주세요" />
               </View>
               <View style={styles.inputContainer}>
                 <InputData
@@ -185,18 +185,18 @@ function School({ navigation, route }) {
                 />
               </View>
               <View style={styles.textContainer}>
-                <InputText text="학번을 입력해 주세요." />
+                <InputText text="학번을 입력해 주세요" />
               </View>
               <View style={styles.inputContainer}>
                 <InputData
                   hint="학번을 입력하세요"
                   onChangeText={handleStudentIdChange}
                   value={inputStudentId}
-                  keyboardType="numeric"
+                  keyboardType="number-pad"
                 />
               </View>
               <View style={styles.textContainer}>
-                <InputText text="재학유무를 선택해 주세요." />
+                <InputText text="재학유무를 선택해 주세요" />
               </View>
               <Text style={styles.text}>
                 재학중인 아닌 경우 모두 휴학으로 선택해 주세요.

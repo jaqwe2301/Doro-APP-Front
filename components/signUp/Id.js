@@ -94,7 +94,7 @@ function Id({ navigation, route }) {
             <ScrollView>
               <View>
                 <View style={styles.textContainer}>
-                  <InputText text="아이디를 입력해 주세요." />
+                  <InputText text="아이디를 입력해 주세요" />
                 </View>
                 <Text style={styles.text}>
                   입력하신 아이디는 로그인 시 사용됩니다.
