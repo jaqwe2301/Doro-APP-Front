@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     color: GlobalStyles.colors.gray04,
     marginHorizontal: 20,
     marginTop: 6,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   },
   textSend: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,

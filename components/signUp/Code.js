@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     color: GlobalStyles.colors.gray04,
     marginHorizontal: 20,
     marginTop: 6,
@@ -507,21 +507,21 @@ const styles = StyleSheet.create({
   },
   textSend: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
   },
   acceptText: {
     fontSize: 17,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 22,
     marginLeft: 19,
     color: GlobalStyles.colors.gray05,
   },
   acceptContentText: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
     marginLeft: 26,
     color: GlobalStyles.colors.gray05,
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   },
   statusTitle: {
     fontSize: 17,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 22,
     marginTop: 3,
     flex: 1,
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
     marginLeft: 20,
   },

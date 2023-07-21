@@ -31,7 +31,7 @@ export default Input;
 const styles = StyleSheet.create({
   text: {
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: "600",
     marginLeft: 23,
     marginBottom: 6,
     lineHeight: 20,
