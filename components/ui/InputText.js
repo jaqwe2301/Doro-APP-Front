@@ -14,7 +14,7 @@ export default InputText;
 const styles = StyleSheet.create({
   text: {
     fontSize: 22,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 28,
   },
 });

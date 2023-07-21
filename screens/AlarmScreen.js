@@ -278,20 +278,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 12,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 20,
     color: GlobalStyles.colors.gray01,
   },
   date: {
     fontSize: 10,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
     color: GlobalStyles.colors.gray03,
   },
   content: {
     marginTop: 8,
     marginHorizontal: 16,
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 12,
     lineHeight: 20,
     color: GlobalStyles.colors.gray01,
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   content2: {
     marginTop: 7,
     marginHorizontal: 16,
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 10,
     lineHeight: 15,
     color: GlobalStyles.colors.gray01,
