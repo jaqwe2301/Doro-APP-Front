@@ -51,7 +51,12 @@ function LectureBox(props) {
       key={props.id}
       onPress={props.lectureIdHandler}
     >
-      <View style={[styles.colorCover, { backgroundColor: props.colors }]}>
+      <View
+        style={[
+          styles.colorCover,
+          { backgroundColor: props.colors, elevation: 2 },
+        ]}
+      >
         <View
           style={[
             styles.whiteBox,
@@ -116,7 +121,7 @@ export default LectureBox;
 
 const styles = StyleSheet.create({
   container: {
-    // elevation: 2,
+    elevation: 2,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
     shadowOpacity: 0.3, // 그림자의 투명도
@@ -130,13 +135,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   colorCover: {
-    marginTop: 8,
+    // marginTop: 8,
+    marginBottom: 8,
     paddingLeft: 5,
     overflow: "hidden",
     height: 120,
     borderRadius: 5.41,
-    shadowColor: "Black",
-    elevation: 2,
   },
   whiteBox: {
     paddingLeft: 15,

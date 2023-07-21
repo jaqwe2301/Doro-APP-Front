@@ -66,10 +66,10 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       }
       return acc;
     }, {});
+
     return Object.keys(groupedData).map((key) => ({
       mainTitle: key,
       data: groupedData[key],
-      color: GlobalStyles.indicationColors[index % 4],
     }));
   };
 
@@ -157,6 +157,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         // console.log(res.data.data);
         console.log("여기인가? 여긴 모집중인코드");
         const recruitingData = res.data.data.lecturesInfos;
+        console.log(recruitingData);
 
         // 중복 없는 메인타이틀 값들
 
@@ -169,7 +170,7 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         const data = groupDataByMainTitle(recruitingData);
 
         setRLectureData((prev) => [...prev, ...data]);
-        console.log("모집중ㄱ" + JSON.stringify(recruitingData));
+        console.log(data);
         setPageNum((prev) => prev + 1);
         console.log(pageNum);
       })
@@ -462,9 +463,14 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 </View>
               }
               ListFooterComponent={<View style={{ height: 23 }} />}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <View style={{ marginHorizontal: 20 }}>
-                  <Text style={[styles.mainTitle, { color: item.color }]}>
+                  <Text
+                    style={[
+                      styles.mainTitle,
+                      { color: GlobalStyles.indicationColors[index % 4] },
+                    ]}
+                  >
                     {item.mainTitle}
                   </Text>
                   <FlatList
@@ -754,7 +760,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   lectureListContainer: {
-    paddingHorizontal: 20,
     backgroundColor: GlobalStyles.colors.gray07,
     flex: 1,
   },
@@ -778,8 +783,8 @@ const styles = StyleSheet.create({
     backgroundColor: GlobalStyles.colors.primaryDefault,
   },
   mainTitle: {
-    marginTop: 23,
-
+    marginTop: 10,
+    marginBottom: 5,
     fontSize: 17,
     fontWeight: "bold",
   },
