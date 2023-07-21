@@ -32,8 +32,9 @@ import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
 // import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
-import { getAnnouncement } from "../utill/http";
+import { getAnnouncement, getCityList } from "../utill/http";
 import Interceptor from "../utill/Interceptor";
+import FilterModal from "../components/ui/FilterModal";
 const instance = Interceptor();
 
 const HomeScreen = ({ navigation }) => {
@@ -42,9 +43,19 @@ const HomeScreen = ({ navigation }) => {
 
   const [rlectureData, setRLectureData] = useState([]);
   const [alectureData, setALectureData] = useState([]);
-  const [recruitingTitles, setRecruitingTitles] = useState([]);
-  const [recruitingContents, setRecruitingContents] = useState([]);
-  const [allocationTitles, setAllocationTitles] = useState([]);
+
+  const [cityList, setCityList] = useState("");
+
+  const [rCities, setRCities] = useState("");
+  const [onRCities, setOnRCities] = useState(false);
+  const [rStartDate, setRStartDate] = useState("");
+  const [rEndDate, setREndDate] = useState("");
+
+  const [aCities, setACities] = useState("");
+  const [onACities, setOnACities] = useState(false);
+  const [aStartDate, setAStartDate] = useState("");
+  const [aEndDate, setAEndDate] = useState("");
+
   const [lectureData, setLectureData] = useState([
     {
       lectureDates: [],
@@ -57,6 +68,9 @@ const HomeScreen = ({ navigation }) => {
     },
   ]);
   const [filter, setFilter] = useState(false);
+  const [filter2, setFilter2] = useState(false);
+  const [title, setTitle] = useState("");
+  const [status, setStatus] = useState("");
 
   const groupDataByMainTitle = (data) => {
     const groupedData = data.reduce((acc, item) => {
@@ -98,14 +112,68 @@ const HomeScreen = ({ navigation }) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    async function getCity() {
+      try {
+        const result = await getCityList();
+        setCityList(result);
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    getCity();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const result = await getAnnouncement({ page: 0, size: 3 });
+        setResponse(result);
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
   const [pageNum, setPageNum] = useState(0);
   const [pageNum2, setPageNum2] = useState(0);
+
+  useEffect(() => {
+    setPageNum(0);
+    setRLectureData([]);
+    lectureHandler();
+    if (rCities !== "") {
+      setOnRCities(true);
+    } else {
+      setOnRCities(false);
+    }
+
+    console.log(rCities);
+  }, [rCities]);
+
+  useEffect(() => {
+    setPageNum2(0);
+    setALectureData([]);
+    lectureHandler2();
+    if (aCities !== "") {
+      setOnACities(true);
+    } else {
+      setOnACities(false);
+    }
+
+    console.log(aCities);
+  }, [aCities]);
 
   async function lectureHandler() {
     instance
       .get("/lectures/", {
         params: {
-          city: "",
+          city: rCities,
           endDate: "",
           startDate: "",
           page: pageNum,
@@ -121,7 +189,7 @@ const HomeScreen = ({ navigation }) => {
         const recruitingData = res.data.data.lecturesInfos;
 
         const data = groupDataByMainTitle(recruitingData);
-
+        console.log("불러왔니?");
         setRLectureData((prev) => [...prev, ...data]);
 
         setPageNum((prev) => prev + 1);
@@ -131,11 +199,12 @@ const HomeScreen = ({ navigation }) => {
         console.log(error);
       });
   }
+
   async function lectureHandler2() {
     instance
       .get("/lectures/", {
         params: {
-          city: "",
+          city: aCities,
           endDate: "",
           startDate: "",
           page: pageNum2,
@@ -197,6 +266,7 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.lectureListContainer}>
             <FlatList
               data={rlectureData}
+              // extraData={[rCities, rlectureData]}
               keyExtractor={(item, index) => index.toString()}
               onEndReached={lectureHandler}
               onEndReachedThreshold={0.2}
@@ -212,13 +282,12 @@ const HomeScreen = ({ navigation }) => {
                 >
                   <Pressable
                     onPress={() => {
-                      // onFilter("교육 지역", "RECRUITING");
+                      setTitle("교육 지역");
+                      setStatus("RECRUITING");
+                      setFilter(true);
                     }}
                   >
-                    <FilterBox
-                      text="교육 지역"
-                      // on={status === "RECRUITING" ? true : false}
-                    />
+                    <FilterBox text="교육 지역" on={onRCities} />
                   </Pressable>
                   <Pressable
                     onPress={() => {
@@ -293,13 +362,12 @@ const HomeScreen = ({ navigation }) => {
                 >
                   <Pressable
                     onPress={() => {
-                      // onFilter("교육 지역", "RECRUITING");
+                      setTitle("교육 지역");
+                      setStatus("ALLOCATION_COMP");
+                      setFilter2(true);
                     }}
                   >
-                    <FilterBox
-                      text="교육 지역"
-                      // on={status === "RECRUITING" ? true : false}
-                    />
+                    <FilterBox text="교육 지역" on={onACities} />
                   </Pressable>
                   <Pressable
                     onPress={() => {
@@ -470,26 +538,31 @@ const HomeScreen = ({ navigation }) => {
         )}
       />
 
-      {/* <BottomModal
+      {/* visible은 모달 여부
+  inVisible은 ()=>isVisible(false) 같은것
+  title은 모달 제목
+  data는 모달안의 요소들 status는 날짜면 date형식 넘겨주기 
+  status는 지역인지 날짜인지
+  onPress는 고른 아이템 넣어주는 함수 같음 
+
+*/}
+      <FilterModal
         visible={filter}
         inVisible={() => setFilter(false)}
         title={title}
-        data={
-          status === "RECRUITING"
-            ? recruitingCityList
-            : status === "recruitingDate"
-            ? filterDate[0]
-            : status === "allocationDate"
-            ? filterDate[1]
-            : allocationCityList
-        }
+        data={status === "RECRUITING" ? cityList : cityList}
         status={status}
-        onPress={
-          status === "recruitingDate" || status === "allocationDate"
-            ? applyDateFilter
-            : applyCityFilter
-        }
-      /> */}
+        setCity={status === "RECRUITING" ? setRCities : setACities}
+      />
+
+      <FilterModal
+        visible={filter2}
+        inVisible={() => setFilter2(false)}
+        title={title}
+        data={cityList}
+        status={status}
+        setCity={setACities}
+      />
 
       {headerRole === "ROLE_ADMIN" ? (
         <Pressable
