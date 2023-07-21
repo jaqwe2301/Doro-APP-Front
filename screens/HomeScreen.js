@@ -187,7 +187,8 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
           endDate: "",
           startDate: "",
           page: pageNum2,
-          size: 30,
+          size: 10,
+          lectureStatus: "ALLOCATION_COMP",
         },
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -196,30 +197,16 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       })
       .then((res) => {
         // console.log(res.data.data);
-        console.log("여기인가? 여긴 모집중인코드");
-        const allocationgData = res.data.data.lecturesInfos.filter(
-          (item) => item.status === "ALLOCATION_COMP"
-        );
-        setALectureData((prev) => {
-          const uniqueTitlesSet = new Set([
-            ...prev.map((item) => item.mainTitle),
-          ]);
-          const newAllocationData = allocationgData.filter(
-            (item) => !uniqueTitlesSet.has(item.mainTitle)
-          );
+        console.log("여기인가? 여긴 진행중인코드");
+        const allocatingData = res.data.data.lecturesInfos;
+        console.log(allocatingData);
 
-          // Update recruitingTitles state with new unique titles
-          setAllocationTitles((prevTitles) => [
-            ...prevTitles,
-            ...newAllocationData.map((item) => item.mainTitle),
-          ]);
+        const data = groupDataByMainTitle(allocatingData);
 
-          return [...prev, ...newAllocationData];
-        });
-
-        console.log(allocationgData + "모집중ㄱ");
+        setALectureData((prev) => [...prev, ...data]);
+        console.log(data);
         setPageNum2((prev) => prev + 1);
-        console.log(pageNum);
+        console.log(pageNum2);
       })
       .catch((error) => {
         console.log("에러 진행중");
@@ -506,9 +493,9 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
       case "second":
         return (
           <View style={styles.lectureListContainer}>
-            {/* <FlatList
-              data={allocationTitles}
-              keyExtractor={(item, index) => `${item}-${index}`}
+            <FlatList
+              data={alectureData}
+              keyExtractor={(item, index) => index.toString()}
               onEndReached={lectureHandler2}
               onEndReachedThreshold={0.2}
               ListHeaderComponent={
@@ -523,69 +510,65 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 >
                   <Pressable
                     onPress={() => {
-                      onFilter("교육 지역", "ALLOCATION_COMP");
+                      onFilter("교육 지역", "RECRUITING");
                     }}
                   >
                     <FilterBox
                       text="교육 지역"
-                      on={status === "ALLOCATION_COMP" ? true : false}
+                      on={status === "RECRUITING" ? true : false}
                     />
                   </Pressable>
                   <Pressable
                     onPress={() => {
-                      onFilter("교육 날짜", "allocationDate");
+                      onFilter("교육 날짜", "recruitingDate");
                     }}
                   >
                     <FilterBox
                       text="교육 날짜"
-                      on={status === "allocationDate" ? true : false}
+                      on={status === "recruitingDate" ? true : false}
                     />
                   </Pressable>
                 </View>
               }
-              ListFooterComponent={<View style={{ height: 20 }} />}
-              renderItem={({ item: title, index }) => {
-                const filteredAllocationgData = alectureData.filter(
-                  (item) => item.mainTitle === title
-                );
-                let SelectedColor = GlobalStyles.indicationColors[index % 4];
-
-                return (
-                  <View key={index} style={{ marginHorizontal: 20 }}>
-                    <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-                      {title}
-                    </Text>
-                    <FlatList
-                      data={filteredAllocationgData}
-                      keyExtractor={(item, index) => `${item}_${index}`}
-                      renderItem={({ item: filteringItem }) => (
-                        <LectureBox
-                          key={filteringItem.id}
-                          colors={SelectedColor}
-                          subTitle={filteringItem.subTitle}
-                          date={filteringItem.lectureDates}
-                          time={filteringItem.time}
-                          id={filteringItem.id}
-                          dateTypeValue={dateControl(
-                            filteringItem.enrollEndDate
-                          )}
-                          mainTutor={filteringItem.mainTutor}
-                          subTutor={filteringItem.subTutor}
-                          staff={filteringItem.staff}
-                          place={filteringItem.place}
-                          lectureIdHandler={() =>
-                            navigation.navigate("DetailLecture", {
-                              id: filteringItem.id,
-                              status: filteringItem.status,
-                            })
-                          }
-                        />
-                      )}
-                    />
-                  </View>
-                );
-              }}
-            /> */}
+              ListFooterComponent={<View style={{ height: 23 }} />}
+              renderItem={({ item, index }) => (
+                <View style={{ marginHorizontal: 20 }}>
+                  <Text
+                    style={[
+                      styles.mainTitle,
+                      { color: GlobalStyles.indicationColors[index % 4] },
+                    ]}
+                  >
+                    {item.mainTitle}
+                  </Text>
+                  <FlatList
+                    data={item.data}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                      <LectureBox
+                        key={item.id}
+                        colors={GlobalStyles.indicationColors[index % 4]}
+                        subTitle={item.subTitle}
+                        date={item.lectureDates}
+                        time={item.time}
+                        id={item.id}
+                        dateTypeValue={dateControl(item.enrollEndDate)}
+                        mainTutor={item.mainTutor}
+                        subTutor={item.subTutor}
+                        staff={item.staff}
+                        place={item.place}
+                        lectureIdHandler={() =>
+                          navigation.navigate("DetailLecture", {
+                            id: item.id,
+                            status: item.status,
+                          })
+                        }
+                      />
+                    )}
+                  />
+                </View>
+              )}
+            />
           </View>
         );
 
