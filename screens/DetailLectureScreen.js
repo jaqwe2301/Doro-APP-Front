@@ -29,8 +29,7 @@ import Delete from "../assets/delete.svg";
 import Interceptor from "../utill/Interceptor";
 import { KRRegular } from "../constants/fonts";
 
-function DetailLectureScreen({ route }) {
-  const navigation = useNavigation();
+function DetailLectureScreen({ route, navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const instance = Interceptor();
@@ -428,7 +427,7 @@ function DetailLectureScreen({ route }) {
                       text: "확인",
                       onPress: () => {
                         // console.log("강사 신청 완료");
-                        navigation.reset();
+                        navigation.navigate("homepage");
                       },
                       style: "default",
                     },
