@@ -76,6 +76,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import TutorScreen from "./screens/TutorScreen";
 import * as SplashScreen from "expo-splash-screen";
+import HistoryScreen from "./screens/HistoryScreen";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -465,8 +466,15 @@ function HistoryNavigator({ navigation }) {
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
       }}
-      initialRouteName="applicationDetail"
+      initialRouteName="historyScreen"
     >
+      <Stack.Screen
+        name="historyScreen"
+        component={HistoryScreen}
+        options={{
+          title: "강의 목록",
+        }}
+      />
       <Stack.Screen
         name="applicationDetail"
         component={ApplicationDetails}

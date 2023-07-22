@@ -38,7 +38,7 @@ import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
 // import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
-import { getAnnouncement, getCityList } from "../utill/http";
+import { getAnnouncement, getCityList, getLectureList } from "../utill/http";
 import Interceptor from "../utill/Interceptor";
 import FilterModal from "../components/ui/FilterModal";
 const instance = Interceptor();
@@ -187,130 +187,185 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [aCities]);
 
-  function lectureHandler() {
-    instance
-      .get("/lectures/", {
-        params: {
-          city: rCities,
-          endDate: rEndDate,
-          startDate: rStartDate,
-          page: pageNum,
-          size: 10,
-          lectureStatus: "RECRUITING",
-        },
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        const recruitingData = res.data.data.lecturesInfos;
-
-        const data = groupDataByMainTitle(recruitingData);
-        console.log("불러왔니?");
-        console.log(data);
-        console.log(pageNum);
-        setRLectureData((prev) => [...prev, ...data]);
-
-        setPageNum((prev) => prev + 1);
-      })
-      .catch((error) => {
-        console.log("에러 모집중");
-        console.log(error);
+  async function lectureHandler() {
+    try {
+      const result = await getLectureList({
+        city: rCities,
+        endDate: rEndDate,
+        startDate: rStartDate,
+        page: pageNum,
+        size: 10,
+        lectureStatus: "RECRUITING",
       });
+
+      const recruitingData = result.lecturesInfos;
+
+      const data = groupDataByMainTitle(recruitingData);
+      console.log("불러왔니?");
+      console.log(data);
+      console.log(pageNum);
+      setRLectureData((prev) => [...prev, ...data]);
+
+      setPageNum((prev) => prev + 1);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  function refreshHandler() {
-    instance
-      .get("/lectures/", {
-        params: {
-          city: rCities,
-          endDate: rEndDate,
-          startDate: rStartDate,
-          page: 0,
-          size: 10,
-          lectureStatus: "RECRUITING",
-        },
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        const recruitingData = res.data.data.lecturesInfos;
+  async function refreshHandler() {
+    // instance
+    //   .get("/lectures/", {
+    //     params: {
+    //       city: rCities,
+    //       endDate: rEndDate,
+    //       startDate: rStartDate,
+    //       page: 0,
+    //       size: 10,
+    //       lectureStatus: "RECRUITING",
+    //     },
+    //     headers: {
+    //       // 헤더에 필요한 데이터를 여기에 추가
+    //       "Content-Type": "application/json",
+    //     },
+    //   })
+    //   .then((res) => {
+    //     const recruitingData = res.data.data.lecturesInfos;
 
-        const data = groupDataByMainTitle(recruitingData);
+    //     const data = groupDataByMainTitle(recruitingData);
 
-        setRLectureData(data);
+    //     setRLectureData(data);
 
-        setPageNum(1);
-      })
-      .catch((error) => {
-        console.log("에러 모집중 refresh");
-        console.log(error);
+    //     setPageNum(1);
+    //   })
+    //   .catch((error) => {
+    //     console.log("에러 모집중 refresh");
+    //     console.log(error);
+    //   });
+
+    try {
+      const result = await getLectureList({
+        city: rCities,
+        endDate: rEndDate,
+        startDate: rStartDate,
+        page: 0,
+        size: 10,
+        lectureStatus: "RECRUITING",
       });
+
+      const recruitingData = result.lecturesInfos;
+
+      const data = groupDataByMainTitle(recruitingData);
+
+      setRLectureData(data);
+
+      setPageNum(1);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  function refreshHandler2() {
-    instance
-      .get("/lectures/", {
-        params: {
-          city: aCities,
-          endDate: aEndDate,
-          startDate: aStartDate,
-          page: 0,
-          size: 10,
-          lectureStatus: "ALLOCATION_COMP",
-        },
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        const allocationData = res.data.data.lecturesInfos;
+  async function refreshHandler2() {
+    // instance
+    //   .get("/lectures/", {
+    //     params: {
+    // city: aCities,
+    // endDate: aEndDate,
+    // startDate: aStartDate,
+    // page: 0,
+    // size: 10,
+    // lectureStatus: "ALLOCATION_COMP",
+    //     },
+    //     headers: {
+    //       // 헤더에 필요한 데이터를 여기에 추가
+    //       "Content-Type": "application/json",
+    //     },
+    //   })
+    //   .then((res) => {
+    //     const allocationData = res.data.data.lecturesInfos;
 
-        const data = groupDataByMainTitle(allocationData);
+    //     const data = groupDataByMainTitle(allocationData);
 
-        setALectureData(data);
+    //     setALectureData(data);
 
-        setPageNum2(1);
-      })
-      .catch((error) => {
-        console.log("에러 진행중 refresh");
-        console.log(error);
+    //     setPageNum2(1);
+    //   })
+    //   .catch((error) => {
+    //     console.log("에러 진행중 refresh");
+    //     console.log(error);
+    //   });
+
+    try {
+      const result = await getLectureList({
+        city: aCities,
+        endDate: aEndDate,
+        startDate: aStartDate,
+        page: 0,
+        size: 10,
+        lectureStatus: "ALLOCATION_COMP",
       });
+
+      const allocationData = result.lecturesInfos;
+
+      const data = groupDataByMainTitle(allocationData);
+
+      setALectureData(data);
+
+      setPageNum2(1);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  function lectureHandler2() {
-    instance
-      .get("/lectures/", {
-        params: {
-          city: aCities,
-          endDate: aEndDate,
-          startDate: aStartDate,
-          page: pageNum2,
-          size: 10,
-          lectureStatus: "ALLOCATION_COMP",
-        },
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        const allocationData = res.data.data.lecturesInfos;
+  async function lectureHandler2() {
+    // instance
+    //   .get("/lectures/", {
+    //     params: {
+    //       city: aCities,
+    //       endDate: aEndDate,
+    //       startDate: aStartDate,
+    //       page: pageNum2,
+    //       size: 10,
+    //       lectureStatus: "ALLOCATION_COMP",
+    //     },
+    //     headers: {
+    //       // 헤더에 필요한 데이터를 여기에 추가
+    //       "Content-Type": "application/json",
+    //     },
+    //   })
+    //   .then((res) => {
+    //     const allocationData = res.data.data.lecturesInfos;
 
-        const data = groupDataByMainTitle(allocationData);
+    //     const data = groupDataByMainTitle(allocationData);
 
-        setALectureData((prev) => [...prev, ...data]);
+    //     setALectureData((prev) => [...prev, ...data]);
 
-        setPageNum2((prev) => prev + 1);
-      })
-      .catch((error) => {
-        console.log("에러 진행중");
-        console.log(error);
+    //     setPageNum2((prev) => prev + 1);
+    //   })
+    //   .catch((error) => {
+    //     console.log("에러 진행중");
+    //     console.log(error);
+    //   });
+
+    try {
+      const result = await getLectureList({
+        city: aCities,
+        endDate: aEndDate,
+        startDate: aStartDate,
+        page: pageNum2,
+        size: 10,
+        lectureStatus: "ALLOCATION_COMP",
       });
+
+      const allocationData = result.lecturesInfos;
+
+      const data = groupDataByMainTitle(allocationData);
+
+      setALectureData((prev) => [...prev, ...data]);
+
+      setPageNum2((prev) => prev + 1);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const dateControl = (stringDate) => {

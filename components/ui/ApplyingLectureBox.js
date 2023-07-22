@@ -76,14 +76,26 @@ function ApplyingLectureBox({
             <Text style={{ fontSize: 10, marginTop: 5 }}>{matchingText}</Text>
           )}
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
+        <View style={{ justifyContent: "flex-end" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+            }}
+          >
             <Text style={styles.role}>{tutorRole}</Text>
+            <Text style={styles.place}>{place}</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+              marginBottom: 12,
+            }}
+          >
+            {/* <View style={{ alignItems: "flex-end" }}> */}
             <Text style={styles.enrollEndDate}>
               {typeof dateTypeValue === "object"
                 ? "신청마감 " +
@@ -92,10 +104,8 @@ function ApplyingLectureBox({
                   }월 ${dateTypeValue?.getDate()}일`
                 : dateTypeValue}
             </Text>
-          </View>
-          <View style={{ alignItems: "flex-end" }}>
-            <Text style={styles.place}>{place}</Text>
             <Text style={styles.date}>{dateText}</Text>
+            {/* </View> */}
           </View>
         </View>
       </View>
@@ -113,7 +123,7 @@ const styles = StyleSheet.create({
   whiteBox: {
     marginTop: 4,
     marginBottom: 8,
-    paddingVertical: 12,
+    // paddingVertical: 13,
     height: 128,
     borderRadius: 5.41,
     elevation: 3,
@@ -129,6 +139,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    height: 40,
+    marginTop: 12,
   },
   SubTitle: {
     fontSize: 16,
@@ -136,24 +148,29 @@ const styles = StyleSheet.create({
     color: GlobalStyles.colors.gray01,
   },
   role: {
-    fontSize: 12,
+    fontSize: 10,
     color: GlobalStyles.colors.gray03,
     fontWeight: "bold",
-    lineHeight: 20,
+    // lineHeight: 20,
   },
   enrollEndDate: {
     color: GlobalStyles.colors.gray03,
     fontSize: 10,
+    // lineHeight: 20,
   },
   place: {
     color: GlobalStyles.colors.gray03,
     fontSize: 10,
-    lineHeight: 20,
+    // lineHeight: 20,
     fontWeight: "bold",
+    maxWidth: 130,
+    // maxHeight: 100,
   },
   date: {
     fontSize: 12,
 
+    // lineHeight: 20,
+    maxWidth: 200,
     fontWeight: "bold",
     color: GlobalStyles.colors.primaryDefault,
   },
