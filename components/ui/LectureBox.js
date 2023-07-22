@@ -80,8 +80,8 @@ function LectureBox(props) {
               </View>
               <Text style={styles.tutor}>
                 주강사 {props.mainTutor}
-                {!props.subTutor ? "" : ", 보조강사 " + props.subTutor}
-                {!props.staff ? "" : ", 스태프 " + props.staff}
+                {props.subTutor === "0" ? "" : ", 보조강사 " + props.subTutor}
+                {props.staff === "0" ? "" : ", 스태프 " + props.staff}
               </Text>
             </View>
             <View>
