@@ -422,3 +422,33 @@ export async function getCityList() {
     throw error;
   }
 }
+
+export async function getLectureList({
+  city,
+  endDate,
+  lectureStatus,
+  startDate,
+  page,
+  size,
+}) {
+  try {
+    const res = await instance.get("/lectures", {
+      params: {
+        city: city,
+        endDate: endDate,
+        startDate: startDate,
+        page: page,
+        size: size,
+        lectureStatus: lectureStatus,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.data; // 프로미스에서 결과를 반환
+  } catch (error) {
+    console.log("에러났나염?>?");
+    console.log(error);
+    throw error; // 에러를 다시 던져서 호출자에게 전달
+  }
+}
