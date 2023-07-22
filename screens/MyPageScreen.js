@@ -32,104 +32,103 @@ function MyPageScreen({ navigation }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
-  const [notificationAgreement, setNotificationAgreement] = useState();
-  const [recruiting, setRecruiting] = useState([]);
-  const [allocation, setAllocation] = useState([]);
-  const [finished, setFinished] = useState([]);
-  const instance = Interceptor();
-  useEffect(() => {
-    profileHandler();
-  }, []);
-
-  useEffect(() => {
-    getMyLectures();
-  }, []);
-
-  const getMyLectures = () => {
-    instance
-      .get(`/users-lectures/users/${headerId}`, {
-        headers: {
-          // 헤더에 필요한 데이터를 여기에 추가
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        // console.log(res.data.data);
-        setRecruiting(() => {
-          const data = res.data.data.filter(
-            (item) => item.status === "RECRUITING"
-          );
-          return data;
-        });
-        setAllocation(() => {
-          const data = res.data.data.filter(
-            (item) => item.status === "ALLOCATION_COMP"
-          );
-          // console.log(data);
-          return data;
-        });
-        // finishLectureHandler(() => {
-        //   const data = res.data.data.filter(
-        //     (item) => item.status === "ALLOCATION_COMP"
-        //   );
-        //   console.log(data);
-        //   return data;
-        // });
-        // console.log("성공");
-      })
-      .catch((error) => {
-        console.log("왜 에러나니");
-        console.log("에러");
-        console.log(error);
-      });
-  };
-
-  async function profileHandler() {
-    try {
-      const response = await getProfile({ id: headerId });
-
-      setData(response.data);
-      console.log(JSON.stringify(response) + "여기임");
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-      setIsLoading(true);
-    }
-  }
-
-  async function alarmEditHandler({ notificationAgreement }) {
-    try {
-      const response = await alarmEdit({
-        id: headerId,
-        notificationAgreement: notificationAgreement,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function alarmHandler() {
-    Alert.alert(
-      "'DORO'에서 알림을 보내고자 합니다.",
-      "경고, 사운드 및 아이콘 배지가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다.",
-      [
-        {
-          text: Platform.OS === "ios" ? "허용             " : "허용",
-          onPress: () => alarmEditHandler({ notificationAgreement: true }),
-        },
-        {
-          text: Platform.OS === "ios" ? "허용 안함            " : "허용 안함",
-          onPress: () => alarmEditHandler({ notificationAgreement: false }),
-        },
-      ]
-    );
-  }
 
   // function ManagerScreen() {
   //   return <ManagerScreen />;
   // }
 
   function UserScreen() {
+    const [recruiting, setRecruiting] = useState([]);
+    const [allocation, setAllocation] = useState([]);
+    const [finished, setFinished] = useState([]);
+    const instance = Interceptor();
+    useEffect(() => {
+      profileHandler();
+    }, []);
+
+    useEffect(() => {
+      getMyLectures();
+    }, []);
+
+    const getMyLectures = () => {
+      instance
+        .get(`/users-lectures/users/${headerId}`, {
+          headers: {
+            // 헤더에 필요한 데이터를 여기에 추가
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          // console.log(res.data.data);
+          setRecruiting(() => {
+            const data = res.data.data.filter(
+              (item) => item.status === "RECRUITING"
+            );
+            return data;
+          });
+          setAllocation(() => {
+            const data = res.data.data.filter(
+              (item) => item.status === "ALLOCATION_COMP"
+            );
+            // console.log(data);
+            return data;
+          });
+          // finishLectureHandler(() => {
+          //   const data = res.data.data.filter(
+          //     (item) => item.status === "ALLOCATION_COMP"
+          //   );
+          //   console.log(data);
+          //   return data;
+          // });
+          // console.log("성공");
+        })
+        .catch((error) => {
+          console.log("왜 에러나니");
+          console.log("에러");
+          console.log(error);
+        });
+    };
+
+    async function profileHandler() {
+      try {
+        const response = await getProfile({ id: headerId });
+
+        setData(response.data);
+        console.log(JSON.stringify(response) + "여기임");
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+        setIsLoading(true);
+      }
+    }
+
+    async function alarmEditHandler({ notificationAgreement }) {
+      try {
+        const response = await alarmEdit({
+          id: headerId,
+          notificationAgreement: notificationAgreement,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    function alarmHandler() {
+      Alert.alert(
+        "'DORO'에서 알림을 보내고자 합니다.",
+        "경고, 사운드 및 아이콘 배지가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다.",
+        [
+          {
+            text: Platform.OS === "ios" ? "허용             " : "허용",
+            onPress: () => alarmEditHandler({ notificationAgreement: true }),
+          },
+          {
+            text: Platform.OS === "ios" ? "허용 안함            " : "허용 안함",
+            onPress: () => alarmEditHandler({ notificationAgreement: false }),
+          },
+        ]
+      );
+    }
     function logoutHandler() {
       Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
         {
