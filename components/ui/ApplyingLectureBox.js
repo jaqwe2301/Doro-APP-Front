@@ -1,4 +1,11 @@
-import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
 import Xmark from "../../assets/xmark_gray.svg";
@@ -55,6 +62,8 @@ function ApplyingLectureBox({
         ).getDate()}일 (${days[dateControl(date[0]).getDay()]}) ${time}`
     : "";
 
+  const layout = useWindowDimensions();
+
   return (
     <Pressable key={id} onPress={lectureIdHandler}>
       <View
@@ -85,7 +94,9 @@ function ApplyingLectureBox({
             }}
           >
             <Text style={styles.role}>{tutorRole}</Text>
-            <Text style={styles.place}>{place}</Text>
+            <Text style={[styles.place, { maxWidth: layout.width - 230 }]}>
+              {place}
+            </Text>
           </View>
           <View
             style={{
@@ -104,7 +115,9 @@ function ApplyingLectureBox({
                   }월 ${dateTypeValue?.getDate()}일`
                 : dateTypeValue}
             </Text>
-            <Text style={styles.date}>{dateText}</Text>
+            <Text style={[styles.date, { maxWidth: layout.width - 150 }]}>
+              {dateText}
+            </Text>
             {/* </View> */}
           </View>
         </View>
@@ -163,14 +176,14 @@ const styles = StyleSheet.create({
     fontSize: 10,
     // lineHeight: 20,
     fontWeight: "bold",
-    maxWidth: 130,
+
     // maxHeight: 100,
   },
   date: {
     fontSize: 12,
 
     // lineHeight: 20,
-    maxWidth: 200,
+    // maxWidth: 200,
     fontWeight: "bold",
     color: GlobalStyles.colors.primaryDefault,
   },
