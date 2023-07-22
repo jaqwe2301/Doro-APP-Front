@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
 
 import { GlobalStyles } from "../../constants/styles";
 import { KRBold, KRRegular } from "../../constants/fonts";
 
 function SummaryBoxSmall({ svg: SvgComponent, title, text }) {
+  const layout = useWindowDimensions();
   return (
     <View style={styles.box}>
       <View style={styles.svgContainer}>
@@ -16,10 +17,14 @@ function SummaryBoxSmall({ svg: SvgComponent, title, text }) {
           {title}
         </Text>
         <Text
-          style={[
-            KRBold.Subbody,
-            { color: GlobalStyles.colors.gray01, marginTop: -5 },
-          ]}
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: GlobalStyles.colors.gray01,
+            marginTop: -5,
+            maxWidth: layout.width / 2 - 95,
+            maxHeight: 40,
+          }}
         >
           {text}
         </Text>

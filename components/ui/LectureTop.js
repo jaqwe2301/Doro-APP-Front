@@ -65,10 +65,6 @@ function LectureTop({
   return (
     <View style={{ alignItems: "center", paddingHorizontal: 20 }}>
       <Text style={styles.Title}>{subTitle}</Text>
-      <View style={styles.boxContainer}>
-        <SummaryBoxSmall svg={Bus} title="교통비" text={transportCost + "원"} />
-        <SummaryBoxSmall svg={Location} title="지역" text={city} />
-      </View>
 
       <View style={styles.boxContainer}>
         <SummaryBoxBig svg={Won} title="강사 급여" text={payment} />
@@ -76,6 +72,10 @@ function LectureTop({
 
       <View style={styles.boxContainer}>
         <SummaryBoxBig svg={Calendar} title="날짜 및 시간" text={LectureDate} />
+      </View>
+      <View style={styles.boxContainer}>
+        <SummaryBoxSmall svg={Bus} title="교통비" text={transportCost + "원"} />
+        <SummaryBoxSmall svg={Location} title="지역" text={city} />
       </View>
     </View>
   );

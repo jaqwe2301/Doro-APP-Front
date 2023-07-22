@@ -477,7 +477,9 @@ function DetailLectureScreen({ route, navigation }) {
               <View style={styles.infoContainer}>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>주최 및 주관</Text>
-                  <Text style={styles.infoText}>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
                     {lectureBasicInfo.institution}
                   </Text>
                 </View>
@@ -506,25 +508,41 @@ function DetailLectureScreen({ route, navigation }) {
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>시간</Text>
-                  <Text style={styles.infoText}>{lectureBasicInfo.time}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureBasicInfo.time}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>지역</Text>
-                  <Text style={styles.infoText}>{lectureBasicInfo.city}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureBasicInfo.city}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>장소</Text>
-                  <Text style={styles.infoText}>{lectureBasicInfo.place}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureBasicInfo.place}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>강의 대상</Text>
-                  <Text style={styles.infoText}>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
                     {lectureBasicInfo.studentGrade}
                   </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>인원수</Text>
-                  <Text style={styles.infoText}>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
                     {lectureBasicInfo.studentNumber}명
                   </Text>
                 </View>
@@ -605,23 +623,41 @@ function DetailLectureScreen({ route, navigation }) {
               <View style={styles.infoContainer}>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>교육 내용</Text>
-                  <Text style={styles.infoText}>{lectureContent.content}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.content}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>키트</Text>
-                  <Text style={styles.infoText}>{lectureContent.kit}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.kit}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>기본 강의 구성</Text>
-                  <Text style={styles.infoText}>{lectureContent.detail}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.detail}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>기타 특이사항</Text>
-                  <Text style={styles.infoText}>{lectureContent.remark}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.remark}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>자격 요건</Text>
-                  <Text style={styles.infoText}>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
                     {lectureContent.requirement}
                   </Text>
                 </View>
@@ -648,15 +684,36 @@ function DetailLectureScreen({ route, navigation }) {
                 <View style={{ gap: 18 }}>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>주 강사</Text>
-                    <Text style={styles.infoText}>{assignList[0]}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {assignList[0]}
+                    </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>보조 강사</Text>
-                    <Text style={styles.infoText}>{assignList[1]}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {assignList[1]}
+                    </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>스태프</Text>
-                    <Text style={styles.infoText}>{assignList[2]}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {assignList[2]}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -1026,10 +1083,12 @@ const styles = StyleSheet.create({
   infoTitle: {
     width: 130,
     fontSize: 15,
+
     color: GlobalStyles.colors.gray03,
   },
   infoText: {
     fontSize: 15,
+    // maxWidth: 200,
   },
   btnContainer: {
     flexDirection: "row",
