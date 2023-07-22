@@ -1,4 +1,10 @@
-import { useState, useEffect, useContext, ActivityIndicator } from "react";
+import {
+  useState,
+  useEffect,
+  useContext,
+  ActivityIndicator,
+  useRef,
+} from "react";
 import {
   View,
   StyleSheet,
@@ -46,27 +52,18 @@ const HomeScreen = ({ navigation }) => {
 
   const [cityList, setCityList] = useState("");
 
-  const [rCities, setRCities] = useState("");
+  const [rCities, setRCities] = useState(null);
   const [onRCities, setOnRCities] = useState(false);
+  const [onRDate, setOnRDate] = useState(false);
   const [rStartDate, setRStartDate] = useState("");
   const [rEndDate, setREndDate] = useState("");
 
-  const [aCities, setACities] = useState("");
+  const [aCities, setACities] = useState(null);
   const [onACities, setOnACities] = useState(false);
+  const [onADate, setOnADate] = useState(false);
   const [aStartDate, setAStartDate] = useState("");
   const [aEndDate, setAEndDate] = useState("");
 
-  const [lectureData, setLectureData] = useState([
-    {
-      lectureDates: [],
-    },
-  ]);
-
-  const [lectureData2, setLectureData2] = useState([
-    {
-      lectureDates: [],
-    },
-  ]);
   const [filter, setFilter] = useState(false);
   const [filter2, setFilter2] = useState(false);
   const [title, setTitle] = useState("");
@@ -126,56 +123,77 @@ const HomeScreen = ({ navigation }) => {
     getCity();
   }, []);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const result = await getAnnouncement({ page: 0, size: 3 });
-        setResponse(result);
-        console.log(result);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    fetchData();
-  }, []);
-
   const [pageNum, setPageNum] = useState(0);
   const [pageNum2, setPageNum2] = useState(0);
 
   useEffect(() => {
-    setPageNum(0);
-    setRLectureData([]);
-    lectureHandler();
-    if (rCities !== "") {
-      setOnRCities(true);
-    } else {
-      setOnRCities(false);
-    }
+    if (rCities !== null) {
+      setPageNum(0);
+      setRLectureData([]);
+      if (rCities !== "") {
+        setOnRCities(true);
+      } else {
+        setOnRCities(false);
+      }
 
-    console.log(rCities);
+      lectureHandler();
+    }
   }, [rCities]);
 
   useEffect(() => {
-    setPageNum2(0);
-    setALectureData([]);
-    lectureHandler2();
-    if (aCities !== "") {
-      setOnACities(true);
-    } else {
-      setOnACities(false);
-    }
+    const fetchData = async () => {
+      if (rEndDate !== "" || rStartDate !== "") {
+        setPageNum(0);
+        setRLectureData([]);
+        lectureHandler();
+        setOnRDate(true);
+      } else {
+        setOnRDate(false);
+      }
+    };
 
-    console.log(aCities);
+    fetchData();
+    console.log(rEndDate, rStartDate);
+  }, [rEndDate, rStartDate]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (aEndDate !== "" || aStartDate !== "") {
+        setPageNum2(0);
+        setALectureData([]);
+        lectureHandler2();
+        setOnADate(true);
+      } else {
+        setOnADate(false);
+      }
+    };
+
+    fetchData();
+    console.log(aEndDate, aStartDate);
+  }, [aEndDate, aStartDate]);
+
+  useEffect(() => {
+    if (aCities !== null) {
+      setPageNum2(0);
+      setALectureData([]);
+      lectureHandler2();
+      if (aCities !== "") {
+        setOnACities(true);
+      } else {
+        setOnACities(false);
+      }
+
+      console.log(aCities);
+    }
   }, [aCities]);
 
-  async function lectureHandler() {
+  function lectureHandler() {
     instance
       .get("/lectures/", {
         params: {
           city: rCities,
-          endDate: "",
-          startDate: "",
+          endDate: rEndDate,
+          startDate: rStartDate,
           page: pageNum,
           size: 10,
           lectureStatus: "RECRUITING",
@@ -190,6 +208,8 @@ const HomeScreen = ({ navigation }) => {
 
         const data = groupDataByMainTitle(recruitingData);
         console.log("불러왔니?");
+        console.log(data);
+        console.log(pageNum);
         setRLectureData((prev) => [...prev, ...data]);
 
         setPageNum((prev) => prev + 1);
@@ -200,13 +220,75 @@ const HomeScreen = ({ navigation }) => {
       });
   }
 
-  async function lectureHandler2() {
+  function refreshHandler() {
+    instance
+      .get("/lectures/", {
+        params: {
+          city: rCities,
+          endDate: rEndDate,
+          startDate: rStartDate,
+          page: 0,
+          size: 10,
+          lectureStatus: "RECRUITING",
+        },
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        const recruitingData = res.data.data.lecturesInfos;
+
+        const data = groupDataByMainTitle(recruitingData);
+
+        setRLectureData(data);
+
+        setPageNum(1);
+      })
+      .catch((error) => {
+        console.log("에러 모집중 refresh");
+        console.log(error);
+      });
+  }
+
+  function refreshHandler2() {
     instance
       .get("/lectures/", {
         params: {
           city: aCities,
-          endDate: "",
-          startDate: "",
+          endDate: aEndDate,
+          startDate: aStartDate,
+          page: 0,
+          size: 10,
+          lectureStatus: "ALLOCATION_COMP",
+        },
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        const allocationData = res.data.data.lecturesInfos;
+
+        const data = groupDataByMainTitle(allocationData);
+
+        setALectureData(data);
+
+        setPageNum2(1);
+      })
+      .catch((error) => {
+        console.log("에러 진행중 refresh");
+        console.log(error);
+      });
+  }
+
+  function lectureHandler2() {
+    instance
+      .get("/lectures/", {
+        params: {
+          city: aCities,
+          endDate: aEndDate,
+          startDate: aStartDate,
           page: pageNum2,
           size: 10,
           lectureStatus: "ALLOCATION_COMP",
@@ -217,34 +299,19 @@ const HomeScreen = ({ navigation }) => {
         },
       })
       .then((res) => {
-        // console.log(res.data.data);
-        console.log("여기인가? 여긴 진행중인코드");
-        const allocatingData = res.data.data.lecturesInfos;
-        console.log(allocatingData);
+        const allocationData = res.data.data.lecturesInfos;
 
-        const data = groupDataByMainTitle(allocatingData);
+        const data = groupDataByMainTitle(allocationData);
 
         setALectureData((prev) => [...prev, ...data]);
-        console.log(data);
+
         setPageNum2((prev) => prev + 1);
-        console.log(pageNum2);
       })
       .catch((error) => {
         console.log("에러 진행중");
         console.log(error);
       });
   }
-
-  const [filterDate, setFilterDate] = useState([
-    [
-      new Date(new Date().setMonth(new Date().getMonth() - 6)),
-      new Date(new Date().setMonth(new Date().getMonth() + 6)),
-    ],
-    [
-      new Date(new Date().setMonth(new Date().getMonth() - 6)),
-      new Date(new Date().setMonth(new Date().getMonth() + 6)),
-    ],
-  ]);
 
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
@@ -269,7 +336,11 @@ const HomeScreen = ({ navigation }) => {
               // extraData={[rCities, rlectureData]}
               keyExtractor={(item, index) => index.toString()}
               onEndReached={lectureHandler}
-              onEndReachedThreshold={0.2}
+              onEndReachedThreshold={0.5}
+              onRefresh={() => {
+                refreshHandler();
+              }}
+              refreshing={false}
               ListHeaderComponent={
                 <View
                   style={{
@@ -291,13 +362,12 @@ const HomeScreen = ({ navigation }) => {
                   </Pressable>
                   <Pressable
                     onPress={() => {
-                      // onFilter("교육 날짜", "recruitingDate");
+                      setTitle("날짜");
+                      setStatus("recruitingDate");
+                      setFilter(true);
                     }}
                   >
-                    <FilterBox
-                      text="교육 날짜"
-                      // on={status === "recruitingDate" ? true : false}
-                    />
+                    <FilterBox text="교육 날짜" on={onRDate} />
                   </Pressable>
                 </View>
               }
@@ -350,6 +420,10 @@ const HomeScreen = ({ navigation }) => {
               keyExtractor={(item, index) => index.toString()}
               onEndReached={lectureHandler2}
               onEndReachedThreshold={0.2}
+              onRefresh={() => {
+                refreshHandler2();
+              }}
+              refreshing={false}
               ListHeaderComponent={
                 <View
                   style={{
@@ -371,13 +445,12 @@ const HomeScreen = ({ navigation }) => {
                   </Pressable>
                   <Pressable
                     onPress={() => {
-                      // onFilter("교육 날짜", "recruitingDate");
+                      setTitle("날짜");
+                      setStatus("allocationDate");
+                      setFilter2(true);
                     }}
                   >
-                    <FilterBox
-                      text="교육 날짜"
-                      // on={status === "recruitingDate" ? true : false}
-                    />
+                    <FilterBox text="교육 날짜" on={onADate} />
                   </Pressable>
                 </View>
               }
@@ -550,9 +623,11 @@ const HomeScreen = ({ navigation }) => {
         visible={filter}
         inVisible={() => setFilter(false)}
         title={title}
-        data={status === "RECRUITING" ? cityList : cityList}
+        data={cityList}
         status={status}
-        setCity={status === "RECRUITING" ? setRCities : setACities}
+        setCity={setRCities}
+        setStartDate={setRStartDate}
+        setEndDate={setREndDate}
       />
 
       <FilterModal
@@ -562,6 +637,8 @@ const HomeScreen = ({ navigation }) => {
         data={cityList}
         status={status}
         setCity={setACities}
+        setStartDate={setAStartDate}
+        setEndDate={setAEndDate}
       />
 
       {headerRole === "ROLE_ADMIN" ? (

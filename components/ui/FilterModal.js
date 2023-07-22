@@ -27,9 +27,9 @@ function FilterModal({
   onPressPlus,
   status,
   setCity,
+  setStartDate,
+  setEndDate,
 }) {
-  const [check, setCheck] = useState();
-  const [checkItem, setCheckItem] = useState();
   const [date, setDate] = useState([
     new Date(new Date().setMonth(new Date().getMonth() - 6)),
     new Date(new Date().setMonth(new Date().getMonth() + 6)),
@@ -38,12 +38,6 @@ function FilterModal({
   const [choice, setChoice] = useState(true);
 
   const [selectedIndices, setSelectedIndices] = useState([]);
-
-  useEffect(() => {
-    status === "recruitingDate" || status === "allocationDate"
-      ? setDate(data)
-      : "";
-  }, [status]);
 
   const dateControl = (date) => {
     const month =
@@ -57,37 +51,25 @@ function FilterModal({
     setDateVisible(false);
   };
 
-  const onConfirm = (item) => {
-    if (status === "recruitingDate" || status === "allocationDate") {
-      if (status === "recruitingDate") {
-      }
-      // onPress(item);
-    } else if (!item) {
-      Alert.alert(
-        "주의",
-        "항목을 체크해주세요!",
-        [
-          {
-            text: "확인",
-            onPress: () => {
-              // console.log("강사 신청 완료");
-            },
-            style: "destructive",
-          },
-        ],
-        {
-          cancelable: true,
-          onDismiss: () => {},
-        }
-      );
+  const ConfirmBtn = () => {
+    if (status === "RECRUITING" || status === "ALLOCATION_COMP") {
+      setCity(selectedIndices.map((index) => data[index]).join(","));
     } else {
-      setCity(selectedIndices.map((index) => data[index]));
+      const formattedDate = `${date[0].getFullYear()}-${padNumber(
+        date[0].getMonth() + 1
+      )}-${padNumber(date[0].getDate())}`;
+      const formattedDate2 = `${date[1].getFullYear()}-${padNumber(
+        date[1].getMonth() + 1
+      )}-${padNumber(date[1].getDate())}`;
+      setStartDate(formattedDate);
+      setEndDate(formattedDate2);
     }
+
+    inVisible();
   };
 
-  const ConfirmBtn = () => {
-    setCity(selectedIndices.map((index) => data[index]).join(","));
-    inVisible();
+  const padNumber = (num) => {
+    return num.toString().padStart(2, "0");
   };
   return (
     <Modal transparent={true} visible={visible}>
@@ -121,8 +103,12 @@ function FilterModal({
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  marginHorizontal: 10,
-                  marginVertical: 14,
+                  marginHorizontal: 20,
+                  height: 53,
+                  marginVertical: 22,
+                  paddingHorizontal: 16,
+                  borderColor: GlobalStyles.colors.gray06,
+                  borderWidth: 0.5,
                 }}
               >
                 <Pressable
@@ -132,7 +118,7 @@ function FilterModal({
                   }}
                   style={{
                     // backgroundColor: GlobalStyles.colors.gray01,
-                    padding: 10,
+                    padding: 16,
                   }}
                 >
                   <Text>{dateControl(date[0])}</Text>
@@ -143,7 +129,7 @@ function FilterModal({
                     setChoice(false);
                     setDateVisible(true);
                   }}
-                  style={{ padding: 10 }}
+                  style={{ padding: 16 }}
                 >
                   <Text>{dateControl(date[1])}</Text>
                 </Pressable>
@@ -186,17 +172,11 @@ function FilterModal({
               />
             )}
             <View style={styles.modalButtonContainer}>
-              <ButtonBig
-                text="확인"
-                onPress={() =>
-                  status === "recruitingDate" || status === "allocationDate"
-                    ? onConfirm(date)
-                    : ConfirmBtn()
-                }
-              />
+              <ButtonBig text="확인" onPress={() => ConfirmBtn()} />
             </View>
           </View>
           {/* </View> */}
+
           <DateTimePickerModal
             isVisible={dateVisible}
             mode={"date"}
