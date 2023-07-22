@@ -168,6 +168,7 @@ function HistoryScreen({ navigation }) {
                     lectureIdHandler={() =>
                       navigation.navigate("DetailLecture", {
                         id: item.id,
+                        navi: true,
                       })
                     }
                     id=""
