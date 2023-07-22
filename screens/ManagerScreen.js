@@ -35,8 +35,8 @@ function ManagerScreen() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const authCtx = useContext(AuthContext);
-  const { lectures } = useLectures();
-  const [lecturesData, setLectureData] = useState([]);
+  // const { lectures } = useLectures();
+  // const [lecturesData, setLectureData] = useState([]);
   const instance = Interceptor();
 
   useEffect(() => {
@@ -134,62 +134,62 @@ function ManagerScreen() {
     ]);
   }
 
-  useEffect(() => {
-    setLectureData(lectures);
-  }, [lectures]);
+  // useEffect(() => {
+  //   setLectureData(lectures);
+  // }, [lectures]);
 
-  const lecturesTitle = [
-    ...new Set(lecturesData.map((item) => item.mainTitle)),
-  ];
+  // const lecturesTitle = [
+  //   ...new Set(lecturesData.map((item) => item.mainTitle)),
+  // ];
 
-  const dateControl = (stringDate) => {
-    // string에서 date 타입으로 전환하기 위해 만듬
-    return new Date(stringDate);
-  };
+  // const dateControl = (stringDate) => {
+  //   // string에서 date 타입으로 전환하기 위해 만듬
+  //   return new Date(stringDate);
+  // };
 
-  let lecturesElements = [];
+  // let lecturesElements = [];
 
-  for (let i = 0; i < lecturesTitle.length; i++) {
-    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+  // for (let i = 0; i < lecturesTitle.length; i++) {
+  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
 
-    lecturesElements.push(
-      <View key={i}>
-        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-          {lecturesTitle[i]}
-        </Text>
+  //   lecturesElements.push(
+  //     <View key={i}>
+  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+  //         {lecturesTitle[i]}
+  //       </Text>
 
-        {lecturesData
-          .filter((item) => item.mainTitle === lecturesTitle[i])
-          .map((filteringItem, i) => {
-            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            // console.log(filteringItem.staff);
-            return (
-              <LectureBox
-                key={filteringItem.id}
-                colors={SelectedColor}
-                subTitle={filteringItem.subTitle}
-                date={filteringItem.lectureDates}
-                time={filteringItem.time}
-                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-                id={filteringItem.id}
-                dateTypeValue={dateTypeValue}
-                mainTutor={filteringItem.mainTutor}
-                subTutor={filteringItem.subTutor}
-                staff={filteringItem.staff}
-                place={filteringItem.place}
-                lectureIdHandler={() =>
-                  navigation.navigate("DetailLecture", {
-                    data: filteringItem.id,
-                  })
-                }
-                // date={dateText}
-              />
-            );
-          })}
-        {i === lecturesTitle.length - 1 && <View style={{ height: 20 }} />}
-      </View>
-    );
-  }
+  //       {lecturesData
+  //         .filter((item) => item.mainTitle === lecturesTitle[i])
+  //         .map((filteringItem, i) => {
+  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+  //           // console.log(filteringItem.staff);
+  //           return (
+  //             <LectureBox
+  //               key={filteringItem.id}
+  //               colors={SelectedColor}
+  //               subTitle={filteringItem.subTitle}
+  //               date={filteringItem.lectureDates}
+  //               time={filteringItem.time}
+  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+  //               id={filteringItem.id}
+  //               dateTypeValue={dateTypeValue}
+  //               mainTutor={filteringItem.mainTutor}
+  //               subTutor={filteringItem.subTutor}
+  //               staff={filteringItem.staff}
+  //               place={filteringItem.place}
+  //               lectureIdHandler={() =>
+  //                 navigation.navigate("DetailLecture", {
+  //                   data: filteringItem.id,
+  //                 })
+  //               }
+  //               // date={dateText}
+  //             />
+  //           );
+  //         })}
+  //       {i === lecturesTitle.length - 1 && <View style={{ height: 20 }} />}
+  //     </View>
+  //   );
+  // }
 
   const navigation = useNavigation();
 
@@ -198,7 +198,7 @@ function ManagerScreen() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "first", title: "강사 목록" },
-    { key: "second", title: "강의 목록" },
+    // { key: "second", title: "강의 목록" },
     { key: "third", title: "알림 발송" },
   ]);
 
@@ -317,23 +317,23 @@ function ManagerScreen() {
           </View>
         );
 
-      case "second":
-        return (
-          <ScrollView style={styles.lectureListContainer}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 7,
-                marginTop: 15,
-                marginBottom: 5,
-              }}
-            >
-              <FilterBox text="교육 지역" />
-              <FilterBox text="교육 날짜" />
-            </View>
-            {lecturesElements}
-          </ScrollView>
-        );
+      // case "second":
+      //   return (
+      //     <ScrollView style={styles.lectureListContainer}>
+      //       <View
+      //         style={{
+      //           flexDirection: "row",
+      //           gap: 7,
+      //           marginTop: 15,
+      //           marginBottom: 5,
+      //         }}
+      //       >
+      //         <FilterBox text="교육 지역" />
+      //         <FilterBox text="교육 날짜" />
+      //       </View>
+      //       {lecturesElements}
+      //     </ScrollView>
+      //   );
 
       case "third":
         return (

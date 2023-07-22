@@ -224,7 +224,9 @@ function UpdateLectureScreen({ route, navigation }) {
               {
                 text: "확인",
                 onPress: () => {
-                  navigation.navigate("HomePage");
+                  route.params.navi
+                    ? navigation.navigate("historyScreen")
+                    : navigation.navigate("HomePage");
                 },
               },
             ]

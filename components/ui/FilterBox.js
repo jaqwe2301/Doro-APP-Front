@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 
-import DownGray from "../../assets/down.svg";
+import DownGray from "../../assets/downGray.svg";
 import DownBlack from "../../assets/up.svg";
 import { GlobalStyles } from "../../constants/styles";
 import { useEffect } from "react";

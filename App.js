@@ -487,6 +487,11 @@ function HistoryNavigator({ navigation }) {
         component={DetailLectureScreen}
         options={{ title: "" }}
       />
+      <Stack.Screen
+        name="UpdateLectureScreen"
+        component={UpdateLectureScreen}
+        options={{ title: "강의 생성 및 수정" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -771,9 +776,9 @@ export default function App() {
       <StatusBar style="dark" />
       <AuthContextProvider>
         <HeaderContextProvider>
-          <LecturesProvider>
-            <Navigation notificationAgreement={noti} />
-          </LecturesProvider>
+          {/* <LecturesProvider> */}
+          <Navigation notificationAgreement={noti} />
+          {/* </LecturesProvider> */}
         </HeaderContextProvider>
       </AuthContextProvider>
     </SafeAreaView>
