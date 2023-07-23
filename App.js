@@ -530,6 +530,7 @@ function BottomTabNavigator() {
         ...(Platform.OS === "android" && { tabBarStyle: { height: 60 } }),
         tabBarHideOnKeyboard: true,
         headerShown: false,
+        unmountOnBlur: true,
       }}
       initialRouteName="Home"
     >
