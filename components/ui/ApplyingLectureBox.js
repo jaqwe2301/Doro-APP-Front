@@ -75,7 +75,9 @@ function ApplyingLectureBox({
         ]}
       >
         <View style={styles.titleContainer}>
-          <Text style={styles.SubTitle}>{subTitle}</Text>
+          <Text style={[styles.SubTitle, { maxWidth: layout.width - 110 }]}>
+            {subTitle}
+          </Text>
 
           {onPressX ? (
             <Pressable onPress={onPressX}>

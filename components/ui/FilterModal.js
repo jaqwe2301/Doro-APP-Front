@@ -8,6 +8,7 @@ import {
   Alert,
   SafeAreaView,
   Platform,
+  useWindowDimensions,
 } from "react-native";
 import { useEffect, useState } from "react";
 
@@ -67,6 +68,8 @@ function FilterModal({
 
     inVisible();
   };
+
+  const layout = useWindowDimensions();
 
   const padNumber = (num) => {
     return num.toString().padStart(2, "0");
@@ -160,7 +163,14 @@ function FilterModal({
                       }}
                     >
                       <View style={styles.modalTextContainer}>
-                        <Text style={styles.modalText}>{data.item}</Text>
+                        <Text
+                          style={[
+                            styles.modalText,
+                            { maxWidth: layout.width - 70 },
+                          ]}
+                        >
+                          {data.item}
+                        </Text>
                         {selectedIndices.includes(data.index) ? (
                           <ModalCheck />
                         ) : null}

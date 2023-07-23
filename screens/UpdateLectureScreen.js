@@ -1,6 +1,6 @@
 // ---- 강의 생성과 수정 기능의 페이지 -----
 
-import React from "react";
+import React, { useContext } from "react";
 import {
   Text,
   Animated,
@@ -42,8 +42,10 @@ import SummaryBoxSmall from "../components/ui/SummaryBoxSmall";
 import { G } from "react-native-svg";
 import { KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native";
+import { HeaderContext } from "../store/header-context";
 
 function UpdateLectureScreen({ route, navigation }) {
+  const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const instance = Interceptor();
 
   const { StatusBarManager } = NativeModules;
@@ -185,6 +187,7 @@ function UpdateLectureScreen({ route, navigation }) {
           },
         })
         .then((res) => {
+          setIsLectureUpdate((prev) => prev + 1);
           console.log(res);
           Alert.alert(
             "강의 업데이트",
@@ -217,6 +220,7 @@ function UpdateLectureScreen({ route, navigation }) {
           }
         )
         .then((res) => {
+          setIsLectureUpdate((prev) => prev + 1);
           Alert.alert(
             "강의 업데이트",
             `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.`,

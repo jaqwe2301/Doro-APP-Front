@@ -33,75 +33,73 @@ function MyPageScreen({ navigation }) {
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
 
+  const [recruiting, setRecruiting] = useState([]);
+  const [allocation, setAllocation] = useState([]);
+  const [finished, setFinished] = useState([]);
+  const instance = Interceptor();
+
   // function ManagerScreen() {
   //   return <ManagerScreen />;
   // }
+  useEffect(() => {
+    profileHandler();
+  }, []);
 
-  function UserScreen() {
-    const [recruiting, setRecruiting] = useState([]);
-    const [allocation, setAllocation] = useState([]);
-    const [finished, setFinished] = useState([]);
-    const instance = Interceptor();
-    useEffect(() => {
-      profileHandler();
-    }, []);
+  useEffect(() => {
+    getMyLectures();
+  }, []);
 
-    useEffect(() => {
-      getMyLectures();
-    }, []);
+  async function profileHandler() {
+    try {
+      const response = await getProfile({ id: headerId });
 
-    const getMyLectures = () => {
-      instance
-        .get(`/users-lectures/users/${headerId}`, {
-          headers: {
-            // 헤더에 필요한 데이터를 여기에 추가
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
-          // console.log(res.data.data);
-          setRecruiting(() => {
-            const data = res.data.data.filter(
-              (item) => item.status === "RECRUITING"
-            );
-            return data;
-          });
-          setAllocation(() => {
-            const data = res.data.data.filter(
-              (item) => item.status === "ALLOCATION_COMP"
-            );
-            // console.log(data);
-            return data;
-          });
-          // finishLectureHandler(() => {
-          //   const data = res.data.data.filter(
-          //     (item) => item.status === "ALLOCATION_COMP"
-          //   );
-          //   console.log(data);
-          //   return data;
-          // });
-          // console.log("성공");
-        })
-        .catch((error) => {
-          console.log("왜 에러나니");
-          console.log("에러");
-          console.log(error);
-        });
-    };
-
-    async function profileHandler() {
-      try {
-        const response = await getProfile({ id: headerId });
-
-        setData(response.data);
-        console.log(JSON.stringify(response) + "여기임");
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-        setIsLoading(true);
-      }
+      setData(response.data);
+      console.log(JSON.stringify(response) + "여기임");
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(true);
     }
-
+  }
+  const getMyLectures = () => {
+    instance
+      .get(`/users-lectures/users/${headerId}`, {
+        headers: {
+          // 헤더에 필요한 데이터를 여기에 추가
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        setRecruiting(() => {
+          const data = res.data.data.filter(
+            (item) => item.status === "RECRUITING"
+          );
+          return data;
+        });
+        setAllocation(() => {
+          const data = res.data.data.filter(
+            (item) => item.status === "ALLOCATION_COMP"
+          );
+          // console.log(data);
+          return data;
+        });
+        // finishLectureHandler(() => {
+        //   const data = res.data.data.filter(
+        //     (item) => item.status === "ALLOCATION_COMP"
+        //   );
+        //   console.log(data);
+        //   return data;
+        // });
+        // console.log("성공");
+      })
+      .catch((error) => {
+        console.log("왜 에러나니");
+        console.log("에러");
+        console.log(error);
+      });
+  };
+  function UserScreen() {
     async function alarmEditHandler({ notificationAgreement }) {
       try {
         const response = await alarmEdit({
