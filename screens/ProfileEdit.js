@@ -276,7 +276,9 @@ function ProfileEdit({ navigation, route }) {
             </View>
             <View style={styles.contentContainer}>
               <Text style={styles.title}>생년월일</Text>
-              <Text style={styles.contentText}>{data.birth}</Text>
+              <Text style={styles.contentText}>
+                {data.birth === "1950-01-01" ? "미입력" : data.birth}
+              </Text>
             </View>
             <View style={styles.contentContainer}>
               <Text style={styles.title}>휴대전화번호</Text>
