@@ -129,7 +129,7 @@ function ApplicationDetails({ route }) {
   };
 
   const deleteLecture = (id, subTitle, role) => {
-    console.log(id);
+    // console.log(id);
     Alert.alert(
       subTitle,
       `${role} 신청을 취소하시겠습니까?`,
@@ -172,9 +172,10 @@ function ApplicationDetails({ route }) {
             style={styles.container}
             data={recruiting}
             renderItem={(data) => {
-              let dateTypeValue = dateControl(
-                data.item.lectureDate.enrollEndDate
-              );
+              const date = new Date(data.item.lectureDate.enrollEndDate);
+              let dateTypeValue = `${date.getMonth() + 1}월 ${
+                date.getDate() + 1
+              }일`;
               const roles = data.item.tutorRole;
               const role =
                 roles === "MAIN_TUTOR"
@@ -184,6 +185,7 @@ function ApplicationDetails({ route }) {
                   : roles === "STAFF"
                   ? "스태프"
                   : "";
+                  console.log(data.item)
               return (
                 <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}
