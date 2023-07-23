@@ -19,9 +19,11 @@ import { GlobalStyles } from "../constants/styles";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 import { KRRegular } from "../constants/fonts";
 
-function ApplicationDetails({ route, navigation }) {
+function ApplicationDetails({ route }) {
+  const navigation = useNavigation();
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
+  const { isTutorUpdate, setIsTutorUpdate } = useContext(HeaderContext);
 
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
@@ -71,7 +73,7 @@ function ApplicationDetails({ route, navigation }) {
 
   useEffect(() => {
     getMyLectures();
-  }, []);
+  }, [isTutorUpdate]);
 
   const layout = useWindowDimensions();
 
@@ -146,8 +148,9 @@ function ApplicationDetails({ route, navigation }) {
                 },
               })
               .then((res) => {
+                setIsTutorUpdate((prev) => prev + 1);
                 console.log("강의 취소 완료");
-                getMyLectures();
+                // getMyLectures();
               })
               .catch((error) => {
                 console.log("에러");
