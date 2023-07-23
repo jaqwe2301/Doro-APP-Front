@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   timer: {
     color: GlobalStyles.colors.red,
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
     position: "absolute",
     top: 10,

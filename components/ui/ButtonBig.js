@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   text: {
     color: GlobalStyles.colors.gray07,
     fontSize: 17,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 22,
   },
 });

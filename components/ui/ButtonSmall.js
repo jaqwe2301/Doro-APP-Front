@@ -20,7 +20,7 @@ export default ButtonSmall;
 const styles = StyleSheet.create({
   text: {
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: "600",
     color: "white",
     textAlign: "center",
     textAlignVertical: "center",
