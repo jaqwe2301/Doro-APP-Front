@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   title: {
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 22,
     lineHeight: 28,
     color: GlobalStyles.colors.gray01,
@@ -141,14 +141,14 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     color: GlobalStyles.colors.gray03,
   },
   subcontentContainer: {
     marginTop: 20,
     fontSize: 17,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 22,
     color: GlobalStyles.colors.gray03,
   },

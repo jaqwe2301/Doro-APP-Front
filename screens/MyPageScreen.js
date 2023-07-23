@@ -289,7 +289,18 @@ function MyPageScreen({ navigation }) {
               </Text>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>생년월일</Text>
-                <Text style={styles.contentText}>{data.birth}</Text>
+                {data.birth === "1950-01-01" ? (
+                  <Text
+                    style={[
+                      styles.contentText,
+                      { color: GlobalStyles.colors.gray03 },
+                    ]}
+                  >
+                    미입력
+                  </Text>
+                ) : (
+                  <Text style={styles.contentText}>{data.birth}</Text>
+                )}
               </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>휴대전화번호</Text>
@@ -378,12 +389,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
   },
   textNum: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
     marginTop: 17,
   },
@@ -396,13 +407,13 @@ const styles = StyleSheet.create({
     marginLeft: 30,
   },
   name: {
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 17,
     lineHeight: 22,
   },
   title: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     width: 70,
     color: GlobalStyles.colors.gray03,
@@ -428,7 +439,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     fontSize: 10,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
   },
   contentContainer: {
@@ -439,7 +450,7 @@ const styles = StyleSheet.create({
   contentText: {
     marginLeft: 45,
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
   },
   contentView: {
@@ -450,7 +461,7 @@ const styles = StyleSheet.create({
   contentTitle: {
     marginHorizontal: 20,
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 20,
   },
   contentTitleView: {

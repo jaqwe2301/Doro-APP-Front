@@ -148,7 +148,7 @@ export default GenerationModal;
 const styles = StyleSheet.create({
   statusTitle: {
     fontSize: 17,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 22,
     marginTop: 3,
     flex: 1,

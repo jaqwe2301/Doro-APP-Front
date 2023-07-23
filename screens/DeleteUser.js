@@ -162,14 +162,14 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     color: GlobalStyles.colors.gray01,
     marginRight: 20,
     lineHeight: 20,
   },
   id: {
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: "600",
     marginLeft: 23,
     marginRight: 4,
     lineHeight: 20,

@@ -153,13 +153,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
     color: GlobalStyles.colors.gray01,
   },
   name: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     color: GlobalStyles.colors.gray03,
   },

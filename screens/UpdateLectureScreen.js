@@ -224,7 +224,7 @@ function UpdateLectureScreen({ route }) {
               {
                 text: "확인",
                 onPress: () => {
-                  navigation.reset();
+                  navigation.reset({ routes: [{ name: "HomePage" }] });
                 },
               },
             ]
@@ -366,7 +366,7 @@ function UpdateLectureScreen({ route }) {
       setLectureData((prev) => {
         let data = prev;
         data.lectureDates[inputIdx] = pickedDate.toISOString().split("T")[0];
-        console.log(data);
+        // console.log(data);
         return data;
       });
 
