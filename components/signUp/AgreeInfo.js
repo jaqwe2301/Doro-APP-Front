@@ -842,7 +842,7 @@ export default AgreeInfo;
 const styles = StyleSheet.create({
   title: {
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 20,
     marginLeft: 20,
     marginRight: 32,
@@ -850,7 +850,7 @@ const styles = StyleSheet.create({
   },
   content: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
   },
 });

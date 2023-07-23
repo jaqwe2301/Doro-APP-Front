@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     fontSize: 10,
     lineHeight: 18,
-    fontWeight: 400,
+    fontWeight: "400",
     letterSpacing: -0.24,
     color: GlobalStyles.colors.gray03,
   },

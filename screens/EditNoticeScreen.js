@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     color: GlobalStyles.colors.gray03,
   },

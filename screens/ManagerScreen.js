@@ -250,7 +250,7 @@ function ManagerScreen() {
                   textAlign: "center",
                   textAlignVertical: "center",
                   fontSize: 17,
-                  fontWeight: 400,
+                  fontWeight: "400",
                 },
               ]}
             >

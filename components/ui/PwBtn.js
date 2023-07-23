@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     marginLeft: 6,
     marginRight: 10,
