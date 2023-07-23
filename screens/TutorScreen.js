@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   },
   imgEditText: {
     color: GlobalStyles.colors.primaryDefault,
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 12,
   },
   border: {
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     width: 70,
     color: GlobalStyles.colors.gray03,
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   contentText: {
     marginLeft: 45,
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     color: GlobalStyles.colors.gray03,
   },
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   contentTitle: {
     marginHorizontal: 20,
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 20,
   },
   inputContainer: {
@@ -399,13 +399,13 @@ const styles = StyleSheet.create({
   },
   auth: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
 
     textAlign: "center",
   },
   cancelText: {
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 15,
     color: GlobalStyles.colors.gray05,
     marginLeft: 10,
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   },
   statusTitle: {
     fontSize: 17,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 22,
     marginTop: 3,
     flex: 1,
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
     marginLeft: 20,
   },
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
   timer2: {
     color: GlobalStyles.colors.red,
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     position: "absolute",
     top: 0,
