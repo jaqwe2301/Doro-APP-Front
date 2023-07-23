@@ -70,6 +70,9 @@ const HomeScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("");
 
+  const [rNum, setRNum] = useState(0);
+  const [aNum, setANum] = useState(0);
+
   const groupDataByMainTitle = (data) => {
     const groupedData = data.reduce((acc, item) => {
       if (!acc[item.mainTitle]) {
@@ -210,6 +213,12 @@ const HomeScreen = ({ navigation }) => {
       console.log(data);
       console.log(pageNum);
       setRLectureData((prev) => [...prev, ...data]);
+      if (recruitingData.length !== 0) {
+        setRNum(result.totalCount);
+      } else if (recruitingData.length === 0 && pageNum === 0) {
+        setRNum(0);
+      }
+      console.log(result.totalCount);
 
       setPageNum((prev) => prev + 1);
     } catch (error) {
@@ -262,12 +271,30 @@ const HomeScreen = ({ navigation }) => {
       const data = groupDataByMainTitle(recruitingData);
 
       setRLectureData(data);
+      if (recruitingData.length !== 0) {
+        setRNum(result.totalCount);
+      } else {
+        setRNum(0);
+      }
 
       setPageNum(1);
     } catch (error) {
       console.error(error);
     }
   }
+
+  useEffect(() => {
+    setRoutes([
+      {
+        key: "first",
+        title: `모집중(${rNum})`,
+      },
+      {
+        key: "second",
+        title: `진행중(${aNum})`,
+      },
+    ]);
+  }, [rNum, aNum]);
 
   async function refreshHandler2() {
     // instance
@@ -314,7 +341,11 @@ const HomeScreen = ({ navigation }) => {
       const data = groupDataByMainTitle(allocationData);
 
       setALectureData(data);
-
+      if (allocationData.length !== 0) {
+        setANum(result.totalCount);
+      } else {
+        setANum(0);
+      }
       setPageNum2(1);
     } catch (error) {
       console.error(error);
@@ -364,7 +395,11 @@ const HomeScreen = ({ navigation }) => {
       const allocationData = result.lecturesInfos;
 
       const data = groupDataByMainTitle(allocationData);
-
+      if (allocationData.length !== 0) {
+        setANum(result.totalCount);
+      } else if (allocationData.length === 0 && pageNum === 0) {
+        setANum(0);
+      }
       setALectureData((prev) => [...prev, ...data]);
 
       setPageNum2((prev) => prev + 1);
@@ -381,9 +416,9 @@ const HomeScreen = ({ navigation }) => {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: "first", title: `모집중` },
-    { key: "second", title: "진행중" },
+  const [routes, setRoutes] = useState([
+    { key: "first", title: `모집중(0)` },
+    { key: "second", title: `진행중(0)` },
   ]);
 
   const renderScene = ({ route }) => {
@@ -431,7 +466,7 @@ const HomeScreen = ({ navigation }) => {
                   </Pressable>
                 </View>
               }
-              // ListFooterComponent={<View style={{ height: 23 }} />}
+              ListFooterComponent={<View style={{ height: 23 }} />}
               renderItem={({ item, index }) => (
                 <View style={{ marginHorizontal: 20 }}>
                   <Text
@@ -514,7 +549,7 @@ const HomeScreen = ({ navigation }) => {
                   </Pressable>
                 </View>
               }
-              // ListFooterComponent={<View style={{ height: 23 }} />}
+              ListFooterComponent={<View style={{ height: 23 }} />}
               renderItem={({ item, index }) => (
                 <View style={{ marginHorizontal: 20 }}>
                   <Text
