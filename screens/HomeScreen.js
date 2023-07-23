@@ -45,6 +45,7 @@ const instance = Interceptor();
 
 const HomeScreen = ({ navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
 
   const [rlectureData, setRLectureData] = useState([]);
@@ -121,7 +122,11 @@ const HomeScreen = ({ navigation }) => {
     }
 
     getCity();
-  }, []);
+    if (isLectureUpdate !== 0) {
+      refreshHandler();
+      refreshHandler2();
+    }
+  }, [isLectureUpdate]);
 
   const [pageNum, setPageNum] = useState(0);
   const [pageNum2, setPageNum2] = useState(0);
@@ -426,7 +431,7 @@ const HomeScreen = ({ navigation }) => {
                   </Pressable>
                 </View>
               }
-              ListFooterComponent={<View style={{ height: 23 }} />}
+              // ListFooterComponent={<View style={{ height: 23 }} />}
               renderItem={({ item, index }) => (
                 <View style={{ marginHorizontal: 20 }}>
                   <Text
@@ -509,7 +514,7 @@ const HomeScreen = ({ navigation }) => {
                   </Pressable>
                 </View>
               }
-              ListFooterComponent={<View style={{ height: 23 }} />}
+              // ListFooterComponent={<View style={{ height: 23 }} />}
               renderItem={({ item, index }) => (
                 <View style={{ marginHorizontal: 20 }}>
                   <Text

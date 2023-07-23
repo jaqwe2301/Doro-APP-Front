@@ -1,4 +1,11 @@
-import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 import { useEffect, useState } from "react";
 import { KRBold } from "../../constants/fonts";
@@ -45,6 +52,8 @@ function LectureBox(props) {
         }`
     : "";
 
+  const layout = useWindowDimensions();
+
   return (
     <Pressable
       style={styles.container}
@@ -69,7 +78,11 @@ function LectureBox(props) {
           <View style={{ justifyContent: "space-between", flex: 1 }}>
             <View>
               <View style={styles.titleContainer}>
-                <Text style={styles.SubTitle}>{props.subTitle}</Text>
+                <Text
+                  style={[styles.SubTitle, { maxWidth: layout.width - 160 }]}
+                >
+                  {props.subTitle}
+                </Text>
                 <Text style={styles.enrollEndDate}>
                   {typeof props.dateTypeValue === "object"
                     ? `신청마감 ${
