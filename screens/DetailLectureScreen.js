@@ -32,6 +32,8 @@ import { KRRegular } from "../constants/fonts";
 function DetailLectureScreen({ route, navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { isTutorUpdate, setIsTutorUpdate } = useContext(HeaderContext);
+  const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const instance = Interceptor();
   /** 강의 수정 후 리렌더링을 위해 사용 */
   const isFocused = useIsFocused();
@@ -258,6 +260,7 @@ function DetailLectureScreen({ route, navigation }) {
                   // console.log(res);
                   // console.log("성공");
                   // console.log("강사 신청 완료");
+                  setIsTutorUpdate((prev) => prev + 1);
                   Alert.alert(
                     lectureBasicInfo.subTitle,
                     `${role} 신청이 완료되었습니다.`,
@@ -362,6 +365,7 @@ function DetailLectureScreen({ route, navigation }) {
               )
               .then((res) => {
                 // console.log(res);
+                setIsTutorUpdate((prev) => prev + 1);
                 Alert.alert(
                   lectureBasicInfo.subTitle,
                   `${role} '${name}' ${
@@ -747,6 +751,7 @@ function DetailLectureScreen({ route, navigation }) {
               },
             })
             .then((res) => {
+              setIsLectureUpdate((prev) => prev + 1);
               console.log(
                 status
                   ? "ALLOCATION_COMP" + "변경완료"

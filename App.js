@@ -479,7 +479,7 @@ function HistoryNavigator({ navigation }) {
         name="applicationDetail"
         component={ApplicationDetails}
         options={{
-          title: "신청 내역",
+          title: "강의신청내역역",
         }}
       />
       <Stack.Screen

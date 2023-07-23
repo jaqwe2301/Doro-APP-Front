@@ -16,6 +16,13 @@ import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 
 function HistoryScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: headerRole === "ROLE_USER" ? "강의신청내역" : "강의 목록",
+    });
+  }, []);
+
   function ManagerHistory() {
     const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
     const layout = useWindowDimensions();
@@ -77,12 +84,15 @@ function HistoryScreen({ navigation }) {
         if (status === "RECRUITING") {
           setRLectureData(data);
           setPageNum(1);
+          console.log("rR");
         } else if (status === "ALLOCATION_COMP") {
           setALectureData(data);
           setPageNum2(1);
+          console.log("rA");
         } else if (status === "FINISH") {
           setFLectureData(data);
           setPageNum3(1);
+          console.log("rF");
         }
       } catch (error) {
         console.error(error);
