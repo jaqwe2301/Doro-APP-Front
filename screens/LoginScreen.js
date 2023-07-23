@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     color: "white",
     fontSize: 17,
-    fontWeight: 600,
+    fontWeight: "600",
   },
   searchTextContainer: {
     marginTop: 16,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   searchText: {
     color: GlobalStyles.colors.gray01,
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
   },
   slash: {
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   failText: {
     color: GlobalStyles.colors.red,
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 17,
     marginHorizontal: 25,
     marginTop: 3,

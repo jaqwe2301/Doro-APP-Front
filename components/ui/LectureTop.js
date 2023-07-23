@@ -63,7 +63,10 @@ function LectureTop({
   }
 
   return (
-    <View style={{ alignItems: "center", paddingHorizontal: 20 }}>
+    <View
+      style={{ alignItems: "center", paddingHorizontal: 20 }}
+      pointerEvents="none"
+    >
       <Text style={styles.Title}>{subTitle}</Text>
 
       <View style={styles.boxContainer}>
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
     marginTop: 28,
     marginBottom: 28,
     fontSize: 22,
-    fontWeight: 600,
+    fontWeight: "600",
     lineHeight: 28,
   },
   boxContainer: {

@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     color: GlobalStyles.colors.gray04,
     marginHorizontal: 20,
     marginTop: 3,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   textSend: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     marginLeft: 23,
     marginTop: 3,
     marginBottom: 66,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   timer: {
     color: GlobalStyles.colors.red,
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
     position: "absolute",
     top: 10,

@@ -387,7 +387,7 @@ function UpdateLectureScreen({ route, navigation }) {
       setLectureData((prev) => {
         let data = prev;
         data.lectureDates[inputIdx] = pickedDate.toISOString().split("T")[0];
-        console.log(data);
+        // console.log(data);
         return data;
       });
 

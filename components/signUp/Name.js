@@ -23,6 +23,9 @@ import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { KRBold } from "../../constants/fonts";
 
+import Checkbox from "../../assets/checkbox.svg";
+import CheckboxAfter from "../../assets/checkbox_after.svg";
+
 function Name({ navigation, route }) {
   // const statusBarHeight = route.params.h;
   const [inputName, setInputName] = useState("");
@@ -31,15 +34,16 @@ function Name({ navigation, route }) {
 
   const { signData, setSignData } = useContext(SignContext);
   const [btn, setBtn] = useState(false);
-  const [date, setDate] = useState(new Date(961741730000));
+  const [date, setDate] = useState(new Date("1950-01-01"));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const [check, setCheck] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     if (Platform.OS === "android") {
       setShow(false);
-      setBtn(true);
+      // setBtn(true);
       setlbtnColor(
         inputName !== ""
           ? GlobalStyles.colors.primaryDefault
@@ -53,13 +57,13 @@ function Name({ navigation, route }) {
     setInputName(text);
 
     setlbtnColor(
-      text && btn ? GlobalStyles.colors : GlobalStyles.colors.gray05
+      text ? GlobalStyles.colors.primaryDefault : GlobalStyles.colors.gray05
     );
   };
 
   function okayBtn() {
     setShow(false);
-    setBtn(true);
+    // setBtn(true);
     setlbtnColor(
       inputName !== ""
         ? GlobalStyles.colors.primaryDefault
@@ -70,7 +74,7 @@ function Name({ navigation, route }) {
   function navigateId() {
     Keyboard.dismiss();
     setTimeout(() => {
-      if (inputName !== "" && btn) {
+      if (inputName !== "") {
         setSignData({
           ...signData,
           name: inputName,
@@ -115,7 +119,7 @@ function Name({ navigation, route }) {
             <ScrollView>
               <View>
                 <View style={styles.textContainer}>
-                  <InputText text="이름을 입력해 주세요" />
+                  <InputText text="이름을 입력해 주세요." option="필수" />
                 </View>
                 <View style={styles.inputContainer}>
                   <InputData
@@ -125,10 +129,41 @@ function Name({ navigation, route }) {
                   />
                 </View>
                 <View style={[styles.textContainer, { marginTop: 50 }]}>
-                  <InputText text="생년월일을 입력해 주세요" />
+                  <InputText text="생년월일을 입력해 주세요." option="선택" />
                 </View>
                 <View>
-                  <Pressable onPress={() => setShow(!show)}>
+                  <Pressable
+                    onPress={() =>
+                      setCheck((prev) => {
+                        prev
+                          ? setDate(new Date("1950-01-01"))
+                          : setDate(new Date("2000-06-23"));
+                        return !prev;
+                      })
+                    }
+                  >
+                    <View
+                      style={{
+                        paddingHorizontal: 20,
+                        flexDirection: "row",
+                        marginTop: 8,
+                        alignItems: "center",
+                        // backgroundColor: "red",
+                      }}
+                    >
+                      {check ? (
+                        <CheckboxAfter width={30} height={30} />
+                      ) : (
+                        <Checkbox width={30} height={30} />
+                      )}
+                      <Text style={{ marginBottom: 2, marginLeft: 6 }}>
+                        {check
+                          ? "체크박스를 누르면 생년월일 입력을 취소할 수 있습니다."
+                          : "체크박스를 누르면 생년월일을 입력할 수 있습니다."}
+                      </Text>
+                    </View>
+                  </Pressable>
+                  <Pressable onPress={() => setShow(!show)} style={{ flex: 1 }}>
                     <View style={styles.inputContainer}>
                       {/* <Pressable> */}
                       {/* <InputData
@@ -137,17 +172,32 @@ function Name({ navigation, route }) {
                       value={date.toLocaleDateString()}
                       readOnly={true}
                     /> */}
-                      <View style={styles.textInputContainer}>
-                        <Text style={styles.textInput} placeholder="생년월일">
-                          {Platform.OS === "ios"
-                            ? date.toLocaleDateString().replace(/\//g, "-")
-                            : date
-                                .toLocaleDateString("ko-KR", options)
-                                .replace(/\./g, "-")
-                                .replace(/\.|-$/, "")
-                                .replace(/\s/g, "")}
-                        </Text>
-                      </View>
+                      {check ? (
+                        <View
+                          style={[
+                            styles.textInputContainer,
+                            !check
+                              ? { backgroundColor: GlobalStyles.colors.gray06 }
+                              : "",
+                          ]}
+                        >
+                          <Text style={styles.textInput} placeholder="생년월일">
+                            {Platform.OS === "ios"
+                              ? check
+                                ? date.toLocaleDateString().replace(/\//g, "-")
+                                : "1950-01-01"
+                              : check
+                              ? date
+                                  .toLocaleDateString("ko-KR", options)
+                                  .replace(/\./g, "-")
+                                  .replace(/\.|-$/, "")
+                                  .replace(/\s/g, "")
+                              : "1950-01-01"}
+                          </Text>
+                        </View>
+                      ) : (
+                        ""
+                      )}
                     </View>
                   </Pressable>
                 </View>
@@ -273,6 +323,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginHorizontal: 20,
     marginTop: 13,
+    // flexDirection:"row"
   },
   lInputContainer: {
     marginHorizontal: 20,
@@ -284,7 +335,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     color: GlobalStyles.colors.gray04,
     marginHorizontal: 20,
     marginTop: 6,
@@ -292,21 +343,20 @@ const styles = StyleSheet.create({
   },
   textSend: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     marginHorizontal: 20,
     marginTop: 8,
     marginBottom: 66,
   },
   textInputContainer: {
     height: 40,
-    width: "100%",
+    flex: 1,
     borderColor: GlobalStyles.colors.gray05,
     borderWidth: 1,
     borderRadius: 5.41,
     paddingLeft: 20,
     lineHeight: 20,
     fontSize: 15,
-
     justifyContent: "center",
   },
   textInput: {

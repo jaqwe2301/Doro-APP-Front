@@ -78,6 +78,15 @@ import TutorScreen from "./screens/TutorScreen";
 import * as SplashScreen from "expo-splash-screen";
 import HistoryScreen from "./screens/HistoryScreen";
 
+// import messaging from '@react-native-firebase/messaging';
+
+// async function getToken() {
+//   const token = await messaging().getToken();
+//   console.log(token);
+// }
+
+// getToken();
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -559,7 +568,7 @@ function BottomTabNavigator() {
           },
           tabBarLabelStyle: {
             fontSize: 10,
-            fontWeight: 600,
+            fontWeight: "600",
             marginBottom: Platform.OS === "android" ? 9 : 0,
           },
         })}
@@ -592,7 +601,7 @@ function BottomTabNavigator() {
           },
           tabBarLabelStyle: {
             fontSize: 10,
-            fontWeight: 600,
+            fontWeight: "600",
             marginBottom: Platform.OS === "android" ? 9 : 0,
           },
         })}
@@ -623,7 +632,7 @@ function BottomTabNavigator() {
           },
           tabBarLabelStyle: {
             fontSize: 10,
-            fontWeight: 600,
+            fontWeight: "600",
             marginBottom: Platform.OS === "android" ? 9 : 0,
           },
         }}
@@ -671,7 +680,7 @@ function BottomTabNavigator() {
           })(route),
           tabBarLabelStyle: {
             fontSize: 10,
-            fontWeight: 600,
+            fontWeight: "600",
             marginBottom: Platform.OS === "android" ? 9 : 0,
           },
         })}
@@ -843,7 +852,7 @@ const styles = StyleSheet.create({
   bottomtab: {
     marginBottom: 9,
     fontSize: 10,
-    fontWeight: 600,
+    fontWeight: "600",
   },
   HomeHeader: {
     // paddingTop: 45,
@@ -895,7 +904,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   cancelText: {
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 15,
     color: GlobalStyles.colors.gray05,
     marginLeft: 10,

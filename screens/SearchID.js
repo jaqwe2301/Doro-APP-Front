@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     // justifyContent: "flex-start",
     // alignItems: "flex-start",
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: "600",
     color: GlobalStyles.colors.gray01,
     // borderBottomColor: GlobalStyles.colors.primaryDefault,
     // borderBottomWidth: 3,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
     marginLeft: 23,
     fontSize: 15,
-    fontWeight: 400,
+    fontWeight: "400",
     lineHeight: 20,
   },
   inputContainer: {
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   textSend: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: "400",
     marginLeft: 26,
     marginTop: 8,
     marginBottom: 66,
