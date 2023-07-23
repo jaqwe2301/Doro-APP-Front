@@ -289,7 +289,18 @@ function MyPageScreen({ navigation }) {
               </Text>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>생년월일</Text>
-                <Text style={styles.contentText}>{data.birth}</Text>
+                {data.birth === "1950-01-01" ? (
+                  <Text
+                    style={[
+                      styles.contentText,
+                      { color: GlobalStyles.colors.gray03 },
+                    ]}
+                  >
+                    미입력
+                  </Text>
+                ) : (
+                  <Text style={styles.contentText}>{data.birth}</Text>
+                )}
               </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.title}>휴대전화번호</Text>
