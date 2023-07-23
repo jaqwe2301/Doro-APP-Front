@@ -726,7 +726,7 @@ function DetailLectureScreen({ route }) {
                     <FilterBox text="정렬 순서" color="black" />
                   </Pressable> */}
                 <Text
-                style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
+                style={{ fontSize: 17, fontWeight: "bold", paddingTop: 4 }}
               >
                 신청 강사
               </Text>
