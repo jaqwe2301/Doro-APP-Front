@@ -103,7 +103,7 @@ function Code({ navigation, route }) {
         studentId: signData.studentId,
         studentStatus: signData.studentStatus,
       });
-
+      
       if (response.data.success) {
         navigation.navigate("finish");
       }
