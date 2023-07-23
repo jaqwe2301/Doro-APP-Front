@@ -18,7 +18,7 @@ import Interceptor from "../utill/Interceptor";
 import { URL } from "../utill/config";
 import { AuthContext } from "../store/auth-context";
 import { useLectures } from "../store/LecturesProvider";
-
+import Search from "../assets/search.svg";
 import { GlobalStyles } from "./../constants/styles";
 import FilterBox from "../components/ui/FilterBox";
 import TutorBox from "../components/ui/TutorBox";
@@ -103,7 +103,7 @@ function ManagerScreen() {
         title: title,
       });
       if (response.success) {
-        setBody("");
+        setBody(""); //z/
         setTitle("");
       }
       console.log(response);
@@ -280,37 +280,68 @@ function ManagerScreen() {
       case "first":
         return (
           <View style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
-            <View style={{ marginTop: 15, marginLeft: 20 }}>
-              <Pressable onPress={() => setFilter(true)}>
-                <FilterBox text="기수 선택" />
-              </Pressable>
-            </View>
-            <View
-              style={{
-                marginTop: 27,
-                flex: 1,
-              }}
-            >
-              <FlatList
-                data={filterUser}
-                renderItem={(itemData) => {
-                  const item = itemData.item;
+            <FlatList
+              data={filterUser}
+              ListHeaderComponent={
+                <View
+                  style={{
+                    marginTop: 15,
+                    marginLeft: 20,
+                    marginBottom: 29,
+                    flexDirection: "row",
+                  }}
+                >
+                  <Pressable onPress={() => setFilter(true)}>
+                    <FilterBox text="기수 선택" />
+                  </Pressable>
+                  <View
+                    style={{
+                      flex: 1,
+                      marginRight: 20,
+                      marginLeft: 7,
+                      flexDirection: "row",
+                      backgroundColor: "white",
+                      alignItems: "center",
+                      borderRadius: 45,
+                      paddingLeft: 10,
+                    }}
+                  >
+                    <Search />
+                    <TextInput
+                      style={{
+                        height: 32,
+                        width: "100%",
+                        flex: 1,
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        paddingLeft: 5,
+                        // backgroundColor: GlobalStyles.colors.gray01,
+                      }}
+                      placeholderTextColor={GlobalStyles.colors.gray05}
+                      placeholder="검색"
+                    />
+                  </View>
+                </View>
+              }
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={(itemData) => {
+                const item = itemData.item;
 
-                  return (
-                    <Pressable onPress={() => detailTutor(item.id)}>
-                      <TutorBox
-                        name={item.name}
-                        generation={item.generation}
-                        school={item.degree.school}
-                        major={item.degree.major}
-                        lectures={item.lectures}
-                      />
-                    </Pressable>
-                  );
-                }}
-                extraData={userData}
-              />
-            </View>
+                return (
+                  <Pressable onPress={() => detailTutor(item.id)}>
+                    <TutorBox
+                      name={item.name}
+                      generation={item.generation}
+                      school={item.degree.school}
+                      major={item.degree.major}
+                      lectures={item.lectures}
+                    />
+                  </Pressable>
+                );
+              }}
+              extraData={userData}
+            />
+
             {/* <Pressable onPress={() => authCtx.logout()}>
               <Text>매니저 로그아웃</Text>
             </Pressable> */}
