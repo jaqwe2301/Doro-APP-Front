@@ -17,6 +17,7 @@ import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 function HistoryScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   function ManagerHistory() {
+    const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
     const layout = useWindowDimensions();
 
     const [index, setIndex] = useState(0);
@@ -26,18 +27,18 @@ function HistoryScreen({ navigation }) {
       { key: "third", title: "강의 완료" },
     ]);
 
-    // useEffect(() => {
-    //   lectureHandler();
-    //   lectureHandler2();
-    //   lectureHandler3();
-    // }, []);
-
     const [rlectureData, setRLectureData] = useState([]);
     const [pageNum, setPageNum] = useState(0);
     const [alectureData, setALectureData] = useState([]);
     const [pageNum2, setPageNum2] = useState(0);
     const [flectureData, setFLectureData] = useState([]);
     const [pageNum3, setPageNum3] = useState(0);
+
+    useEffect(() => {
+      refreshHandler("RECRUITING");
+      refreshHandler("ALLOCATION_COMP");
+      refreshHandler("FINISH");
+    }, [isLectureUpdate]);
 
     async function lectureHandler() {
       try {
@@ -59,6 +60,35 @@ function HistoryScreen({ navigation }) {
         console.error(error);
       }
     }
+
+    async function refreshHandler(status) {
+      try {
+        const result = await getLectureList({
+          city: "",
+          endDate: "",
+          startDate: "",
+          page: 0,
+          size: 10,
+          lectureStatus: status,
+        });
+
+        const data = result.lecturesInfos;
+
+        if (status === "RECRUITING") {
+          setRLectureData(data);
+          setPageNum(1);
+        } else if (status === "ALLOCATION_COMP") {
+          setALectureData(data);
+          setPageNum2(1);
+        } else if (status === "FINISH") {
+          setFLectureData(data);
+          setPageNum3(1);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     async function lectureHandler2() {
       try {
         const result = await getLectureList({
@@ -113,7 +143,12 @@ function HistoryScreen({ navigation }) {
               data={rlectureData}
               onEndReached={lectureHandler}
               onEndReachedThreshold={0.2}
-              ListFooterComponent={() => <View style={{ height: 30 }} />}
+              onRefresh={() => {
+                refreshHandler("RECRUITING");
+              }}
+              keyExtractor={(item) => item.id}
+              refreshing={false}
+              // ListFooterComponent={<View style={{ height: 30 }} />}
               renderItem={({ item }) => {
                 let dateTypeValue = dateControl(item.enrollEndDate);
                 // const roles = item.tutorRole;
@@ -155,9 +190,14 @@ function HistoryScreen({ navigation }) {
             <FlatList
               style={styles.container}
               data={alectureData}
+              keyExtractor={(item) => item.id}
               onEndReached={lectureHandler2}
               onEndReachedThreshold={0.2}
-              ListFooterComponent={() => <View style={{ height: 30 }} />}
+              onRefresh={() => {
+                refreshHandler("ALLOCATION_COMP");
+              }}
+              refreshing={false}
+              // ListFooterComponent={() => <View style={{ height: 30 }} />}
               renderItem={({ item }) => {
                 let dateTypeValue = dateControl(item.enrollEndDate);
 
@@ -191,7 +231,12 @@ function HistoryScreen({ navigation }) {
               data={flectureData}
               onEndReached={lectureHandler3}
               onEndReachedThreshold={0.2}
-              ListFooterComponent={() => <View style={{ height: 30 }} />}
+              keyExtractor={(item) => item.id}
+              onRefresh={() => {
+                refreshHandler("FINISH");
+              }}
+              refreshing={false}
+              // ListFooterComponent={() => <View style={{ height: 30 }} />}
               renderItem={({ item }) => {
                 let dateTypeValue = dateControl(item.enrollEndDate);
 
