@@ -16,6 +16,7 @@ function HeaderContextProvider({ children }) {
   const [historyIndex, setHistoryIndex] = useState(0);
 
   const [isLectureUpdate, setIsLectureUpdate] = useState(true);
+  const [isNoticeUpdate, setIsNoticeUpdate] = useState(true);
 
   //   const [headerPayload, setHeaderPayload] = useState();
 
@@ -36,6 +37,8 @@ function HeaderContextProvider({ children }) {
     setHistoryIndex,
     isLectureUpdate,
     setIsLectureUpdate,
+    isNoticeUpdate,
+    setIsNoticeUpdate,
   };
 
   return (
