@@ -28,6 +28,7 @@ import BottomModal from "../components/ui/BottomModal";
 
 import { getProfile, logout, pushNotification } from "../utill/http";
 import { KRRegular } from "../constants/fonts";
+import FilterModal from "../components/ui/FilterModal";
 
 function ManagerScreen() {
   const [userData, setUserData] = useState([]);
@@ -263,17 +264,60 @@ function ManagerScreen() {
     });
   }, [logoutHandler]);
 
-  const num = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const [num, setNum] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [numLength, setNumLength] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [gfilter, setGFilter] = useState([]);
+  const [nameFilter, setNameFilter] = useState("");
   const [filter, setFilter] = useState(false);
-  const [generation, setGeneration] = useState(num);
-  const filterYes = (generation) => {
-    setGeneration([generation]);
-    setFilter(false);
+  const [onFilter, setOnFilter] = useState(false);
+
+  const [filterData, setFilterData] = useState();
+
+  const filterByGeneration = (userData, generations) => {
+    const filteredData = userData.filter((item) => {
+      return generations.includes(item.generation);
+    });
+
+    return filteredData;
   };
 
-  const filterUser = userData.filter((item) =>
-    generation.includes(item.generation)
-  );
+  const filteredData = filterByGeneration(userData, gfilter);
+
+  useEffect(() => {
+    console.log(gfilter);
+    setFilterData(gfilter.length === 0 ? userData : filteredData);
+    setOnFilter(gfilter.length !== 0);
+  }, [gfilter, userData]);
+
+  const countGeneration = (userData) => {
+    const generationCounts = [];
+
+    userData.forEach((item) => {
+      const generation = item.generation;
+
+      if (generationCounts[generation]) {
+        generationCounts[generation]++;
+      } else {
+        generationCounts[generation] = 1;
+      }
+    });
+
+    return generationCounts;
+  };
+
+  useEffect(() => {
+    const generationCounts = countGeneration(userData);
+    const updatedNum = num.map((value, index) => {
+      return `${index + 1}기 (${generationCounts[index + 1] || 0})`;
+    });
+    setNum(updatedNum);
+  }, [userData]);
+
+  const namefilterHandler = (text) => {
+    setNameFilter(text);
+    const filteredNames = userData.filter((item) => item.name.includes(text));
+    setFilterData(filteredNames);
+  };
 
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -281,7 +325,7 @@ function ManagerScreen() {
         return (
           <View style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
             <FlatList
-              data={filterUser}
+              data={filterData}
               ListHeaderComponent={
                 <View
                   style={{
@@ -292,7 +336,7 @@ function ManagerScreen() {
                   }}
                 >
                   <Pressable onPress={() => setFilter(true)}>
-                    <FilterBox text="기수 선택" />
+                    <FilterBox text="기수 선택" on={onFilter} />
                   </Pressable>
                   <View
                     style={{
@@ -319,6 +363,8 @@ function ManagerScreen() {
                       }}
                       placeholderTextColor={GlobalStyles.colors.gray05}
                       placeholder="검색"
+                      value={nameFilter}
+                      onChangeText={namefilterHandler}
                     />
                   </View>
                 </View>
@@ -466,12 +512,14 @@ function ManagerScreen() {
           />
         )}
       />
-      <BottomModal
+
+      <FilterModal
         visible={filter}
         inVisible={() => setFilter(false)}
         title="기수 선택"
         data={num}
-        onPress={filterYes}
+        status="GENERATION"
+        setCity={setGFilter}
       />
     </>
   );

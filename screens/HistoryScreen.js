@@ -28,24 +28,35 @@ function HistoryScreen({ navigation }) {
     const layout = useWindowDimensions();
 
     const [index, setIndex] = useState(0);
-    const [routes] = useState([
-      { key: "first", title: "모집중" },
-      { key: "second", title: "진행중" },
-      { key: "third", title: "강의 완료" },
+    const [routes, setRoutes] = useState([
+      { key: "first", title: "모집중(0)" },
+      { key: "second", title: "진행중(0)" },
+      { key: "third", title: "강의 완료(0)" },
     ]);
 
     const [rlectureData, setRLectureData] = useState([]);
     const [pageNum, setPageNum] = useState(0);
+    const [rNum, setRNum] = useState(0);
     const [alectureData, setALectureData] = useState([]);
     const [pageNum2, setPageNum2] = useState(0);
+    const [aNum, setANum] = useState(0);
     const [flectureData, setFLectureData] = useState([]);
     const [pageNum3, setPageNum3] = useState(0);
+    const [fNum, setFNum] = useState(0);
 
     useEffect(() => {
       refreshHandler("RECRUITING");
       refreshHandler("ALLOCATION_COMP");
       refreshHandler("FINISH");
     }, [isLectureUpdate]);
+
+    useEffect(() => {
+      setRoutes([
+        { key: "first", title: `모집중(${rNum})` },
+        { key: "second", title: `진행중(${aNum})` },
+        { key: "third", title: `강의 완료(${fNum})` },
+      ]);
+    }, [rNum, aNum, fNum]);
 
     async function lectureHandler() {
       try {
@@ -61,6 +72,7 @@ function HistoryScreen({ navigation }) {
         const data = result.lecturesInfos;
         console.log("ㅗㅑ");
         setRLectureData((prev) => [...prev, ...data]);
+
         console.log(data);
         setPageNum((prev) => prev + 1);
       } catch (error) {
@@ -84,14 +96,18 @@ function HistoryScreen({ navigation }) {
         if (status === "RECRUITING") {
           setRLectureData(data);
           setPageNum(1);
+          setRNum(result.totalCount);
           console.log("rR");
+          console.log(result.totalCount);
         } else if (status === "ALLOCATION_COMP") {
           setALectureData(data);
           setPageNum2(1);
+          setANum(result.totalCount);
           console.log("rA");
         } else if (status === "FINISH") {
           setFLectureData(data);
           setPageNum3(1);
+          setFNum(result.totalCount);
           console.log("rF");
         }
       } catch (error) {

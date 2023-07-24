@@ -55,6 +55,12 @@ function FilterModal({
   const ConfirmBtn = () => {
     if (status === "RECRUITING" || status === "ALLOCATION_COMP") {
       setCity(selectedIndices.map((index) => data[index]).join(","));
+    } else if (status === "GENERATION") {
+      setCity(
+        selectedIndices
+          .map((index) => data[index])
+          .map((item) => parseInt(item))
+      );
     } else {
       const formattedDate = `${date[0].getFullYear()}-${padNumber(
         date[0].getMonth() + 1
