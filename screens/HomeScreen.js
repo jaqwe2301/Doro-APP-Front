@@ -52,6 +52,7 @@ const HomeScreen = ({ navigation }) => {
   const [alectureData, setALectureData] = useState([]);
 
   const [cityList, setCityList] = useState("");
+  const [cityList2, setCityList2] = useState("");
 
   const [rCities, setRCities] = useState(null);
   const [onRCities, setOnRCities] = useState(false);
@@ -116,8 +117,10 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     async function getCity() {
       try {
-        const result = await getCityList();
+        const result = await getCityList({ status: "RECRUITING" });
+        const result2 = await getCityList({ status: "ALLOCATION_COMP" });
         setCityList(result);
+        setCityList2(result2);
         console.log(result);
       } catch (error) {
         console.error(error);
@@ -136,13 +139,13 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (rCities !== null) {
-      setPageNum(0);
-      setRLectureData([]);
       if (rCities !== "") {
         setOnRCities(true);
       } else {
         setOnRCities(false);
       }
+      setPageNum(0);
+      setRLectureData([]);
 
       lectureHandler();
     }
@@ -227,35 +230,6 @@ const HomeScreen = ({ navigation }) => {
   }
 
   async function refreshHandler() {
-    // instance
-    //   .get("/lectures/", {
-    //     params: {
-    //       city: rCities,
-    //       endDate: rEndDate,
-    //       startDate: rStartDate,
-    //       page: 0,
-    //       size: 10,
-    //       lectureStatus: "RECRUITING",
-    //     },
-    //     headers: {
-    //       // 헤더에 필요한 데이터를 여기에 추가
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     const recruitingData = res.data.data.lecturesInfos;
-
-    //     const data = groupDataByMainTitle(recruitingData);
-
-    //     setRLectureData(data);
-
-    //     setPageNum(1);
-    //   })
-    //   .catch((error) => {
-    //     console.log("에러 모집중 refresh");
-    //     console.log(error);
-    //   });
-
     try {
       const result = await getLectureList({
         city: rCities,
@@ -297,35 +271,6 @@ const HomeScreen = ({ navigation }) => {
   }, [rNum, aNum]);
 
   async function refreshHandler2() {
-    // instance
-    //   .get("/lectures/", {
-    //     params: {
-    // city: aCities,
-    // endDate: aEndDate,
-    // startDate: aStartDate,
-    // page: 0,
-    // size: 10,
-    // lectureStatus: "ALLOCATION_COMP",
-    //     },
-    //     headers: {
-    //       // 헤더에 필요한 데이터를 여기에 추가
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     const allocationData = res.data.data.lecturesInfos;
-
-    //     const data = groupDataByMainTitle(allocationData);
-
-    //     setALectureData(data);
-
-    //     setPageNum2(1);
-    //   })
-    //   .catch((error) => {
-    //     console.log("에러 진행중 refresh");
-    //     console.log(error);
-    //   });
-
     try {
       const result = await getLectureList({
         city: aCities,
@@ -353,35 +298,6 @@ const HomeScreen = ({ navigation }) => {
   }
 
   async function lectureHandler2() {
-    // instance
-    //   .get("/lectures/", {
-    //     params: {
-    //       city: aCities,
-    //       endDate: aEndDate,
-    //       startDate: aStartDate,
-    //       page: pageNum2,
-    //       size: 10,
-    //       lectureStatus: "ALLOCATION_COMP",
-    //     },
-    //     headers: {
-    //       // 헤더에 필요한 데이터를 여기에 추가
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     const allocationData = res.data.data.lecturesInfos;
-
-    //     const data = groupDataByMainTitle(allocationData);
-
-    //     setALectureData((prev) => [...prev, ...data]);
-
-    //     setPageNum2((prev) => prev + 1);
-    //   })
-    //   .catch((error) => {
-    //     console.log("에러 진행중");
-    //     console.log(error);
-    //   });
-
     try {
       const result = await getLectureList({
         city: aCities,
@@ -729,7 +645,7 @@ const HomeScreen = ({ navigation }) => {
         visible={filter2}
         inVisible={() => setFilter2(false)}
         title={title}
-        data={cityList}
+        data={cityList2}
         status={status}
         setCity={setACities}
         setStartDate={setAStartDate}

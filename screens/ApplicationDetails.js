@@ -23,7 +23,6 @@ function ApplicationDetails({ route }) {
   const navigation = useNavigation();
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
-  const { isTutorUpdate, setIsTutorUpdate } = useContext(HeaderContext);
 
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
@@ -73,7 +72,7 @@ function ApplicationDetails({ route }) {
 
   useEffect(() => {
     getMyLectures();
-  }, [isTutorUpdate]);
+  }, []);
 
   const layout = useWindowDimensions();
 
@@ -148,7 +147,6 @@ function ApplicationDetails({ route }) {
                 },
               })
               .then((res) => {
-                setIsTutorUpdate((prev) => prev + 1);
                 console.log("강의 취소 완료");
                 // getMyLectures();
               })
@@ -188,7 +186,7 @@ function ApplicationDetails({ route }) {
                   : roles === "STAFF"
                   ? "스태프"
                   : "";
-                  console.log(data.item)
+              console.log(data.item);
               return (
                 <ApplyingLectureBox
                   colors={GlobalStyles.indicationColors[data.index % 4]}

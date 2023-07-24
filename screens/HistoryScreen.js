@@ -159,37 +159,33 @@ function HistoryScreen({ navigation }) {
               keyExtractor={(item) => item.id}
               refreshing={false}
               // ListFooterComponent={<View style={{ height: 30 }} />}
-              renderItem={({ item }) => {
+              renderItem={({ item, index }) => {
                 let dateTypeValue = dateControl(item.enrollEndDate);
-                // const roles = item.tutorRole;
-                // const role =
-                //   roles === "MAIN_TUTOR"
-                //     ? "주강사"
-                //     : roles === "SUB_TUTOR"
-                //     ? "보조강사"
-                //     : roles === "STAFF"
-                //     ? "스태프"
-                //     : "";
+                const isLastItem = index === rlectureData.length - 1;
                 return (
-                  <ApplyingLectureBox
-                    subTitle={item.subTitle}
-                    date={item.lectureDates}
-                    time={item.time}
-                    lectureIdHandler={() =>
-                      navigation.navigate("DetailLecture", {
-                        id: item.id,
-                        navi: true,
-                      })
-                    }
-                    id=""
-                    dateTypeValue={dateTypeValue}
-                    place={item.place}
-                    tutorRole={`주강사 ${item.mainTutor}${
-                      item.subTutor === "0" ? "" : `, 보조강사 ${item.subTutor}`
-                    }${item.staff === "0" ? "" : `, 스태프 ${item.staff}`}`}
+                  <View style={isLastItem && { marginBottom: 30 }}>
+                    <ApplyingLectureBox
+                      subTitle={item.subTitle}
+                      date={item.lectureDates}
+                      time={item.time}
+                      lectureIdHandler={() =>
+                        navigation.navigate("DetailLecture", {
+                          id: item.id,
+                          navi: true,
+                        })
+                      }
+                      id=""
+                      dateTypeValue={dateTypeValue}
+                      place={item.place}
+                      tutorRole={`주강사 ${item.mainTutor}${
+                        item.subTutor === "0"
+                          ? ""
+                          : `, 보조강사 ${item.subTutor}`
+                      }${item.staff === "0" ? "" : `, 스태프 ${item.staff}`}`}
 
-                    // onPressX={() => deleteLecture(item.id, item.subTitle, role)}
-                  />
+                      // onPressX={() => deleteLecture(item.id, item.subTitle, role)}
+                    />
+                  </View>
                 );
               }}
             />
@@ -208,28 +204,32 @@ function HistoryScreen({ navigation }) {
               }}
               refreshing={false}
               // ListFooterComponent={() => <View style={{ height: 30 }} />}
-              renderItem={({ item }) => {
+              renderItem={({ item, index }) => {
                 let dateTypeValue = dateControl(item.enrollEndDate);
-
+                const isLastItem = index === alectureData.length - 1;
                 return (
-                  <ApplyingLectureBox
-                    subTitle={item.subTitle}
-                    date={item.lectureDates}
-                    time={item.time}
-                    lectureIdHandler={() =>
-                      navigation.navigate("DetailLecture", {
-                        id: item.id,
-                        navi: true,
-                      })
-                    }
-                    id=""
-                    dateTypeValue={dateTypeValue}
-                    place={item.place}
-                    tutorRole={`주강사 ${item.mainTutor}${
-                      item.subTutor === "0" ? "" : `, 보조강사 ${item.subTutor}`
-                    }${item.staff === "0" ? "" : `, 스태프 ${item.staff}`}`}
-                    // onPressX={() => deleteLecture(item.id, item.subTitle, role)}
-                  />
+                  <View style={isLastItem && { marginBottom: 30 }}>
+                    <ApplyingLectureBox
+                      subTitle={item.subTitle}
+                      date={item.lectureDates}
+                      time={item.time}
+                      lectureIdHandler={() =>
+                        navigation.navigate("DetailLecture", {
+                          id: item.id,
+                          navi: true,
+                        })
+                      }
+                      id=""
+                      dateTypeValue={dateTypeValue}
+                      place={item.place}
+                      tutorRole={`주강사 ${item.mainTutor}${
+                        item.subTutor === "0"
+                          ? ""
+                          : `, 보조강사 ${item.subTutor}`
+                      }${item.staff === "0" ? "" : `, 스태프 ${item.staff}`}`}
+                      // onPressX={() => deleteLecture(item.id, item.subTitle, role)}
+                    />
+                  </View>
                 );
               }}
             />
@@ -247,28 +247,32 @@ function HistoryScreen({ navigation }) {
               }}
               refreshing={false}
               // ListFooterComponent={() => <View style={{ height: 30 }} />}
-              renderItem={({ item }) => {
+              renderItem={({ item, index }) => {
                 let dateTypeValue = dateControl(item.enrollEndDate);
-
+                const isLastItem = index === alectureData.length - 1;
                 return (
-                  <ApplyingLectureBox
-                    subTitle={item.subTitle}
-                    date={item.lectureDates}
-                    time={item.time}
-                    lectureIdHandler={() =>
-                      navigation.navigate("DetailLecture", {
-                        id: item.id,
-                        navi: true,
-                      })
-                    }
-                    id=""
-                    dateTypeValue={dateTypeValue}
-                    place={item.place}
-                    tutorRole={`주강사 ${item.mainTutor}${
-                      item.subTutor === "0" ? "" : `, 보조강사 ${item.subTutor}`
-                    }${item.staff === "0" ? "" : `, 스태프 ${item.staff}`}`}
-                    // onPressX={() => deleteLecture(item.id, item.subTitle, role)}
-                  />
+                  <View style={isLastItem && { marginBottom: 30 }}>
+                    <ApplyingLectureBox
+                      subTitle={item.subTitle}
+                      date={item.lectureDates}
+                      time={item.time}
+                      lectureIdHandler={() =>
+                        navigation.navigate("DetailLecture", {
+                          id: item.id,
+                          navi: true,
+                        })
+                      }
+                      id=""
+                      dateTypeValue={dateTypeValue}
+                      place={item.place}
+                      tutorRole={`주강사 ${item.mainTutor}${
+                        item.subTutor === "0"
+                          ? ""
+                          : `, 보조강사 ${item.subTutor}`
+                      }${item.staff === "0" ? "" : `, 스태프 ${item.staff}`}`}
+                      // onPressX={() => deleteLecture(item.id, item.subTitle, role)}
+                    />
+                  </View>
                 );
               }}
             />

@@ -412,9 +412,9 @@ export async function logout() {
   }
 }
 
-export async function getCityList() {
+export async function getCityList({ status }) {
   try {
-    const response = await instance.get("/lectures/cities");
+    const response = await instance.get("/lectures/cities/" + `${status}`);
     return response.data.data;
   } catch (error) {
     console.log(error);
