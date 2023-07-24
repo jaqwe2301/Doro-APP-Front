@@ -84,14 +84,12 @@ function MyPageScreen({ navigation }) {
           // console.log(data);
           return data;
         });
-        // finishLectureHandler(() => {
-        //   const data = res.data.data.filter(
-        //     (item) => item.status === "ALLOCATION_COMP"
-        //   );
-        //   console.log(data);
-        //   return data;
-        // });
-        // console.log("성공");
+        setFinished(() => {
+          const data = res.data.data.filter((item) => item.status === "FINISH");
+          console.log(data);
+          return data;
+        });
+        console.log("성공");
       })
       .catch((error) => {
         console.log("왜 에러나니");
