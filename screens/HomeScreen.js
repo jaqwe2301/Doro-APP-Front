@@ -54,13 +54,13 @@ const HomeScreen = ({ navigation }) => {
   const [cityList, setCityList] = useState("");
   const [cityList2, setCityList2] = useState("");
 
-  const [rCities, setRCities] = useState(null);
+  const [rCities, setRCities] = useState("");
   const [onRCities, setOnRCities] = useState(false);
   const [onRDate, setOnRDate] = useState(false);
   const [rStartDate, setRStartDate] = useState("");
   const [rEndDate, setREndDate] = useState("");
 
-  const [aCities, setACities] = useState(null);
+  const [aCities, setACities] = useState("");
   const [onACities, setOnACities] = useState(false);
   const [onADate, setOnADate] = useState(false);
   const [aStartDate, setAStartDate] = useState("");
@@ -128,27 +128,26 @@ const HomeScreen = ({ navigation }) => {
     }
 
     getCity();
-    if (isLectureUpdate !== 0) {
-      refreshHandler();
-      refreshHandler2();
-    }
+
+    refreshHandler();
+    refreshHandler2();
   }, [isLectureUpdate]);
 
   const [pageNum, setPageNum] = useState(0);
   const [pageNum2, setPageNum2] = useState(0);
 
   useEffect(() => {
-    if (rCities !== null) {
-      if (rCities !== "") {
-        setOnRCities(true);
-      } else {
-        setOnRCities(false);
-      }
-      setPageNum(0);
-      setRLectureData([]);
-
-      lectureHandler();
+    // if (rCities !== null) {
+    if (rCities !== "") {
+      setOnRCities(true);
+    } else {
+      setOnRCities(false);
     }
+    setPageNum(0);
+    setRLectureData([]);
+
+    lectureHandler();
+    // }
   }, [rCities]);
 
   useEffect(() => {
@@ -184,18 +183,18 @@ const HomeScreen = ({ navigation }) => {
   }, [aEndDate, aStartDate]);
 
   useEffect(() => {
-    if (aCities !== null) {
-      setPageNum2(0);
-      setALectureData([]);
-      lectureHandler2();
-      if (aCities !== "") {
-        setOnACities(true);
-      } else {
-        setOnACities(false);
-      }
-
-      console.log(aCities);
+    // if (aCities !== null) {
+    setPageNum2(0);
+    setALectureData([]);
+    lectureHandler2();
+    if (aCities !== "") {
+      setOnACities(true);
+    } else {
+      setOnACities(false);
     }
+
+    // console.log(aCities);
+    // }
   }, [aCities]);
 
   async function lectureHandler() {
@@ -212,16 +211,17 @@ const HomeScreen = ({ navigation }) => {
       const recruitingData = result.lecturesInfos;
 
       const data = groupDataByMainTitle(recruitingData);
-      console.log("불러왔니?");
-      console.log(data);
-      console.log(pageNum);
-      setRLectureData((prev) => [...prev, ...data]);
+
+      {
+        pageNum === 0
+          ? setRLectureData(data)
+          : setRLectureData((prev) => [...prev, ...data]);
+      }
       if (recruitingData.length !== 0) {
         setRNum(result.totalCount);
       } else if (recruitingData.length === 0 && pageNum === 0) {
         setRNum(0);
       }
-      console.log(result.totalCount);
 
       setPageNum((prev) => prev + 1);
     } catch (error) {
@@ -316,7 +316,11 @@ const HomeScreen = ({ navigation }) => {
       } else if (allocationData.length === 0 && pageNum === 0) {
         setANum(0);
       }
-      setALectureData((prev) => [...prev, ...data]);
+      {
+        pageNum2 === 0
+          ? setALectureData(data)
+          : setALectureData((prev) => [...prev, ...data]);
+      }
 
       setPageNum2((prev) => prev + 1);
     } catch (error) {
