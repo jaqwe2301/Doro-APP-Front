@@ -19,12 +19,17 @@ import Home from "../assets/home.svg";
 
 function NoticeScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
+  const { isNoticeUpdate, setIsNoticeUpdate } = useContext(HeaderContext);
   const [data, setData] = useState([]);
   const [pageNum, setPageNum] = useState(0);
 
   useEffect(() => {
     notiHandler();
   }, []);
+
+  useEffect(() => {
+    refreshHandler();
+  }, [isNoticeUpdate]);
 
   async function refreshHandler() {
     try {
@@ -45,8 +50,13 @@ function NoticeScreen({ navigation }) {
     try {
       const response = await getAnnouncement({ page: pageNum, size: 10 });
       if (response) {
-        setData((prev) => [...prev, ...response]);
-        setPageNum((prev) => prev + 1);
+        if (pageNum !== 0) {
+          setData((prev) => [...prev, ...response]);
+          setPageNum((prev) => prev + 1);
+        } else {
+          setData(response);
+          setPageNum(1);
+        }
         // pageNum++;
 
         console.log(pageNum);

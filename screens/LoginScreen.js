@@ -127,7 +127,9 @@ function LoginScreen({ navigation }) {
               setBorderColor={setBorderColor1}
             ></Input>
             {isVisible && (
-              <Text style={styles.failText}>아이디가 틀렸습니다</Text>
+              <Text style={styles.failText}>
+                아이디 또는 비밀번호가 일치하지 않습니다.
+              </Text>
             )}
           </View>
           <View style={{ marginTop: 30 }}>
@@ -140,7 +142,9 @@ function LoginScreen({ navigation }) {
               setBorderColor={setBorderColor2}
             ></Input>
             {isVisible && (
-              <Text style={styles.failText}>비밀번호가 틀렸습니다</Text>
+              <Text style={styles.failText}>
+                아이디 또는 비밀번호가 일치하지 않습니다.
+              </Text>
             )}
           </View>
         </View>

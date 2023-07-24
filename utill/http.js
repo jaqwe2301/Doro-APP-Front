@@ -407,22 +407,48 @@ export async function logout() {
     });
     return response;
   } catch (error) {
-    // if (error.response) {
-    //   // The request was made and the server responded with a status code
-    //   // that falls out of the range of 2xx
-    //   console.log(error.response.data);
-    //   console.log(error.response.status);
-    //   console.log(error.response.headers);
-    // } else if (error.request) {
-    //   // The request was made but no response was received
-    //   // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    //   // http.ClientRequest in node.js
-    //   console.log(error.request);
-    // } else {
-    //   // Something happened in setting up the request that triggered an Error
-    //   console.log("Error", error.message);
-    // }
     console.log("로그아웃 에러", error);
     throw error;
+  }
+}
+
+export async function getCityList({ status }) {
+  try {
+    const response = await instance.get("/lectures/cities/" + `${status}`);
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
+}
+
+export async function getLectureList({
+  city,
+  endDate,
+  lectureStatus,
+  startDate,
+  page,
+  size,
+}) {
+  try {
+    const res = await instance.get("/lectures", {
+      params: {
+        city: city,
+        endDate: endDate,
+        startDate: startDate,
+        page: page,
+        size: size,
+        lectureStatus: lectureStatus,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.data; // 프로미스에서 결과를 반환
+  } catch (error) {
+    console.log("에러났나염?>?");
+    console.log(error);
+    throw error; // 에러를 다시 던져서 호출자에게 전달
   }
 }
