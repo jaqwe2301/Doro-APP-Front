@@ -19,15 +19,42 @@ function LectureBox(props) {
     return new Date(stringDate);
   };
 
+  // const lectureDateControl = (date) => {
+  //   let result = dateControl(date[0]).getMonth() + 1 + "월 ";
+  //   for (let i = 0; i < date.length; i++) {
+  //     if (i === date.length - 1) {
+  //       result += dateControl(date[i]).getDate() + "일";
+  //     } else {
+  //       result += dateControl(date[i]).getDate() + "일 / ";
+  //     }
+  //   }
+  //   return result;
+  // };
   const lectureDateControl = (date) => {
-    let result = dateControl(date[0]).getMonth() + 1 + "월 ";
+    let result = "";
+    let currentMonth = null;
+
     for (let i = 0; i < date.length; i++) {
-      if (i === date.length - 1) {
-        result += dateControl(date[i]).getDate() + "일";
+      const currentDate = dateControl(date[i]);
+      const month = currentDate.getMonth() + 1;
+      const day = currentDate.getDate();
+
+      if (currentMonth === null) {
+        // 첫 번째 날짜일 경우
+        currentMonth = month;
+        result += `${month}월 ${day}일`;
       } else {
-        result += dateControl(date[i]).getDate() + "일 / ";
+        if (month !== currentMonth) {
+          // 이전 날짜와 다른 달인 경우
+          currentMonth = month;
+          result += ` / ${month}월 ${day}일`;
+        } else {
+          // 이전 날짜와 같은 달인 경우
+          result += ` , ${day}일`;
+        }
       }
     }
+
     return result;
   };
 
@@ -117,7 +144,11 @@ function LectureBox(props) {
                     : props.tutorRole}
                 </Text>
                 <Text
-                  style={[styles.date, { color: props.colors }, KRBold.Subbody]}
+                  style={[
+                    styles.date,
+                    { color: props.colors, maxHeight: 25 },
+                    KRBold.Subbody,
+                  ]}
                 >
                   {dateText}
                 </Text>
