@@ -81,13 +81,13 @@ function UpdateLectureScreen({ route, navigation }) {
     place: "",
     transportCost: "",
     status: "RECRUITING",
+    remark: "",
   });
 
   const [lectureContents, setLectureContents] = useState([]);
   const [selectedLectureContents, setSelectedLectureContents] = useState({
     kit: "",
     detail: "",
-    remark: "",
     requirement: "",
     content: "",
   });
@@ -110,7 +110,7 @@ function UpdateLectureScreen({ route, navigation }) {
       });
     // 강의 수정
     if (route.params.data !== "") {
-      let nonIdCheck = route.params.data.lectureDto;
+      let nonIdCheck = route.params?.data?.lectureDto;
       nonIdCheck["lectureContentId"] = route.params.data.lectureContentDto.id;
       setLectureData(nonIdCheck);
       setSelectedLectureContents(route.params.data.lectureContentDto);
@@ -196,7 +196,9 @@ function UpdateLectureScreen({ route, navigation }) {
               {
                 text: "확인",
                 onPress: () => {
-                  navigation.navigate("HomePage");
+                  route.params.navi
+                    ? navigation.navigate("historyScreen")
+                    : navigation.navigate("HomePage");
                 },
               },
             ]
@@ -221,6 +223,7 @@ function UpdateLectureScreen({ route, navigation }) {
         )
         .then((res) => {
           setIsLectureUpdate((prev) => prev + 1);
+          console.log(lecturedata);
           Alert.alert(
             "강의 업데이트",
             `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.`,
@@ -559,7 +562,6 @@ function UpdateLectureScreen({ route, navigation }) {
     content: "교육 내용",
     kit: "교육 키트",
     detail: "기본 강의 구성",
-    remark: "기타 특이사항",
     requirement: "자격 요건",
   };
 
@@ -567,7 +569,6 @@ function UpdateLectureScreen({ route, navigation }) {
     content: "",
     kit: "",
     detail: "",
-    remark: "",
     requirement: "",
   });
 
@@ -699,7 +700,7 @@ function UpdateLectureScreen({ route, navigation }) {
                   </Text>
                 </View>
               </View>
-              <View style={styles.lectureInfoContainer}>
+              {/* <View style={styles.lectureInfoContainer}>
                 <Text
                   style={[
                     KRRegular.Subheadline,
@@ -713,7 +714,7 @@ function UpdateLectureScreen({ route, navigation }) {
                     {selectedLectureContents.remark}
                   </Text>
                 </View>
-              </View>
+              </View> */}
               <View style={styles.lectureInfoContainer}>
                 <Text
                   style={[
@@ -773,7 +774,7 @@ function UpdateLectureScreen({ route, navigation }) {
                             content: "",
                             kit: "",
                             detail: "",
-                            remark: "",
+
                             requirement: "",
                           });
                         }}
@@ -1220,6 +1221,23 @@ function UpdateLectureScreen({ route, navigation }) {
                   handleSingleInputChange(text, "transportCost");
                 }}
                 keyboardType="number-pad"
+              />
+            </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                기타 특이 사항
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.remark}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "remark");
+                }}
               />
             </View>
 
