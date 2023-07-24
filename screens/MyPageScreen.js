@@ -31,11 +31,16 @@ function MyPageScreen({ navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
-  const [notificationAgreement, setNotificationAgreement] = useState();
+  const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
+
   const [recruiting, setRecruiting] = useState([]);
   const [allocation, setAllocation] = useState([]);
   const [finished, setFinished] = useState([]);
   const instance = Interceptor();
+
+  // function ManagerScreen() {
+  //   return <ManagerScreen />;
+  // }
   useEffect(() => {
     profileHandler();
   }, []);
@@ -44,6 +49,18 @@ function MyPageScreen({ navigation }) {
     getMyLectures();
   }, []);
 
+  async function profileHandler() {
+    try {
+      const response = await getProfile({ id: headerId });
+
+      setData(response.data);
+      console.log(JSON.stringify(response) + "여기임");
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(true);
+    }
+  }
   const getMyLectures = () => {
     instance
       .get(`/users-lectures/users/${headerId}`, {
@@ -67,14 +84,12 @@ function MyPageScreen({ navigation }) {
           // console.log(data);
           return data;
         });
-        // finishLectureHandler(() => {
-        //   const data = res.data.data.filter(
-        //     (item) => item.status === "ALLOCATION_COMP"
-        //   );
-        //   console.log(data);
-        //   return data;
-        // });
-        // console.log("성공");
+        setFinished(() => {
+          const data = res.data.data.filter((item) => item.status === "FINISH");
+          console.log(data);
+          return data;
+        });
+        console.log("성공");
       })
       .catch((error) => {
         console.log("왜 에러나니");
@@ -82,53 +97,34 @@ function MyPageScreen({ navigation }) {
         console.log(error);
       });
   };
-
-  async function profileHandler() {
-    try {
-      const response = await getProfile({ id: headerId });
-
-      setData(response.data);
-      console.log(JSON.stringify(response) + "여기임");
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-      setIsLoading(true);
-    }
-  }
-
-  async function alarmEditHandler({ notificationAgreement }) {
-    try {
-      const response = await alarmEdit({
-        id: headerId,
-        notificationAgreement: notificationAgreement,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function alarmHandler() {
-    Alert.alert(
-      "'DORO'에서 알림을 보내고자 합니다.",
-      "경고, 사운드 및 아이콘 배지가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다.",
-      [
-        {
-          text: Platform.OS === "ios" ? "허용             " : "허용",
-          onPress: () => alarmEditHandler({ notificationAgreement: true }),
-        },
-        {
-          text: Platform.OS === "ios" ? "허용 안함            " : "허용 안함",
-          onPress: () => alarmEditHandler({ notificationAgreement: false }),
-        },
-      ]
-    );
-  }
-
-  // function ManagerScreen() {
-  //   return <ManagerScreen />;
-  // }
-
   function UserScreen() {
+    async function alarmEditHandler({ notificationAgreement }) {
+      try {
+        const response = await alarmEdit({
+          id: headerId,
+          notificationAgreement: notificationAgreement,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    function alarmHandler() {
+      Alert.alert(
+        "'DORO'에서 알림을 보내고자 합니다.",
+        "경고, 사운드 및 아이콘 배지가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다.",
+        [
+          {
+            text: Platform.OS === "ios" ? "허용             " : "허용",
+            onPress: () => alarmEditHandler({ notificationAgreement: true }),
+          },
+          {
+            text: Platform.OS === "ios" ? "허용 안함            " : "허용 안함",
+            onPress: () => alarmEditHandler({ notificationAgreement: false }),
+          },
+        ]
+      );
+    }
     function logoutHandler() {
       Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
         {
@@ -209,7 +205,10 @@ function MyPageScreen({ navigation }) {
               )}
               <View style={styles.statusContainer}>
                 <Pressable
-                  onPress={() => navigation.navigate("History", { screen: 0 })}
+                  onPress={() => {
+                    navigation.jumpTo("History");
+                    setHistoryIndex(0);
+                  }}
                 >
                   <View style={styles.textContainer}>
                     <Text style={styles.text}>강의 신청</Text>
@@ -221,11 +220,10 @@ function MyPageScreen({ navigation }) {
                   </View>
                 </Pressable>
                 <Pressable
-                  onPress={() =>
-                    navigation.navigate("History", {
-                      screen: 1,
-                    })
-                  }
+                  onPress={() => {
+                    navigation.jumpTo("History");
+                    setHistoryIndex(1);
+                  }}
                 >
                   <View
                     style={[styles.textContainer, { marginHorizontal: 26 }]}
@@ -239,7 +237,10 @@ function MyPageScreen({ navigation }) {
                   </View>
                 </Pressable>
                 <Pressable
-                  onPress={() => navigation.navigate("History", { screen: 2 })}
+                  onPress={() => {
+                    navigation.jumpTo("History");
+                    setHistoryIndex(2);
+                  }}
                 >
                   <View style={styles.textContainer}>
                     <Text style={styles.text}>강의 완료</Text>

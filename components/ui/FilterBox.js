@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 
-import DownGray from "../../assets/down.svg";
+import DownGray from "../../assets/downGray.svg";
 import DownBlack from "../../assets/up.svg";
 import { GlobalStyles } from "../../constants/styles";
 import { useEffect } from "react";
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   text: {
     // marginBottom: 3,
     fontSize: 15,
+    fontWeight: "600",
     color: GlobalStyles.colors.gray03,
   },
 });

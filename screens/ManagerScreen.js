@@ -18,7 +18,7 @@ import Interceptor from "../utill/Interceptor";
 import { URL } from "../utill/config";
 import { AuthContext } from "../store/auth-context";
 import { useLectures } from "../store/LecturesProvider";
-
+import Search from "../assets/search.svg";
 import { GlobalStyles } from "./../constants/styles";
 import FilterBox from "../components/ui/FilterBox";
 import TutorBox from "../components/ui/TutorBox";
@@ -28,6 +28,7 @@ import BottomModal from "../components/ui/BottomModal";
 
 import { getProfile, logout, pushNotification } from "../utill/http";
 import { KRRegular } from "../constants/fonts";
+import FilterModal from "../components/ui/FilterModal";
 
 function ManagerScreen() {
   const [userData, setUserData] = useState([]);
@@ -35,8 +36,8 @@ function ManagerScreen() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const authCtx = useContext(AuthContext);
-  const { lectures } = useLectures();
-  const [lecturesData, setLectureData] = useState([]);
+  // const { lectures } = useLectures();
+  // const [lecturesData, setLectureData] = useState([]);
   const instance = Interceptor();
 
   useEffect(() => {
@@ -103,7 +104,7 @@ function ManagerScreen() {
         title: title,
       });
       if (response.success) {
-        setBody("");
+        setBody(""); //z/
         setTitle("");
       }
       console.log(response);
@@ -134,62 +135,62 @@ function ManagerScreen() {
     ]);
   }
 
-  useEffect(() => {
-    setLectureData(lectures);
-  }, [lectures]);
+  // useEffect(() => {
+  //   setLectureData(lectures);
+  // }, [lectures]);
 
-  const lecturesTitle = [
-    ...new Set(lecturesData.map((item) => item.mainTitle)),
-  ];
+  // const lecturesTitle = [
+  //   ...new Set(lecturesData.map((item) => item.mainTitle)),
+  // ];
 
-  const dateControl = (stringDate) => {
-    // string에서 date 타입으로 전환하기 위해 만듬
-    return new Date(stringDate);
-  };
+  // const dateControl = (stringDate) => {
+  //   // string에서 date 타입으로 전환하기 위해 만듬
+  //   return new Date(stringDate);
+  // };
 
-  let lecturesElements = [];
+  // let lecturesElements = [];
 
-  for (let i = 0; i < lecturesTitle.length; i++) {
-    let SelectedColor = GlobalStyles.indicationColors[i % 4];
+  // for (let i = 0; i < lecturesTitle.length; i++) {
+  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
 
-    lecturesElements.push(
-      <View key={i}>
-        <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-          {lecturesTitle[i]}
-        </Text>
+  //   lecturesElements.push(
+  //     <View key={i}>
+  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
+  //         {lecturesTitle[i]}
+  //       </Text>
 
-        {lecturesData
-          .filter((item) => item.mainTitle === lecturesTitle[i])
-          .map((filteringItem, i) => {
-            let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-            // console.log(filteringItem.staff);
-            return (
-              <LectureBox
-                key={filteringItem.id}
-                colors={SelectedColor}
-                subTitle={filteringItem.subTitle}
-                date={filteringItem.lectureDates}
-                time={filteringItem.time}
-                // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-                id={filteringItem.id}
-                dateTypeValue={dateTypeValue}
-                mainTutor={filteringItem.mainTutor}
-                subTutor={filteringItem.subTutor}
-                staff={filteringItem.staff}
-                place={filteringItem.place}
-                lectureIdHandler={() =>
-                  navigation.navigate("DetailLecture", {
-                    data: filteringItem.id,
-                  })
-                }
-                // date={dateText}
-              />
-            );
-          })}
-        {i === lecturesTitle.length - 1 && <View style={{ height: 20 }} />}
-      </View>
-    );
-  }
+  //       {lecturesData
+  //         .filter((item) => item.mainTitle === lecturesTitle[i])
+  //         .map((filteringItem, i) => {
+  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
+  //           // console.log(filteringItem.staff);
+  //           return (
+  //             <LectureBox
+  //               key={filteringItem.id}
+  //               colors={SelectedColor}
+  //               subTitle={filteringItem.subTitle}
+  //               date={filteringItem.lectureDates}
+  //               time={filteringItem.time}
+  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
+  //               id={filteringItem.id}
+  //               dateTypeValue={dateTypeValue}
+  //               mainTutor={filteringItem.mainTutor}
+  //               subTutor={filteringItem.subTutor}
+  //               staff={filteringItem.staff}
+  //               place={filteringItem.place}
+  //               lectureIdHandler={() =>
+  //                 navigation.navigate("DetailLecture", {
+  //                   data: filteringItem.id,
+  //                 })
+  //               }
+  //               // date={dateText}
+  //             />
+  //           );
+  //         })}
+  //       {i === lecturesTitle.length - 1 && <View style={{ height: 20 }} />}
+  //     </View>
+  //   );
+  // }
 
   const navigation = useNavigation();
 
@@ -198,7 +199,7 @@ function ManagerScreen() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "first", title: "강사 목록" },
-    { key: "second", title: "강의 목록" },
+    // { key: "second", title: "강의 목록" },
     { key: "third", title: "알림 발송" },
   ]);
 
@@ -263,77 +264,153 @@ function ManagerScreen() {
     });
   }, [logoutHandler]);
 
-  const num = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const [num, setNum] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [numLength, setNumLength] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [gfilter, setGFilter] = useState([]);
+  const [nameFilter, setNameFilter] = useState("");
   const [filter, setFilter] = useState(false);
-  const [generation, setGeneration] = useState(num);
-  const filterYes = (generation) => {
-    setGeneration([generation]);
-    setFilter(false);
+  const [onFilter, setOnFilter] = useState(false);
+
+  const [filterData, setFilterData] = useState();
+
+  const filterByGeneration = (userData, generations) => {
+    const filteredData = userData.filter((item) => {
+      return generations.includes(item.generation);
+    });
+
+    return filteredData;
   };
 
-  const filterUser = userData.filter((item) =>
-    generation.includes(item.generation)
-  );
+  const filteredData = filterByGeneration(userData, gfilter);
+
+  useEffect(() => {
+    console.log(gfilter);
+    setFilterData(gfilter.length === 0 ? userData : filteredData);
+    setOnFilter(gfilter.length !== 0);
+  }, [gfilter, userData]);
+
+  const countGeneration = (userData) => {
+    const generationCounts = [];
+
+    userData.forEach((item) => {
+      const generation = item.generation;
+
+      if (generationCounts[generation]) {
+        generationCounts[generation]++;
+      } else {
+        generationCounts[generation] = 1;
+      }
+    });
+
+    return generationCounts;
+  };
+
+  useEffect(() => {
+    const generationCounts = countGeneration(userData);
+    const updatedNum = num.map((value, index) => {
+      return `${index + 1}기 (${generationCounts[index + 1] || 0})`;
+    });
+    setNum(updatedNum);
+  }, [userData]);
+
+  const namefilterHandler = (text) => {
+    setNameFilter(text);
+    const filteredNames = userData.filter((item) => item.name.includes(text));
+    setFilterData(filteredNames);
+  };
 
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
         return (
           <View style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
-            <View style={{ marginTop: 15, marginLeft: 20 }}>
-              <Pressable onPress={() => setFilter(true)}>
-                <FilterBox text="기수 선택" />
-              </Pressable>
-            </View>
-            <View
-              style={{
-                marginTop: 27,
-                flex: 1,
-              }}
-            >
-              <FlatList
-                data={filterUser}
-                renderItem={(itemData) => {
-                  const item = itemData.item;
+            <FlatList
+              data={filterData}
+              ListHeaderComponent={
+                <View
+                  style={{
+                    marginTop: 15,
+                    marginLeft: 20,
+                    marginBottom: 29,
+                    flexDirection: "row",
+                  }}
+                >
+                  <Pressable onPress={() => setFilter(true)}>
+                    <FilterBox text="기수 선택" on={onFilter} />
+                  </Pressable>
+                  <View
+                    style={{
+                      flex: 1,
+                      marginRight: 20,
+                      marginLeft: 7,
+                      flexDirection: "row",
+                      backgroundColor: "white",
+                      alignItems: "center",
+                      borderRadius: 45,
+                      paddingLeft: 10,
+                    }}
+                  >
+                    <Search />
+                    <TextInput
+                      style={{
+                        height: 32,
+                        width: "100%",
+                        flex: 1,
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        paddingLeft: 5,
+                        // backgroundColor: GlobalStyles.colors.gray01,
+                      }}
+                      placeholderTextColor={GlobalStyles.colors.gray05}
+                      placeholder="검색"
+                      value={nameFilter}
+                      onChangeText={namefilterHandler}
+                    />
+                  </View>
+                </View>
+              }
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={(itemData) => {
+                const item = itemData.item;
 
-                  return (
-                    <Pressable onPress={() => detailTutor(item.id)}>
-                      <TutorBox
-                        name={item.name}
-                        generation={item.generation}
-                        school={item.degree.school}
-                        major={item.degree.major}
-                        lectures={item.lectures}
-                      />
-                    </Pressable>
-                  );
-                }}
-                extraData={userData}
-              />
-            </View>
+                return (
+                  <Pressable onPress={() => detailTutor(item.id)}>
+                    <TutorBox
+                      name={item.name}
+                      generation={item.generation}
+                      school={item.degree.school}
+                      major={item.degree.major}
+                      lectures={item.lectures}
+                    />
+                  </Pressable>
+                );
+              }}
+              extraData={userData}
+            />
+
             {/* <Pressable onPress={() => authCtx.logout()}>
               <Text>매니저 로그아웃</Text>
             </Pressable> */}
           </View>
         );
 
-      case "second":
-        return (
-          <ScrollView style={styles.lectureListContainer}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 7,
-                marginTop: 15,
-                marginBottom: 5,
-              }}
-            >
-              <FilterBox text="교육 지역" />
-              <FilterBox text="교육 날짜" />
-            </View>
-            {lecturesElements}
-          </ScrollView>
-        );
+      // case "second":
+      //   return (
+      //     <ScrollView style={styles.lectureListContainer}>
+      //       <View
+      //         style={{
+      //           flexDirection: "row",
+      //           gap: 7,
+      //           marginTop: 15,
+      //           marginBottom: 5,
+      //         }}
+      //       >
+      //         <FilterBox text="교육 지역" />
+      //         <FilterBox text="교육 날짜" />
+      //       </View>
+      //       {lecturesElements}
+      //     </ScrollView>
+      //   );
 
       case "third":
         return (
@@ -435,12 +512,14 @@ function ManagerScreen() {
           />
         )}
       />
-      <BottomModal
+
+      <FilterModal
         visible={filter}
         inVisible={() => setFilter(false)}
         title="기수 선택"
         data={num}
-        onPress={filterYes}
+        status="GENERATION"
+        setCity={setGFilter}
       />
     </>
   );

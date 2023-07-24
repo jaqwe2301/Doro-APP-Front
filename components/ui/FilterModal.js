@@ -8,6 +8,7 @@ import {
   Alert,
   SafeAreaView,
   Platform,
+  useWindowDimensions,
 } from "react-native";
 import { useEffect, useState } from "react";
 
@@ -18,20 +19,18 @@ import Plus from "../../assets/plus.svg";
 import ModalCheck from "../../assets/modalcheck.svg";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-function BottomModal({
+function FilterModal({
   visible,
   title,
   inVisible,
   plusVisible,
   data,
-  option,
   onPressPlus,
-  onPress,
-  multiCheck, // 체크 복수 가능 여부
   status,
+  setCity,
+  setStartDate,
+  setEndDate,
 }) {
-  const [check, setCheck] = useState();
-  const [checkItem, setCheckItem] = useState();
   const [date, setDate] = useState([
     new Date(new Date().setMonth(new Date().getMonth() - 6)),
     new Date(new Date().setMonth(new Date().getMonth() + 6)),
@@ -39,11 +38,7 @@ function BottomModal({
   const [dateVisible, setDateVisible] = useState();
   const [choice, setChoice] = useState(true);
 
-  useEffect(() => {
-    status === "recruitingDate" || status === "allocationDate"
-      ? setDate(data)
-      : "";
-  }, [status]);
+  const [selectedIndices, setSelectedIndices] = useState([]);
 
   const dateControl = (date) => {
     const month =
@@ -57,32 +52,33 @@ function BottomModal({
     setDateVisible(false);
   };
 
-  const onConfirm = (item) => {
-    if (status === "recruitingDate" || status === "allocationDate") {
-      if (status === "recruitingDate") {
-      }
-      onPress(item);
-    } else if (!item) {
-      Alert.alert(
-        "주의",
-        "항목을 체크해주세요!",
-        [
-          {
-            text: "확인",
-            onPress: () => {
-              // console.log("강사 신청 완료");
-            },
-            style: "destructive",
-          },
-        ],
-        {
-          cancelable: true,
-          onDismiss: () => {},
-        }
+  const ConfirmBtn = () => {
+    if (status === "RECRUITING" || status === "ALLOCATION_COMP") {
+      setCity(selectedIndices.map((index) => data[index]).join(","));
+    } else if (status === "GENERATION") {
+      setCity(
+        selectedIndices
+          .map((index) => data[index])
+          .map((item) => parseInt(item))
       );
     } else {
-      onPress(item);
+      const formattedDate = `${date[0].getFullYear()}-${padNumber(
+        date[0].getMonth() + 1
+      )}-${padNumber(date[0].getDate())}`;
+      const formattedDate2 = `${date[1].getFullYear()}-${padNumber(
+        date[1].getMonth() + 1
+      )}-${padNumber(date[1].getDate())}`;
+      setStartDate(formattedDate);
+      setEndDate(formattedDate2);
     }
+
+    inVisible();
+  };
+
+  const layout = useWindowDimensions();
+
+  const padNumber = (num) => {
+    return num.toString().padStart(2, "0");
   };
   return (
     <Modal transparent={true} visible={visible}>
@@ -116,8 +112,12 @@ function BottomModal({
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  marginHorizontal: 10,
-                  marginVertical: 14,
+                  marginHorizontal: 20,
+                  height: 53,
+                  marginVertical: 22,
+                  paddingHorizontal: 16,
+                  borderColor: GlobalStyles.colors.gray06,
+                  borderWidth: 0.5,
                 }}
               >
                 <Pressable
@@ -127,7 +127,7 @@ function BottomModal({
                   }}
                   style={{
                     // backgroundColor: GlobalStyles.colors.gray01,
-                    padding: 10,
+                    padding: 16,
                   }}
                 >
                   <Text>{dateControl(date[0])}</Text>
@@ -138,7 +138,7 @@ function BottomModal({
                     setChoice(false);
                     setDateVisible(true);
                   }}
-                  style={{ padding: 10 }}
+                  style={{ padding: 16 }}
                 >
                   <Text>{dateControl(date[1])}</Text>
                 </Pressable>
@@ -146,19 +146,40 @@ function BottomModal({
             ) : (
               <FlatList
                 style={styles.modalList}
-                data={Array.from(new Set(data))}
+                data={data}
                 renderItem={(data) => {
                   // onPress(data.item)
                   return (
                     <Pressable
                       onPress={() => {
-                        setCheck(data.index);
-                        setCheckItem(data.item);
+                        // setCheck(data.index);
+                        // setCheckItem(data.item);
+                        const index = data.index;
+                        const isSelected = selectedIndices.includes(index);
+
+                        if (isSelected) {
+                          // 이미 선택된 항목일 경우 선택 취소
+                          setSelectedIndices(
+                            selectedIndices.filter((i) => i !== index)
+                          );
+                        } else {
+                          // 새로운 항목 선택
+                          setSelectedIndices([...selectedIndices, index]);
+                        }
                       }}
                     >
                       <View style={styles.modalTextContainer}>
-                        <Text style={styles.modalText}>{data.item}</Text>
-                        {check === data.index ? <ModalCheck /> : ""}
+                        <Text
+                          style={[
+                            styles.modalText,
+                            { maxWidth: layout.width - 70 },
+                          ]}
+                        >
+                          {data.item}
+                        </Text>
+                        {selectedIndices.includes(data.index) ? (
+                          <ModalCheck />
+                        ) : null}
                       </View>
                     </Pressable>
                   );
@@ -167,17 +188,11 @@ function BottomModal({
               />
             )}
             <View style={styles.modalButtonContainer}>
-              <ButtonBig
-                text="확인"
-                onPress={() =>
-                  status === "recruitingDate" || status === "allocationDate"
-                    ? onConfirm(date)
-                    : onConfirm(checkItem)
-                }
-              />
+              <ButtonBig text="확인" onPress={() => ConfirmBtn()} />
             </View>
           </View>
           {/* </View> */}
+
           <DateTimePickerModal
             isVisible={dateVisible}
             mode={"date"}
@@ -198,7 +213,7 @@ function BottomModal({
   );
 }
 
-export default BottomModal;
+export default FilterModal;
 
 const styles = StyleSheet.create({
   modalContainer: {
