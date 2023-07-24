@@ -32,7 +32,6 @@ function MyPageScreen({ navigation }) {
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
   const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
-  const { isTutorUpdate, setIsTutorUpdate } = useContext(HeaderContext);
 
   const [recruiting, setRecruiting] = useState([]);
   const [allocation, setAllocation] = useState([]);
@@ -48,7 +47,7 @@ function MyPageScreen({ navigation }) {
 
   useEffect(() => {
     getMyLectures();
-  }, [isTutorUpdate]);
+  }, []);
 
   async function profileHandler() {
     try {

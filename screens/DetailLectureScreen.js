@@ -10,7 +10,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { Tabs } from "react-native-collapsible-tab-view";
+import {
+  MaterialTabBar,
+  MaterialTabItem,
+  Tabs,
+} from "react-native-collapsible-tab-view";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import SwitchToggle from "react-native-switch-toggle";
 import axios from "axios";
@@ -33,7 +37,7 @@ import { KRRegular } from "../constants/fonts";
 function DetailLectureScreen({ route, navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
-  const { isTutorUpdate, setIsTutorUpdate } = useContext(HeaderContext);
+
   const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const instance = Interceptor();
   /** 강의 수정 후 리렌더링을 위해 사용 */
@@ -88,13 +92,14 @@ function DetailLectureScreen({ route, navigation }) {
       .then((res) => {
         setLectureBasicInfo(() => {
           let lecture = {
-            ...res.data.data.lectureDto,
+            ...res.data?.data.lectureDto,
             id: data.id,
             lectureContentId: res.data.data.lectureContentDto.id,
           };
           return lecture;
         });
         setLectureContent(res.data.data.lectureContentDto);
+        console.log(res.data.data);
 
         const assignedTutors = res.data.data.assignedTutors;
 
@@ -261,7 +266,7 @@ function DetailLectureScreen({ route, navigation }) {
                   // console.log(res);
                   // console.log("성공");
                   // console.log("강사 신청 완료");
-                  setIsTutorUpdate((prev) => prev + 1);
+
                   Alert.alert(
                     lectureBasicInfo.subTitle,
                     `${role} 신청이 완료되었습니다.`,
@@ -366,7 +371,7 @@ function DetailLectureScreen({ route, navigation }) {
               )
               .then((res) => {
                 // console.log(res);
-                setIsTutorUpdate((prev) => prev + 1);
+
                 Alert.alert(
                   lectureBasicInfo.subTitle,
                   `${role} '${name}' ${
@@ -435,6 +440,7 @@ function DetailLectureScreen({ route, navigation }) {
                         data.navi
                           ? navigation.navigate("historyScreen")
                           : navigation.navigate("HomePage");
+                        setIsLectureUpdate((prev) => prev + 1);
                       },
                       style: "default",
                     },
@@ -604,6 +610,14 @@ function DetailLectureScreen({ route, navigation }) {
                     )}
                   </View>
                 </View>
+                <View style={styles.flexDirectionRow}>
+                  <Text style={styles.infoTitle}>기타 특이사항</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureBasicInfo.remark}
+                  </Text>
+                </View>
               </View>
             </View>
             <View
@@ -650,14 +664,14 @@ function DetailLectureScreen({ route, navigation }) {
                     {lectureContent.detail}
                   </Text>
                 </View>
-                <View style={styles.flexDirectionRow}>
+                {/* <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>기타 특이사항</Text>
                   <Text
                     style={[styles.infoText, { maxWidth: layout.width - 170 }]}
                   >
                     {lectureContent.remark}
                   </Text>
-                </View>
+                </View> */}
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>자격 요건</Text>
                   <Text
@@ -1078,6 +1092,12 @@ function DetailLectureScreen({ route, navigation }) {
                       )}
                     </View>
                   </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>기타 특이사항</Text>
+                    <Text style={styles.infoText}>
+                      {lectureBasicInfo.remark}
+                    </Text>
+                  </View>
                 </View>
               </View>
               {headerRole === "ROLE_ADMIN" ||
@@ -1162,10 +1182,7 @@ function DetailLectureScreen({ route, navigation }) {
                     <Text style={styles.infoTitle}>기본 강의 구성</Text>
                     <Text style={styles.infoText}>{lectureContent.detail}</Text>
                   </View>
-                  <View style={styles.flexDirectionRow}>
-                    <Text style={styles.infoTitle}>기타 특이사항</Text>
-                    <Text style={styles.infoText}>{lectureContent.remark}</Text>
-                  </View>
+
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>자격 요건</Text>
                     <Text style={styles.infoText}>
@@ -1412,6 +1429,7 @@ function DetailLectureScreen({ route, navigation }) {
                   lectureContentDto: lectureContent,
                   lectureDto: lectureBasicInfo,
                 },
+                navi: data?.navi,
                 option: "update",
               })
             }
