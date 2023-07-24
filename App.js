@@ -16,12 +16,10 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GlobalStyles } from "./constants/styles";
-import { Ionicons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import NoticeScreen from "./screens/NoticeScreen";
-import HistoryScreen from "./screens/HistoryScreen";
 import HomeScreen from "./screens/HomeScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import LoginScreen from "./screens/LoginScreen";
@@ -78,6 +76,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import TutorScreen from "./screens/TutorScreen";
 import * as SplashScreen from "expo-splash-screen";
+import HistoryScreen from "./screens/HistoryScreen";
 
 // import messaging from '@react-native-firebase/messaging';
 
@@ -321,7 +320,7 @@ function HomeNavigator({ navigation }) {
   );
 }
 
-function MyPageNavigator() {
+function MyPageNavigator({ route, navigation }) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -404,6 +403,7 @@ function MyPageNavigator() {
     </Stack.Navigator>
   );
 }
+
 function NoticeNavigator({ navigation }) {
   return (
     <Stack.Navigator
@@ -461,6 +461,50 @@ function NoticeNavigator({ navigation }) {
   );
 }
 
+function HistoryNavigator({ navigation }) {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 17,
+          // lineHeight: 22,
+        },
+        headerBackTitleVisible: false,
+        headerTintColor: "#000000",
+      }}
+      initialRouteName="historyScreen"
+    >
+      <Stack.Screen
+        name="historyScreen"
+        component={HistoryScreen}
+        options={{
+          title: "강의 목록",
+        }}
+      />
+      <Stack.Screen
+        name="applicationDetail"
+        component={ApplicationDetails}
+        options={{
+          title: "강의신청내역역",
+        }}
+      />
+      <Stack.Screen
+        name="DetailLecture"
+        component={DetailLectureScreen}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="UpdateLectureScreen"
+        component={UpdateLectureScreen}
+        options={{ title: "강의 생성 및 수정" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 // icon 바꿀 예정
 // 로그인 후 화면
 function BottomTabNavigator() {
@@ -495,6 +539,7 @@ function BottomTabNavigator() {
         ...(Platform.OS === "android" && { tabBarStyle: { height: 60 } }),
         tabBarHideOnKeyboard: true,
         headerShown: false,
+        unmountOnBlur: true,
       }}
       initialRouteName="Home"
     >
@@ -564,10 +609,10 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="History"
         // children={() => <ApplicationDetails header={true} />}
-        component={ApplicationDetails}
+        component={HistoryNavigator}
         options={{
           title: "신청 내역",
-          headerShown: true,
+          headerShown: false,
           headerShadowVisible: false,
           headerTitleAlign: "center",
           headerTitleAllowFontScaling: true,
@@ -741,9 +786,9 @@ export default function App() {
       <StatusBar style="dark" />
       <AuthContextProvider>
         <HeaderContextProvider>
-          <LecturesProvider>
-            <Navigation notificationAgreement={noti} />
-          </LecturesProvider>
+          {/* <LecturesProvider> */}
+          <Navigation notificationAgreement={noti} />
+          {/* </LecturesProvider> */}
         </HeaderContextProvider>
       </AuthContextProvider>
     </SafeAreaView>

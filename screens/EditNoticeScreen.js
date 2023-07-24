@@ -28,6 +28,7 @@ function EditNoticeScreen({ navigation, route }) {
   const [filename, setFileName] = useState("");
   const [type, setType] = useState("");
   const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { isNoticeUpdate, setIsNoticeUpdate } = useContext(HeaderContext);
 
   async function completeHandler() {
     const response = await getProfile({ id: headerId });
@@ -70,6 +71,7 @@ function EditNoticeScreen({ navigation, route }) {
           const response = await getAnnouncementId({
             id: data.id,
           });
+          setIsNoticeUpdate(!isNoticeUpdate);
           navigation.navigate("noticeDetail", { data: response });
         } catch (error) {
           console.log(error);

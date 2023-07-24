@@ -10,7 +10,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { Tabs } from "react-native-collapsible-tab-view";
+import {
+  MaterialTabBar,
+  MaterialTabItem,
+  Tabs,
+} from "react-native-collapsible-tab-view";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import SwitchToggle from "react-native-switch-toggle";
 import axios from "axios";
@@ -30,10 +34,11 @@ import Delete from "../assets/delete.svg";
 import Interceptor from "../utill/Interceptor";
 import { KRRegular } from "../constants/fonts";
 
-function DetailLectureScreen({ route }) {
-  const navigation = useNavigation();
+function DetailLectureScreen({ route, navigation }) {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
+
+  const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const instance = Interceptor();
   /** 강의 수정 후 리렌더링을 위해 사용 */
   const isFocused = useIsFocused();
@@ -87,13 +92,14 @@ function DetailLectureScreen({ route }) {
       .then((res) => {
         setLectureBasicInfo(() => {
           let lecture = {
-            ...res.data.data.lectureDto,
+            ...res.data?.data.lectureDto,
             id: data.id,
             lectureContentId: res.data.data.lectureContentDto.id,
           };
           return lecture;
         });
         setLectureContent(res.data.data.lectureContentDto);
+        console.log(res.data.data);
 
         const assignedTutors = res.data.data.assignedTutors;
 
@@ -260,6 +266,7 @@ function DetailLectureScreen({ route }) {
                   // console.log(res);
                   // console.log("성공");
                   // console.log("강사 신청 완료");
+
                   Alert.alert(
                     lectureBasicInfo.subTitle,
                     `${role} 신청이 완료되었습니다.`,
@@ -364,6 +371,7 @@ function DetailLectureScreen({ route }) {
               )
               .then((res) => {
                 // console.log(res);
+
                 Alert.alert(
                   lectureBasicInfo.subTitle,
                   `${role} '${name}' ${
@@ -429,7 +437,10 @@ function DetailLectureScreen({ route }) {
                       text: "확인",
                       onPress: () => {
                         // console.log("강사 신청 완료");
-                        navigation.reset({ routes: [{ name: "HomePage" }] });
+                        data.navi
+                          ? navigation.navigate("historyScreen")
+                          : navigation.navigate("HomePage");
+                        setIsLectureUpdate(!isLectureUpdate);
                       },
                       style: "default",
                     },
@@ -477,7 +488,9 @@ function DetailLectureScreen({ route }) {
               <View style={styles.infoContainer}>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>주최 및 주관</Text>
-                  <Text style={styles.infoText}>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
                     {lectureBasicInfo.institution}
                   </Text>
                 </View>
@@ -506,25 +519,41 @@ function DetailLectureScreen({ route }) {
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>시간</Text>
-                  <Text style={styles.infoText}>{lectureBasicInfo.time}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureBasicInfo.time}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>지역</Text>
-                  <Text style={styles.infoText}>{lectureBasicInfo.city}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureBasicInfo.city}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>장소</Text>
-                  <Text style={styles.infoText}>{lectureBasicInfo.place}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureBasicInfo.place}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>강의 대상</Text>
-                  <Text style={styles.infoText}>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
                     {lectureBasicInfo.studentGrade}
                   </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>인원수</Text>
-                  <Text style={styles.infoText}>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
                     {lectureBasicInfo.studentNumber}명
                   </Text>
                 </View>
@@ -581,6 +610,14 @@ function DetailLectureScreen({ route }) {
                     )}
                   </View>
                 </View>
+                <View style={styles.flexDirectionRow}>
+                  <Text style={styles.infoTitle}>기타 특이사항</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureBasicInfo.remark}
+                  </Text>
+                </View>
               </View>
             </View>
             <View
@@ -605,23 +642,41 @@ function DetailLectureScreen({ route }) {
               <View style={styles.infoContainer}>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>교육 내용</Text>
-                  <Text style={styles.infoText}>{lectureContent.content}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.content}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>키트</Text>
-                  <Text style={styles.infoText}>{lectureContent.kit}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.kit}
+                  </Text>
                 </View>
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>기본 강의 구성</Text>
-                  <Text style={styles.infoText}>{lectureContent.detail}</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.detail}
+                  </Text>
                 </View>
-                <View style={styles.flexDirectionRow}>
+                {/* <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>기타 특이사항</Text>
-                  <Text style={styles.infoText}>{lectureContent.remark}</Text>
-                </View>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.remark}
+                  </Text>
+                </View> */}
                 <View style={styles.flexDirectionRow}>
                   <Text style={styles.infoTitle}>자격 요건</Text>
-                  <Text style={styles.infoText}>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
                     {lectureContent.requirement}
                   </Text>
                 </View>
@@ -648,15 +703,36 @@ function DetailLectureScreen({ route }) {
                 <View style={{ gap: 18 }}>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>주 강사</Text>
-                    <Text style={styles.infoText}>{assignList[0]}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {assignList[0]}
+                    </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>보조 강사</Text>
-                    <Text style={styles.infoText}>{assignList[1]}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {assignList[1]}
+                    </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>스태프</Text>
-                    <Text style={styles.infoText}>{assignList[2]}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {assignList[2]}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -690,6 +766,7 @@ function DetailLectureScreen({ route }) {
               },
             })
             .then((res) => {
+              setIsLectureUpdate(!isLectureUpdate);
               console.log(
                 status
                   ? "ALLOCATION_COMP" + "변경완료"
@@ -879,6 +956,7 @@ function DetailLectureScreen({ route }) {
           status ? "ALLOCATION_COMP" + "변경완료" : "RECRUITING" + "변경완료"
         );
         setStatus((prev) => !prev);
+        setIsLectureUpdate(!isLectureUpdate);
       })
       .catch((error) => {
         console.log("에러");
@@ -1015,6 +1093,12 @@ function DetailLectureScreen({ route }) {
                       )}
                     </View>
                   </View>
+                  <View style={styles.flexDirectionRow}>
+                    <Text style={styles.infoTitle}>기타 특이사항</Text>
+                    <Text style={styles.infoText}>
+                      {lectureBasicInfo.remark}
+                    </Text>
+                  </View>
                 </View>
               </View>
               {headerRole === "ROLE_ADMIN" ||
@@ -1099,10 +1183,7 @@ function DetailLectureScreen({ route }) {
                     <Text style={styles.infoTitle}>기본 강의 구성</Text>
                     <Text style={styles.infoText}>{lectureContent.detail}</Text>
                   </View>
-                  <View style={styles.flexDirectionRow}>
-                    <Text style={styles.infoTitle}>기타 특이사항</Text>
-                    <Text style={styles.infoText}>{lectureContent.remark}</Text>
-                  </View>
+
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>자격 요건</Text>
                     <Text style={styles.infoText}>
@@ -1349,6 +1430,7 @@ function DetailLectureScreen({ route }) {
                   lectureContentDto: lectureContent,
                   lectureDto: lectureBasicInfo,
                 },
+                navi: data?.navi,
                 option: "update",
               })
             }
@@ -1494,6 +1576,7 @@ function DetailLectureScreen({ route }) {
                   lectureDto: lectureBasicInfo,
                 },
                 option: "update",
+                navi: data.navi,
               })
             }
           >
@@ -1555,10 +1638,12 @@ const styles = StyleSheet.create({
   infoTitle: {
     width: 130,
     fontSize: 15,
+
     color: GlobalStyles.colors.gray03,
   },
   infoText: {
     fontSize: 15,
+    // maxWidth: 200,
   },
   btnContainer: {
     flexDirection: "row",
