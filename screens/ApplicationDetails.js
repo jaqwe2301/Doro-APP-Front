@@ -44,7 +44,7 @@ function ApplicationDetails({ route }) {
         },
       })
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setRecruiting(() => {
           const data = res.data.data.filter(
             (item) => item.status === "RECRUITING"
@@ -187,7 +187,7 @@ function ApplicationDetails({ route }) {
                   : roles === "STAFF"
                   ? "스태프"
                   : "";
-              console.log(data.item);
+              // console.log(data.item);
               return (
                 <View style={isLastItem && { marginBottom: 30 }}>
                   <ApplyingLectureBox

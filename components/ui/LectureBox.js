@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   place: {
     color: GlobalStyles.colors.gray03,
     fontSize: 10,
-    fontWeight: 600,
+    fontWeight: "600",
   },
   date: {
     fontSize: 12,

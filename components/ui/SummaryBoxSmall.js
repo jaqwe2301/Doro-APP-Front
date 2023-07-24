@@ -19,7 +19,7 @@ function SummaryBoxSmall({ svg: SvgComponent, title, text }) {
         <Text
           style={{
             fontSize: 12,
-            fontWeight: 600,
+            fontWeight: "600",
             color: GlobalStyles.colors.gray01,
             marginTop: -5,
             maxWidth: layout.width / 2 - 95,
