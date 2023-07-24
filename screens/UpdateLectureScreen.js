@@ -187,7 +187,7 @@ function UpdateLectureScreen({ route, navigation }) {
           },
         })
         .then((res) => {
-          setIsLectureUpdate((prev) => prev + 1);
+          setIsLectureUpdate(!isLectureUpdate);
           console.log(res);
           Alert.alert(
             "강의 업데이트",
@@ -222,7 +222,7 @@ function UpdateLectureScreen({ route, navigation }) {
           }
         )
         .then((res) => {
-          setIsLectureUpdate((prev) => prev + 1);
+          setIsLectureUpdate(!isLectureUpdate);
           console.log(lecturedata);
           Alert.alert(
             "강의 업데이트",

@@ -15,7 +15,7 @@ function HeaderContextProvider({ children }) {
   //이건 마이페이지 -> 신청 강의 목록 navi 때 tabIndex에 쓰임
   const [historyIndex, setHistoryIndex] = useState(0);
 
-  const [isLectureUpdate, setIsLectureUpdate] = useState(0);
+  const [isLectureUpdate, setIsLectureUpdate] = useState(true);
 
   //   const [headerPayload, setHeaderPayload] = useState();
 

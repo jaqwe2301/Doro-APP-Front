@@ -440,7 +440,7 @@ function DetailLectureScreen({ route, navigation }) {
                         data.navi
                           ? navigation.navigate("historyScreen")
                           : navigation.navigate("HomePage");
-                        setIsLectureUpdate((prev) => prev + 1);
+                        setIsLectureUpdate(!isLectureUpdate);
                       },
                       style: "default",
                     },
@@ -766,7 +766,7 @@ function DetailLectureScreen({ route, navigation }) {
               },
             })
             .then((res) => {
-              setIsLectureUpdate((prev) => prev + 1);
+              setIsLectureUpdate(!isLectureUpdate);
               console.log(
                 status
                   ? "ALLOCATION_COMP" + "변경완료"
@@ -956,6 +956,7 @@ function DetailLectureScreen({ route, navigation }) {
           status ? "ALLOCATION_COMP" + "변경완료" : "RECRUITING" + "변경완료"
         );
         setStatus((prev) => !prev);
+        setIsLectureUpdate(!isLectureUpdate);
       })
       .catch((error) => {
         console.log("에러");
