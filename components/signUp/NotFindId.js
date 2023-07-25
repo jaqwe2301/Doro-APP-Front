@@ -39,7 +39,7 @@ export default FindId;
 const styles = StyleSheet.create({
   text: {
     fontSize: 22,
-    fontWeight: 700,
+    fontWeight: "700",
     lineHeight: 28,
     marginLeft: 23,
   },
