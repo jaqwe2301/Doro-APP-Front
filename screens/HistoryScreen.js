@@ -187,6 +187,7 @@ function HistoryScreen({ navigation }) {
                       lectureIdHandler={() =>
                         navigation.navigate("DetailLecture", {
                           id: item.id,
+                          status: item.status,
                           navi: true,
                         })
                       }
@@ -265,7 +266,7 @@ function HistoryScreen({ navigation }) {
               // ListFooterComponent={() => <View style={{ height: 30 }} />}
               renderItem={({ item, index }) => {
                 let dateTypeValue = dateControl(item.enrollEndDate);
-                const isLastItem = index === alectureData.length - 1;
+                const isLastItem = index === flectureData.length - 1;
                 return (
                   <View style={isLastItem && { marginBottom: 30 }}>
                     <ApplyingLectureBox

@@ -104,7 +104,11 @@ function ApplyingLectureBox({
         ]}
       >
         <View style={styles.titleContainer}>
-          <Text style={[styles.SubTitle, { maxWidth: layout.width - 110 }]}>
+          <Text
+            style={[styles.SubTitle, { maxWidth: layout.width - 110 }]}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
             {subTitle}
           </Text>
 
