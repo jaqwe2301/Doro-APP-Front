@@ -106,7 +106,10 @@ function LectureBox(props) {
             <View>
               <View style={styles.titleContainer}>
                 <Text
-                  style={[styles.SubTitle, { maxWidth: layout.width - 160 }]}
+                  style={[
+                    styles.SubTitle,
+                    { maxWidth: layout.width - 160, maxHeight: 30 },
+                  ]}
                 >
                   {props.subTitle}
                 </Text>

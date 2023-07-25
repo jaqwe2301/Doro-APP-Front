@@ -661,7 +661,7 @@ function UpdateLectureScreen({ route, navigation }) {
                     }}
                     style={{
                       // backgroundColor: GlobalStyles.colors.green,
-                      padding: 5,
+                      paddingLeft: 5,
                       paddingRight: 8,
                     }}
                   >
@@ -838,6 +838,7 @@ function UpdateLectureScreen({ route, navigation }) {
                               onChangeText={(text) =>
                                 creatingContents(text, item)
                               }
+                              multiline
                             />
                           </View>
                         );
@@ -922,6 +923,7 @@ function UpdateLectureScreen({ route, navigation }) {
                 onChangeText={(text) => {
                   handleSingleInputChange(text, "institution");
                 }}
+                multiline
               />
             </View>
             <View style={[styles.lectureInfoContainer, { marginBottom: 5 }]}>
@@ -1055,6 +1057,7 @@ function UpdateLectureScreen({ route, navigation }) {
                 onChangeText={(text) => {
                   handleSingleInputChange(text, "city");
                 }}
+                multiline
               />
             </View>
             <View style={styles.lectureInfoContainer}>
@@ -1072,6 +1075,7 @@ function UpdateLectureScreen({ route, navigation }) {
                 onChangeText={(text) => {
                   handleSingleInputChange(text, "place");
                 }}
+                multiline
               />
             </View>
             <View style={styles.lectureInfoContainer}>
@@ -1089,6 +1093,7 @@ function UpdateLectureScreen({ route, navigation }) {
                 onChangeText={(text) => {
                   handleSingleInputChange(text, "studentGrade");
                 }}
+                multiline
               />
             </View>
             <View style={styles.lectureInfoContainer}>
@@ -1238,6 +1243,7 @@ function UpdateLectureScreen({ route, navigation }) {
                 onChangeText={(text) => {
                   handleSingleInputChange(text, "remark");
                 }}
+                multiline
               />
             </View>
 
@@ -1389,6 +1395,7 @@ function UpdateLectureScreen({ route, navigation }) {
             }}
             textAlignVertical="center"
             value={lecturedata.mainTitle ? lecturedata.mainTitle : ""}
+            multiline
           />
           <Text
             style={[
@@ -1483,7 +1490,8 @@ const styles = StyleSheet.create({
   },
   titleInput2: {
     width: "100%",
-    height: 45,
+    // height: 45,
+    paddingVertical: 7,
     textAlignVertical: "center",
     fontSize: 15,
     fontWeight: "600",
@@ -1497,7 +1505,8 @@ const styles = StyleSheet.create({
   },
   titleInput: {
     width: "100%",
-    height: 30,
+    // height: 30,
+    paddingVertical: 7,
     fontSize: 15,
     fontWeight: "600",
     // lineHeight: 20,
@@ -1546,13 +1555,14 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     width: 221,
-    height: 28,
+    // height: 28,
+
     fontSize: 15,
     fontWeight: "400",
     paddingLeft: 9,
     color: GlobalStyles.colors.gray01,
-    // paddingTop: 4,
-    // paddingBottom: 4,
+    paddingTop: 4,
+    paddingBottom: 4,
     textAlignVertical: "center",
     backgroundColor: GlobalStyles.colors.gray07,
     justifyContent: "center",
