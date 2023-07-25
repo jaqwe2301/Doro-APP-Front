@@ -173,6 +173,7 @@ function ApplicationDetails({ route }) {
             style={styles.container}
             data={recruiting}
             renderItem={(data) => {
+              console.log(data);
               const date = new Date(data.item.lectureDate.enrollEndDate);
               let dateTypeValue = `${date.getMonth() + 1}월 ${
                 date.getDate() + 1
@@ -197,7 +198,7 @@ function ApplicationDetails({ route }) {
                     time={data.item.time}
                     lectureIdHandler={() =>
                       navigation.navigate("DetailLecture", {
-                        id: data.item.id,
+                        id: data.item.lectureId,
                       })
                     }
                     id=""
