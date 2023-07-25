@@ -1,4 +1,10 @@
-import { useState, useEffect, useContext, ActivityIndicator } from "react";
+import {
+  useState,
+  useEffect,
+  useContext,
+  ActivityIndicator,
+  useRef,
+} from "react";
 import {
   View,
   StyleSheet,
@@ -11,10 +17,11 @@ import {
   ScrollView,
   useWindowDimensions,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import Logo from "../assets/Logo_main.svg";
 import AlarmAfter from "../assets/alarm_before.svg";
 import Right from "../assets/rightBlack.svg";
@@ -33,6 +40,18 @@ import { KRRegular } from "../constants/fonts";
 import Swiper from "react-native-swiper";
 import { getAnnouncement } from "../utill/http";
 
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+
+import messaging from "@react-native-firebase/messaging";
+
+async function getToken() {
+  const token = await messaging().getToken();
+  Alert.alert("디바이스 토큰", token);
+}
+
+getToken();
+
 const HomeScreen = ({ lectureIdProps, navigation }) => {
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
@@ -43,6 +62,105 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
     },
   ]);
   // const { lectures } = useLectures(null);
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getDevicePushTokenAsync()).data;
+      setDevice((await Notifications.getDevicePushTokenAsync()).data);
+      // console.log("토큰토큰: " + token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    return token;
+  }
+
+  registerForPushNotificationsAsync();
+
+  const FCM_KEY =
+    "AAAAs89zQ-0:APA91bGlbWBNgIet1nCBkBu5_O1A4u32gx6nlWpyLW5iJumxPR5E0s3PPrZFq16cHx8eeCguJchZBIcc7l1WZEQET61C5dVdLTx5dE_8BCqbrgosef5f7AROG8premMKuER1q8k9oHbt";
+
+  const notice = async () => {
+    try {
+      const pushToken = (await Notifications.getDevicePushTokenAsync()).data;
+      const res = await axios.post(
+        "https://fcm.googleapis.com/fcm/send",
+        {
+          to: pushToken,
+          data: {
+            title: "도로 앱 첫 출시!",
+            message: "도로 앱이 출시되었습니다!",
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `key=${FCM_KEY}`,
+          },
+        }
+      );
+      if (res.data.results[0].error === "MismatchSenderId") {
+        Alert.alert("알림 전송 실패", "MismatchSenderId 에러");
+      } else if (res.data) {
+        setAAA(res.data);
+        // Alert.alert("알림 전송 되었나?", res.data.results);
+      } else {
+        Alert.alert("알림 전송 완료", "완료");
+      }
+    } catch (err) {
+      Alert.alert("알림 전송 실패", "실패");
+    }
+  };
+
+  const [aaa, setAAA] = useState();
+
+  const noticeExpo = async () => {
+    try {
+      const pushToken = (await Notifications.getDevicePushTokenAsync()).data;
+      const res = await axios.post(
+        "https://fcm.googleapis.com/fcm/send",
+        {
+          to: pushToken,
+          data: {
+            experienceId: "@si2238/doro",
+            scopeKey: "@si2238/doro",
+            title: "도로 앱 첫 출시!",
+            message: "도로 앱이 출시되었습니다!",
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `key=${FCM_KEY}`,
+          },
+        }
+      );
+      // console.log(res);
+      if (res.data.results[0].error === "MismatchSenderId") {
+        Alert.alert("알림 전송 실패", "MismatchSenderId 에러");
+      } else if (res.data) {
+        setAAA(res.data);
+        // Alert.alert("알림 전송 되었나?", res.data.results);
+      } else {
+        Alert.alert("알림 전송 완료", "완료");
+      }
+    } catch (err) {
+      Alert.alert("알림 전송 실패", "실패");
+    }
+  };
 
   if (lectureData.lectureDates === []) {
     // 로딩
@@ -83,14 +201,13 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
         })
         .then((res) => {
           // console.log(res.data.data);
-          setLectureData(res.data.data);
+          setLectureData(res.data.data.lecturesInfos);
         })
         .catch((error) => {
-          console.log("에러");
+          console.log("강의 불러오기 에러");
           console.log(error);
         });
     });
-
     // Clean up the event listener on component unmount
     return unsubscribe;
   }, [navigation]); // navigation을 종속성 배열에 추가합니다
@@ -319,6 +436,17 @@ const HomeScreen = ({ lectureIdProps, navigation }) => {
                 />
               </Pressable>
             </View>
+            <Pressable onPress={notice}>
+              <View style={{ backgroundColor: "red", padding: 10 }}>
+                <Text>알림 expo 불포함</Text>
+              </View>
+            </Pressable>
+            <Pressable style={{ marginTop: 20 }} onPress={noticeExpo}>
+              <View style={{ backgroundColor: "blue", padding: 10 }}>
+                <Text>알림 expo 포함</Text>
+              </View>
+            </Pressable>
+            <Text>{aaa}</Text>
             {recruitingElements}
           </ScrollView>
         );

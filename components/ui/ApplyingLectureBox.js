@@ -24,13 +24,13 @@ function ApplyingLectureBox({
     return new Date(stringDate);
   };
 
-  const lectureDateControl = (date) => {
-    let result = dateControl(date[0]).getMonth() + 1 + "월 ";
-    for (let i = 0; i < date.length; i++) {
-      if (i === date.length - 1) {
-        result += dateControl(date[i]).getDate() + "일";
+  const lectureDateControl = (dates) => {
+    let result = dateControl(dates[0]).getMonth() + 1 + "월 ";
+    for (let i = 0; i < dates.length; i++) {
+      if (i === dates.length - 1) {
+        result += dateControl(dates[i]).getDate() + "일";
       } else {
-        result += dateControl(date[i]).getDate() + "일 / ";
+        result += dateControl(dates[i]).getDate() + "일 / ";
       }
     }
     return result;
@@ -55,6 +55,7 @@ function ApplyingLectureBox({
         ).getDate()}일 (${days[dateControl(date[0]).getDay()]}) ${time}`
     : "";
 
+  // console.log(date);
   return (
     <Pressable key={id} onPress={lectureIdHandler}>
       <View

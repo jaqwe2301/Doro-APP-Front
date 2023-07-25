@@ -5,7 +5,7 @@ import { createContext, useEffect, useState } from "react";
 export const AuthContext = createContext({
   token: "",
   refreshToken: "",
-  fcmToken: "",
+  // fcmToken: "",
   // 사용자의 로그인 여부
   isAuthenticated: false,
   authenticate: () => {},
@@ -15,7 +15,7 @@ export const AuthContext = createContext({
 function AuthContextProvider({ children }) {
   const [authToken, setAuthToken] = useState();
   const [reToken, setReToken] = useState();
-  const [fcmToken, setFcmToken] = useState();
+  // const [fcmToken, setFcmToken] = useState();
 
   async function authenticate(token, refreshToken) {
     setAuthToken(token);
@@ -25,28 +25,28 @@ function AuthContextProvider({ children }) {
     await AsyncStorage.setItem("refreshToken", refreshToken);
   }
 
-  async function pushtoken(fcmToken) {
-    setFcmToken(fcmToken);
-    await AsyncStorage.setItem("fcmToken", fcmToken);
-  }
+  // async function pushtoken(fcmToken) {
+  //   setFcmToken(fcmToken);
+  //   await AsyncStorage.setItem("fcmToken", fcmToken);
+  // }
 
   async function logout() {
     setAuthToken(null);
     setReToken(null);
-    setFcmToken(null);
+    // setFcmToken(null);
     AsyncStorage.removeItem("token");
     AsyncStorage.removeItem("refreshToken");
-    AsyncStorage.removeItem("fcmToken");
+    // AsyncStorage.removeItem("fcmToken");
     await AsyncStorage.clear();
   }
 
   const value = {
     token: authToken,
     refreshToken: reToken,
-    fcmToken: fcmToken,
+    // fcmToken: fcmToken,
     isAuthenticated: !!authToken,
     authenticate: authenticate,
-    pushtoken: pushtoken,
+    // pushtoken: pushtoken,
     logout: logout,
   };
 
