@@ -1133,14 +1133,54 @@ function DetailLectureScreen({ route, navigation }) {
                   </View>
                 </View>
               </View>
-              {/* <View
-                style={{
-                  height: 0.5,
-                  width: layout.width,
-                  backgroundColor: GlobalStyles.colors.gray04,
-                  marginBottom: 9,
-                }}
-              /> */}
+
+              {headerRole === "ROLE_ADMIN" ||
+              lectureBasicInfo.status === "ALLOCATION_COMP" ||
+              lectureBasicInfo.status === "FINISH" ? (
+                ""
+              ) : (
+                <View style={styles.buttonContainer}>
+                  {lectureBasicInfo.mainTutor === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("MAIN_TUTOR")}
+                      text="주 강사 신청"
+                      backgroundColor={
+                        apply[0]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                  {lectureBasicInfo.subTutor === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("SUB_TUTOR")}
+                      text="보조 강사 신청"
+                      backgroundColor={
+                        apply[1]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                  {lectureBasicInfo.staff === "0" ? (
+                    ""
+                  ) : (
+                    <ButtonOneThird
+                      onPress={() => applyingTutor("STAFF")}
+                      text="스태프 신청"
+                      backgroundColor={
+                        apply[2]
+                          ? GlobalStyles.colors.gray05
+                          : GlobalStyles.colors.primaryDefault
+                      }
+                    />
+                  )}
+                </View>
+              )}
             </View>
           </Tabs.ScrollView>
         </Tabs.Tab>
@@ -1599,6 +1639,7 @@ const styles = StyleSheet.create({
     // marginBottom: 14,
     // height: 40,
     marginTop: 70,
+    marginBottom: 40,
     justifyContent: "space-between",
     paddingHorizontal: 20,
     flexDirection: "row",
