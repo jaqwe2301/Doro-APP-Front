@@ -72,8 +72,8 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
-  const fcmToken = await AsyncStorage.getItem("fcmToken");
-  console.log(fcmToken + "로그인 fcm");
+  // const fcmToken = await AsyncStorage.getItem("fcmToken");
+  // console.log(fcmToken + "로그인 fcm");
   const response = await axios.post(
     URL + "/login",
     {
@@ -82,7 +82,7 @@ export async function login({ id, pw }) {
     },
     {
       headers: {
-        fcmToken: fcmToken,
+        // fcmToken: fcmToken,
       },
     }
   );
