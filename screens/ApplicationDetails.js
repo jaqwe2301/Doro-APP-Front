@@ -20,19 +20,20 @@ import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 import { KRRegular } from "../constants/fonts";
 
 function ApplicationDetails({ route }) {
-  const { headerId, setHeaderId } = useContext(HeaderContext);
   const navigation = useNavigation();
+  const { headerId, setHeaderId } = useContext(HeaderContext);
+  const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
 
   const [userLecture, setUserLecture] = useState([]);
   const [recruiting, setRecruiting] = useState([]);
   const [allocation, setAllocation] = useState([]);
   const [finished, setFinished] = useState([]);
-  const jump = route.params?.screen;
+
   const instance = Interceptor();
 
   useEffect(() => {
-    setIndex(jump);
-  }, [jump]);
+    setIndex(historyIndex);
+  }, [historyIndex]);
 
   const getMyLectures = () => {
     instance
@@ -43,7 +44,7 @@ function ApplicationDetails({ route }) {
         },
       })
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setRecruiting(() => {
           const data = res.data.data.filter(
             (item) => item.status === "RECRUITING"
@@ -147,7 +148,7 @@ function ApplicationDetails({ route }) {
               })
               .then((res) => {
                 console.log("강의 취소 완료");
-                getMyLectures();
+                // getMyLectures();
               })
               .catch((error) => {
                 console.log("에러");
@@ -176,6 +177,7 @@ function ApplicationDetails({ route }) {
               let dateTypeValue = `${date.getMonth() + 1}월 ${
                 date.getDate() + 1
               }일`;
+              const isLastItem = data.index === recruiting.length - 1;
               const roles = data.item.tutorRole;
               const role =
                 roles === "MAIN_TUTOR"
@@ -185,27 +187,29 @@ function ApplicationDetails({ route }) {
                   : roles === "STAFF"
                   ? "스태프"
                   : "";
-                  console.log(data.item)
+              // console.log(data.item);
               return (
-                <ApplyingLectureBox
-                  colors={GlobalStyles.indicationColors[data.index % 4]}
-                  subTitle={data.item.subTitle}
-                  date={data.item.lectureDates}
-                  time={data.item.time}
-                  lectureIdHandler={() =>
-                    navigation.navigate("DetailLecture", {
-                      id: data.item.id,
-                    })
-                  }
-                  id=""
-                  dateTypeValue={"신청마감 " + dateTypeValue}
-                  mainTutor={data.item.mainTutor}
-                  place={data.item.place}
-                  tutorRole={role + " 신청"}
-                  onPressX={() =>
-                    deleteLecture(data.item.id, data.item.subTitle, role)
-                  }
-                />
+                <View style={isLastItem && { marginBottom: 30 }}>
+                  <ApplyingLectureBox
+                    colors={GlobalStyles.indicationColors[data.index % 4]}
+                    subTitle={data.item.subTitle}
+                    date={data.item.lectureDates}
+                    time={data.item.time}
+                    lectureIdHandler={() =>
+                      navigation.navigate("DetailLecture", {
+                        id: data.item.id,
+                      })
+                    }
+                    id=""
+                    dateTypeValue={dateTypeValue}
+                    mainTutor={data.item.mainTutor}
+                    place={data.item.place}
+                    tutorRole={role + " 신청"}
+                    onPressX={() =>
+                      deleteLecture(data.item.id, data.item.subTitle, role)
+                    }
+                  />
+                </View>
               );
             }}
           />
@@ -223,27 +227,30 @@ function ApplicationDetails({ route }) {
                 data.item.tutorStatus === "WAITING"
                   ? GlobalStyles.colors.gray06
                   : "white";
+              const isLastItem = data.index === allocation.length - 1;
               return (
-                <ApplyingLectureBox
-                  colors={GlobalStyles.indicationColors[data.index % 4]}
-                  subTitle={data.item.subTitle}
-                  date={data.item.lectureDates}
-                  time={data.item.time}
-                  lectureIdHandler={() =>
-                    navigation.navigate("DetailLecture", {
-                      id: data.item.id,
-                    })
-                  }
-                  id=""
-                  mainTutor={data.item.mainTutor}
-                  place={data.item.place}
-                  backgroundColor={backgroundColor}
-                  matchingText={
-                    data.item.tutorStatus === "WAITING"
-                      ? "매칭 실패"
-                      : "매칭 성공"
-                  }
-                />
+                <View style={isLastItem && { marginBottom: 30 }}>
+                  <ApplyingLectureBox
+                    colors={GlobalStyles.indicationColors[data.index % 4]}
+                    subTitle={data.item.subTitle}
+                    date={data.item.lectureDates}
+                    time={data.item.time}
+                    lectureIdHandler={() =>
+                      navigation.navigate("DetailLecture", {
+                        id: data.item.id,
+                      })
+                    }
+                    id=""
+                    mainTutor={data.item.mainTutor}
+                    place={data.item.place}
+                    backgroundColor={backgroundColor}
+                    matchingText={
+                      data.item.tutorStatus === "WAITING"
+                        ? "매칭 실패"
+                        : "매칭 성공"
+                    }
+                  />
+                </View>
               );
             }}
           />
@@ -254,20 +261,23 @@ function ApplicationDetails({ route }) {
             style={styles.container}
             data={finished}
             renderItem={(data) => {
+              const isLastItem = data.index === finished.length - 1;
               return (
-                <ApplyingLectureBox
-                  colors={GlobalStyles.indicationColors[data.index % 4]}
-                  subTitle={data.item.subTitle}
-                  date={data.item.lectureDates}
-                  time={data.item.time}
-                  lectureIdHandler={() => {}}
-                  id=""
-                  dateTypeValue="강의 완료"
-                  mainTutor={data.item.mainTutor}
-                  place={data.item.place}
-                  tutorRole="값을 받아야해요"
-                  boxColor={GlobalStyles.colors.gray06}
-                />
+                <View style={isLastItem && { marginBottom: 30 }}>
+                  <ApplyingLectureBox
+                    colors={GlobalStyles.indicationColors[data.index % 4]}
+                    subTitle={data.item.subTitle}
+                    date={data.item.lectureDates}
+                    time={data.item.time}
+                    lectureIdHandler={() => {}}
+                    id=""
+                    dateTypeValue="강의 완료"
+                    mainTutor={data.item.mainTutor}
+                    place={data.item.place}
+                    tutorRole="값을 받아야해요"
+                    boxColor={GlobalStyles.colors.gray06}
+                  />
+                </View>
               );
             }}
           />

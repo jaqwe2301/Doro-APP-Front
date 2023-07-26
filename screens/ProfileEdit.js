@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
   cancelText: {
     fontWeight: "400",
     fontSize: 15,
-    color: GlobalStyles.colors.gray05,
+    color: GlobalStyles.colors.gray01,
     // marginLeft: 10,
     // backgroundColor: GlobalStyles.colors.green,
     padding: 10,
