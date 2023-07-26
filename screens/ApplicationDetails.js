@@ -148,7 +148,7 @@ function ApplicationDetails({ route }) {
               })
               .then((res) => {
                 console.log("강의 취소 완료");
-                // getMyLectures();
+                getMyLectures();
               })
               .catch((error) => {
                 console.log("에러");
@@ -173,6 +173,7 @@ function ApplicationDetails({ route }) {
             style={styles.container}
             data={recruiting}
             renderItem={(data) => {
+              // console.log(data);
               const date = new Date(data.item.lectureDate.enrollEndDate);
               let dateTypeValue = `${date.getMonth() + 1}월 ${
                 date.getDate() + 1
@@ -197,7 +198,7 @@ function ApplicationDetails({ route }) {
                     time={data.item.time}
                     lectureIdHandler={() =>
                       navigation.navigate("DetailLecture", {
-                        id: data.item.id,
+                        id: data.item.lectureId,
                       })
                     }
                     id=""
@@ -237,7 +238,7 @@ function ApplicationDetails({ route }) {
                     time={data.item.time}
                     lectureIdHandler={() =>
                       navigation.navigate("DetailLecture", {
-                        id: data.item.id,
+                        id: data.item.lectureId,
                       })
                     }
                     id=""
@@ -269,7 +270,11 @@ function ApplicationDetails({ route }) {
                     subTitle={data.item.subTitle}
                     date={data.item.lectureDates}
                     time={data.item.time}
-                    lectureIdHandler={() => {}}
+                    lectureIdHandler={() => {
+                      navigation.navigate("DetailLecture", {
+                        id: data.item.lectureId,
+                      });
+                    }}
                     id=""
                     dateTypeValue="강의 완료"
                     mainTutor={data.item.mainTutor}
