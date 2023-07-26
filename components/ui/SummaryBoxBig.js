@@ -10,8 +10,12 @@ function SummaryBoxBig({ svg: SvgComponent, title, text = [] }) {
       </View>
       <View>
         <Text style={styles.boxTitle}>{title}</Text>
-        {text?.map((item) => {
-          return <Text style={styles.paymentText}>{item}</Text>;
+        {text?.map((item, index) => {
+          return (
+            <Text key={index} style={styles.paymentText}>
+              {item}
+            </Text>
+          );
         })}
       </View>
     </View>

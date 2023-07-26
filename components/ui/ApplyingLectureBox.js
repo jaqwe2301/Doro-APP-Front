@@ -1,7 +1,15 @@
-import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
 import Xmark from "../../assets/xmark_gray.svg";
+import { useEffect } from "react";
 
 function ApplyingLectureBox({
   date,
@@ -24,15 +32,43 @@ function ApplyingLectureBox({
     return new Date(stringDate);
   };
 
-  const lectureDateControl = (dates) => {
-    let result = dateControl(dates[0]).getMonth() + 1 + "월 ";
-    for (let i = 0; i < dates.length; i++) {
-      if (i === dates.length - 1) {
-        result += dateControl(dates[i]).getDate() + "일";
+  // const lectureDateControl = (date) => {
+  //   let result = dateControl(date[0]).getMonth() + 1 + "월 ";
+  //   for (let i = 0; i < date.length; i++) {
+  //     if (i === date.length - 1) {
+  //       result += dateControl(date[i]).getDate() + "일";
+  //     } else {
+  //       result += dateControl(date[i]).getDate() + "일 / ";
+  //     }
+  //   }
+  //   return result;
+  // };
+
+  const lectureDateControl = (date) => {
+    let result = "";
+    let currentMonth = null;
+
+    for (let i = 0; i < date.length; i++) {
+      const currentDate = dateControl(date[i]);
+      const month = currentDate.getMonth() + 1;
+      const day = currentDate.getDate();
+
+      if (currentMonth === null) {
+        // 첫 번째 날짜일 경우
+        currentMonth = month;
+        result += `${month}월 ${day}일`;
       } else {
-        result += dateControl(dates[i]).getDate() + "일 / ";
+        if (month !== currentMonth) {
+          // 이전 날짜와 다른 달인 경우
+          currentMonth = month;
+          result += ` / ${month}월 ${day}일`;
+        } else {
+          // 이전 날짜와 같은 달인 경우
+          result += ` , ${day}일`;
+        }
       }
     }
+
     return result;
   };
 
@@ -55,7 +91,8 @@ function ApplyingLectureBox({
         ).getDate()}일 (${days[dateControl(date[0]).getDay()]}) ${time}`
     : "";
 
-  // console.log(date);
+  const layout = useWindowDimensions();
+
   return (
     <Pressable key={id} onPress={lectureIdHandler}>
       <View
@@ -67,35 +104,52 @@ function ApplyingLectureBox({
         ]}
       >
         <View style={styles.titleContainer}>
-          <Text style={styles.SubTitle}>{subTitle}</Text>
+          <Text style={[styles.SubTitle, { maxWidth: layout.width - 110 }]}>
+            {subTitle}
+          </Text>
 
           {onPressX ? (
             <Pressable onPress={onPressX}>
               <Xmark width={20} height={20} />
             </Pressable>
           ) : (
-            <Text style={{ fontSize: 10 }}>{matchingText}</Text>
+            <Text style={{ fontSize: 10, marginTop: 5 }}>{matchingText}</Text>
           )}
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
+        <View style={{ justifyContent: "flex-end" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+            }}
+          >
             <Text style={styles.role}>{tutorRole}</Text>
+            <Text style={[styles.place, { maxWidth: layout.width - 230 }]}>
+              {place}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+              marginBottom: 12,
+            }}
+          >
+            {/* <View style={{ alignItems: "flex-end" }}> */}
             <Text style={styles.enrollEndDate}>
               {typeof dateTypeValue === "object"
-                ? `${
+                ? "신청마감 " +
+                  `${
                     dateTypeValue?.getMonth() + 1
                   }월 ${dateTypeValue?.getDate()}일`
                 : dateTypeValue}
             </Text>
-          </View>
-          <View style={{ alignItems: "flex-end" }}>
-            <Text style={styles.place}>{place}</Text>
-            <Text style={styles.date}>{time}</Text>
+            <Text style={[styles.date, { maxWidth: layout.width - 150 }]}>
+              {dateText}
+            </Text>
+            {/* </View> */}
           </View>
         </View>
       </View>
@@ -113,7 +167,7 @@ const styles = StyleSheet.create({
   whiteBox: {
     marginTop: 4,
     marginBottom: 8,
-    paddingVertical: 12,
+    // paddingVertical: 13,
     height: 128,
     borderRadius: 5.41,
     elevation: 3,
@@ -129,6 +183,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    height: 40,
+    marginTop: 12,
   },
   SubTitle: {
     fontSize: 16,
@@ -136,21 +192,29 @@ const styles = StyleSheet.create({
     color: GlobalStyles.colors.gray01,
   },
   role: {
-    fontSize: 12,
+    fontSize: 10,
     color: GlobalStyles.colors.gray03,
     fontWeight: "bold",
+    // lineHeight: 20,
   },
   enrollEndDate: {
     color: GlobalStyles.colors.gray03,
     fontSize: 10,
+    // lineHeight: 20,
   },
   place: {
     color: GlobalStyles.colors.gray03,
     fontSize: 10,
+    // lineHeight: 20,
     fontWeight: "bold",
+
+    // maxHeight: 100,
   },
   date: {
     fontSize: 12,
+
+    // lineHeight: 20,
+    // maxWidth: 200,
     fontWeight: "bold",
     color: GlobalStyles.colors.primaryDefault,
   },

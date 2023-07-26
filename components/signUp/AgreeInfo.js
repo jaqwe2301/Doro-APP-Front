@@ -3,7 +3,7 @@ import Bar from "../ui/Bar";
 
 function AgreeInfo() {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={{ backgroundColor: "white", flex: 1 }}>
         <ScrollView>
           <Text style={styles.title}>
