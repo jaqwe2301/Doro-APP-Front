@@ -1,10 +1,17 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  useWindowDimensions,
+} from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 import { KRBold, KRRegular } from "../../constants/fonts";
 
 function TutorBox({ name, generation, school, major, lectures }) {
   // generation : 기수
   // lecture : 최근 강의
+  const layout = useWindowDimensions();
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -14,7 +21,13 @@ function TutorBox({ name, generation, school, major, lectures }) {
             DORO {generation}기
           </Text>
         </View>
-        <Text style={[styles.school, KRRegular.Caption]}>
+        <Text
+          style={[
+            styles.school,
+            KRRegular.Caption,
+            { maxWidth: layout.width - 200 },
+          ]}
+        >
           {school} {major}
         </Text>
       </View>

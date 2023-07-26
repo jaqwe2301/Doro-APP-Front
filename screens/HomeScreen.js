@@ -212,18 +212,21 @@ const HomeScreen = ({ navigation }) => {
 
       const data = groupDataByMainTitle(recruitingData);
 
-      {
-        pageNum === 0
-          ? setRLectureData(data)
-          : setRLectureData((prev) => [...prev, ...data]);
+      if (pageNum === 0) {
+        setRLectureData(data);
+        setPageNum(1);
+      } else {
+        setRLectureData((prev) => [...prev, ...data]);
+        setPageNum((prev) => prev + 1);
       }
+      console.log("뭐야");
+      console.log(pageNum);
+      // setRLectureData((prev) => [...prev, ...data]);
       if (recruitingData.length !== 0) {
         setRNum(result.totalCount);
       } else if (recruitingData.length === 0 && pageNum === 0) {
         setRNum(0);
       }
-
-      setPageNum((prev) => prev + 1);
     } catch (error) {
       console.error(error);
     }
@@ -316,13 +319,13 @@ const HomeScreen = ({ navigation }) => {
       } else if (allocationData.length === 0 && pageNum === 0) {
         setANum(0);
       }
-      {
-        pageNum2 === 0
-          ? setALectureData(data)
-          : setALectureData((prev) => [...prev, ...data]);
+      if (pageNum2 === 0) {
+        setALectureData(data);
+        setPageNum2(1);
+      } else {
+        setALectureData((prev) => [...prev, ...data]);
+        setPageNum2((prev) => prev + 1);
       }
-
-      setPageNum2((prev) => prev + 1);
     } catch (error) {
       console.error(error);
     }

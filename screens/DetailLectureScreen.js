@@ -969,14 +969,7 @@ function DetailLectureScreen({ route, navigation }) {
       <Tabs.Container renderHeader={MyHeader}>
         <Tabs.Tab name="기본 정보">
           <Tabs.ScrollView>
-            <View
-              style={{
-                marginTop: 40,
-                justifyContent: "space-between",
-                flex: 1,
-                marginBottom: 30.84,
-              }}
-            >
+            <View style={{ marginTop: 40, flex: 1 }} onLayout={onLayout}>
               <View style={{ paddingHorizontal: 20 }}>
                 <Text
                   style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
@@ -986,7 +979,12 @@ function DetailLectureScreen({ route, navigation }) {
                 <View style={styles.infoContainer}>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>주최 및 주관</Text>
-                    <Text style={styles.infoText}>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
                       {lectureBasicInfo.institution}
                     </Text>
                   </View>
@@ -1015,27 +1013,56 @@ function DetailLectureScreen({ route, navigation }) {
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>시간</Text>
-                    <Text style={styles.infoText}>{lectureBasicInfo.time}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {lectureBasicInfo.time}
+                    </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>지역</Text>
-                    <Text style={styles.infoText}>{lectureBasicInfo.city}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {lectureBasicInfo.city}
+                    </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>장소</Text>
-                    <Text style={styles.infoText}>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
                       {lectureBasicInfo.place}
                     </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>강의 대상</Text>
-                    <Text style={styles.infoText}>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
                       {lectureBasicInfo.studentGrade}
                     </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>인원수</Text>
-                    <Text style={styles.infoText}>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
                       {lectureBasicInfo.studentNumber}명
                     </Text>
                   </View>
@@ -1094,12 +1121,18 @@ function DetailLectureScreen({ route, navigation }) {
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>기타 특이사항</Text>
-                    <Text style={styles.infoText}>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
                       {lectureBasicInfo.remark}
                     </Text>
                   </View>
                 </View>
               </View>
+
               {headerRole === "ROLE_ADMIN" ||
               lectureBasicInfo.status === "ALLOCATION_COMP" ||
               lectureBasicInfo.status === "FINISH" ? (
@@ -1152,15 +1185,7 @@ function DetailLectureScreen({ route, navigation }) {
         </Tabs.Tab>
         <Tabs.Tab name="강의 관련 정보">
           <Tabs.ScrollView>
-            <View
-              style={{
-                marginTop: 40,
-                paddingHorizontal: 20,
-                justifyContent: "space-between",
-                flex: 1,
-                marginBottom: 30.84,
-              }}
-            >
+            <View style={{ marginTop: 40, flex: 1, paddingHorizontal: 20 }}>
               <View style={{ marginBottom: 0 }}>
                 <Text
                   style={{ fontSize: 17, fontWeight: "bold", marginBottom: 32 }}
@@ -1170,22 +1195,53 @@ function DetailLectureScreen({ route, navigation }) {
                 <View style={styles.infoContainer}>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>교육 내용</Text>
-                    <Text style={styles.infoText}>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
                       {lectureContent.content}
                     </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>키트</Text>
-                    <Text style={styles.infoText}>{lectureContent.kit}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {lectureContent.kit}
+                    </Text>
                   </View>
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>기본 강의 구성</Text>
-                    <Text style={styles.infoText}>{lectureContent.detail}</Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
+                      {lectureContent.detail}
+                    </Text>
                   </View>
-
+                  {/* <View style={styles.flexDirectionRow}>
+                  <Text style={styles.infoTitle}>기타 특이사항</Text>
+                  <Text
+                    style={[styles.infoText, { maxWidth: layout.width - 170 }]}
+                  >
+                    {lectureContent.remark}
+                  </Text>
+                </View> */}
                   <View style={styles.flexDirectionRow}>
                     <Text style={styles.infoTitle}>자격 요건</Text>
-                    <Text style={styles.infoText}>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { maxWidth: layout.width - 170 },
+                      ]}
+                    >
                       {lectureContent.requirement}
                     </Text>
                   </View>
@@ -1212,67 +1268,41 @@ function DetailLectureScreen({ route, navigation }) {
                   <View style={{ gap: 18 }}>
                     <View style={styles.flexDirectionRow}>
                       <Text style={styles.infoTitle}>주 강사</Text>
-                      <Text style={styles.infoText}>{assignList[0]}</Text>
+                      <Text
+                        style={[
+                          styles.infoText,
+                          { maxWidth: layout.width - 170 },
+                        ]}
+                      >
+                        {assignList[0]}
+                      </Text>
                     </View>
                     <View style={styles.flexDirectionRow}>
                       <Text style={styles.infoTitle}>보조 강사</Text>
-                      <Text style={styles.infoText}>{assignList[1]}</Text>
+                      <Text
+                        style={[
+                          styles.infoText,
+                          { maxWidth: layout.width - 170 },
+                        ]}
+                      >
+                        {assignList[1]}
+                      </Text>
                     </View>
                     <View style={styles.flexDirectionRow}>
                       <Text style={styles.infoTitle}>스태프</Text>
-                      <Text style={styles.infoText}>{assignList[2]}</Text>
+                      <Text
+                        style={[
+                          styles.infoText,
+                          { maxWidth: layout.width - 170 },
+                        ]}
+                      >
+                        {assignList[2]}
+                      </Text>
                     </View>
                   </View>
                 </View>
               ) : (
                 ""
-              )}
-              {headerRole === "ROLE_ADMIN" ||
-              lectureBasicInfo.status === "ALLOCATION_COMP" ||
-              lectureBasicInfo.status === "FINISH" ? (
-                ""
-              ) : (
-                <View style={styles.buttonContainer}>
-                  {lectureBasicInfo.mainTutor === "0" ? (
-                    ""
-                  ) : (
-                    <ButtonOneThird
-                      onPress={() => applyingTutor("MAIN_TUTOR")}
-                      text="주 강사 신청"
-                      backgroundColor={
-                        apply[0]
-                          ? GlobalStyles.colors.gray05
-                          : GlobalStyles.colors.primaryDefault
-                      }
-                    />
-                  )}
-                  {lectureBasicInfo.subTutor === "0" ? (
-                    ""
-                  ) : (
-                    <ButtonOneThird
-                      onPress={() => applyingTutor("SUB_TUTOR")}
-                      text="보조 강사 신청"
-                      backgroundColor={
-                        apply[1]
-                          ? GlobalStyles.colors.gray05
-                          : GlobalStyles.colors.primaryDefault
-                      }
-                    />
-                  )}
-                  {lectureBasicInfo.staff === "0" ? (
-                    ""
-                  ) : (
-                    <ButtonOneThird
-                      onPress={() => applyingTutor("STAFF")}
-                      text="스태프 신청"
-                      backgroundColor={
-                        apply[2]
-                          ? GlobalStyles.colors.gray05
-                          : GlobalStyles.colors.primaryDefault
-                      }
-                    />
-                  )}
-                </View>
               )}
             </View>
           </Tabs.ScrollView>
@@ -1608,6 +1638,7 @@ const styles = StyleSheet.create({
     // marginBottom: 14,
     // height: 40,
     marginTop: 70,
+    marginBottom: 40,
     justifyContent: "space-between",
     paddingHorizontal: 20,
     flexDirection: "row",
