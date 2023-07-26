@@ -102,7 +102,7 @@ function Code({ navigation, route }) {
         studentId: signData.studentId,
         studentStatus: signData.studentStatus,
       });
-      
+
       if (response.data.success) {
         navigation.navigate("finish");
       }
@@ -382,7 +382,7 @@ function Code({ navigation, route }) {
           </SafeAreaView>
         </Modal>
 
-        <Modal
+        {/* <Modal
           animationType="none"
           transparent={true}
           visible={visibleCode}
@@ -414,18 +414,18 @@ function Code({ navigation, route }) {
                       </View>
                       <Text style={styles.statusTitle}>기수</Text>
                     </View>
-                  </View>
-                  <GenerationModal
-                    setVisibleCode={setVisibleCode}
-                    visibleCode={visibleCode}
-                    title="기수"
-                    inputGeneration={inputGeneration}
-                    setInputGeneration={setInputGeneration}
-                    setSelectCode={setSelectCode}
-                    setStatusGStyle={setStatusGStyle}
-                    type={true}
-                  />
-                  <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                  </View> */}
+        <GenerationModal
+          setVisibleCode={setVisibleCode}
+          visibleCode={visibleCode}
+          title="기수"
+          inputGeneration={inputGeneration}
+          setInputGeneration={setInputGeneration}
+          setSelectCode={setSelectCode}
+          setStatusGStyle={setStatusGStyle}
+          type={true}
+        />
+        {/* <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
                     <ButtonBig
                       text="확인"
                       style={GlobalStyles.colors.primaryDefault}
@@ -436,7 +436,7 @@ function Code({ navigation, route }) {
               </Pressable>
             </Pressable>
           </SafeAreaView>
-        </Modal>
+        </Modal> */}
       </View>
     </SafeAreaView>
   );
