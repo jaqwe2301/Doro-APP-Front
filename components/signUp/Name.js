@@ -91,7 +91,7 @@ function Name({ navigation, route }) {
         navigation.navigate("school", { h: statusBarHeight });
       } else {
       }
-    }, 100);
+    }, 50);
   }
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   const { StatusBarManager } = NativeModules;

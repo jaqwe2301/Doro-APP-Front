@@ -18,14 +18,15 @@ export const LecturesProvider = ({ children }) => {
           city: "",
           endDate: "",
           startDate: "",
+          size: 50,
         },
         headers: {
           "Content-Type": "application/json",
         },
       })
       .then((res) => {
-        setLectures(res.data.data);
-        // console.log(res.data.data)
+        setLectures(res.data.data.lecturesInfos);
+        // console.log(res.data.data);
         // console.log(res.data.data);
       })
       .catch((error) => {
