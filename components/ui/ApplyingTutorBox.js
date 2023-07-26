@@ -10,8 +10,8 @@ function ApplyingTutorBox({ name, role, major, onPress, status }) {
         style={[
           styles.container,
           status === "ASSIGNED"
-            ? { backgroundColor: GlobalStyles.colors.gray07 }
-            : { backgroundColor: "white" },
+            ? { backgroundColor: "white" }
+            : { backgroundColor: GlobalStyles.colors.gray07 },
         ]}
       >
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -20,7 +20,7 @@ function ApplyingTutorBox({ name, role, major, onPress, status }) {
             <Text style={styles.text}>{role}</Text>
           </View>
           {status === "ASSIGNED" ? (
-            <Pressable onPress={onPress}>
+            <Pressable onPress={onPress} style={{ marginTop: 11 }}>
               <Xmark width={24} height={24} />
             </Pressable>
           ) : (
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
     paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 18,
+
+    paddingBottom: 13,
     borderRadius: 5.41,
     width: 335,
     height: 75,
@@ -57,12 +57,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 }, // 그림자의 오프셋
     shadowOpacity: 0.3, // 그림자의 투명도
     shadowRadius: 1.5, // 그
-    // shadowColor: "#c4c4c4",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.5,
-    // shadowRadius: 2,
+    justifyContent: "space-between",
   },
   top: {
+    marginTop: 15,
     marginBottom: 8,
     flexDirection: "row",
     alignItems: "center",

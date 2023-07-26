@@ -1,6 +1,6 @@
 // ---- 강의 생성과 수정 기능의 페이지 -----
 
-import React from "react";
+import React, { useContext } from "react";
 import {
   Text,
   Animated,
@@ -24,6 +24,7 @@ import { useNavigation } from "@react-navigation/native";
 import Xmark from "../assets/plusmark.svg";
 import ModalX from "../assets/xmark_black.svg";
 import Plus from "../assets/plus.svg";
+import Minus from "../assets/minus.svg";
 import ModalCheck from "../assets/modalcheck.svg";
 // import { format } from "date-fns";
 // import ko from "date-fns/esm/locale/ko/index.js";
@@ -41,9 +42,10 @@ import SummaryBoxSmall from "../components/ui/SummaryBoxSmall";
 import { G } from "react-native-svg";
 import { KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native";
+import { HeaderContext } from "../store/header-context";
 
-function UpdateLectureScreen({ route }) {
-  const navigation = useNavigation();
+function UpdateLectureScreen({ route, navigation }) {
+  const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const instance = Interceptor();
 
   const { StatusBarManager } = NativeModules;
@@ -79,13 +81,13 @@ function UpdateLectureScreen({ route }) {
     place: "",
     transportCost: "",
     status: "RECRUITING",
+    remark: "",
   });
 
   const [lectureContents, setLectureContents] = useState([]);
   const [selectedLectureContents, setSelectedLectureContents] = useState({
     kit: "",
     detail: "",
-    remark: "",
     requirement: "",
     content: "",
   });
@@ -108,7 +110,7 @@ function UpdateLectureScreen({ route }) {
       });
     // 강의 수정
     if (route.params.data !== "") {
-      let nonIdCheck = route.params.data.lectureDto;
+      let nonIdCheck = route.params?.data?.lectureDto;
       nonIdCheck["lectureContentId"] = route.params.data.lectureContentDto.id;
       setLectureData(nonIdCheck);
       setSelectedLectureContents(route.params.data.lectureContentDto);
@@ -185,6 +187,7 @@ function UpdateLectureScreen({ route }) {
           },
         })
         .then((res) => {
+          setIsLectureUpdate(!isLectureUpdate);
           // console.log(res);
           Alert.alert(
             "강의 업데이트",
@@ -193,7 +196,9 @@ function UpdateLectureScreen({ route }) {
               {
                 text: "확인",
                 onPress: () => {
-                  navigation.navigate("HomePage");
+                  route.params.navi
+                    ? navigation.navigate("historyScreen")
+                    : navigation.navigate("HomePage");
                 },
               },
             ]
@@ -217,6 +222,8 @@ function UpdateLectureScreen({ route }) {
           }
         )
         .then((res) => {
+          setIsLectureUpdate(!isLectureUpdate);
+          console.log(lecturedata);
           Alert.alert(
             "강의 업데이트",
             `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.`,
@@ -224,7 +231,9 @@ function UpdateLectureScreen({ route }) {
               {
                 text: "확인",
                 onPress: () => {
-                  navigation.reset({ routes: [{ name: "HomePage" }] });
+                  route.params.navi
+                    ? navigation.navigate("historyScreen")
+                    : navigation.navigate("HomePage");
                 },
               },
             ]
@@ -275,6 +284,21 @@ function UpdateLectureScreen({ route }) {
   const handleAddInput = () => {
     const newList = [...inputList, ""];
     setInputList(newList);
+  };
+
+  const handleDeleteInput = (index) => {
+    const newList = [...inputList];
+    newList.splice(index, 1);
+    setInputList(newList);
+    console.log(newList);
+    setLectureData((prev) => {
+      const newDates = [...prev.lectureDates];
+      newDates.splice(inputIdx, 1);
+      return {
+        ...prev,
+        lectureDates: newDates,
+      };
+    });
   };
 
   const layout = useWindowDimensions();
@@ -538,7 +562,6 @@ function UpdateLectureScreen({ route }) {
     content: "교육 내용",
     kit: "교육 키트",
     detail: "기본 강의 구성",
-    remark: "기타 특이사항",
     requirement: "자격 요건",
   };
 
@@ -546,7 +569,6 @@ function UpdateLectureScreen({ route }) {
     content: "",
     kit: "",
     detail: "",
-    remark: "",
     requirement: "",
   });
 
@@ -629,23 +651,10 @@ function UpdateLectureScreen({ route }) {
                 >
                   교육 내용
                 </Text>
-                <View style={styles.inputBox}>
+                <View style={[styles.inputBox, styles.dateBox]}>
                   <Text style={KRRegular.Subheadline}>
                     {selectedLectureContents.content}
                   </Text>
-                </View>
-              </View>
-              <View style={styles.lectureInfoContainer}>
-                <Text
-                  style={[
-                    KRRegular.Subheadline,
-                    { color: GlobalStyles.colors.gray03 },
-                  ]}
-                >
-                  교육 키트
-                </Text>
-                <View style={[styles.inputBox, styles.dateBox]}>
-                  <Text style={{ flex: 1 }}>{selectedLectureContents.kit}</Text>
                   <Pressable
                     onPress={() => {
                       setModalVisible(!modalVisible);
@@ -670,6 +679,19 @@ function UpdateLectureScreen({ route }) {
                     { color: GlobalStyles.colors.gray03 },
                   ]}
                 >
+                  키트
+                </Text>
+                <View style={[styles.inputBox, styles.dateBox]}>
+                  <Text style={{ flex: 1 }}>{selectedLectureContents.kit}</Text>
+                </View>
+              </View>
+              <View style={styles.lectureInfoContainer}>
+                <Text
+                  style={[
+                    KRRegular.Subheadline,
+                    { color: GlobalStyles.colors.gray03 },
+                  ]}
+                >
                   기본 강의 구성
                 </Text>
                 <View style={styles.inputBox}>
@@ -678,7 +700,7 @@ function UpdateLectureScreen({ route }) {
                   </Text>
                 </View>
               </View>
-              <View style={styles.lectureInfoContainer}>
+              {/* <View style={styles.lectureInfoContainer}>
                 <Text
                   style={[
                     KRRegular.Subheadline,
@@ -692,7 +714,7 @@ function UpdateLectureScreen({ route }) {
                     {selectedLectureContents.remark}
                   </Text>
                 </View>
-              </View>
+              </View> */}
               <View style={styles.lectureInfoContainer}>
                 <Text
                   style={[
@@ -752,7 +774,7 @@ function UpdateLectureScreen({ route }) {
                             content: "",
                             kit: "",
                             detail: "",
-                            remark: "",
+
                             requirement: "",
                           });
                         }}
@@ -792,7 +814,6 @@ function UpdateLectureScreen({ route }) {
                         text="확인"
                         onPress={() => onConfirm2(checkItem)}
                       />
-                      <View style={{ height: 24 }} />
                     </View>
                   </View>
                 </View>
@@ -951,7 +972,17 @@ function UpdateLectureScreen({ route }) {
                         <Xmark width={17} height={17} />
                       </Pressable>
                     ) : (
-                      ""
+                      <Pressable
+                        onPress={() => handleDeleteInput(index)}
+                        style={{
+                          // backgroundColor: GlobalStyles.colors.red,
+                          padding: 5,
+                          paddingRight: 11,
+                          // marginRight: 3,
+                        }}
+                      >
+                        <Minus width={12.5} height={12.5} />
+                      </Pressable>
                     )}
                   </Pressable>
                   // </View>
@@ -1192,6 +1223,23 @@ function UpdateLectureScreen({ route }) {
                 keyboardType="number-pad"
               />
             </View>
+            <View style={styles.lectureInfoContainer}>
+              <Text
+                style={[
+                  KRRegular.Subheadline,
+                  { color: GlobalStyles.colors.gray03 },
+                ]}
+              >
+                기타 특이 사항
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                value={lecturedata.remark}
+                onChangeText={(text) => {
+                  handleSingleInputChange(text, "remark");
+                }}
+              />
+            </View>
 
             <View style={{ marginBottom: 60, marginTop: 69 }}>
               <ButtonBig
@@ -1329,7 +1377,7 @@ function UpdateLectureScreen({ route }) {
           <Text
             style={[
               KRBold.Subbody,
-              { color: GlobalStyles.colors.gray05, marginBottom: -3 },
+              { color: GlobalStyles.colors.gray05, marginBottom: 5 },
             ]}
           >
             메인타이틀
@@ -1339,6 +1387,7 @@ function UpdateLectureScreen({ route }) {
             onChangeText={(text) => {
               handleSingleInputChange(text, "mainTitle");
             }}
+            textAlignVertical="center"
             value={lecturedata.mainTitle ? lecturedata.mainTitle : ""}
           />
           <Text
@@ -1347,7 +1396,7 @@ function UpdateLectureScreen({ route }) {
               {
                 color: GlobalStyles.colors.gray05,
                 marginTop: 10,
-                marginBottom: -3,
+                marginBottom: 5,
               },
             ]}
           >
@@ -1375,6 +1424,7 @@ function UpdateLectureScreen({ route }) {
               // 밑에 막대기(line) 스타일링
               indicatorStyle={{
                 backgroundColor: GlobalStyles.colors.primaryDefault,
+                height: 2,
                 border: "none",
               }}
               style={{
@@ -1389,7 +1439,10 @@ function UpdateLectureScreen({ route }) {
                 <Text
                   style={
                     focused
-                      ? [KRBold.Subheadline]
+                      ? [
+                          KRRegular.Subheadline,
+                          { color: GlobalStyles.colors.gray01 },
+                        ]
                       : [
                           KRRegular.Subheadline,
                           { color: GlobalStyles.colors.gray05 },
@@ -1430,22 +1483,27 @@ const styles = StyleSheet.create({
   },
   titleInput2: {
     width: "100%",
-    fontSize: 17,
-    height: 46,
+    height: 45,
+    textAlignVertical: "center",
+    fontSize: 15,
     fontWeight: "600",
-    lineHeight: 22,
-    marginBottom: 22,
-    textAlignVertical: "top",
+    // lineHeight: 20,
+    letterSpacing: 0.3,
+    paddingLeft: 19,
+
     borderRadius: 5.41,
     backgroundColor: GlobalStyles.colors.gray07,
+    marginBottom: 39,
   },
   titleInput: {
     width: "100%",
-    height: 28,
-    fontSize: 22,
+    height: 30,
+    fontSize: 15,
     fontWeight: "600",
-    lineHeight: 28,
-    textAlignVertical: "center",
+    // lineHeight: 20,
+    letterSpacing: 0.3,
+    paddingLeft: 19,
+
     borderRadius: 5.41,
     backgroundColor: GlobalStyles.colors.gray07,
   },
@@ -1556,6 +1614,7 @@ const styles = StyleSheet.create({
   },
   modalList: {
     marginBottom: 35,
+    maxHeight: 252,
   },
   modalTextContainer: {
     justifyContent: "center",
@@ -1568,7 +1627,7 @@ const styles = StyleSheet.create({
   modalButtonContainer: {
     // height: 45,
     paddingHorizontal: 20,
-    paddingBottom: 14,
+    paddingBottom: Platform.OS === "ios" ? 34 : 0,
   },
   modalButton: {
     height: 45,
@@ -1611,9 +1670,7 @@ const styles = StyleSheet.create({
     height: 54,
     alignItems: "center",
   },
-  modalList: {
-    marginBottom: 35,
-  },
+
   modalTextContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -1626,10 +1683,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
   },
-  modalButtonContainer: {
-    // height: 45,
-    paddingHorizontal: 20,
-  },
+
   modalButton: {
     height: 45,
     justifyContent: "center",
