@@ -50,6 +50,7 @@ function Name({ navigation, route }) {
           : GlobalStyles.colors.gray05
       );
     }
+    console.log(selectedDate)
     setDate(currentDate);
   };
 
