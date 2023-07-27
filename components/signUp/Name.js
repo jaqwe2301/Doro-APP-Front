@@ -78,14 +78,13 @@ function Name({ navigation, route }) {
         setSignData({
           ...signData,
           name: inputName,
-          birth:
-            Platform.OS === "ios"
-              ? date.toLocaleDateString().replace(/\//g, "-")
-              : date
-                  .toLocaleDateString("ko-KR", options)
-                  .replace(/\./g, "-")
-                  .replace(/\.|-$/, "")
-                  .replace(/\s/g, ""),
+          birth: check
+            ? date
+                .toLocaleDateString("ko-KR", options)
+                .replace(/\./g, "-")
+                .replace(/\.|-$/, "")
+                .replace(/\s/g, "")
+            : "",
         });
 
         navigation.navigate("school", { h: statusBarHeight });
@@ -119,7 +118,7 @@ function Name({ navigation, route }) {
             <ScrollView>
               <View>
                 <View style={styles.textContainer}>
-                  <InputText text="이름을 입력해 주세요." option="필수" />
+                  <InputText text="이름을 입력해 주세요." />
                 </View>
                 <View style={styles.inputContainer}>
                   <InputData
@@ -135,9 +134,7 @@ function Name({ navigation, route }) {
                   <Pressable
                     onPress={() =>
                       setCheck((prev) => {
-                        prev
-                          ? setDate(new Date("1950-01-01"))
-                          : setDate(new Date("2000-06-23"));
+                        prev ? setDate("") : setDate(new Date("2000-06-23"));
                         return !prev;
                       })
                     }
@@ -182,17 +179,19 @@ function Name({ navigation, route }) {
                           ]}
                         >
                           <Text style={styles.textInput} placeholder="생년월일">
-                            {Platform.OS === "ios"
+                            {/* {Platform.OS === "ios"
                               ? check
                                 ? date.toLocaleDateString().replace(/\//g, "-")
-                                : "1950-01-01"
-                              : check
+                                : ""
+                              :  */}
+                            {check
                               ? date
                                   .toLocaleDateString("ko-KR", options)
                                   .replace(/\./g, "-")
                                   .replace(/\.|-$/, "")
                                   .replace(/\s/g, "")
-                              : "1950-01-01"}
+                              : ""}
+                            {/* } */}
                           </Text>
                         </View>
                       ) : (
