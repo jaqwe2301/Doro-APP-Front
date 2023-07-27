@@ -107,6 +107,8 @@ function LectureBox(props) {
               <View style={styles.titleContainer}>
                 <Text
                   style={[styles.SubTitle, { maxWidth: layout.width - 160 }]}
+                  // numberOfLines={2}
+                  // ellipsizeMode="tail"
                 >
                   {props.subTitle}
                 </Text>
@@ -126,7 +128,13 @@ function LectureBox(props) {
             </View>
             <View>
               <View style={styles.placeContainer}>
-                <Text style={styles.place}>{props.place}</Text>
+                <Text
+                  style={styles.place}
+                  // numberOfLines={1}
+                  // ellipsizeMode="tail"
+                >
+                  {props.place}
+                </Text>
               </View>
               <View
                 style={{
@@ -144,11 +152,7 @@ function LectureBox(props) {
                     : props.tutorRole}
                 </Text>
                 <Text
-                  style={[
-                    styles.date,
-                    { color: props.colors, maxHeight: 25 },
-                    KRBold.Subbody,
-                  ]}
+                  style={[styles.date, { color: props.colors }, KRBold.Subbody]}
                 >
                   {dateText}
                 </Text>
@@ -183,13 +187,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingLeft: 5,
     overflow: "hidden",
-    height: 120,
+    // height: 120,
+    // minHeight: 120,
     borderRadius: 5.41,
+    // paddingBottom: 10,
+    minHeight: 120,
   },
   whiteBox: {
     paddingLeft: 15,
     paddingRight: 11,
-    height: 120,
+    minHeight: 120,
+    // height: 120,
+    // paddingBottom: 10,
   },
   titleContainer: {
     flexDirection: "row",
@@ -229,6 +238,6 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    marginBottom: 10,
+    paddingBottom: 10,
   },
 });
