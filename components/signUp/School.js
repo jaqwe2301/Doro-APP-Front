@@ -167,9 +167,10 @@ function School({ navigation, route }) {
               <View style={[styles.textContainer, { marginTop: 35 }]}>
                 <InputText text="학교를 입력해 주세요" />
               </View>
+              {/* <Text style={styles.text}>예) 한양대학교</Text> */}
               <View style={styles.inputContainer}>
                 <InputData
-                  hint="학교를 입력하세요"
+                  hint="예) 한양대학교"
                   onChangeText={handleSchoolChange}
                   value={inputSchool}
                 />
@@ -177,9 +178,10 @@ function School({ navigation, route }) {
               <View style={styles.textContainer}>
                 <InputText text="전공을 입력해 주세요" />
               </View>
+              {/* <Text style={styles.text}>예) 컴퓨터학부</Text> */}
               <View style={styles.inputContainer}>
                 <InputData
-                  hint="전공을 입력하세요"
+                  hint="예) 컴퓨터학부"
                   onChangeText={handleMajorChange}
                   value={inputMajor}
                 />
@@ -187,9 +189,12 @@ function School({ navigation, route }) {
               <View style={styles.textContainer}>
                 <InputText text="학번을 입력해 주세요" />
               </View>
+              {/* <Text style={styles.text}>
+                전체 학번을 입력해주세요. 예) 2023123456
+              </Text> */}
               <View style={styles.inputContainer}>
                 <InputData
-                  hint="학번을 입력하세요"
+                  hint="예) 2023123456"
                   onChangeText={handleStudentIdChange}
                   value={inputStudentId}
                   keyboardType="number-pad"
@@ -338,13 +343,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   textModal: {
-    fontSize: 14,
-    fontWeight: "400",
-    lineHeight: 20,
+    fontSize: 15,
+    fontWeight: "600",
+    // lineHeight: 20,
     color: GlobalStyles.colors.gray05,
   },
   textInputText: {
-    lineHeight: 20,
+    // lineHeight: 20,
     fontSize: 15,
     color: GlobalStyles.colors.gray01,
     fontWeight: "600",
