@@ -139,7 +139,7 @@ export async function pushNotification({ body, title }) {
     const response = await instance.post("/notifications", {
       title: title,
       body: body,
-      userIds: [],
+      // userIds: [],
     });
     return response.data;
   } catch (error) {
@@ -402,7 +402,7 @@ export async function logout() {
     // console.log(fcmToken + "로그아웃 fcm");
     const response = await instance.post("/logout", undefined, {
       headers: {
-        // fcmToken: fcmToken,
+        fcmToken: fcmToken,
       },
     });
     return response;
