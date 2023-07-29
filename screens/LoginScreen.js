@@ -15,7 +15,6 @@ import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState, useRef } from "react";
 import { login } from "../utill/auth";
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 import jwtDecode from "jwt-decode";

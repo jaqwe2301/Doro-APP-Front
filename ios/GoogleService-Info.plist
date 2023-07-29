@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>772279583725-j8r4ggm5v6bpeqststhe89j2a9q4pkkg.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.772279583725-j8r4ggm5v6bpeqststhe89j2a9q4pkkg</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>772279583725-1r4uoe9p0pu2kd4m8scjrlnm6jcgch1f.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCrgyY-28cN3zgso0zjHZuVOqmOPCBmwNk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>772279583725</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>net.doroedu.doroedu</string>
+	<key>PROJECT_ID</key>
+	<string>doro-app-project</string>
+	<key>STORAGE_BUCKET</key>
+	<string>doro-app-project.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:772279583725:ios:5f718b434fc77be0471de4</string>
+	<key>DATABASE_URL</key>
+	<string>https://doro-app-project-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

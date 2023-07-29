@@ -70,30 +70,27 @@ import ProfileFill from "./assets/profile_fill.svg";
 import FinishPw from "./components/signUp/FinishPw";
 import DeleteUser from "./screens/DeleteUser";
 import AgreeInfo2 from "./components/signUp/AgreeInfo2";
-// import { useState, useEffect, useRef } from 'react';
-// import { Text, View, Button, Platform } from 'react-native';
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 import TutorScreen from "./screens/TutorScreen";
 import * as SplashScreen from "expo-splash-screen";
 import HistoryScreen from "./screens/HistoryScreen";
 
-// import messaging from '@react-native-firebase/messaging';
+import messaging from '@react-native-firebase/messaging';
 
-// async function getToken() {
-//   const token = await messaging().getToken();
-//   console.log(token);
-// }
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-// getToken();
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+useEffect(() => {
+  requestUserPermission()
+})
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -751,35 +748,35 @@ function Navigation({ notificationAgreement }) {
 }
 
 export default function App() {
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
+  // const [expoPushToken, setExpoPushToken] = useState("");
+  // const [notification, setNotification] = useState(false);
   const [noti, setNoti] = useState(true);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  // const notificationListener = useRef();
+  // const responseListener = useRef();
 
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(({ token, noti }) => {
-      setExpoPushToken(token);
-      setNoti(noti);
-    });
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then(({ token, noti }) => {
+  //     setExpoPushToken(token);
+  //     setNoti(noti);
+  //   });
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+  //   notificationListener.current =
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       setNotification(notification);
+  //     });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+  //   responseListener.current =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log(response);
+  //     });
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+  //   return () => {
+  //     Notifications.removeNotificationSubscription(
+  //       notificationListener.current
+  //     );
+  //     Notifications.removeNotificationSubscription(responseListener.current);
+  //   };
+  // }, []);
 
   return (
     <SafeAreaView style={styles.container}>
