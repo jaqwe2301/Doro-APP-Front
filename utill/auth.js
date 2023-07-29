@@ -1,6 +1,7 @@
 import axios from "axios";
 import { URL } from "./config";
 import { Alert } from "react-native";
+import messaging from "@react-native-firebase/messaging";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const URL = "https://api.doroapp.com";
@@ -72,25 +73,28 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
-  // const fcmToken = await AsyncStorage.getItem("fcmToken");
-  // console.log(fcmToken + "로그인 fcm");
-  const response = await axios.post(
-    URL + "/login",
-    {
-      account: id,
-      password: pw,
-    },
-    {
-      headers: {
-        // fcmToken: fcmToken,
+  // const fcmToken = await messaging().getToken();
+  // Alert.alert("fcm", fcmToken);
+  try {
+    const response = await axios.post(
+      URL + "/login",
+      {
+        account: id,
+        password: pw,
       },
-    }
-  );
+      {
+        headers: {
+          fcmToken: fcmToken,
+        },
+      }
+    );
 
-  const token = response;
-  //.headers.authorization
+    const token = response;
 
-  return token;
+    return token;
+  } catch (error) {
+    console.error("Error occurred during login: ", error);
+  }
 }
 
 export async function reToken({ accessToken, refreshToken }) {
