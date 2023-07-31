@@ -54,11 +54,6 @@ function ManagerScreen() {
   const instance = Interceptor();
 
   useEffect(() => {
-    // getToken();
-    setBody(AsyncStorage.getItem("fcmToken"));
-  }, []);
-
-  useEffect(() => {
     instance
       .get(`${URL}/users`, {
         headers: {
