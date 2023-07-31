@@ -730,33 +730,7 @@ function Navigation({ notificationAgreement }) {
 }
 
 export default function App() {
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
   const [noti, setNoti] = useState(true);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  useEffect(() => {
-    // registerForPushNotificationsAsync().then(({ token, noti }) => {
-    //   setExpoPushToken(token);
-    //   setNoti(noti);
-    // });
-    // notificationListener.current =
-    //   Notifications.addNotificationReceivedListener((notification) => {
-    //     setNotification(notification);
-    //   });
-    // responseListener.current =
-    //   Notifications.addNotificationResponseReceivedListener((response) => {
-    //     console.log(response);
-    //   });
-    // return () => {
-    //   Notifications.removeNotificationSubscription(
-    //     notificationListener.current
-    //   );
-    //   Notifications.removeNotificationSubscription(responseListener.current);
-    // };
-    // getToken();
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
