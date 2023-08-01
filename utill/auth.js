@@ -3,6 +3,25 @@ import { URL } from "./config";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import messaging from "@react-native-firebase/messaging";
+
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log("Authorization status:", authStatus);
+    const fcmToken = await messaging().getToken();
+    await AsyncStorage.setItem("fcmToken", fcmToken);
+    return fcmToken;
+  } else {
+    await AsyncStorage.removeItem("fcmToken");
+    return null; // 권한이 없는 경우 null 반환
+  }
+}
+
 // const URL = "https://api.doroapp.com";
 // const URL = "http://10.0.2.2:8080";
 
@@ -72,25 +91,25 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
-  const fcmToken = await AsyncStorage.getItem("fcmToken");
-  console.log(fcmToken + "로그인 fcm");
-  const response = await axios.post(
-    URL + "/login",
-    {
-      account: id,
-      password: pw,
-    },
-    {
-      headers: {
-        fcmToken: fcmToken,
+  // const fcmToken = await messaging().getToken();
+  // Alert.alert("fcm", fcmToken);
+  try {
+    const fcmToken = await requestUserPermission();
+    const response = await axios.post(
+      URL + "/login",
+      {
+        account: id,
+        password: pw,
       },
-    }
-  );
-
-  const token = response;
-  //.headers.authorization
-
-  return token;
+      {
+        headers: fcmToken ? { fcmToken: fcmToken } : undefined,
+      }
+    );
+    const token = response;
+    return token;
+  } catch (error) {
+    console.error("Error occurred during login: ", error);
+  }
 }
 
 export async function reToken({ accessToken, refreshToken }) {
