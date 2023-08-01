@@ -14,7 +14,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +25,8 @@
       "usesCleartextTraffic": true,
       "package": "com.doro.android",
       "googleServicesFile": "./google-services.json",
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": ["android.permission.RECORD_AUDIO"],
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -35,7 +37,10 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics"
     ],
     "extra": {
       "eas": {
