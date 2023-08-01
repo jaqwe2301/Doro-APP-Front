@@ -31,18 +31,18 @@ import { getProfile, logout, pushNotification } from "../utill/http";
 import { KRRegular } from "../constants/fonts";
 import FilterModal from "../components/ui/FilterModal";
 
-import messaging from "@react-native-firebase/messaging";
+// import messaging from "@react-native-firebase/messaging";
 
 function ManagerScreen() {
-  async function getToken() {
-    try {
-      const token = await messaging().getToken();
-      // await AsyncStorage.setItem("fcmToken", token);
-      setBody(token);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  // async function getToken() {
+  //   try {
+  //     const token = await messaging().getToken();
+  //     // await AsyncStorage.setItem("fcmToken", token);
+  //     setBody(token);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   const [userData, setUserData] = useState([]);
   // const [filterUser, setFilterUser] = useState([]);
@@ -52,10 +52,6 @@ function ManagerScreen() {
   // const { lectures } = useLectures();
   // const [lecturesData, setLectureData] = useState([]);
   const instance = Interceptor();
-
-  useEffect(() => {
-    getToken();
-  }, []);
 
   useEffect(() => {
     instance
@@ -112,22 +108,20 @@ function ManagerScreen() {
         console.log("에러");
         console.log(error);
       });
-
-    // getToken();
   }, []);
+
   const addAlarm = async () => {
     try {
       const response = await pushNotification({
         title: title,
         body: body,
       });
-      setBody(JSON.stringify(response))
+      // setBody(JSON.stringify(response));
       if (response.success) {
         Alert.alert("알림 전송 성공", `제목 : ${title}\n내용 : ${body}`);
         // setBody("");
         // setTitle("");
       }
-      console.log(response);
     } catch (error) {
       Alert.alert("알림 전송 실패", `제목 : ${title}\n내용 : ${body}`);
       console.log(error);

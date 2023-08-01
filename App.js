@@ -70,10 +70,29 @@ import ProfileFill from "./assets/profile_fill.svg";
 import FinishPw from "./components/signUp/FinishPw";
 import DeleteUser from "./screens/DeleteUser";
 import AgreeInfo2 from "./components/signUp/AgreeInfo2";
-import * as Device from "expo-device";
 import TutorScreen from "./screens/TutorScreen";
 import * as SplashScreen from "expo-splash-screen";
 import HistoryScreen from "./screens/HistoryScreen";
+
+// import messaging from "@react-native-firebase/messaging";
+// import notifee from "@notifee/react-native";
+
+// async function requestUserPermission() {
+//   const authStatus = await messaging().requestPermission();
+//   const enabled =
+//     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+//     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+//   //android의 경우 기본값이 authorizaed
+
+//   if (enabled) {
+//     await messaging()
+//       .getToken()
+//       .then((fcmToken) => {
+//         console.log(fcmToken); //fcm token을 활용해 특정 device에 push를 보낼 수 있다.
+//       })
+//       .catch((e) => console.log("error: ", e));
+//   }
+// }
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -731,34 +750,33 @@ function Navigation({ notificationAgreement }) {
 }
 
 export default function App() {
-  // const [expoPushToken, setExpoPushToken] = useState("");
-  // const [notification, setNotification] = useState(false);
   const [noti, setNoti] = useState(true);
-  // const notificationListener = useRef();
-  // const responseListener = useRef();
 
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync().then(({ token, noti }) => {
-  //     setExpoPushToken(token);
-  //     setNoti(noti);
+  // const onDisplayNotification = async ({ title = "", body = "" }) => {
+  //   const channelId = await notifee.createChannel({
+  //     id: "channelId",
+  //     name: "channelName",
   //   });
 
-  //   notificationListener.current =
-  //     Notifications.addNotificationReceivedListener((notification) => {
-  //       setNotification(notification);
-  //     });
+  //   await notifee.displayNotification({
+  //     title,
+  //     body,
+  //     android: {
+  //       channelId,
+  //     },
+  //   });
+  // };
 
-  //   responseListener.current =
-  //     Notifications.addNotificationResponseReceivedListener((response) => {
-  //       console.log(response);
-  //     });
+  // useEffect(() => {
+  //   //push notification permission 요청
+  //   requestUserPermission();
 
-  //   return () => {
-  //     Notifications.removeNotificationSubscription(
-  //       notificationListener.current
-  //     );
-  //     Notifications.removeNotificationSubscription(responseListener.current);
-  //   };
+  //   // 포그라운드에서 푸시메시지 수신
+  //   return messaging().onMessage(async (remoteMessage) => {
+  //     const title = remoteMessage?.notification?.title;
+  //     const body = remoteMessage?.notification?.body;
+  //     await onDisplayNotification({ title, body });
+  //   });
   // }, []);
 
   return (

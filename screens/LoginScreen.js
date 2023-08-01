@@ -14,7 +14,6 @@ import Input from "../components/ui/Input";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState, useRef } from "react";
 import { login } from "../utill/auth";
-import * as Device from "expo-device";
 import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 import jwtDecode from "jwt-decode";
@@ -40,31 +39,6 @@ function LoginScreen({ navigation }) {
     setPw(text);
   };
 
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync().then((token) =>
-  //     setExpoPushToken(token)
-  //   );
-
-  //   notificationListener.current =
-  //     Notifications.addNotificationReceivedListener((notification) => {
-  //       setNotification(notification);
-  //     });
-
-  //   responseListener.current =
-  //     Notifications.addNotificationResponseReceivedListener((response) => {
-  //       console.log(response);
-  //     });
-
-  //   return () => {
-  //     Notifications.removeNotificationSubscription(
-  //       notificationListener.current
-  //     );
-  //     Notifications.removeNotificationSubscription(responseListener.current);
-  //     console.log(expoPushToken);
-  //     console.log("ㅗㅑㅗㅑ");
-  //   };
-  // }, []);
-
   async function schedulePushNotification() {
     await Notifications.scheduleNotificationAsync({
       content: {
@@ -80,10 +54,10 @@ function LoginScreen({ navigation }) {
   async function loginHandler() {
     setIsAuthenticating(true);
     try {
-      const token = await login({ id: id, pw: pw });
+      const { token, unsubscribe } = await login({ id: id, pw: pw });
       console.log(token.headers.authorization);
       console.log(token.data);
-      authCtx.authenticate(token.headers.authorization, token.data);
+      authCtx.authenticate(token.headers.authorization, token.data, unsubscribe);
       const decoded = jwtDecode(token.headers.authorization);
       console.log(decoded);
 
@@ -110,12 +84,6 @@ function LoginScreen({ navigation }) {
         }}
       />
       <ScrollView>
-        {/* <Button
-          title="Press to schedule a notification"
-          onPress={async () => {
-            await schedulePushNotification();
-          }}
-        /> */}
         <View style={styles.content}>
           <View>
             <Input

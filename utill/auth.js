@@ -1,11 +1,9 @@
 import axios from "axios";
 import { URL } from "./config";
 import { Alert } from "react-native";
-import messaging from "@react-native-firebase/messaging";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// const URL = "https://api.doroapp.com";
-// const URL = "http://10.0.2.2:8080";
+import messaging from "@react-native-firebase/messaging";
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -14,7 +12,13 @@ async function requestUserPermission() {
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
-    console.log('Authorization status:', authStatus);
+    console.log("Authorization status:", authStatus);
+    const fcmToken = await messaging().getToken();
+    await AsyncStorage.setItem("fcmToken", fcmToken);
+    return fcmToken;
+  } else {
+    await AsyncStorage.removeItem("fcmToken");
+    return null; // 권한이 없는 경우 null 반환
   }
 }
 
@@ -84,10 +88,10 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
-  await requestUserPermission().
   // const fcmToken = await messaging().getToken();
   // Alert.alert("fcm", fcmToken);
   try {
+    const fcmToken = await requestUserPermission();
     const response = await axios.post(
       URL + "/login",
       {
@@ -95,15 +99,24 @@ export async function login({ id, pw }) {
         password: pw,
       },
       {
-        headers: {
-          fcmToken: await messaging().getToken()
-        },
+        headers: fcmToken ? { fcmToken: fcmToken } : undefined,
       }
     );
 
     const token = response;
 
-    return token;
+    let unsubscribe = () => {}
+
+    // 로그인 성공 후, 푸시메시지 수신 리스너 등록
+    if (fcmToken) {
+      unsubscribe = messaging().onMessage(async (remoteMessage) => {
+        const title = remoteMessage?.notification?.title;
+        const body = remoteMessage?.notification?.body;
+        await onDisplayNotification({ title, body });
+      });
+    }
+
+    return { token, unsubscribe }
   } catch (error) {
     console.error("Error occurred during login: ", error);
   }

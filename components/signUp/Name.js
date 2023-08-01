@@ -34,8 +34,8 @@ function Name({ navigation, route }) {
 
   const { signData, setSignData } = useContext(SignContext);
   const [btn, setBtn] = useState(false);
+  const [date, setDate] = useState("");
   const [mode, setMode] = useState("date");
-  const [date, setDate] = useState(new Date(""));
   const [show, setShow] = useState(false);
   const [check, setCheck] = useState(false);
 
