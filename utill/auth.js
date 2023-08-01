@@ -4,23 +4,24 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import messaging from "@react-native-firebase/messaging";
+import notifee from "@notifee/react-native";
 
-async function requestUserPermission() {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+// async function requestUserPermission() {
+//   const authStatus = await messaging().requestPermission();
+//   const enabled =
+//     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+//     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  if (enabled) {
-    console.log("Authorization status:", authStatus);
-    const fcmToken = await messaging().getToken();
-    await AsyncStorage.setItem("fcmToken", fcmToken);
-    return fcmToken;
-  } else {
-    await AsyncStorage.removeItem("fcmToken");
-    return null; // 권한이 없는 경우 null 반환
-  }
-}
+//   if (enabled) {
+//     console.log("Authorization status:", authStatus);
+//     const fcmToken = await messaging().getToken();
+//     await AsyncStorage.setItem("fcmToken", fcmToken);
+//     return fcmToken;
+//   } else {
+//     await AsyncStorage.removeItem("fcmToken");
+//     return null; // 권한이 없는 경우 null 반환
+//   }
+// }
 
 // const URL = "https://api.doroapp.com";
 // const URL = "http://10.0.2.2:8080";
@@ -91,8 +92,38 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log("Authorization status:", authStatus);
+      const fcmToken = await messaging().getToken();
+      await AsyncStorage.setItem("fcmToken", fcmToken);
+      return fcmToken;
+    } else {
+      await AsyncStorage.removeItem("fcmToken");
+      return null; // 권한이 없는 경우 null 반환
+    }
+  }
+  const onDisplayNotification = async ({ title = "", body = "" }) => {
+    const channelId = await notifee.createChannel({
+      id: "channelId",
+      name: "channelName",
+    });
+
+    await notifee.displayNotification({
+      title,
+      body,
+      android: {
+        channelId,
+      },
+    });
+  };
   // const fcmToken = await messaging().getToken();
-  // Alert.alert("fcm", fcmToken);
+  // Alert.alert(“fcm”, fcmToken);
   try {
     const fcmToken = await requestUserPermission();
     const response = await axios.post(
@@ -106,6 +137,14 @@ export async function login({ id, pw }) {
       }
     );
     const token = response;
+    // 로그인 성공 후, 푸시메시지 수신 리스너 등록
+    if (fcmToken) {
+      messaging().onMessage(async (remoteMessage) => {
+        const title = remoteMessage?.notification?.title;
+        const body = remoteMessage?.notification?.body;
+        await onDisplayNotification({ title, body });
+      });
+    }
     return token;
   } catch (error) {
     console.error("Error occurred during login: ", error);
