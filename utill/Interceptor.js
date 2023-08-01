@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { URL } from "./config";
+import { Alert } from "react-native";
 
 function Interceptor() {
   const instance = axios.create({
@@ -70,7 +71,8 @@ function Interceptor() {
           });
           return retryOriginalRequest;
         } catch (error) {
-          console.log("error발생" + error);
+          console.log("error발생 리프래시" + error);
+          Alert.alert("에러", "로그아웃 후 다시 로그인을 해주세요");
         }
       }
       return Promise.reject(error);
