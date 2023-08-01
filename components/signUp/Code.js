@@ -381,6 +381,40 @@ function Code({ navigation, route }) {
             </Pressable>
           </SafeAreaView>
         </Modal>
+
+        {/* <Modal
+          animationType="none"
+          transparent={true}
+          visible={visibleCode}
+          statusBarTranslucent={true}
+          onRequestClose={() => setVisibleCode(!visibleCode)}
+        >
+          <SafeAreaView style={{ flex: 1 }}>
+            <Pressable
+              style={styles.modalOverlay}
+              onPress={() => setVisibleCode(!visibleCode)}
+            >
+              <Pressable>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    height: 357,
+                    justifyContent: "space-between",
+
+                    borderTopEndRadius: 5.41,
+                    borderTopStartRadius: 5.41,
+                  }}
+                >
+                  <View>
+                    <View style={styles.statusTitleContainer}>
+                      <View style={styles.iconContainer}>
+                        <Pressable onPress={() => setVisibleCode(!visibleCode)}>
+                          <Modalx width={24} height={24} />
+                        </Pressable>
+                      </View>
+                      <Text style={styles.statusTitle}>기수</Text>
+                    </View>
+                  </View> */}
         <GenerationModal
           setVisibleCode={setVisibleCode}
           visibleCode={visibleCode}
@@ -391,6 +425,18 @@ function Code({ navigation, route }) {
           setStatusGStyle={setStatusGStyle}
           type={true}
         />
+        {/* <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                    <ButtonBig
+                      text="확인"
+                      style={GlobalStyles.colors.primaryDefault}
+                      onPress={() => setVisibleCode(false)}
+                    />
+                  </View>
+                </View>
+              </Pressable>
+            </Pressable>
+          </SafeAreaView>
+        </Modal> */}
       </View>
     </SafeAreaView>
   );

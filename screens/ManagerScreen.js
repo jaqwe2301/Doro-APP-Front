@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { CommonActions, useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Interceptor from "../utill/Interceptor";
 import { URL } from "../utill/config";
@@ -30,7 +31,19 @@ import { getProfile, logout, pushNotification } from "../utill/http";
 import { KRRegular } from "../constants/fonts";
 import FilterModal from "../components/ui/FilterModal";
 
+import messaging from "@react-native-firebase/messaging";
+
 function ManagerScreen() {
+  async function getToken() {
+    try {
+      const token = await messaging().getToken();
+      // await AsyncStorage.setItem("fcmToken", token);
+      setBody(token);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const [userData, setUserData] = useState([]);
   // const [filterUser, setFilterUser] = useState([]);
   const [title, setTitle] = useState("");
@@ -39,6 +52,10 @@ function ManagerScreen() {
   // const { lectures } = useLectures();
   // const [lecturesData, setLectureData] = useState([]);
   const instance = Interceptor();
+
+  useEffect(() => {
+    getToken();
+  }, []);
 
   useEffect(() => {
     instance
@@ -95,23 +112,27 @@ function ManagerScreen() {
         console.log("에러");
         console.log(error);
       });
-  }, []);
 
-  async function addAlarm() {
+    // getToken();
+  }, []);
+  const addAlarm = async () => {
     try {
       const response = await pushNotification({
-        body: body,
         title: title,
+        body: body,
       });
+      setBody(JSON.stringify(response))
       if (response.success) {
-        setBody(""); //z/
-        setTitle("");
+        Alert.alert("알림 전송 성공", `제목 : ${title}\n내용 : ${body}`);
+        // setBody("");
+        // setTitle("");
       }
       console.log(response);
     } catch (error) {
+      Alert.alert("알림 전송 실패", `제목 : ${title}\n내용 : ${body}`);
       console.log(error);
     }
-  }
+  };
 
   async function detailTutor(id) {
     try {

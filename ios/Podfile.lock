@@ -23,15 +23,15 @@ PODS:
   - EXImageLoader (4.3.0):
     - ExpoModulesCore
     - React-Core
-  - Expo (49.0.3):
+  - Expo (49.0.4):
     - ExpoModulesCore
   - ExpoDevice (5.4.0):
     - ExpoModulesCore
-  - ExpoImagePicker (14.3.1):
+  - ExpoImagePicker (14.3.2):
     - ExpoModulesCore
   - ExpoKeepAwake (12.3.0):
     - ExpoModulesCore
-  - ExpoModulesCore (1.5.7):
+  - ExpoModulesCore (1.5.8):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-NativeModulesApple
@@ -874,11 +874,11 @@ SPEC CHECKSUMS:
   EXFileSystem: d7f59869885cfeab3ac771e2a8d0f5ed98cd3fdb
   EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
   EXImageLoader: 34b214f9387e98f3c73989f15d8d5b399c9ab3f7
-  Expo: d5956de70d4076190861f6730b93e75478b6faf8
+  Expo: 57e6a756328a9dfe6e1342a1f048a26e98b27b08
   ExpoDevice: 1c1b0c9cad96c292c1de73948649cfd654b2b3c0
-  ExpoImagePicker: 530faafc88bffd0fb96c785327d91755edfdb220
+  ExpoImagePicker: c58fdf28be551681a8edc550bcec76c397a8dfcd
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
-  ExpoModulesCore: f8f3cac222bb0f574c77664d7e05817eaa97434b
+  ExpoModulesCore: 924a69d9bffa2925c1f7eafab37764565f861d5d
   EXSplashScreen: 89586b0961acd173b04713b7457949b063a659da
   FBLazyVector: 4cce221dd782d3ff7c4172167bba09d58af67ccb
   FBReactNativeSpec: c6bd9e179757b3c0ecf815864fae8032377903ef
