@@ -8,12 +8,14 @@ import {
   Alert,
   Modal,
   NativeModules,
+  Platform,
+  SafeAreaView,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import InputLine from "../components/ui/InputLine";
 import { useContext, useEffect, useState } from "react";
 import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
-
+import Left from "../assets/left.svg";
 import { getProfile2, updateProfile, updateUserImage } from "../utill/http";
 import { Ionicons } from "@expo/vector-icons";
 import ButtonBig from "../components/ui/ButtonBig";
@@ -23,6 +25,8 @@ import * as ImagePicker from "expo-image-picker";
 
 import Down from "../assets/down.svg";
 import { KeyboardAvoidingView } from "react-native";
+import { KRBold } from "../constants/fonts";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
@@ -42,9 +46,28 @@ function ProfileEdit({ navigation, route }) {
   const [major, setMajor] = useState(data.degree.major);
   const [name, setName] = useState(data.name);
 
+  const [date, setDate] = useState(
+    data.birth !== null ? new Date(data.birth) : null
+  );
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    if (Platform.OS === "android") {
+      setShow(false);
+      // setBtn(true);
+      setlbtnColor(
+        inputName !== ""
+          ? GlobalStyles.colors.primaryDefault
+          : GlobalStyles.colors.gray05
+      );
+    }
+    setDate(currentDate);
+  };
+
   const [school, setSchool] = useState(data.degree.school);
   const [studentId, setStudentId] = useState(data.degree.studentId);
   const [studentStatus, setStudentStatus] = useState(data.degree.studentStatus);
+  const [show, setShow] = useState(false);
   // const navigation = useNavigation();
 
   const status1 = studentStatus === "ATTENDING" ? "재학" : "휴학";
@@ -87,6 +110,7 @@ function ProfileEdit({ navigation, route }) {
         }
       }
       const success = await updateProfile({
+        birth: date,
         generation: generation,
         major: major,
         phone: phoneNum,
@@ -167,6 +191,9 @@ function ProfileEdit({ navigation, route }) {
       setVisible(!visible);
     }
   }
+  function okayBtn2() {
+    setShow(false);
+  }
 
   function navi() {
     navigation.navigate("searchPw");
@@ -180,10 +207,6 @@ function ProfileEdit({ navigation, route }) {
   };
   const handleStudentIdChange = (text) => {
     setStudentId(text);
-  };
-
-  const handleGenerationChange = (text) => {
-    setGeneration(text);
   };
 
   //camera
@@ -232,6 +255,7 @@ function ProfileEdit({ navigation, route }) {
       });
     }
   }, []);
+  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
 
   return (
     <KeyboardAvoidingView
@@ -276,9 +300,44 @@ function ProfileEdit({ navigation, route }) {
             </View>
             <View style={styles.contentContainer}>
               <Text style={styles.title}>생년월일</Text>
-              <Text style={styles.contentText}>
+              {/* <Text style={styles.contentText}>
                 {data.birth === "1950-01-01" ? "미입력" : data.birth}
-              </Text>
+              </Text> */}
+              <Pressable
+                style={{
+                  flex: 1,
+                  borderBottomColor: GlobalStyles.colors.gray06,
+                  borderBottomWidth: 0.5,
+                  marginLeft: 45,
+                }}
+                onPress={() => setShow(true)}
+              >
+                {/* <InputLine
+                  onChangeText={handleMajorChange}
+                  value={birth}
+                  editable={false}
+                /> */}
+                {date !== null ? (
+                  <Text
+                    style={[
+                      styles.contentText,
+                      {
+                        color: GlobalStyles.colors.gray01,
+                        flex: 1,
+                        marginLeft: 0,
+                      },
+                    ]}
+                  >
+                    {date
+                      .toLocaleDateString("ko-KR", options)
+                      .replace(/\./g, "-")
+                      .replace(/\.|-$/, "")
+                      .replace(/\s/g, "")}
+                  </Text>
+                ) : (
+                  <Text />
+                )}
+              </Pressable>
             </View>
             <View style={styles.contentContainer}>
               <Text style={styles.title}>휴대전화번호</Text>
@@ -331,6 +390,7 @@ function ProfileEdit({ navigation, route }) {
               <InputLine
                 onChangeText={handleStudentIdChange}
                 value={studentId}
+                keyboardType="number-pad"
               />
             </View>
             <View style={styles.contentContainer}>
@@ -457,6 +517,84 @@ function ProfileEdit({ navigation, route }) {
               </Pressable>
             </Pressable>
           </Modal>
+          {Platform.OS === "ios" ? (
+            <Modal
+              animationType="none"
+              transparent={true}
+              visible={show}
+              statusBarTranslucent={true}
+              onRequestClose={() => setShow(!show)}
+            >
+              <Pressable
+                style={styles.modalOverlay}
+                onPress={() => setShow(!show)}
+              >
+                <Pressable>
+                  <View
+                    style={{
+                      backgroundColor: "white",
+                      height: 379,
+                      justifyContent: "space-between",
+
+                      borderTopEndRadius: 5.41,
+                      borderTopStartRadius: 5.41,
+                    }}
+                  >
+                    <View
+                      style={{
+                        marginTop: 32,
+                        marginLeft: 16,
+                        flexDirection: "row",
+
+                        alignItems: "center",
+                      }}
+                    >
+                      <Left width={24} height={24} />
+                      <Text style={KRBold.Headline4}>
+                        태어난 년월을 선택하세요
+                      </Text>
+                    </View>
+
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={date !== null ? date : new Date()}
+                      mode="date"
+                      // is24Hour={true}
+                      onChange={onChange}
+                      display="spinner"
+                      locale="ko"
+                      positiveButton={{ label: "확인", textColor: "green" }}
+                      textColor={GlobalStyles.colors.gray01}
+                      negativeButton={{ label: "취소", textColor: "red" }}
+                    />
+
+                    <View style={{ marginBottom: 34, marginHorizontal: 20 }}>
+                      <ButtonBig
+                        text="확인"
+                        style={GlobalStyles.colors.primaryDefault}
+                        onPress={okayBtn2}
+                      />
+                    </View>
+                  </View>
+                </Pressable>
+              </Pressable>
+            </Modal>
+          ) : (
+            show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date !== null ? date : new Date()}
+                mode="date"
+                // is24Hour={true}
+                onChange={onChange}
+                display="spinner"
+                locale="ko"
+                // positiveButton={{ label: "확인", textColor: "green" }}
+                textColor={GlobalStyles.colors.gray01}
+                // negativeButton={{ label: "취소", textColor: "red" }}
+              />
+            )
+          )}
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
