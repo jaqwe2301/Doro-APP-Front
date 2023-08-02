@@ -52,6 +52,7 @@ export async function getProfile2({
 }
 
 export async function updateProfile({
+  birth,
   generation,
   major,
   phone,
@@ -62,6 +63,7 @@ export async function updateProfile({
 }) {
   try {
     const response = await instance.patch("/users/" + `${parseInt(id)}`, {
+      birth: birth,
       generation: parseInt(generation),
       major: major,
       phone: phone,
