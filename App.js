@@ -74,25 +74,25 @@ import TutorScreen from "./screens/TutorScreen";
 import * as SplashScreen from "expo-splash-screen";
 import HistoryScreen from "./screens/HistoryScreen";
 
-import messaging from "@react-native-firebase/messaging";
-import notifee from "@notifee/react-native";
+// import messaging from "@react-native-firebase/messaging";
+// import notifee from "@notifee/react-native";
 
-async function requestUserPermission() {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-  //android의 경우 기본값이 authorizaed
+// async function requestUserPermission() {
+//   const authStatus = await messaging().requestPermission();
+//   const enabled =
+//     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+//     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+//   //android의 경우 기본값이 authorizaed
 
-  if (enabled) {
-    await messaging()
-      .getToken()
-      .then((fcmToken) => {
-        console.log(fcmToken); //fcm token을 활용해 특정 device에 push를 보낼 수 있다.
-      })
-      .catch((e) => console.log("error: ", e));
-  }
-}
+//   if (enabled) {
+//     await messaging()
+//       .getToken()
+//       .then((fcmToken) => {
+//         console.log(fcmToken); //fcm token을 활용해 특정 device에 push를 보낼 수 있다.
+//       })
+//       .catch((e) => console.log("error: ", e));
+//   }
+// }
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -752,32 +752,17 @@ function Navigation({ notificationAgreement }) {
 export default function App() {
   const [noti, setNoti] = useState(true);
 
-  const onDisplayNotification = async ({ title = "", body = "" }) => {
-    const channelId = await notifee.createChannel({
-      id: "channelId",
-      name: "channelName",
-    });
+  // useEffect(() => {
+  //   //push notification permission 요청
+  //   requestUserPermission();
 
-    await notifee.displayNotification({
-      title,
-      body,
-      android: {
-        channelId,
-      },
-    });
-  };
-
-  useEffect(() => {
-    //push notification permission 요청
-    requestUserPermission();
-
-    // 포그라운드에서 푸시메시지 수신
-    return messaging().onMessage(async (remoteMessage) => {
-      const title = remoteMessage?.notification?.title;
-      const body = remoteMessage?.notification?.body;
-      await onDisplayNotification({ title, body });
-    });
-  }, []);
+  //   // 포그라운드에서 푸시메시지 수신
+  //   return messaging().onMessage(async (remoteMessage) => {
+  //     const title = remoteMessage?.notification?.title;
+  //     const body = remoteMessage?.notification?.body;
+  //     await onDisplayNotification({ title, body });
+  //   });
+  // }, []);
 
   return (
     <SafeAreaView style={styles.container}>
