@@ -37,7 +37,8 @@ function Id({ navigation, route }) {
     if (
       text.length >= 4 &&
       text.length <= 20 &&
-      text.search(/[a-zA-Z0-9]+/g) >= 0
+      text.search(/[a-zA-Z0-9]+/g) >= 0 &&
+      !/\s/.test(text) //추가된 코드
     ) {
       setIsNavi(true);
       setlbtnColor(GlobalStyles.colors.primaryAccent);
