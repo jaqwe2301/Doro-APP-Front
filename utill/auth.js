@@ -4,23 +4,24 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import messaging from "@react-native-firebase/messaging";
+import notifee from "@notifee/react-native";
 
-async function requestUserPermission() {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+// async function requestUserPermission() {
+//   const authStatus = await messaging().requestPermission();
+//   const enabled =
+//     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+//     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  if (enabled) {
-    console.log("Authorization status:", authStatus);
-    const fcmToken = await messaging().getToken();
-    await AsyncStorage.setItem("fcmToken", fcmToken);
-    return fcmToken;
-  } else {
-    await AsyncStorage.removeItem("fcmToken");
-    return null; // 권한이 없는 경우 null 반환
-  }
-}
+//   if (enabled) {
+//     console.log("Authorization status:", authStatus);
+//     const fcmToken = await messaging().getToken();
+//     await AsyncStorage.setItem("fcmToken", fcmToken);
+//     return fcmToken;
+//   } else {
+//     await AsyncStorage.removeItem("fcmToken");
+//     return null; // 권한이 없는 경우 null 반환
+//   }
+// }
 
 export function authPhoneNum({ messageType, phone }) {
   axios
@@ -88,10 +89,41 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  let fcmToken = null
+  
+  if (enabled) {
+    console.log("Authorization status:", authStatus);
+    fcmToken = await messaging().getToken();
+    await AsyncStorage.setItem("fcmToken", fcmToken);
+  } else {
+    await AsyncStorage.removeItem("fcmToken");
+  }
+
+  // async function requestUserPermission() {
+  //   const authStatus = await messaging().requestPermission();
+  //   const enabled =
+  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  //   if (enabled) {
+  //     console.log("Authorization status:", authStatus);
+  //     const fcmToken = await messaging().getToken();
+  //     await AsyncStorage.setItem("fcmToken", fcmToken);
+  //     return fcmToken;
+  //   } else {
+  //     await AsyncStorage.removeItem("fcmToken");
+  //     return null; // 권한이 없는 경우 null 반환
+  //   }
+  // }
+
   // const fcmToken = await messaging().getToken();
-  // Alert.alert("fcm", fcmToken);
+  // Alert.alert(“fcm”, fcmToken);
   try {
-    const fcmToken = await requestUserPermission();
     const response = await axios.post(
       URL + "/login",
       {
@@ -105,19 +137,32 @@ export async function login({ id, pw }) {
 
     const token = response;
 
-    let unsubscribe = () => {}
-
     // 로그인 성공 후, 푸시메시지 수신 리스너 등록
     if (fcmToken) {
-      unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      const onDisplayNotification = async ({ title = "", body = "" }) => {
+        const channelId = await notifee.createChannel({
+          id: "channelId",
+          name: "channelName",
+        });
+    
+        await notifee.displayNotification({
+          title,
+          body,
+          android: {
+            channelId,
+          },
+        });
+      };
+
+      messaging().onMessage(async (remoteMessage) => {
         const title = remoteMessage?.notification?.title;
         const body = remoteMessage?.notification?.body;
         await onDisplayNotification({ title, body });
       });
     }
-
-    return { token, unsubscribe }
+    return token;
   } catch (error) {
+    Alert.alert("로그인 실패", "로그인에 실패하셨습니다.")
     console.error("Error occurred during login: ", error);
   }
 }

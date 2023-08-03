@@ -54,10 +54,10 @@ function LoginScreen({ navigation }) {
   async function loginHandler() {
     setIsAuthenticating(true);
     try {
-      const { token, unsubscribe } = await login({ id: id, pw: pw });
+      const token = await login({ id: id, pw: pw });
       console.log(token.headers.authorization);
       console.log(token.data);
-      authCtx.authenticate(token.headers.authorization, token.data, unsubscribe);
+      authCtx.authenticate(token.headers.authorization, token.data);
       const decoded = jwtDecode(token.headers.authorization);
       console.log(decoded);
 

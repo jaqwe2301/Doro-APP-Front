@@ -752,21 +752,6 @@ function Navigation({ notificationAgreement }) {
 export default function App() {
   const [noti, setNoti] = useState(true);
 
-  // const onDisplayNotification = async ({ title = "", body = "" }) => {
-  //   const channelId = await notifee.createChannel({
-  //     id: "channelId",
-  //     name: "channelName",
-  //   });
-
-  //   await notifee.displayNotification({
-  //     title,
-  //     body,
-  //     android: {
-  //       channelId,
-  //     },
-  //   });
-  // };
-
   // useEffect(() => {
   //   //push notification permission 요청
   //   requestUserPermission();

@@ -5,8 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Interceptor from "./Interceptor";
 import { URL } from "./config";
 
-const authCtx = useContext(AuthContext);
-
 // const URL = "http://10.0.2.2:8080";
 // const URL = "https://api.doroapp.com";
 const instance = Interceptor();
@@ -404,9 +402,6 @@ export async function logout() {
   try {
     const fcmToken = await AsyncStorage.getItem("fcmToken");
     // console.log(fcmToken + "로그아웃 fcm");
-    authCtx.unsubscriber && authCtx.unsubscriber(); // unsubscriber가 존재할 때 실행
-    await logout();
-    authCtx.logout();
     const response = await instance.post("/logout", undefined, {
       headers: {
         fcmToken: fcmToken,
