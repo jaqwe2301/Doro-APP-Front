@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "772279583725",
+    "firebase_url": "https://doro-app-project-default-rtdb.firebaseio.com",
     "project_id": "doro-app-project",
     "storage_bucket": "doro-app-project.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "772279583725-1r4uoe9p0pu2kd4m8scjrlnm6jcgch1f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.doro.android",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
         {
           "client_id": "772279583725-0uvcb91grs9lo0jpl5ehe3hae4mnr8or.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +38,13 @@
             {
               "client_id": "772279583725-0uvcb91grs9lo0jpl5ehe3hae4mnr8or.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "772279583725-j8r4ggm5v6bpeqststhe89j2a9q4pkkg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "net.doroedu.doroedu"
+              }
             }
           ]
         }

@@ -70,30 +70,29 @@ import ProfileFill from "./assets/profile_fill.svg";
 import FinishPw from "./components/signUp/FinishPw";
 import DeleteUser from "./screens/DeleteUser";
 import AgreeInfo2 from "./components/signUp/AgreeInfo2";
-// import { useState, useEffect, useRef } from 'react';
-// import { Text, View, Button, Platform } from 'react-native';
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 import TutorScreen from "./screens/TutorScreen";
 import * as SplashScreen from "expo-splash-screen";
 import HistoryScreen from "./screens/HistoryScreen";
 
-// import messaging from '@react-native-firebase/messaging';
+// import messaging from "@react-native-firebase/messaging";
+// import notifee from "@notifee/react-native";
 
-// async function getToken() {
-//   const token = await messaging().getToken();
-//   console.log(token);
+// async function requestUserPermission() {
+//   const authStatus = await messaging().requestPermission();
+//   const enabled =
+//     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+//     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+//   //android의 경우 기본값이 authorizaed
+
+//   if (enabled) {
+//     await messaging()
+//       .getToken()
+//       .then((fcmToken) => {
+//         console.log(fcmToken); //fcm token을 활용해 특정 device에 push를 보낼 수 있다.
+//       })
+//       .catch((e) => console.log("error: ", e));
+//   }
 // }
-
-// getToken();
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -751,35 +750,19 @@ function Navigation({ notificationAgreement }) {
 }
 
 export default function App() {
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
   const [noti, setNoti] = useState(true);
-  const notificationListener = useRef();
-  const responseListener = useRef();
 
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(({ token, noti }) => {
-      setExpoPushToken(token);
-      setNoti(noti);
-    });
+  // useEffect(() => {
+  //   //push notification permission 요청
+  //   requestUserPermission();
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+  //   // 포그라운드에서 푸시메시지 수신
+  //   return messaging().onMessage(async (remoteMessage) => {
+  //     const title = remoteMessage?.notification?.title;
+  //     const body = remoteMessage?.notification?.body;
+  //     await onDisplayNotification({ title, body });
+  //   });
+  // }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -793,53 +776,6 @@ export default function App() {
       </AuthContextProvider>
     </SafeAreaView>
   );
-}
-
-async function registerForPushNotificationsAsync() {
-  let token;
-  let noti;
-  // const authCtx = useContext(AuthContext);
-
-  if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("default", {
-      name: "default",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
-    });
-  }
-
-  if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    noti = true;
-    if (finalStatus !== "granted") {
-      alert("알림 설정 거부하셨습니다!");
-      noti = false;
-      return { token: null, noti };
-    }
-    // token = (
-    //   await Notifications.getExpoPushTokenAsync({
-    //     projectId: Constants.expoConfig?.extra?.eas?.projectId,
-    //   })
-    // ).data;
-    token = (await Notifications.getDevicePushTokenAsync()).data;
-    // authCtx.fcmToken(token);
-    AsyncStorage.setItem("fcmToken", token);
-    console.log(token + "이건 토큰");
-    console.log(noti + "이건 noti");
-  } else {
-    // alert("Must use physical device for Push Notifications");
-    console.log(noti);
-    noti = false;
-  }
-
-  return { token, noti };
 }
 
 const styles = StyleSheet.create({

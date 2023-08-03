@@ -141,7 +141,7 @@ export async function pushNotification({ body, title }) {
     const response = await instance.post("/notifications", {
       title: title,
       body: body,
-      userIds: [],
+      // userIds: [],
     });
     return response.data;
   } catch (error) {
@@ -401,7 +401,7 @@ export async function alarmEdit({ id, notificationAgreement }) {
 export async function logout() {
   try {
     const fcmToken = await AsyncStorage.getItem("fcmToken");
-    console.log(fcmToken + "로그아웃 fcm");
+    // console.log(fcmToken + "로그아웃 fcm");
     const response = await instance.post("/logout", undefined, {
       headers: {
         fcmToken: fcmToken,
