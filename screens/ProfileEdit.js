@@ -216,6 +216,16 @@ function ProfileEdit({ navigation, route }) {
     if (!statusCamera?.granted) {
       const permission = await requestPermission();
       if (!permission.granted) {
+        Alert.alert(
+          "카메라 권한 요청",
+          "이 기능을 사용하려면 카메라 권한이 필요합니다. 설정에서 권한을 허용해주세요.",
+          [
+            {
+              text: "닫기",
+              style: "cancel",
+            },
+          ]
+        );
         return null;
       }
     }
