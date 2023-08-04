@@ -6,10 +6,12 @@ import {
   ScrollView,
   Pressable,
   Keyboard,
-  Image,
+  // Image,
   Dimensions,
   NativeModules,
   KeyboardAvoidingView,
+  SafeAreaView,
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import {
@@ -23,6 +25,7 @@ import { useContext, useEffect, useState } from "react";
 import Camera from "../assets/camera.svg";
 import { URL } from "../utill/config";
 
+import Image from "react-native-scalable-image";
 import * as ImagePicker from "expo-image-picker";
 import NoticeScreen from "./NoticeScreen";
 import axios from "axios";
@@ -37,21 +40,30 @@ function AddNoticeScreen({ navigation }) {
   const [imageUrl, setImageUrl] = useState("");
   const [filename, setFileName] = useState("");
   const [type, setType] = useState("");
-
+  const [randomKey, setRandomKey] = useState("");
   //camera
 
   const cameraHandler = async () => {
     if (!statusCamera?.granted) {
       const permission = await requestPermission();
       if (!permission.granted) {
+        Alert.alert(
+          "카메라 권한 요청",
+          "이 기능을 사용하려면 카메라 권한이 필요합니다. 설정에서 권한을 허용해주세요.",
+          [
+            {
+              text: "닫기",
+              style: "cancel",
+            },
+          ]
+        );
         return null;
       }
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      // aspect: [1, 1],
+      allowsEditing: false,
       quality: 1,
     });
 
@@ -60,6 +72,7 @@ function AddNoticeScreen({ navigation }) {
     if (!result.canceled) {
       setFileName(result.assets[0].uri.split("/").pop());
       setImageUrl(result.assets[0].uri);
+      setRandomKey(Math.random().toString());
       let match = /\.(\w+)$/.exec(result.assets[0].uri.split("/").pop());
       let imageType = match ? `image/${match[1]}` : `image`;
       setType(imageType);
@@ -67,34 +80,6 @@ function AddNoticeScreen({ navigation }) {
       return null;
     }
   };
-
-  // async function completeHandler3() {
-  //   const formData = new FormData();
-  //   const announcementReq = {
-  //     title: title,
-  //     body: body,
-  //     writer: "z",
-  //   };
-  //   formData.append(
-  //     "announcementReq",
-  //     // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
-  //     // new Blob([{ title: "title", body: "body", writer: "노세인" }])
-  //     announcementReq
-  //     // JSON.stringify(value)
-  //     // value
-  //   );
-  //   try {
-  //     const response = await createAnnouncement({
-  //       formData: formData,
-  //       title: title,
-  //       body: body,
-  //     });
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log(JSON.stringify(formData));
-  //     console.log(error);
-  //   }
-  // }
 
   async function completeHandler3() {
     try {
@@ -142,7 +127,6 @@ function AddNoticeScreen({ navigation }) {
     });
   }, [completeHandler3]);
 
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const { StatusBarManager } = NativeModules;
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   useEffect(() => {
@@ -159,60 +143,61 @@ function AddNoticeScreen({ navigation }) {
       style={{ flex: 1 }}
       keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
     >
-      <View style={styles.container}>
-        <View style={styles.headerBar} />
-        <ScrollView>
-          <Pressable onPress={() => Keyboard.dismiss()}>
-            <View style={styles.titleContainer}>
-              <TextInput
-                placeholder="제목"
-                style={styles.title}
-                placeholderTextColor={GlobalStyles.colors.gray03}
-                multiline
-                onChangeText={(text) => setTitle(text)}
-                value={title}
-              ></TextInput>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <View style={styles.headerBar} />
+          <ScrollView>
+            <Pressable onPress={() => Keyboard.dismiss()}>
+              <View style={styles.titleContainer}>
+                <TextInput
+                  placeholder="제목"
+                  style={styles.title}
+                  placeholderTextColor={GlobalStyles.colors.gray03}
+                  multiline
+                  onChangeText={(text) => setTitle(text)}
+                  value={title}
+                ></TextInput>
+              </View>
+              <View style={styles.contentContainer}>
+                <TextInput
+                  placeholder="내용을 입력하세요."
+                  style={styles.content}
+                  multiline
+                  value={body}
+                  onChangeText={(text) => setBody(text)}
+                  placeholderTextColor={GlobalStyles.colors.gray03}
+                ></TextInput>
+              </View>
+            </Pressable>
+            <View
+              style={{ marginHorizontal: 20, marginTop: 10, marginBottom: 40 }}
+            >
+              {imageUrl && (
+                <Image
+                  key={randomKey}
+                  source={{ uri: imageUrl }}
+                  width={Dimensions.get("window").width - 40}
+                />
+              )}
             </View>
-            <View style={styles.contentContainer}>
-              <TextInput
-                placeholder="내용을 입력하세요."
-                style={styles.content}
-                multiline
-                value={body}
-                onChangeText={(text) => setBody(text)}
-                placeholderTextColor={GlobalStyles.colors.gray03}
-              ></TextInput>
-            </View>
-          </Pressable>
-          <View style={{ marginHorizontal: 20 }}>
-            {imageUrl && (
-              <Image
-                source={{ uri: imageUrl }}
-                style={{
-                  width: "100%",
-                  height: 500,
-                  resizeMode: "contain",
-                }}
-              />
-            )}
+          </ScrollView>
+          <View
+            style={{
+              height: 42,
+              borderTopWidth: 0.8,
+              borderTopColor: GlobalStyles.colors.gray04,
+              justifyContent: "center",
+              paddingLeft: 6,
+            }}
+          >
+            <Pressable onPress={cameraHandler}>
+              <View style={{ margin: 10 }}>
+                <Camera width={24} height={24} />
+              </View>
+            </Pressable>
           </View>
-        </ScrollView>
-        <View
-          style={{
-            height: 42,
-            borderTopWidth: 0.8,
-            borderTopColor: GlobalStyles.colors.gray04,
-            justifyContent: "center",
-            paddingLeft: 6,
-          }}
-        >
-          <Pressable onPress={cameraHandler}>
-            <View style={{ margin: 10 }}>
-              <Camera width={24} height={24} />
-            </View>
-          </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }
@@ -243,6 +228,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     margin: 20,
+    marginBottom: 0,
   },
   completeText: {
     fontWeight: "400",
