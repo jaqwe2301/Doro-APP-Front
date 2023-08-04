@@ -5,7 +5,6 @@ import {
   ScrollView,
   TextInput,
   Pressable,
-  Image,
   SafeAreaView,
   NativeModules,
 } from "react-native";
@@ -16,9 +15,11 @@ import { editAnnouncement, getAnnouncementId, getProfile } from "../utill/http";
 
 import Camera from "../assets/camera.svg";
 
+import Image from "react-native-scalable-image";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAvoidingView } from "react-native";
 import { HeaderContext } from "../store/header-context";
+import { Dimensions } from "react-native";
 
 function EditNoticeScreen({ navigation, route }) {
   const data = route.params.data;
@@ -29,6 +30,7 @@ function EditNoticeScreen({ navigation, route }) {
   const [type, setType] = useState("");
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { isNoticeUpdate, setIsNoticeUpdate } = useContext(HeaderContext);
+  const [randomKey, setRandomKey] = useState("");
 
   async function completeHandler() {
     const response = await getProfile({ id: headerId });
@@ -110,8 +112,7 @@ function EditNoticeScreen({ navigation, route }) {
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      // aspect: [1, 1],
+      allowsEditing: false,
       quality: 1,
     });
 
@@ -120,6 +121,7 @@ function EditNoticeScreen({ navigation, route }) {
     if (!result.canceled) {
       setFileName(result.assets[0].uri.split("/").pop());
       setImageUrl(result.assets[0].uri);
+      setRandomKey(Math.random().toString());
       let match = /\.(\w+)$/.exec(result.assets[0].uri.split("/").pop());
       let imageType = match ? `image/${match[1]}` : `image`;
       setType(imageType);
@@ -169,15 +171,14 @@ function EditNoticeScreen({ navigation, route }) {
                 multiline
               />
             </View>
-            <View style={{ marginHorizontal: 20 }}>
+            <View
+              style={{ marginHorizontal: 20, marginTop: 10, paddingBottom: 40 }}
+            >
               {imageUrl && (
                 <Image
+                  key={randomKey}
                   source={{ uri: imageUrl }}
-                  style={{
-                    width: "100%",
-                    height: 500,
-                    resizeMode: "contain",
-                  }}
+                  width={Dimensions.get("window").width - 40}
                 />
               )}
             </View>
@@ -214,6 +215,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     margin: 20,
+    marginBottom: 0,
   },
   title: {
     fontWeight: "600",

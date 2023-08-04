@@ -3,10 +3,10 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   Pressable,
   Alert,
   SafeAreaView,
+  Dimensions,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
@@ -16,30 +16,16 @@ import Edit from "../assets/edit.svg";
 import Delete from "../assets/delete.svg";
 import { HeaderContext } from "../store/header-context";
 import { useContext, useEffect } from "react";
+import Image from "react-native-scalable-image";
 
 function NoticeDetailScreen({ navigation, route }) {
   const data = route.params.data;
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   console.log(data);
-
+  const randomKey = Math.random().toString();
   function editHandler() {
     navigation.navigate("noticeEdit", { data: data });
   }
-
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerLeft: () => (
-  //       <Pressable
-  //         onPress={() => {
-  //           navigation.replace("noticeScreen");
-  //         }}
-  //         style={{ marginLeft: 10 }}
-  //       >
-  //         <Left width={24} height={24} />
-  //       </Pressable>
-  //     ),
-  //   });
-  // }, []);
 
   async function deleteAnnouncementHandler() {
     try {
@@ -76,16 +62,16 @@ function NoticeDetailScreen({ navigation, route }) {
             </View>
 
             <Text style={styles.subcontentContainer}>{data.body}</Text>
-            {data.picture && (
-              <Image
-                source={{ uri: data.picture }}
-                style={{
-                  width: "100%",
-                  height: 500,
-                  resizeMode: "contain",
-                }}
-              />
-            )}
+
+            <View style={{ paddingTop: 10, paddingBottom: 40 }}>
+              {data.picture && (
+                <Image
+                  key={randomKey}
+                  source={{ uri: data.picture }}
+                  width={Dimensions.get("window").width - 40}
+                />
+              )}
+            </View>
           </View>
         </ScrollView>
         {headerRole === "ROLE_ADMIN" ? (
@@ -147,6 +133,7 @@ const styles = StyleSheet.create({
   },
   subcontentContainer: {
     marginTop: 20,
+    // marginBottom: 10,
     fontSize: 17,
     fontWeight: "400",
     lineHeight: 22,
