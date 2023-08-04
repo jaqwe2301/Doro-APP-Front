@@ -10,6 +10,8 @@ import {
   Dimensions,
   NativeModules,
   KeyboardAvoidingView,
+  SafeAreaView,
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import {
@@ -45,6 +47,16 @@ function AddNoticeScreen({ navigation }) {
     if (!statusCamera?.granted) {
       const permission = await requestPermission();
       if (!permission.granted) {
+        Alert.alert(
+          "카메라 권한 요청",
+          "이 기능을 사용하려면 카메라 권한이 필요합니다. 설정에서 권한을 허용해주세요.",
+          [
+            {
+              text: "닫기",
+              style: "cancel",
+            },
+          ]
+        );
         return null;
       }
     }
@@ -131,59 +143,61 @@ function AddNoticeScreen({ navigation }) {
       style={{ flex: 1 }}
       keyboardVerticalOffset={Platform.OS === "ios" ? 44 + statusBarHeight : 0}
     >
-      <View style={styles.container}>
-        <View style={styles.headerBar} />
-        <ScrollView>
-          <Pressable onPress={() => Keyboard.dismiss()}>
-            <View style={styles.titleContainer}>
-              <TextInput
-                placeholder="제목"
-                style={styles.title}
-                placeholderTextColor={GlobalStyles.colors.gray03}
-                multiline
-                onChangeText={(text) => setTitle(text)}
-                value={title}
-              ></TextInput>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <View style={styles.headerBar} />
+          <ScrollView>
+            <Pressable onPress={() => Keyboard.dismiss()}>
+              <View style={styles.titleContainer}>
+                <TextInput
+                  placeholder="제목"
+                  style={styles.title}
+                  placeholderTextColor={GlobalStyles.colors.gray03}
+                  multiline
+                  onChangeText={(text) => setTitle(text)}
+                  value={title}
+                ></TextInput>
+              </View>
+              <View style={styles.contentContainer}>
+                <TextInput
+                  placeholder="내용을 입력하세요."
+                  style={styles.content}
+                  multiline
+                  value={body}
+                  onChangeText={(text) => setBody(text)}
+                  placeholderTextColor={GlobalStyles.colors.gray03}
+                ></TextInput>
+              </View>
+            </Pressable>
+            <View
+              style={{ marginHorizontal: 20, marginTop: 10, marginBottom: 40 }}
+            >
+              {imageUrl && (
+                <Image
+                  key={randomKey}
+                  source={{ uri: imageUrl }}
+                  width={Dimensions.get("window").width - 40}
+                />
+              )}
             </View>
-            <View style={styles.contentContainer}>
-              <TextInput
-                placeholder="내용을 입력하세요."
-                style={styles.content}
-                multiline
-                value={body}
-                onChangeText={(text) => setBody(text)}
-                placeholderTextColor={GlobalStyles.colors.gray03}
-              ></TextInput>
-            </View>
-          </Pressable>
+          </ScrollView>
           <View
-            style={{ marginHorizontal: 20, marginTop: 10, marginBottom: 40 }}
+            style={{
+              height: 42,
+              borderTopWidth: 0.8,
+              borderTopColor: GlobalStyles.colors.gray04,
+              justifyContent: "center",
+              paddingLeft: 6,
+            }}
           >
-            {imageUrl && (
-              <Image
-                key={randomKey}
-                source={{ uri: imageUrl }}
-                width={Dimensions.get("window").width - 40}
-              />
-            )}
+            <Pressable onPress={cameraHandler}>
+              <View style={{ margin: 10 }}>
+                <Camera width={24} height={24} />
+              </View>
+            </Pressable>
           </View>
-        </ScrollView>
-        <View
-          style={{
-            height: 42,
-            borderTopWidth: 0.8,
-            borderTopColor: GlobalStyles.colors.gray04,
-            justifyContent: "center",
-            paddingLeft: 6,
-          }}
-        >
-          <Pressable onPress={cameraHandler}>
-            <View style={{ margin: 10 }}>
-              <Camera width={24} height={24} />
-            </View>
-          </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }
