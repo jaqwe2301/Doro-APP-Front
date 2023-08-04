@@ -6,7 +6,7 @@ import {
   ScrollView,
   Pressable,
   Keyboard,
-  Image,
+  // Image,
   Dimensions,
   NativeModules,
   KeyboardAvoidingView,
@@ -23,6 +23,7 @@ import { useContext, useEffect, useState } from "react";
 import Camera from "../assets/camera.svg";
 import { URL } from "../utill/config";
 
+import Image from "react-native-scalable-image";
 import * as ImagePicker from "expo-image-picker";
 import NoticeScreen from "./NoticeScreen";
 import axios from "axios";
@@ -37,7 +38,7 @@ function AddNoticeScreen({ navigation }) {
   const [imageUrl, setImageUrl] = useState("");
   const [filename, setFileName] = useState("");
   const [type, setType] = useState("");
-
+  const [randomKey, setRandomKey] = useState("");
   //camera
 
   const cameraHandler = async () => {
@@ -50,8 +51,7 @@ function AddNoticeScreen({ navigation }) {
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      // aspect: [1, 1],
+      allowsEditing: false,
       quality: 1,
     });
 
@@ -60,6 +60,7 @@ function AddNoticeScreen({ navigation }) {
     if (!result.canceled) {
       setFileName(result.assets[0].uri.split("/").pop());
       setImageUrl(result.assets[0].uri);
+      setRandomKey(Math.random().toString());
       let match = /\.(\w+)$/.exec(result.assets[0].uri.split("/").pop());
       let imageType = match ? `image/${match[1]}` : `image`;
       setType(imageType);
@@ -67,34 +68,6 @@ function AddNoticeScreen({ navigation }) {
       return null;
     }
   };
-
-  // async function completeHandler3() {
-  //   const formData = new FormData();
-  //   const announcementReq = {
-  //     title: title,
-  //     body: body,
-  //     writer: "z",
-  //   };
-  //   formData.append(
-  //     "announcementReq",
-  //     // new Blob([JSON.stringify(announcementReq)], { type: "application/json" })
-  //     // new Blob([{ title: "title", body: "body", writer: "노세인" }])
-  //     announcementReq
-  //     // JSON.stringify(value)
-  //     // value
-  //   );
-  //   try {
-  //     const response = await createAnnouncement({
-  //       formData: formData,
-  //       title: title,
-  //       body: body,
-  //     });
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log(JSON.stringify(formData));
-  //     console.log(error);
-  //   }
-  // }
 
   async function completeHandler3() {
     try {
@@ -142,7 +115,6 @@ function AddNoticeScreen({ navigation }) {
     });
   }, [completeHandler3]);
 
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const { StatusBarManager } = NativeModules;
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   useEffect(() => {
@@ -184,15 +156,14 @@ function AddNoticeScreen({ navigation }) {
               ></TextInput>
             </View>
           </Pressable>
-          <View style={{ marginHorizontal: 20 }}>
+          <View
+            style={{ marginHorizontal: 20, marginTop: 10, marginBottom: 40 }}
+          >
             {imageUrl && (
               <Image
+                key={randomKey}
                 source={{ uri: imageUrl }}
-                style={{
-                  width: "100%",
-                  height: 500,
-                  resizeMode: "contain",
-                }}
+                width={Dimensions.get("window").width - 40}
               />
             )}
           </View>
@@ -243,6 +214,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     margin: 20,
+    marginBottom: 0,
   },
   completeText: {
     fontWeight: "400",
