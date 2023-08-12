@@ -123,7 +123,14 @@ function ManagerScreen() {
         // setTitle("");
       }
     } catch (error) {
-      Alert.alert("알림 전송 실패", `제목 : ${title}\n내용 : ${body}`);
+      // Alert.alert("알림 전송 실패", `제목 : ${title}\n내용 : ${body}`);
+      if(typeof error === "object") {
+        setBody(length(JSON.stringify(error)))
+        Alert.alert("알림 전송 실패", length(JSON.stringify(error)));
+      } else {
+        setBody(error)
+        Alert.alert("알림 전송 실패", error);
+      }
       console.log(error);
     }
   };

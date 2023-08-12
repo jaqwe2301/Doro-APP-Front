@@ -38,6 +38,7 @@ import GenerationModal from "../ui/GenerationModal";
 function Code({ navigation, route }) {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
+  const [tmpCode, setTmpCode] = useState(1)
   const [inputGeneration, setInputGeneration] = useState(0);
 
   const [visible, setVisible] = useState(false);
@@ -419,6 +420,8 @@ function Code({ navigation, route }) {
           setVisibleCode={setVisibleCode}
           visibleCode={visibleCode}
           title="기수"
+          tmpCode={tmpCode}
+          setTmpCode={setTmpCode}
           inputGeneration={inputGeneration}
           setInputGeneration={setInputGeneration}
           setSelectCode={setSelectCode}

@@ -6,6 +6,7 @@ import {
   Modal,
   SafeAreaView,
 } from "react-native";
+import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import Modalx from "../../assets/modalx.svg";
 import ButtonBig from "./ButtonBig";
@@ -15,6 +16,8 @@ function GenerationModal({
   setVisibleCode,
   visibleCode,
   title,
+  tmpCode,
+  setTmpCode,
   inputGeneration,
   setInputGeneration,
   setSelectCode,
@@ -57,11 +60,12 @@ function GenerationModal({
                     <Text style={styles.statusTitle}>{title}</Text>
                   </View>
                   <Picker
-                    selectedValue={inputGeneration}
+                    selectedValue={tmpCode}
                     onValueChange={(itemValue, itemIndex) => {
-                      setInputGeneration(itemValue);
+                      setTmpCode(itemValue)
+                      // setInputGeneration(itemValue);
                       if (type) {
-                        setSelectCode(itemValue + "기");
+                        // setSelectCode(itemValue + "기");
                         setStatusGStyle(styles.textInputText);
                       }
                     }}
@@ -97,7 +101,7 @@ function GenerationModal({
                   <ButtonBig
                     text="확인"
                     style={GlobalStyles.colors.primaryDefault}
-                    onPress={() => setVisibleCode(false)}
+                    onPress={() => {setVisibleCode(false); setInputGeneration(tmpCode); setSelectCode(tmpCode + "기");}}
                   />
                 </View>
               </View>
@@ -130,11 +134,12 @@ function GenerationModal({
                   <Text style={styles.statusTitle}>{title}</Text>
                 </View>
                 <Picker
-                  selectedValue={inputGeneration}
+                  selectedValue={tmpCode}
                   onValueChange={(itemValue, itemIndex) => {
-                    setInputGeneration(itemValue);
+                    setTmpCode(itemValue)
+                    // setInputGeneration(itemValue);
                     if (type) {
-                      setSelectCode(itemValue + "기");
+                      // setSelectCode(itemValue + "기");
                       setStatusGStyle(styles.textInputText);
                     }
                   }}
@@ -175,7 +180,7 @@ function GenerationModal({
                 <ButtonBig
                   text="확인"
                   style={GlobalStyles.colors.primaryDefault}
-                  onPress={() => setVisibleCode(false)}
+                  onPress={() => {setVisibleCode(false); setInputGeneration(tmpCode); setSelectCode(tmpCode + "기");}}
                 />
               </View>
             </View>
