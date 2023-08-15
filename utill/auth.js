@@ -4,7 +4,7 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import messaging from "@react-native-firebase/messaging";
-import notifee from "@notifee/react-native";
+// import notifee from "@notifee/react-native";
 
 // const URL = "https://api.doroapp.com";
 // const URL = "http://10.0.2.2:8080";
@@ -21,6 +21,24 @@ export function authPhoneNum({ messageType, phone }) {
     .catch(function (error) {
       console.log(error);
     });
+}
+
+export async function checkPhoneNum(phone) {
+  try {
+    const response = await axios.get(URL + "/check/phone?phone=" + phone);
+    return response.data.code;
+    // console.log(phone);
+  } catch (err) {
+    if (err.response) {
+      // 서버가 응답을 반환한 경우
+      // console.log(err.response.data.code);
+      return err.response.data.code;
+    } else {
+      // 그 외의 에러
+      Alert.alert("요청 실패", "휴대폰 번호 유효 체크를 실패하였습니다.");
+      console.log("Error", err.message);
+    }
+  }
 }
 
 export async function verifyauthPhoneNum({ authNum, messageType, phone }) {
@@ -100,26 +118,26 @@ export async function login({ id, pw }) {
     );
     const token = response;
     // 로그인 성공 후, 푸시메시지 수신 리스너 등록
-    if (fcmToken) {
-      const onDisplayNotification = async ({ title = "", body = "" }) => {
-        const channelId = await notifee.createChannel({
-          id: "channelId",
-          name: "channelName",
-        });
-        await notifee.displayNotification({
-          title,
-          body,
-          android: {
-            channelId,
-          },
-        });
-      };
-      messaging().onMessage(async (remoteMessage) => {
-        const title = remoteMessage?.notification?.title;
-        const body = remoteMessage?.notification?.body;
-        await onDisplayNotification({ title, body });
-      });
-    }
+    // if (fcmToken) {
+    //   const onDisplayNotification = async ({ title = "", body = "" }) => {
+    //     const channelId = await notifee.createChannel({
+    //       id: "channelId",
+    //       name: "channelName",
+    //     });
+    //     await notifee.displayNotification({
+    //       title,
+    //       body,
+    //       android: {
+    //         channelId,
+    //       },
+    //     });
+    //   };
+    //   messaging().onMessage(async (remoteMessage) => {
+    //     const title = remoteMessage?.notification?.title;
+    //     const body = remoteMessage?.notification?.body;
+    //     await onDisplayNotification({ title, body });
+    //   });
+    // }
     return token;
   } catch (error) {
     Alert.alert("로그인 실패", "로그인에 실패하셨습니다.");
