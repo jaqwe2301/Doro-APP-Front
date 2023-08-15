@@ -15,13 +15,18 @@ import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "../../components/ui/ButtonBig";
 
 import { useNavigation } from "@react-navigation/native";
-import { authPhoneNum, verifyauthPhoneNum } from "../../utill/auth";
+import {
+  authPhoneNum,
+  checkPhoneNum,
+  verifyauthPhoneNum,
+} from "../../utill/auth";
 import InputData from "../ui/InputData";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import Timer from "../feat/Timer";
 import { SafeAreaView } from "react-native";
 import { Keyboard } from "react-native";
+import axios from "axios";
 
 function AuthPhone() {
   const [phoneNum, setphoneNum] = useState("");
@@ -37,10 +42,11 @@ function AuthPhone() {
     "카카오톡으로 인증번호가 전송되었습니다"
   );
   const [postColor, setPostColor] = useState("#00000");
-
   const [isVisible, setIsVisible] = useState(false);
+  const [invalidPhone, setInvalidPhone] = useState();
 
   const handlePhoneChange = (text) => {
+    setInvalidPhone(false);
     setphoneNum(text);
 
     if (text.length === 11) {
@@ -59,18 +65,27 @@ function AuthPhone() {
     }
   };
 
-  function requestNumber() {
+  async function requestNumber() {
     if (phoneNum.length === 11) {
-      authPhoneNum({ messageType: "JOIN", phone: phoneNum });
-      setBtnTitle("다시 요청");
-      setPostColor("#000000");
-      setPostText("카카오톡으로 인증번호가 전송되었습니다");
-      setIsVisible(true);
-      // setTimer(true);
-      setCount(179);
+      // console.log(phoneNum);
+      const check = await checkPhoneNum(phoneNum);
+      if (check === "SUCCESS") {
+        authPhoneNum({ messageType: "JOIN", phone: phoneNum });
+        setBtnTitle("다시 요청");
+        setPostColor("#000000");
+        setPostText("카카오톡으로 인증번호가 전송되었습니다");
+        setIsVisible(true);
+        // setTimer(true);
+        setCount(179);
+        setInvalidPhone(false);
+      } else if (check === "AUTH014") {
+        setInvalidPhone(true);
+        // console.log("폰 번호 확인 실패");
+      }
     } else {
     }
   }
+
   async function verifyAuthNum() {
     Keyboard.dismiss();
     if (authNum.length === 6) {
@@ -158,6 +173,20 @@ function AuthPhone() {
                       {postText}
                     </Text>
                   </>
+                )}
+                {invalidPhone ? (
+                  <Text
+                    style={{
+                      marginTop: 10,
+                      marginLeft: 22,
+                      fontSize: 14,
+                      color: "red",
+                    }}
+                  >
+                    이미 등록된 휴대폰 변호입니다.
+                  </Text>
+                ) : (
+                  ""
                 )}
               </View>
             </ScrollView>
