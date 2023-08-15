@@ -262,6 +262,10 @@ function ApplicationDetails({ route }) {
             style={styles.container}
             data={finished}
             renderItem={(data) => {
+              const backgroundColor =
+                data.item.tutorStatus === "WAITING"
+                  ? GlobalStyles.colors.gray06
+                  : "white";
               const isLastItem = data.index === finished.length - 1;
               const roles = data.item.tutorRole;
               const role =
@@ -285,11 +289,17 @@ function ApplicationDetails({ route }) {
                       });
                     }}
                     id=""
-                    dateTypeValue="강의 완료"
+                    // dateTypeValue="강의 완료"
                     mainTutor={data.item.mainTutor}
                     place={data.item.place}
                     tutorRole={role + " 신청"}
                     boxColor={GlobalStyles.colors.gray06}
+                    matchingText={
+                      data.item.tutorStatus === "WAITING"
+                        ? "매칭 실패"
+                        : "매칭 성공"
+                    }
+                    backgroundColor={backgroundColor}
                   />
                 </View>
               );
