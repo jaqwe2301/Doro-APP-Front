@@ -76,6 +76,7 @@ function Code({ navigation, route }) {
   }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
 
   async function navigateId() {
+    console.log(signData);
     if (
       inputRole !== "" &&
       inputCode !== "" &&
@@ -88,7 +89,7 @@ function Code({ navigation, route }) {
         birth: signData.birth,
         // birth: "2000-06-23",
         doroAuth: inputCode,
-        gender: "FEMALE",
+        gender: "MALE",
         generation: inputGeneration,
         major: signData.major,
         name: signData.name,
