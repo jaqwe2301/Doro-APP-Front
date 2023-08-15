@@ -267,6 +267,15 @@ function ApplicationDetails({ route }) {
                   ? GlobalStyles.colors.gray06
                   : "white";
               const isLastItem = data.index === finished.length - 1;
+              const roles = data.item.tutorRole;
+              const role =
+                roles === "MAIN_TUTOR"
+                  ? "주강사"
+                  : roles === "SUB_TUTOR"
+                  ? "보조강사"
+                  : roles === "STAFF"
+                  ? "스태프"
+                  : "";
               return (
                 <View style={isLastItem && { marginBottom: 30 }}>
                   <ApplyingLectureBox
@@ -283,7 +292,7 @@ function ApplicationDetails({ route }) {
                     // dateTypeValue="강의 완료"
                     mainTutor={data.item.mainTutor}
                     place={data.item.place}
-                    // tutorRole="값을 받아야해요"
+                    tutorRole={role + " 신청"}
                     boxColor={GlobalStyles.colors.gray06}
                     matchingText={
                       data.item.tutorStatus === "WAITING"
