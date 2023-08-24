@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import messaging from "@react-native-firebase/messaging";
 import notifee from "@notifee/react-native";
 
-// const URL = "https://api.doroapp.com";
 // const URL = "http://10.0.2.2:8080";
 
 export function authPhoneNum({ messageType, phone }) {
