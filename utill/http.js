@@ -448,9 +448,18 @@ export async function getLectureList({
       },
     });
     return res.data.data; // 프로미스에서 결과를 반환
-  } catch (error) {
+  } catch (err) {
     console.log("에러났나염?>?");
-    console.log(error);
-    throw error; // 에러를 다시 던져서 호출자에게 전달
+    if (err.response) {
+      // 서버가 응답을 반환한 경우
+      console.log("Error response:", err.response.data);
+    } else if (err.request) {
+      // 요청이 만들어졌지만, 응답을 받지 못한 경우
+      console.log("Error request:", err.request);
+    } else {
+      // 그 외의 에러
+      console.log("Error", err.message);
+    }
+    throw err; // 에러를 다시 던져서 호출자에게 전달
   }
 }

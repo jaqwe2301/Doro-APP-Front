@@ -4,7 +4,7 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import messaging from "@react-native-firebase/messaging";
-// import notifee from "@notifee/react-native";
+import notifee from "@notifee/react-native";
 
 // const URL = "https://api.doroapp.com";
 // const URL = "http://10.0.2.2:8080";
@@ -113,35 +113,49 @@ export async function login({ id, pw }) {
         password: pw,
       },
       {
-        headers: fcmToken ? { fcmToken: fcmToken } : undefined,
+        // headers: fcmToken ? { fcmToken: fcmToken } : undefined,
+        // headers: {
+        //   fcmToken:
+        //     "d_AO9w7NQK2MNVwlpHnXMo:APA91bHZ3DIByv7v6nO_RUfPDSlWSMGNUZGz0cH5lskbkgCxs_09UWi8kBpLIAsWZGr5WEjssOCtESLwT-OSojJTCKjLWdFcSs19h7exD59ExsXll51WrQ7j2-aW-TRGyPf1qUcnMMnt",
+        // },
       }
     );
     const token = response;
     // 로그인 성공 후, 푸시메시지 수신 리스너 등록
-    // if (fcmToken) {
-    //   const onDisplayNotification = async ({ title = "", body = "" }) => {
-    //     const channelId = await notifee.createChannel({
-    //       id: "channelId",
-    //       name: "channelName",
-    //     });
-    //     await notifee.displayNotification({
-    //       title,
-    //       body,
-    //       android: {
-    //         channelId,
-    //       },
-    //     });
-    //   };
-    //   messaging().onMessage(async (remoteMessage) => {
-    //     const title = remoteMessage?.notification?.title;
-    //     const body = remoteMessage?.notification?.body;
-    //     await onDisplayNotification({ title, body });
-    //   });
-    // }
+    if (fcmToken) {
+      const onDisplayNotification = async ({ title = "", body = "" }) => {
+        const channelId = await notifee.createChannel({
+          id: "channelId",
+          name: "channelName",
+        });
+        await notifee.displayNotification({
+          title,
+          body,
+          android: {
+            channelId,
+          },
+        });
+      };
+      messaging().onMessage(async (remoteMessage) => {
+        const title = remoteMessage?.notification?.title;
+        const body = remoteMessage?.notification?.body;
+        await onDisplayNotification({ title, body });
+      });
+    }
     return token;
   } catch (error) {
     Alert.alert("로그인 실패", "로그인에 실패하셨습니다.");
-    console.error("Error occurred during login: ", error);
+    // console.error("Error occurred during login: ", error);
+    if (error.response) {
+      // 서버가 응답을 반환한 경우
+      console.log("Error response:", error.response.data);
+    } else if (error.request) {
+      // 요청이 만들어졌지만, 응답을 받지 못한 경우
+      console.log("Error request:", error.request);
+    } else {
+      // 그 외의 에러
+      console.log("Error", error.message);
+    }
   }
 }
 
