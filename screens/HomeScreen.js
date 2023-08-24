@@ -121,7 +121,6 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    console.log("dfs");
     async function getCity() {
       try {
         const result = await getCityList({ status: "RECRUITING" });
@@ -204,40 +203,40 @@ const HomeScreen = ({ navigation }) => {
     // }
   }, [aCities]);
 
-  async function lectureHandler(status) {
-    try {
-      const result = await getLectureList({
-        city: rCities,
-        endDate: rEndDate,
-        startDate: rStartDate,
-        page: pageNum,
-        size: 10,
-        lectureStatus: status,
-      });
+  // async function lectureHandler(status) {
+  //   try {
+  //     const result = await getLectureList({
+  //       city: rCities,
+  //       endDate: rEndDate,
+  //       startDate: rStartDate,
+  //       page: pageNum,
+  //       size: 10,
+  //       lectureStatus: status,
+  //     });
 
-      const recruitingData = result.lecturesInfos;
+  //     const recruitingData = result.lecturesInfos;
 
-      const data = groupDataByMainTitle(recruitingData);
+  //     const data = groupDataByMainTitle(recruitingData);
 
-      if (pageNum === 0) {
-        setRLectureData(data);
-        setPageNum(1);
-      } else {
-        setRLectureData((prev) => [...prev, ...data]);
-        setPageNum((prev) => prev + 1);
-      }
-      console.log("뭐야");
-      console.log(pageNum);
-      // setRLectureData((prev) => [...prev, ...data]);
-      if (recruitingData.length !== 0) {
-        setRNum(result.totalCount);
-      } else if (recruitingData.length === 0 && pageNum === 0) {
-        setRNum(0);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  //     if (pageNum === 0) {
+  //       setRLectureData(data);
+  //       setPageNum(1);
+  //     } else {
+  //       setRLectureData((prev) => [...prev, ...data]);
+  //       setPageNum((prev) => prev + 1);
+  //     }
+  //     console.log("뭐야");
+  //     console.log(pageNum);
+  //     // setRLectureData((prev) => [...prev, ...data]);
+  //     if (recruitingData.length !== 0) {
+  //       setRNum(result.totalCount);
+  //     } else if (recruitingData.length === 0 && pageNum === 0) {
+  //       setRNum(0);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   async function lectureHandler() {
     try {
@@ -385,10 +384,6 @@ const HomeScreen = ({ navigation }) => {
     { key: "first", title: `모집중(0)` },
     { key: "second", title: `진행중(0)` },
   ]);
-
-  // useEffect(() => {
-  //   console.log(alectureData);
-  // }, [alectureData]);
 
   const renderScene = ({ route }) => {
     switch (route.key) {
