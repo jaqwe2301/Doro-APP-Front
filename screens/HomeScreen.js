@@ -48,6 +48,9 @@ const HomeScreen = ({ navigation }) => {
   const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
 
+  // 강의 모집 중 : RECRUITING - r
+  // 강의 진행 중 : ALLOCATION_COMP - a
+
   const [rlectureData, setRLectureData] = useState([]);
   const [alectureData, setALectureData] = useState([]);
 
@@ -73,6 +76,9 @@ const HomeScreen = ({ navigation }) => {
 
   const [rNum, setRNum] = useState(0);
   const [aNum, setANum] = useState(0);
+
+  const [rScroll, setRScroll] = useState();
+  const [aScroll, setAScroll] = useState();
 
   const groupDataByMainTitle = (data) => {
     const groupedData = data.reduce((acc, item) => {
@@ -115,6 +121,7 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    console.log("dfs");
     async function getCity() {
       try {
         const result = await getCityList({ status: "RECRUITING" });
@@ -196,6 +203,41 @@ const HomeScreen = ({ navigation }) => {
     // console.log(aCities);
     // }
   }, [aCities]);
+
+  async function lectureHandler(status) {
+    try {
+      const result = await getLectureList({
+        city: rCities,
+        endDate: rEndDate,
+        startDate: rStartDate,
+        page: pageNum,
+        size: 10,
+        lectureStatus: status,
+      });
+
+      const recruitingData = result.lecturesInfos;
+
+      const data = groupDataByMainTitle(recruitingData);
+
+      if (pageNum === 0) {
+        setRLectureData(data);
+        setPageNum(1);
+      } else {
+        setRLectureData((prev) => [...prev, ...data]);
+        setPageNum((prev) => prev + 1);
+      }
+      console.log("뭐야");
+      console.log(pageNum);
+      // setRLectureData((prev) => [...prev, ...data]);
+      if (recruitingData.length !== 0) {
+        setRNum(result.totalCount);
+      } else if (recruitingData.length === 0 && pageNum === 0) {
+        setRNum(0);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async function lectureHandler() {
     try {
@@ -344,6 +386,10 @@ const HomeScreen = ({ navigation }) => {
     { key: "second", title: `진행중(0)` },
   ]);
 
+  // useEffect(() => {
+  //   console.log(alectureData);
+  // }, [alectureData]);
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
@@ -354,12 +400,17 @@ const HomeScreen = ({ navigation }) => {
               // extraData={[rCities, rlectureData]}
               keyExtractor={(item, index) => index.toString()}
               onEndReached={lectureHandler}
+              // 끝부분에 도달했을 때 실행
               onEndReachedThreshold={0.5}
+              // 끝부분에서 얼마나 떨어져있을 때 onEndReached을 실행할 건지
               onRefresh={() => {
+                // 위로 당겼을 때 실행
                 refreshHandler();
               }}
               refreshing={false}
+              // true인 경우 onRefresh 함수 실행
               ListHeaderComponent={
+                // 데이터를 받아와 출력하는 곳 위에 보여줄 곳
                 <View
                   style={{
                     flexDirection: "row",
@@ -529,7 +580,6 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <Megaphone width={24} height={24} />
-          {/* <View> */}
           <Swiper
             autoplay={true}
             autoplayTimeout={3}
@@ -566,7 +616,6 @@ const HomeScreen = ({ navigation }) => {
               );
             })}
           </Swiper>
-          {/* </View> */}
           <Right width={24} height={24} />
         </View>
         {/* <Pressable
