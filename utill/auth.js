@@ -3,7 +3,7 @@ import { URL } from "./config";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import messaging from "@react-native-firebase/messaging";
+// import messaging from "@react-native-firebase/messaging";
 // import notifee from "@notifee/react-native";
 
 // const URL = "https://api.doroapp.com";
@@ -93,18 +93,18 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-  let fcmToken = null;
-  if (enabled) {
-    console.log("Authorization status:", authStatus);
-    fcmToken = await messaging().getToken();
-    await AsyncStorage.setItem("fcmToken", fcmToken);
-  } else {
-    await AsyncStorage.removeItem("fcmToken");
-  }
+  // const authStatus = await messaging().requestPermission();
+  // const enabled =
+  //   authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //   authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  // let fcmToken = null;
+  // if (enabled) {
+  //   console.log("Authorization status:", authStatus);
+  //   fcmToken = await messaging().getToken();
+  //   await AsyncStorage.setItem("fcmToken", fcmToken);
+  // } else {
+  //   await AsyncStorage.removeItem("fcmToken");
+  // }
   try {
     const response = await axios.post(
       URL + "/login",
@@ -113,7 +113,11 @@ export async function login({ id, pw }) {
         password: pw,
       },
       {
-        headers: fcmToken ? { fcmToken: fcmToken } : undefined,
+        // headers: fcmToken ? { fcmToken: fcmToken } : undefined,
+        // headers: {
+        //   fcmToken:
+        //     "d_AO9w7NQK2MNVwlpHnXMo:APA91bHZ3DIByv7v6nO_RUfPDSlWSMGNUZGz0cH5lskbkgCxs_09UWi8kBpLIAsWZGr5WEjssOCtESLwT-OSojJTCKjLWdFcSs19h7exD59ExsXll51WrQ7j2-aW-TRGyPf1qUcnMMnt",
+        // },
       }
     );
     const token = response;
@@ -141,7 +145,17 @@ export async function login({ id, pw }) {
     return token;
   } catch (error) {
     Alert.alert("로그인 실패", "로그인에 실패하셨습니다.");
-    console.error("Error occurred during login: ", error);
+    // console.error("Error occurred during login: ", error);
+    if (error.response) {
+      // 서버가 응답을 반환한 경우
+      console.log("Error response:", error.response.data);
+    } else if (error.request) {
+      // 요청이 만들어졌지만, 응답을 받지 못한 경우
+      console.log("Error request:", error.request);
+    } else {
+      // 그 외의 에러
+      console.log("Error", error.message);
+    }
   }
 }
 
