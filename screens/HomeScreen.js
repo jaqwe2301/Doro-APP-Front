@@ -127,12 +127,6 @@ const HomeScreen = ({ navigation }) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    // refreshHandler();
-    // refreshHandler2();
-    // }, [isLectureUpdate]);
-  }, []);
-
   // useEffect(() => {
   //   // if (rCities !== null) {
   //   if (rCities !== "") {
@@ -316,6 +310,8 @@ const HomeScreen = ({ navigation }) => {
       errorHandler(error, "강의 조회 에러");
     }
   }
+
+
 
   async function useFilter(
     filter,
