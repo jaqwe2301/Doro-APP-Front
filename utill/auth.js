@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import messaging from "@react-native-firebase/messaging";
 import notifee from "@notifee/react-native";
 
-// const URL = "http://10.0.2.2:8080";
+import { errorHandler } from "./etc";
 
 export function authPhoneNum({ messageType, phone }) {
   axios
@@ -112,11 +112,7 @@ export async function login({ id, pw }) {
         password: pw,
       },
       {
-        // headers: fcmToken ? { fcmToken: fcmToken } : undefined,
-        // headers: {
-        //   fcmToken:
-        //     "d_AO9w7NQK2MNVwlpHnXMo:APA91bHZ3DIByv7v6nO_RUfPDSlWSMGNUZGz0cH5lskbkgCxs_09UWi8kBpLIAsWZGr5WEjssOCtESLwT-OSojJTCKjLWdFcSs19h7exD59ExsXll51WrQ7j2-aW-TRGyPf1qUcnMMnt",
-        // },
+        headers: fcmToken ? { fcmToken: fcmToken } : undefined,
       }
     );
     const token = response;
@@ -225,13 +221,11 @@ export async function signUp({
       studentId: studentId,
       studentStatus: studentStatus,
     });
-    console.log(response.data);
     if (!response.data.success) {
       Alert.alert("회원가입 오류", response.data.message);
     }
     return response;
   } catch (error) {
-    console.log(error);
-    console.log("여긴가");
+    errorHandler(error, "sigh-up auth file error");
   }
 }
