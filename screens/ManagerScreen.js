@@ -28,21 +28,47 @@ import LectureBox from "../components/ui/LectureBox";
 import BottomModal from "../components/ui/BottomModal";
 
 import { getProfile, logout, pushNotification } from "../utill/http";
+import { formatErrorMessage } from "../utill/etc";
 import { KRRegular } from "../constants/fonts";
 import FilterModal from "../components/ui/FilterModal";
 
-// import messaging from "@react-native-firebase/messaging";
+import messaging from "@react-native-firebase/messaging";
 
 function ManagerScreen() {
-  // async function getToken() {
-  //   try {
-  //     const token = await messaging().getToken();
-  //     // await AsyncStorage.setItem("fcmToken", token);
-  //     setBody(token);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+  async function getToken() {
+    try {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+        if(!enabled) {
+          Alert.alert("알림 허용을 해주세요.", "알림 허용을 해주시길 바랍니다.")
+        } 
+      const token = await messaging().getToken();
+      // await AsyncStorage.setItem("fcmToken", token);
+      setBody(token);
+    } catch (error) {
+      if (error.response) { // 서버가 응답을 반환한 경우 
+        console.log('Error response:', error.response.data); 
+        
+        Alert.alert("토큰 발급 에러", formatErrorMessage(error.response.data))
+      } else if (error.request) { // 요청이 만들어졌지만, 응답을 받지 못한 경우 
+        console.log('Error request:', JSON.stringify(error.request)); 
+        Alert.alert("토큰 발급 에러", formatErrorMessage(error.request))
+        
+      } else { // 그 외의 에러 
+        console.log('Error', error.message); 
+        Alert.alert("토큰 발급 에러", formatErrorMessage(error.message))
+      }
+
+
+
+
+
+
+      console.error(error);
+    }
+  }
 
   const [userData, setUserData] = useState([]);
   // const [filterUser, setFilterUser] = useState([]);
@@ -108,6 +134,8 @@ function ManagerScreen() {
         console.log("에러");
         console.log(error);
       });
+
+      getToken();
   }, []);
 
   const addAlarm = async () => {
@@ -124,13 +152,25 @@ function ManagerScreen() {
       }
     } catch (error) {
       // Alert.alert("알림 전송 실패", `제목 : ${title}\n내용 : ${body}`);
-      if(typeof error === "object") {
-        setBody(length(JSON.stringify(error)))
-        Alert.alert("알림 전송 실패", length(JSON.stringify(error)));
-      } else {
-        setBody(error)
-        Alert.alert("알림 전송 실패", error);
+
+      if (error.response) { // 서버가 응답을 반환한 경우 
+        console.log('Error response:', error.response.data); 
+        Alert.alert("토큰 발급 에러", formatErrorMessage(error.response.data))
+      } else if (error.request) { // 요청이 만들어졌지만, 응답을 받지 못한 경우 
+        console.log('Error request:', error.request); 
+        Alert.alert("알림 발송 에러", formatErrorMessage(error.request))
+        
+      } else { // 그 외의 에러 
+        console.log('Error', error.message); 
+        Alert.alert("알림 발송 에러", formatErrorMessage(error.message))
       }
+      // if(typeof error === "object") {
+      //   setBody(length(JSON.stringify(error)))
+      //   Alert.alert("알림 전송 실패", length(JSON.stringify(error)));
+      // } else {
+      //   setBody(error)
+      //   Alert.alert("알림 전송 실패", error);
+      // }
       console.log(error);
     }
   };

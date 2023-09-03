@@ -2,7 +2,7 @@
   "expo": {
     "name": "DORO EDU",
     "slug": "DORO EDU",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -40,12 +40,6 @@
         }
       ],
       "@react-native-firebase/app"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "bb5bb381-6e53-435e-a139-7732a04c2365"
-      }
-    },
-    "owner": "si2238"
+    ]
   }
 }
