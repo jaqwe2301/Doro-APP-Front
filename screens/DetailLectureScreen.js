@@ -32,6 +32,7 @@ import AddLecture from "../assets/creatingLecture.svg";
 import Delete from "../assets/delete.svg";
 
 import Interceptor from "../utill/Interceptor";
+import { errorHandler } from "../utill/etc";
 import { KRRegular } from "../constants/fonts";
 
 function DetailLectureScreen({ route, navigation }) {
@@ -99,7 +100,7 @@ function DetailLectureScreen({ route, navigation }) {
           return lecture;
         });
         setLectureContent(res.data.data.lectureContentDto);
-        console.log(res.data.data);
+        // console.log(res.data.data);
 
         const assignedTutors = res.data.data.assignedTutors;
 
@@ -767,7 +768,7 @@ function DetailLectureScreen({ route, navigation }) {
             lecture.status = "RECRUITING";
           }
 
-          axios
+          instance
             .patch(`${URL}/lectures/${data.id}`, lecture, {
               headers: {
                 // 헤더에 필요한 데이터를 여기에 추가
@@ -786,7 +787,6 @@ function DetailLectureScreen({ route, navigation }) {
             .catch((error) => {
               console.log("에러");
               console.log(error);
-              ㅌㅌㅌㅌㅌㅌ;
             });
         };
 
@@ -943,8 +943,10 @@ function DetailLectureScreen({ route, navigation }) {
     let lecture = lectureBasicInfo;
     if (!lecture) {
       console.error("lecture is undefined");
-      // return prev;
     }
+
+    console.log(lecture);
+    console.log(data.id);
 
     delete lecture.id;
     if (status) {
@@ -953,7 +955,7 @@ function DetailLectureScreen({ route, navigation }) {
       lecture.status = "RECRUITING";
     }
 
-    axios
+    instance
       .patch(`${URL}/lectures/${data.id}`, lecture, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -968,9 +970,7 @@ function DetailLectureScreen({ route, navigation }) {
         setIsLectureUpdate(!isLectureUpdate);
       })
       .catch((error) => {
-        console.log("에러");
-        console.log(error);
-        ㅌㅌㅌㅌㅌㅌ;
+        errorHandler(error, "강의 상태 변경 오류");
       });
   };
 
