@@ -6,6 +6,7 @@ import Interceptor from "./Interceptor";
 import { URL } from "./config";
 
 // const URL = "http://10.0.2.2:8080";
+
 const instance = Interceptor();
 
 // id를 넣어주면 header 필요없고 id없으면 header 필요하다
