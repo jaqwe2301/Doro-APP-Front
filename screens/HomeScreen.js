@@ -36,7 +36,6 @@ import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
-// import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
 import { getAnnouncement, getCityList, getLectureList } from "../utill/http";
 import Interceptor from "../utill/Interceptor";
@@ -81,12 +80,6 @@ const HomeScreen = ({ navigation }) => {
   const [rPageNum, setRPageNum] = useState(0);
   const [aPageNum, setAPageNum] = useState(0);
 
-  // const [pageNum, setPageNum] = useState(0);
-  // const [pageNum2, setPageNum2] = useState(0);
-
-  const [rScroll, setRScroll] = useState();
-  const [aScroll, setAScroll] = useState();
-
   const groupDataByMainTitle = (data) => {
     const groupedData = data.reduce((acc, item) => {
       if (!acc[item.mainTitle]) {
@@ -110,7 +103,7 @@ const HomeScreen = ({ navigation }) => {
         size="large"
         color={GlobalStyles.colors.primaryDefault}
       />
-    ); // or any other loading indicator
+    );
   }
 
   useEffect(() => {
@@ -126,114 +119,6 @@ const HomeScreen = ({ navigation }) => {
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    // refreshHandler();
-    // refreshHandler2();
-    // }, [isLectureUpdate]);
-  }, []);
-
-  // useEffect(() => {
-  //   // if (rCities !== null) {
-  //   if (rCities !== "") {
-  //     setOnRCities(true);
-  //   } else {
-  //     setOnRCities(false);
-  //   }
-  //   setPageNum(0);
-  //   setRLectureData([]);
-
-  //   lectureHandler();
-  //   // }
-  // }, [rCities]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (rEndDate !== "" || rStartDate !== "") {
-  //       setPageNum(0);
-  //       setRLectureData([]);
-  //       lectureHandler();
-  //       setOnRDate(true);
-  //     } else {
-  //       setOnRDate(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  //   console.log(rEndDate, rStartDate);
-  // }, [rEndDate, rStartDate]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (aEndDate !== "" || aStartDate !== "") {
-  //       setPageNum2(0);
-  //       setALectureData([]);
-  //       lectureHandler2();
-  //       setOnADate(true);
-  //     } else {
-  //       setOnADate(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  //   console.log(aEndDate, aStartDate);
-  // }, [aEndDate, aStartDate]);
-
-  // useEffect(() => {
-  //   // if (aCities !== null) {
-  //   setPageNum2(0);
-  //   setALectureData([]);
-  //   lectureHandler2();
-  //   if (aCities !== "") {
-  //     setOnACities(true);
-  //   } else {
-  //     setOnACities(false);
-  //   }
-
-  //   // console.log(aCities);
-  //   // }
-  // }, [aCities]);
-
-  // async function lectureHandler(status) {
-  //   try {
-  //     const result = await getLectureList({
-  //       city: rCities,
-  //       endDate: rEndDate,
-  //       startDate: rStartDate,
-  //       page: pageNum,
-  //       size: 10,
-  //       lectureStatus: status,
-  //     });
-
-  //     const recruitingData = result.lecturesInfos;
-
-  //     const data = groupDataByMainTitle(recruitingData);
-
-  //     if (pageNum === 0) {
-  //       setRLectureData(data);
-  //       setPageNum(1);
-  //     } else {
-  //       setRLectureData((prev) => [...prev, ...data]);
-  //       setPageNum((prev) => prev + 1);
-  //     }
-  //     console.log("뭐야");
-  //     console.log(pageNum);
-  //     // setRLectureData((prev) => [...prev, ...data]);
-  //     if (recruitingData.length !== 0) {
-  //       setRNum(result.totalCount);
-  //     } else if (recruitingData.length === 0 && pageNum === 0) {
-  //       setRNum(0);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-  useEffect(() => {
-    console.log("도시: " + rCities);
-    console.log("시작날짜: " + rStartDate);
-    console.log("끝날짜: " + rEndDate);
-  }, [rCities, rStartDate, rEndDate]);
 
   async function getCity(status) {
     try {
@@ -394,40 +279,6 @@ const HomeScreen = ({ navigation }) => {
       errorHandler(error, "강의 조회 에러");
     }
   }
-  // async function lectureHandler() {
-  //   try {
-  //     const result = await getLectureList({
-  //       city: rCities,
-  //       endDate: rEndDate,
-  //       startDate: rStartDate,
-  //       page: pageNum,
-  //       size: 10,
-  //       lectureStatus: "RECRUITING",
-  //     });
-
-  //     const recruitingData = result.lecturesInfos;
-
-  //     const data = groupDataByMainTitle(recruitingData);
-
-  //     if (pageNum === 0) {
-  //       setRLectureData(data);
-  //       setPageNum(1);
-  //     } else {
-  //       setRLectureData((prev) => [...prev, ...data]);
-  //       setPageNum((prev) => prev + 1);
-  //     }
-  //     console.log("뭐야");
-  //     console.log(pageNum);
-  //     // setRLectureData((prev) => [...prev, ...data]);
-  //     if (recruitingData.length !== 0) {
-  //       setRNum(result.totalCount);
-  //     } else if (recruitingData.length === 0 && pageNum === 0) {
-  //       setRNum(0);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
 
   async function refreshHandler(status) {
     /** 강의 새로고침 */
@@ -491,64 +342,6 @@ const HomeScreen = ({ navigation }) => {
       },
     ]);
   }, [rNum, aNum]);
-
-  // async function refreshHandler2() {
-  //   try {
-  //     const result = await getLectureList({
-  //       city: aCities,
-  //       endDate: aEndDate,
-  //       startDate: aStartDate,
-  //       page: 0,
-  //       size: 10,
-  //       lectureStatus: "ALLOCATION_COMP",
-  //     });
-
-  //     const allocationData = result.lecturesInfos;
-
-  //     const data = groupDataByMainTitle(allocationData);
-
-  //     setALectureData(data);
-  //     if (allocationData.length !== 0) {
-  //       setANum(result.totalCount);
-  //     } else {
-  //       setANum(0);
-  //     }
-  //     setAPageNum(1);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-  // async function lectureHandler2() {
-  //   try {
-  //     const result = await getLectureList({
-  //       city: aCities,
-  //       endDate: aEndDate,
-  //       startDate: aStartDate,
-  //       page: pageNum2,
-  //       size: 10,
-  //       lectureStatus: "ALLOCATION_COMP",
-  //     });
-
-  //     const allocationData = result.lecturesInfos;
-
-  //     const data = groupDataByMainTitle(allocationData);
-  //     if (allocationData.length !== 0) {
-  //       setANum(result.totalCount);
-  //     } else if (allocationData.length === 0 && pageNum === 0) {
-  //       setANum(0);
-  //     }
-  //     if (pageNum2 === 0) {
-  //       setALectureData(data);
-  //       setPageNum2(1);
-  //     } else {
-  //       setALectureData((prev) => [...prev, ...data]);
-  //       setPageNum2((prev) => prev + 1);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
 
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
@@ -930,7 +723,6 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: GlobalStyles.colors.green,
     bottom: 17,
     right: 10,
   },
@@ -954,7 +746,6 @@ const styles = StyleSheet.create({
     marginBottom: 54,
     backgroundColor: "#F4F4F4",
     flexDirection: "row",
-    // height: 44,
     paddingVertical: 10,
     justifyContent: "space-between",
     alignItems: "center",

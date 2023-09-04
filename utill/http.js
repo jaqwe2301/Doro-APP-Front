@@ -140,7 +140,7 @@ export async function pushNotification({ body, title }) {
     const response = await instance.post("/notifications", {
       title: title,
       body: body,
-      // userIds: [],
+      // notificationType: "NOTIFICATION",
     });
     return response.data;
   } catch (error) {
@@ -191,53 +191,26 @@ export async function getAnnouncementId({ id }) {
 export async function createAnnouncement({ formData, title, body }) {
   try {
     const token = await AsyncStorage.getItem("token");
-
-    console.log("여긴 http파일");
-    // const announcementReq = new Blob(
-    //   [JSON.stringify({ title: title, body: body })],
-    //   { type: "application/json" }
-    // );
-    // const formData = new FormData();
-    // formData.append("announcementReq", {
-    //   title: title,
-    //   body: body,
-    //   writer: "노세인",
-    // });
-    // const obj = { title: title, body: body, writer: "노세인" };
-    // const blob = new Blob([JSON.stringify(obj)], {
-    //   type: "application/json",
-    // });
-    // formData.append("announcementReq", JSON.stringify([obj]));
-    // formData.append("announcementReq", blob);
-    console.log("폼데이터" + JSON.stringify(formData));
+    // console.log("폼데이터" + JSON.stringify(formData));
     const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
     const response = await axios
       .post(
         URL + "/announcements",
-        // { announcementReq: announcementReq, picture: formData },
-        // formData
         {
-          // announcementReq: {
           announcementReq: JSON.stringify({
             title: title,
             body: body,
             writer: "노세인",
-            // },
           }),
         },
-        // formData,
-        /// formData,
         {
           headers: {
             Accept: "application/json",
             "content-type": `multipart/form-data; boundary=${boundary}`,
-            //"Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
-          //transformRequest: (data, header) => data,
           transformRequest: [
             function (data, headers) {
-              // Do whatever you want to transform the data
               return JSON.stringify(data);
             },
           ],
@@ -254,19 +227,11 @@ export async function createAnnouncement({ formData, title, body }) {
     return response;
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
       console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(JSON.stringify(error.response.headers) + "response");
     }
     if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
       console.log(JSON.stringify(error.request) + "리퀘스트");
     }
-    // Something happened in setting up the request that triggered an Error
     console.log("Error", error.message);
     console.log(error);
 
@@ -283,19 +248,13 @@ export async function createAnnouncement2({ formData }) {
     return response.data;
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
       console.log(error.response.data);
       console.log(error.response.status);
       console.log(JSON.stringify(error.response.headers) + "response");
     }
     if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
       console.log(JSON.stringify(error.request) + "리퀘스트");
     }
-    // Something happened in setting up the request that triggered an Error
     console.log("Error", error.message);
     console.log(error);
 
@@ -344,23 +303,16 @@ export async function updateUserImage({ formData }) {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-      //  transformRequest: () => formData,
     });
     return response;
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
       console.log(error.response.data);
       console.log(error.response.status);
       console.log(error.response.headers);
     } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
       console.log(error.request);
     } else {
-      // Something happened in setting up the request that triggered an Error
       console.log("Error", error.message);
     }
 
@@ -378,18 +330,12 @@ export async function alarmEdit({ id, notificationAgreement }) {
     return response;
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
       console.log(error.response.data);
       console.log(error.response.status);
       console.log(error.response.headers);
     } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
       console.log(error.request);
     } else {
-      // Something happened in setting up the request that triggered an Error
       console.log("Error", error.message);
     }
 
@@ -448,7 +394,6 @@ export async function getLectureList({
     });
     return res.data.data; // 프로미스에서 결과를 반환
   } catch (err) {
-    console.log("에러났나염?>?");
     if (err.response) {
       // 서버가 응답을 반환한 경우
       console.log("Error response:", err.response.data);

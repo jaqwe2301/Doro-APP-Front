@@ -108,7 +108,13 @@ function ManagerScreen() {
         console.log("에러");
         console.log(error);
       });
+
+    // getToken();
   }, []);
+
+  // useEffect(() => {
+  //   getToken();
+  // }, []);
 
   const addAlarm = async () => {
     try {
@@ -125,6 +131,16 @@ function ManagerScreen() {
     } catch (error) {
       Alert.alert("알림 전송 실패", `제목 : ${title}\n내용 : ${body}`);
       console.log(error);
+      if (error.response) {
+        // 서버가 응답을 반환한 경우
+        console.log("Error response:", error.response.data);
+      } else if (error.request) {
+        // 요청이 만들어졌지만, 응답을 받지 못한 경우
+        console.log("Error request:", error.request);
+      } else {
+        // 그 외의 에러
+        console.log("Error", error.message);
+      }
     }
   };
 
@@ -149,63 +165,6 @@ function ManagerScreen() {
       { text: "확인", onPress: addAlarm },
     ]);
   }
-
-  // useEffect(() => {
-  //   setLectureData(lectures);
-  // }, [lectures]);
-
-  // const lecturesTitle = [
-  //   ...new Set(lecturesData.map((item) => item.mainTitle)),
-  // ];
-
-  // const dateControl = (stringDate) => {
-  //   // string에서 date 타입으로 전환하기 위해 만듬
-  //   return new Date(stringDate);
-  // };
-
-  // let lecturesElements = [];
-
-  // for (let i = 0; i < lecturesTitle.length; i++) {
-  //   let SelectedColor = GlobalStyles.indicationColors[i % 4];
-
-  //   lecturesElements.push(
-  //     <View key={i}>
-  //       <Text style={[styles.mainTitle, { color: SelectedColor }]}>
-  //         {lecturesTitle[i]}
-  //       </Text>
-
-  //       {lecturesData
-  //         .filter((item) => item.mainTitle === lecturesTitle[i])
-  //         .map((filteringItem, i) => {
-  //           let dateTypeValue = dateControl(filteringItem.enrollEndDate);
-  //           // console.log(filteringItem.staff);
-  //           return (
-  //             <LectureBox
-  //               key={filteringItem.id}
-  //               colors={SelectedColor}
-  //               subTitle={filteringItem.subTitle}
-  //               date={filteringItem.lectureDates}
-  //               time={filteringItem.time}
-  //               // lectureIdHandler={() => lectureIdHomeScreen(filteringItem.id)}
-  //               id={filteringItem.id}
-  //               dateTypeValue={dateTypeValue}
-  //               mainTutor={filteringItem.mainTutor}
-  //               subTutor={filteringItem.subTutor}
-  //               staff={filteringItem.staff}
-  //               place={filteringItem.place}
-  //               lectureIdHandler={() =>
-  //                 navigation.navigate("DetailLecture", {
-  //                   data: filteringItem.id,
-  //                 })
-  //               }
-  //               // date={dateText}
-  //             />
-  //           );
-  //         })}
-  //       {i === lecturesTitle.length - 1 && <View style={{ height: 20 }} />}
-  //     </View>
-  //   );
-  // }
 
   const navigation = useNavigation();
 

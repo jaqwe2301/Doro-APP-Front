@@ -100,7 +100,6 @@ function DetailLectureScreen({ route, navigation }) {
           return lecture;
         });
         setLectureContent(res.data.data.lectureContentDto);
-        // console.log(res.data.data);
 
         const assignedTutors = res.data.data.assignedTutors;
 
@@ -217,13 +216,6 @@ function DetailLectureScreen({ route, navigation }) {
       role = "스태프";
       applyStatus = apply[2];
     }
-    // console.log(applyStatus);
-    // const role =
-    //   roles === "MAIN_TUTOR"
-    //     ? "주 강사"
-    //     : roles === "SUB_TUTOR"
-    //     ? "보조강사"
-    //     : "스태프";
     if (applyStatus) {
       Alert.alert(
         `이미 ${role}를 신청하셨습니다.`,
@@ -944,9 +936,6 @@ function DetailLectureScreen({ route, navigation }) {
     if (!lecture) {
       console.error("lecture is undefined");
     }
-
-    console.log(lecture);
-    console.log(data.id);
 
     delete lecture.id;
     if (status) {

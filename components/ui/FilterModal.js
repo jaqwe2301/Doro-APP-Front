@@ -27,7 +27,6 @@ function FilterModal({
   data,
   onPressPlus,
   status,
-  selectedCities,
   setCity,
   setStartDate,
   setEndDate,
@@ -84,30 +83,6 @@ function FilterModal({
 
     inVisible();
   };
-
-  // const ConfirmBtn = () => {
-  //   if (status === "RECRUITING" || status === "ALLOCATION_COMP") {
-  //     setCity(selectedIndices.join(","));
-  //     // useFilter("city", "RECRUITING", );
-  //   } else if (status === "GENERATION") {
-  //     setCity(
-  //       selectedIndices
-  //         .map((index) => data[index])
-  //         .map((item) => parseInt(item))
-  //     );
-  //   } else {
-  //     const formattedDate = `${date[0].getFullYear()}-${padNumber(
-  //       date[0].getMonth() + 1
-  //     )}-${padNumber(date[0].getDate())}`;
-  //     const formattedDate2 = `${date[1].getFullYear()}-${padNumber(
-  //       date[1].getMonth() + 1
-  //     )}-${padNumber(date[1].getDate())}`;
-  //     setStartDate(formattedDate);
-  //     setEndDate(formattedDate2);
-  //   }
-
-  //   inVisible();
-  // };
 
   const layout = useWindowDimensions();
 

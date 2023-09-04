@@ -87,7 +87,6 @@ function Name({ navigation, route }) {
             : "",
           gender: gender,
         });
-        console.log(gender);
         navigation.navigate("school", { h: statusBarHeight });
       } else {
       }
