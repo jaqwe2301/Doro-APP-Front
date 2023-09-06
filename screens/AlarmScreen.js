@@ -29,7 +29,7 @@ function AlarmScreen({ navigation }) {
   async function notiHandler() {
     try {
       const response = await getNotification({
-        userId: headerId,
+        // userId: headerId,
         page: pageNum,
         size: 10,
       });
@@ -37,7 +37,7 @@ function AlarmScreen({ navigation }) {
         setData((prev) => [...prev, ...response.data]);
         setPageNum((prev) => prev + 1);
       }
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +53,6 @@ function AlarmScreen({ navigation }) {
         setData(response.data);
         setPageNum(1);
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +64,7 @@ function AlarmScreen({ navigation }) {
         notificationId: notificationId,
       });
 
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -114,22 +113,24 @@ function AlarmScreen({ navigation }) {
     clickedItems,
     setClickedItems,
   }) => {
-    const isExpanded = expandedItems.includes(item.id);
+    const isExpanded = expandedItems.includes(item.notification.id);
 
-    const isClicked = clickedItems.includes(item.id);
-    return item.notificationType === "NOTIFICATION" ? (
+    const isClicked = clickedItems.includes(item.notification.id);
+    return item.notification.notificationType === "NOTIFICATION" ? (
       <Pressable
         onPress={() => {
           if (isExpanded) {
-            setExpandedItems(expandedItems.filter((id) => id !== item.id));
+            setExpandedItems(
+              expandedItems.filter((id) => id !== item.notification.id)
+            );
           } else {
-            setExpandedItems([...expandedItems, item.id]);
+            setExpandedItems([...expandedItems, item.notification.id]);
           }
           if (!item.isRead) {
-            readHandler(item.id);
+            readHandler(item.notification.id);
           }
-          if (!clickedItems.includes(item.id)) {
-            setClickedItems([...clickedItems, item.id]);
+          if (!clickedItems.includes(item.notification.id)) {
+            setClickedItems([...clickedItems, item.notification.id]);
           }
         }}
       >
@@ -149,11 +150,13 @@ function AlarmScreen({ navigation }) {
             </View>
             <Text style={styles.date}>
               {/* {moment(item.createdAt).format("YYYY-MM-DD A h:mm")} */}
-              {formatDateTime(item.createdAt)}
+              {formatDateTime(item.notification.createdAt)}
             </Text>
           </View>
-          <Text style={styles.content}>{item.title}</Text>
-          {isExpanded && <Text style={styles.content2}>{item.body}</Text>}
+          <Text style={styles.content}>{item.notification.title}</Text>
+          {isExpanded && (
+            <Text style={styles.content2}>{item.notification.body}</Text>
+          )}
 
           <View style={styles.linkConainer}>
             <Text style={styles.date}>
@@ -177,14 +180,15 @@ function AlarmScreen({ navigation }) {
         </View>
       </Pressable>
     ) : (
+      // 공지사항 부분
       <Pressable
         onPress={() => {
-          naviNotice(item.announcementId);
+          naviNotice(item.notification.targetId);
           if (!item.isRead) {
-            readHandler(item.id);
+            readHandler(item.notification.id);
           }
-          if (!clickedItems.includes(item.id)) {
-            setClickedItems([...clickedItems, item.id]);
+          if (!clickedItems.includes(item.notification.id)) {
+            setClickedItems([...clickedItems, item.notification.id]);
           }
         }}
       >
@@ -204,7 +208,7 @@ function AlarmScreen({ navigation }) {
             </View>
             <Text style={styles.date}>
               {/* {moment(item.createdAt).format("YYYY-MM-DD A h:mm")} */}
-              {formatDateTime(item.createdAt)}
+              {formatDateTime(item.notification.createdAt)}
             </Text>
           </View>
           <Text style={styles.content}>{item.body}</Text>
@@ -235,7 +239,7 @@ function AlarmScreen({ navigation }) {
             setClickedItems={setClickedItems}
           />
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.notification.id}
         onEndReached={notiHandler}
         onEndReachedThreshold={0.5}
         ListHeaderComponent={<View />}

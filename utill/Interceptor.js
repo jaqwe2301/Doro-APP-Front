@@ -119,6 +119,7 @@ function Interceptor() {
       return response;
     },
     async function (error) {
+      console.log("인스턴스 에러\n" + error);
       const originalConfig = error.config;
       if (error.response.status === 401) {
         const retryOriginalRequest = new Promise((resolve) => {

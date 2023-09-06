@@ -4,6 +4,7 @@ import { AuthContext } from "../store/auth-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Interceptor from "./Interceptor";
 import { URL } from "./config";
+import { errorHandler } from "./etc";
 
 // const URL = "http://10.0.2.2:8080";
 
@@ -106,31 +107,30 @@ export async function checkAccount({ account }) {
   return data;
 }
 
-export async function getNotification({ userId, page, size }) {
+export async function getNotification({ page, size }) {
   try {
-    const response = await instance.get(
-      URL +
-        "/notifications/" +
-        `${userId}` +
-        "?page=" +
-        `${page}` +
-        "&size=" +
-        `${size}`
-    );
+    const response = await instance.get("/users-notifications/", {
+      params: {
+        page,
+        size,
+      },
+    });
+
+    // console.log(response.data.data);
     return response.data;
   } catch (error) {
     console.log(error);
-
     throw error;
   }
 }
 export async function readNotification({ notificationId }) {
   try {
-    const response = await instance.post(
-      "/notifications/" + `${notificationId}` + "/doRead"
+    const response = await instance.get(
+      `/users-notifications/${notificationId}/`
     );
     return response;
   } catch (error) {
+    errorHandler(error, "Noti Read ERROR");
     console.log(error);
 
     throw error;
@@ -141,7 +141,7 @@ export async function pushNotification({ body, title }) {
     const response = await instance.post("/notifications", {
       title: title,
       body: body,
-      // notificationType: "NOTIFICATION",
+      notificationType: "NOTIFICATION",
     });
     return response.data;
   } catch (error) {
