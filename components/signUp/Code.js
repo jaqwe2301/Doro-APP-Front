@@ -38,7 +38,7 @@ import GenerationModal from "../ui/GenerationModal";
 function Code({ navigation, route }) {
   const [inputCode, setInputCode] = useState("");
   const [inputRole, setInputRole] = useState("");
-  const [tmpCode, setTmpCode] = useState(1)
+  const [tmpCode, setTmpCode] = useState(1);
   const [inputGeneration, setInputGeneration] = useState(0);
 
   const [visible, setVisible] = useState(false);
@@ -49,7 +49,15 @@ function Code({ navigation, route }) {
   const [select, setSelect] = useState("가입 유형을 선택하세요");
   const [selectCode, setSelectCode] = useState("기수를 선택하세요");
   const [statusStyle, setStatusStyle] = useState(styles.textModal);
-  const [statusGStyle, setStatusGStyle] = useState(styles.textModal);
+  const [statusGStyle, setStatusGStyle] = useState();
+
+  useEffect(() => {
+    console.log(statusGStyle);
+  }, [statusGStyle]);
+
+  useEffect(() => {
+    console.log(inputGeneration);
+  }, [inputGeneration]);
 
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
 
@@ -89,7 +97,7 @@ function Code({ navigation, route }) {
         birth: signData.birth,
         // birth: "2000-06-23",
         doroAuth: inputCode,
-        gender: "FEMALE",
+        gender: signData.gender,
         generation: inputGeneration,
         major: signData.major,
         name: signData.name,
@@ -165,7 +173,16 @@ function Code({ navigation, route }) {
               <View style={styles.inputContainer}>
                 <Pressable onPress={() => setVisibleCode(!visibleCode)}>
                   <View style={styles.textInput}>
-                    <Text style={statusGStyle}>{selectCode}</Text>
+                    <Text
+                      style={[
+                        styles.textModal,
+                        statusGStyle
+                          ? { color: GlobalStyles.colors.gray01 }
+                          : { color: GlobalStyles.colors.gray05 },
+                      ]}
+                    >
+                      {selectCode}
+                    </Text>
                     <View style={{ marginRight: 13 }}>
                       <Down width={24} height={24} />
                     </View>
@@ -525,7 +542,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     lineHeight: 20,
-    color: GlobalStyles.colors.gray05,
+    // color: GlobalStyles.colors.gray05,
   },
   textInputText: {
     lineHeight: 20,

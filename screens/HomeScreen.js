@@ -36,10 +36,10 @@ import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
 import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
-// import { useLectures } from "../store/LecturesProvider";
 import Swiper from "react-native-swiper";
 import { getAnnouncement, getCityList, getLectureList } from "../utill/http";
 import Interceptor from "../utill/Interceptor";
+import { errorHandler } from "../utill/etc";
 import FilterModal from "../components/ui/FilterModal";
 const instance = Interceptor();
 
@@ -48,11 +48,14 @@ const HomeScreen = ({ navigation }) => {
   const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
 
+  // 강의 모집 중 : RECRUITING - r
+  // 강의 진행 중 : ALLOCATION_COMP - a
+
   const [rlectureData, setRLectureData] = useState([]);
   const [alectureData, setALectureData] = useState([]);
 
-  const [cityList, setCityList] = useState("");
-  const [cityList2, setCityList2] = useState("");
+  const [rCityList, setRCityList] = useState("");
+  const [aCityList, setACityList] = useState("");
 
   const [rCities, setRCities] = useState("");
   const [onRCities, setOnRCities] = useState(false);
@@ -73,6 +76,9 @@ const HomeScreen = ({ navigation }) => {
 
   const [rNum, setRNum] = useState(0);
   const [aNum, setANum] = useState(0);
+
+  const [rPageNum, setRPageNum] = useState(0);
+  const [aPageNum, setAPageNum] = useState(0);
 
   const groupDataByMainTitle = (data) => {
     const groupedData = data.reduce((acc, item) => {
@@ -97,7 +103,7 @@ const HomeScreen = ({ navigation }) => {
         size="large"
         color={GlobalStyles.colors.primaryDefault}
       />
-    ); // or any other loading indicator
+    );
   }
 
   useEffect(() => {
@@ -105,7 +111,7 @@ const HomeScreen = ({ navigation }) => {
       try {
         const result = await getAnnouncement({ page: 0, size: 3 });
         setResponse(result);
-        console.log(result);
+        // console.log(result);
       } catch (error) {
         console.error(error);
       }
@@ -114,149 +120,213 @@ const HomeScreen = ({ navigation }) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    async function getCity() {
-      try {
-        const result = await getCityList({ status: "RECRUITING" });
-        const result2 = await getCityList({ status: "ALLOCATION_COMP" });
-        setCityList(result);
-        setCityList2(result2);
-        console.log(result);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    getCity();
-
-    refreshHandler();
-    refreshHandler2();
-  }, [isLectureUpdate]);
-
-  const [pageNum, setPageNum] = useState(0);
-  const [pageNum2, setPageNum2] = useState(0);
-
-  useEffect(() => {
-    // if (rCities !== null) {
-    if (rCities !== "") {
-      setOnRCities(true);
-    } else {
-      setOnRCities(false);
-    }
-    setPageNum(0);
-    setRLectureData([]);
-
-    lectureHandler();
-    // }
-  }, [rCities]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (rEndDate !== "" || rStartDate !== "") {
-        setPageNum(0);
-        setRLectureData([]);
-        lectureHandler();
-        setOnRDate(true);
-      } else {
-        setOnRDate(false);
-      }
-    };
-
-    fetchData();
-    console.log(rEndDate, rStartDate);
-  }, [rEndDate, rStartDate]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (aEndDate !== "" || aStartDate !== "") {
-        setPageNum2(0);
-        setALectureData([]);
-        lectureHandler2();
-        setOnADate(true);
-      } else {
-        setOnADate(false);
-      }
-    };
-
-    fetchData();
-    console.log(aEndDate, aStartDate);
-  }, [aEndDate, aStartDate]);
-
-  useEffect(() => {
-    // if (aCities !== null) {
-    setPageNum2(0);
-    setALectureData([]);
-    lectureHandler2();
-    if (aCities !== "") {
-      setOnACities(true);
-    } else {
-      setOnACities(false);
-    }
-
-    // console.log(aCities);
-    // }
-  }, [aCities]);
-
-  async function lectureHandler() {
+  async function getCity(status) {
     try {
-      const result = await getLectureList({
-        city: rCities,
-        endDate: rEndDate,
-        startDate: rStartDate,
-        page: pageNum,
-        size: 10,
-        lectureStatus: "RECRUITING",
-      });
+      const result = await getCityList({ status: status });
 
-      const recruitingData = result.lecturesInfos;
-
-      const data = groupDataByMainTitle(recruitingData);
-
-      if (pageNum === 0) {
-        setRLectureData(data);
-        setPageNum(1);
-      } else {
-        setRLectureData((prev) => [...prev, ...data]);
-        setPageNum((prev) => prev + 1);
+      if (status === "RECRUITING") {
+        setRCityList(result);
       }
-      console.log("뭐야");
-      console.log(pageNum);
-      // setRLectureData((prev) => [...prev, ...data]);
-      if (recruitingData.length !== 0) {
-        setRNum(result.totalCount);
-      } else if (recruitingData.length === 0 && pageNum === 0) {
-        setRNum(0);
+
+      if (status === "ALLOCATION_COMP") {
+        setACityList(result);
       }
+
+      // const rResult = await getCityList({ status: "RECRUITING" });
+      // const aResult = await getCityList({ status: "ALLOCATION_COMP" });
+      // setRCityList(rResult);
+      // setACityList(aResult);
     } catch (error) {
-      console.error(error);
+      errorHandler(error, "강의 도시 조회 오류");
     }
   }
 
-  async function refreshHandler() {
+  useEffect(() => {
+    lectureHandler("RECRUITING");
+    lectureHandler("ALLOCATION_COMP");
+    getCity("RECRUITING");
+    getCity("ALLOCATION_COMP");
+  }, []);
+
+  async function lectureHandler(status) {
+    const cities = status === "RECRUITING" ? rCities : aCities;
+    const endDate = status === "RECRUITING" ? rEndDate : aEndDate;
+    const startDate = status === "RECRUITING" ? rStartDate : aStartDate;
+    const pageNum = status === "RECRUITING" ? rPageNum : aPageNum;
+
     try {
       const result = await getLectureList({
-        city: rCities,
-        endDate: rEndDate,
-        startDate: rStartDate,
-        page: 0,
+        city: cities,
+        endDate: endDate,
+        startDate: startDate,
+        page: pageNum,
         size: 10,
-        lectureStatus: "RECRUITING",
+        lectureStatus: status,
       });
 
       const recruitingData = result.lecturesInfos;
 
       const data = groupDataByMainTitle(recruitingData);
 
-      setRLectureData(data);
-      if (recruitingData.length !== 0) {
-        setRNum(result.totalCount);
+      if (status === "RECRUITING") {
+        if (pageNum === 0) {
+          setRLectureData(data);
+          setRPageNum(1);
+        } else {
+          setRLectureData((prev) => [...prev, ...data]);
+          setRPageNum(rPageNum + 1);
+        }
+
+        if (recruitingData.length !== 0) {
+          setRNum(result.totalCount);
+        } else if (recruitingData.length === 0 && rPageNum === 0) {
+          setRNum(0);
+        }
       } else {
-        setRNum(0);
+        if (pageNum === 0) {
+          setALectureData(data);
+          setAPageNum(1);
+        } else {
+          setALectureData((prev) => [...prev, ...data]);
+          setAPageNum(rPageNum + 1);
+        }
+
+        if (recruitingData.length !== 0) {
+          setANum(result.totalCount);
+        } else if (recruitingData.length === 0 && aPageNum === 0) {
+          setANum(0);
+        }
+      }
+    } catch (error) {
+      errorHandler(error, "강의 조회 에러");
+    }
+  }
+
+  async function useFilter(
+    filter,
+    status,
+    selectedCities,
+    selectedStartDate,
+    selectedEndDate
+  ) {
+    let cities = "";
+    let startDate = "";
+    let endDate = "";
+
+    if (status === "RECRUITING") {
+      if (filter === "city") {
+        cities = selectedCities;
+        startDate = rStartDate;
+        endDate = rEndDate;
+      }
+      if (filter === "date") {
+        cities = rCities;
+        startDate = selectedStartDate;
+        endDate = selectedEndDate;
+        console.log("date 맞음");
+      }
+    }
+    if (status === "ALLOCATION_COMP") {
+      if (filter === "city") {
+        cities = selectedCities;
+        startDate = aStartDate;
+        endDate = aEndDate;
+      }
+      if (filter === "date") {
+        cities = aCities;
+        startDate = selectedStartDate;
+        endDate = selectedEndDate;
+      }
+    }
+
+    // console.log(startDate);
+    // console.log(endDate);
+
+    try {
+      const result = await getLectureList({
+        city: cities,
+        endDate: endDate,
+        startDate: startDate,
+        page: 0,
+        size: 10,
+        lectureStatus: status,
+      });
+
+      const recruitingData = result.lecturesInfos;
+
+      const data = groupDataByMainTitle(recruitingData);
+
+      if (status === "RECRUITING") {
+        setRLectureData(data);
+        setRPageNum(1);
+
+        if (recruitingData.length !== 0) {
+          setRNum(result.totalCount);
+        } else if (recruitingData.length === 0 && rPageNum === 0) {
+          setRNum(0);
+        }
+      } else {
+        setALectureData(data);
+        setAPageNum(1);
+
+        if (recruitingData.length !== 0) {
+          setANum(result.totalCount);
+        } else if (recruitingData.length === 0 && aPageNum === 0) {
+          setANum(0);
+        }
+      }
+    } catch (error) {
+      errorHandler(error, "강의 조회 에러");
+    }
+  }
+
+  async function refreshHandler(status) {
+    /** 강의 새로고침 */
+
+    try {
+      const result = await getLectureList({
+        city: "",
+        endDate: "",
+        startDate: "",
+        page: 0,
+        size: 10,
+        lectureStatus: status,
+      });
+
+      const recruitingData = result.lecturesInfos;
+
+      const data = groupDataByMainTitle(recruitingData);
+
+      if (status === "RECRUITING") {
+        setRCities("");
+        setRStartDate("");
+        setREndDate("");
+        setRLectureData(data);
+        setRPageNum(1);
+
+        if (recruitingData.length !== 0) {
+          setRNum(result.totalCount);
+        } else if (recruitingData.length === 0 && rPageNum === 0) {
+          setRNum(0);
+        }
+      }
+      if (status === "ALLOCATION_COMP") {
+        setACities("");
+        setAStartDate("");
+        setAEndDate("");
+        setALectureData(data);
+        setAPageNum(1);
+
+        if (recruitingData.length !== 0) {
+          setANum(result.totalCount);
+        } else if (recruitingData.length === 0 && aPageNum === 0) {
+          setANum(0);
+        }
       }
 
-      setPageNum(1);
+      getCity(status);
     } catch (error) {
-      console.error(error);
+      errorHandler(error, "강의 새로고침 오류");
     }
   }
 
@@ -272,64 +342,6 @@ const HomeScreen = ({ navigation }) => {
       },
     ]);
   }, [rNum, aNum]);
-
-  async function refreshHandler2() {
-    try {
-      const result = await getLectureList({
-        city: aCities,
-        endDate: aEndDate,
-        startDate: aStartDate,
-        page: 0,
-        size: 10,
-        lectureStatus: "ALLOCATION_COMP",
-      });
-
-      const allocationData = result.lecturesInfos;
-
-      const data = groupDataByMainTitle(allocationData);
-
-      setALectureData(data);
-      if (allocationData.length !== 0) {
-        setANum(result.totalCount);
-      } else {
-        setANum(0);
-      }
-      setPageNum2(1);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function lectureHandler2() {
-    try {
-      const result = await getLectureList({
-        city: aCities,
-        endDate: aEndDate,
-        startDate: aStartDate,
-        page: pageNum2,
-        size: 10,
-        lectureStatus: "ALLOCATION_COMP",
-      });
-
-      const allocationData = result.lecturesInfos;
-
-      const data = groupDataByMainTitle(allocationData);
-      if (allocationData.length !== 0) {
-        setANum(result.totalCount);
-      } else if (allocationData.length === 0 && pageNum === 0) {
-        setANum(0);
-      }
-      if (pageNum2 === 0) {
-        setALectureData(data);
-        setPageNum2(1);
-      } else {
-        setALectureData((prev) => [...prev, ...data]);
-        setPageNum2((prev) => prev + 1);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
@@ -353,13 +365,18 @@ const HomeScreen = ({ navigation }) => {
               data={rlectureData}
               // extraData={[rCities, rlectureData]}
               keyExtractor={(item, index) => index.toString()}
-              onEndReached={lectureHandler}
+              // onEndReached={lectureHandler}
+              // 끝부분에 도달했을 때 실행
               onEndReachedThreshold={0.5}
+              // 끝부분에서 얼마나 떨어져있을 때 onEndReached을 실행할 건지
               onRefresh={() => {
-                refreshHandler();
+                // 위로 당겼을 때 실행 - 새로고침
+                refreshHandler("RECRUITING");
               }}
               refreshing={false}
+              // true인 경우 onRefresh 함수 실행
               ListHeaderComponent={
+                // 데이터를 받아와 출력하는 곳 위에 보여줄 곳
                 <View
                   style={{
                     flexDirection: "row",
@@ -436,10 +453,10 @@ const HomeScreen = ({ navigation }) => {
             <FlatList
               data={alectureData}
               keyExtractor={(item, index) => index.toString()}
-              onEndReached={lectureHandler2}
+              // onEndReached={lectureHandler2}
               onEndReachedThreshold={0.2}
               onRefresh={() => {
-                refreshHandler2();
+                refreshHandler("ALLOCATION_COMP");
               }}
               refreshing={false}
               ListHeaderComponent={
@@ -529,7 +546,6 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <Megaphone width={24} height={24} />
-          {/* <View> */}
           <Swiper
             autoplay={true}
             autoplayTimeout={3}
@@ -566,7 +582,6 @@ const HomeScreen = ({ navigation }) => {
               );
             })}
           </Swiper>
-          {/* </View> */}
           <Right width={24} height={24} />
         </View>
         {/* <Pressable
@@ -641,22 +656,26 @@ const HomeScreen = ({ navigation }) => {
         visible={filter}
         inVisible={() => setFilter(false)}
         title={title}
-        data={cityList}
+        data={rCityList}
         status={status}
+        selectedCities={rCities}
         setCity={setRCities}
         setStartDate={setRStartDate}
         setEndDate={setREndDate}
+        useFilter={useFilter}
       />
 
       <FilterModal
         visible={filter2}
         inVisible={() => setFilter2(false)}
         title={title}
-        data={cityList2}
+        data={aCityList}
         status={status}
+        selectedCities={aCities}
         setCity={setACities}
         setStartDate={setAStartDate}
         setEndDate={setAEndDate}
+        useFilter={useFilter}
       />
 
       {headerRole === "ROLE_ADMIN" ? (
@@ -704,7 +723,6 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: GlobalStyles.colors.green,
     bottom: 17,
     right: 10,
   },
@@ -728,7 +746,6 @@ const styles = StyleSheet.create({
     marginBottom: 54,
     backgroundColor: "#F4F4F4",
     flexDirection: "row",
-    // height: 44,
     paddingVertical: 10,
     justifyContent: "space-between",
     alignItems: "center",

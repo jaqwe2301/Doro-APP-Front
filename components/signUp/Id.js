@@ -63,7 +63,22 @@ function Id({ navigation, route }) {
           setIsVisible(true);
         }
       } catch (error) {
-        console.log(error);
+        if (error.response) {
+          // 서버가 응답을 반환한 경우
+          console.log("Error response:", error.response.data);
+          if (error.response.data.code === "AUTH009") {
+            Alert.alert(
+              "이미 존재하는 아이디",
+              "해당 아이디를 사용할 수 없습니다."
+            );
+          }
+        } else if (error.request) {
+          // 요청이 만들어졌지만, 응답을 받지 못한 경우
+          console.log("Error request:", error.request);
+        } else {
+          // 그 외의 에러
+          console.log("Error", error.message);
+        }
       }
     } else {
       // Alert.alert("Input Error", "아이디를 제대로 입력해주세요");

@@ -17,13 +17,12 @@ import InputText from "../../components/ui/InputText";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { GlobalStyles } from "../../constants/styles";
 import ButtonBig from "../../components/ui/ButtonBig";
-import { useNavigation } from "@react-navigation/native";
 import Bar from "../ui/Bar";
 import { SignContext } from "../../store/sign-context";
 import InputData from "../ui/InputData";
 import { KRBold } from "../../constants/fonts";
 
-import Checkbox from "../../assets/checkbox.svg";
+import CheckboxBefore from "../../assets/checkbox.svg";
 import CheckboxAfter from "../../assets/checkbox_after.svg";
 
 function Name({ navigation, route }) {
@@ -38,6 +37,7 @@ function Name({ navigation, route }) {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [check, setCheck] = useState(false);
+  const [gender, setGender] = useState("");
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -86,8 +86,8 @@ function Name({ navigation, route }) {
                 .replace(/\.|-$/, "")
                 .replace(/\s/g, "")
             : "",
+          gender: gender,
         });
-
         navigation.navigate("school", { h: statusBarHeight });
       } else {
       }
@@ -152,7 +152,7 @@ function Name({ navigation, route }) {
                       {check ? (
                         <CheckboxAfter width={30} height={30} />
                       ) : (
-                        <Checkbox width={30} height={30} />
+                        <CheckboxBefore width={30} height={30} />
                       )}
                       <Text style={{ marginBottom: 2, marginLeft: 6 }}>
                         {check
@@ -201,16 +201,47 @@ function Name({ navigation, route }) {
                     </View>
                   </Pressable>
                 </View>
-                {/* {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode="date"
-                  is24Hour={true}
-                  onChange={onChange}
-                  display="spinner"
-                />
-              )} */}
+                <View style={[styles.textContainer, { marginTop: 50 }]}>
+                  <InputText text="성별을 선택해 주세요." option="선택" />
+                </View>
+                <View
+                  style={{
+                    marginHorizontal: 20,
+                    marginTop: 10,
+                    gap: 10,
+                    flexDirection: "row",
+                    paddingLeft: 2,
+                  }}
+                >
+                  <Pressable
+                    onPress={() =>
+                      setGender((prev) => (prev === "MALE" ? "" : "MALE"))
+                    }
+                  >
+                    <View style={{ flexDirection: "row", gap: 4 }}>
+                      {gender === "MALE" ? (
+                        <CheckboxAfter width={30} height={30} />
+                      ) : (
+                        <CheckboxBefore width={30} height={30} />
+                      )}
+                      <Text style={{ fontSize: 16, marginTop: 3 }}>남자</Text>
+                    </View>
+                  </Pressable>
+                  <Pressable
+                    onPress={() =>
+                      setGender((prev) => (prev === "FEMALE" ? "" : "FEMALE"))
+                    }
+                  >
+                    <View style={{ flexDirection: "row", gap: 4 }}>
+                      {gender === "FEMALE" ? (
+                        <CheckboxAfter width={30} height={30} />
+                      ) : (
+                        <CheckboxBefore width={30} height={30} />
+                      )}
+                      <Text style={{ fontSize: 16, marginTop: 3 }}>여자</Text>
+                    </View>
+                  </Pressable>
+                </View>
               </View>
             </ScrollView>
             {Platform.OS === "ios" ? (

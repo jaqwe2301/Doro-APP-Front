@@ -6,8 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import messaging from "@react-native-firebase/messaging";
 import notifee from "@notifee/react-native";
 
-// const URL = "https://api.doroapp.com";
-// const URL = "http://10.0.2.2:8080";
+import { errorHandler } from "./etc";
 
 export function authPhoneNum({ messageType, phone }) {
   axios
@@ -21,6 +20,24 @@ export function authPhoneNum({ messageType, phone }) {
     .catch(function (error) {
       console.log(error);
     });
+}
+
+export async function checkPhoneNum(phone) {
+  try {
+    const response = await axios.get(URL + "/check/phone?phone=" + phone);
+    return response.data.code;
+    // console.log(phone);
+  } catch (err) {
+    if (err.response) {
+      // 서버가 응답을 반환한 경우
+      // console.log(err.response.data.code);
+      return err.response.data.code;
+    } else {
+      // 그 외의 에러
+      Alert.alert("요청 실패", "휴대폰 번호 유효 체크를 실패하였습니다.");
+      console.log("Error", err.message);
+    }
+  }
 }
 
 export async function verifyauthPhoneNum({ authNum, messageType, phone }) {
@@ -125,7 +142,17 @@ export async function login({ id, pw }) {
     return token;
   } catch (error) {
     Alert.alert("로그인 실패", "로그인에 실패하셨습니다.");
-    console.error("Error occurred during login: ", error);
+    // console.error("Error occurred during login: ", error);
+    if (error.response) {
+      // 서버가 응답을 반환한 경우
+      console.log("Error response:", error.response.data);
+    } else if (error.request) {
+      // 요청이 만들어졌지만, 응답을 받지 못한 경우
+      console.log("Error request:", error.request);
+    } else {
+      // 그 외의 에러
+      console.log("Error", error.message);
+    }
   }
 }
 
@@ -196,13 +223,11 @@ export async function signUp({
       studentId: studentId,
       studentStatus: studentStatus,
     });
-    console.log(response.data);
     if (!response.data.success) {
       Alert.alert("회원가입 오류", response.data.message);
     }
     return response;
   } catch (error) {
-    console.log(error);
-    console.log("여긴가");
+    errorHandler(error, "sigh-up auth file error");
   }
 }

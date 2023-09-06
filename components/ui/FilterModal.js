@@ -30,11 +30,13 @@ function FilterModal({
   setCity,
   setStartDate,
   setEndDate,
+  useFilter,
 }) {
   const [date, setDate] = useState([
     new Date(new Date().setMonth(new Date().getMonth() - 6)),
     new Date(new Date().setMonth(new Date().getMonth() + 6)),
   ]);
+
   const [dateVisible, setDateVisible] = useState();
   const [choice, setChoice] = useState(true);
 
@@ -53,15 +55,21 @@ function FilterModal({
   };
 
   const ConfirmBtn = () => {
+    const cities = selectedIndices.map((index) => data[index]).join(",");
+
     if (status === "RECRUITING" || status === "ALLOCATION_COMP") {
-      setCity(selectedIndices.map((index) => data[index]).join(","));
+      setCity(cities);
+      useFilter("city", status, cities, "", "");
     } else if (status === "GENERATION") {
+      // 마이페이지 - 기수 선택 모달에 해당
       setCity(
         selectedIndices
           .map((index) => data[index])
           .map((item) => parseInt(item))
       );
     } else {
+      const dateStatus =
+        status === "recruitingDate" ? "RECRUITING" : "ALLOCATION_COMP";
       const formattedDate = `${date[0].getFullYear()}-${padNumber(
         date[0].getMonth() + 1
       )}-${padNumber(date[0].getDate())}`;
@@ -70,6 +78,7 @@ function FilterModal({
       )}-${padNumber(date[1].getDate())}`;
       setStartDate(formattedDate);
       setEndDate(formattedDate2);
+      useFilter("date", dateStatus, "", formattedDate, formattedDate2);
     }
 
     inVisible();

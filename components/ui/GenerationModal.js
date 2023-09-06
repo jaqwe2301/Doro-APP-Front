@@ -62,12 +62,12 @@ function GenerationModal({
                   <Picker
                     selectedValue={tmpCode}
                     onValueChange={(itemValue, itemIndex) => {
-                      setTmpCode(itemValue)
+                      setTmpCode(itemValue);
                       // setInputGeneration(itemValue);
-                      if (type) {
-                        // setSelectCode(itemValue + "기");
-                        setStatusGStyle(styles.textInputText);
-                      }
+                      // if (type) {
+                      //   // setSelectCode(itemValue + "기");
+                      //   setStatusGStyle(styles.textInputText);
+                      // }
                     }}
                     itemStyle={{
                       marginHorizontal: 10,
@@ -101,7 +101,12 @@ function GenerationModal({
                   <ButtonBig
                     text="확인"
                     style={GlobalStyles.colors.primaryDefault}
-                    onPress={() => {setVisibleCode(false); setInputGeneration(tmpCode); setSelectCode(tmpCode + "기");}}
+                    onPress={() => {
+                      setVisibleCode(false);
+                      setInputGeneration(tmpCode);
+                      setSelectCode(tmpCode + "기");
+                      setStatusGStyle(true);
+                    }}
                   />
                 </View>
               </View>
@@ -136,12 +141,12 @@ function GenerationModal({
                 <Picker
                   selectedValue={tmpCode}
                   onValueChange={(itemValue, itemIndex) => {
-                    setTmpCode(itemValue)
+                    setTmpCode(itemValue);
                     // setInputGeneration(itemValue);
-                    if (type) {
-                      // setSelectCode(itemValue + "기");
-                      setStatusGStyle(styles.textInputText);
-                    }
+                    // if (type) {
+                    //   // setSelectCode(itemValue + "기");
+                    //   setStatusGStyle(styles.textInputText);
+                    // }
                   }}
                   itemStyle={{
                     marginHorizontal: 10,
@@ -180,7 +185,12 @@ function GenerationModal({
                 <ButtonBig
                   text="확인"
                   style={GlobalStyles.colors.primaryDefault}
-                  onPress={() => {setVisibleCode(false); setInputGeneration(tmpCode); setSelectCode(tmpCode + "기");}}
+                  onPress={() => {
+                    setVisibleCode(false);
+                    setInputGeneration(tmpCode);
+                    setSelectCode(tmpCode + "기");
+                    setStatusGStyle(true);
+                  }}
                 />
               </View>
             </View>

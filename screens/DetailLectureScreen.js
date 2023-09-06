@@ -32,6 +32,7 @@ import AddLecture from "../assets/creatingLecture.svg";
 import Delete from "../assets/delete.svg";
 
 import Interceptor from "../utill/Interceptor";
+import { errorHandler } from "../utill/etc";
 import { KRRegular } from "../constants/fonts";
 
 function DetailLectureScreen({ route, navigation }) {
@@ -99,7 +100,6 @@ function DetailLectureScreen({ route, navigation }) {
           return lecture;
         });
         setLectureContent(res.data.data.lectureContentDto);
-        console.log(res.data.data);
 
         const assignedTutors = res.data.data.assignedTutors;
 
@@ -217,13 +217,6 @@ function DetailLectureScreen({ route, navigation }) {
       role = "스태프";
       applyStatus = apply[2];
     }
-    // console.log(applyStatus);
-    // const role =
-    //   roles === "MAIN_TUTOR"
-    //     ? "주 강사"
-    //     : roles === "SUB_TUTOR"
-    //     ? "보조강사"
-    //     : "스태프";
     if (applyStatus) {
       Alert.alert(
         `이미 ${role}를 신청하셨습니다.`,
@@ -306,7 +299,16 @@ function DetailLectureScreen({ route, navigation }) {
                       onDismiss: () => {},
                     }
                   );
-                  console.log(error);
+                  if (error.response) {
+                    // 서버가 응답을 반환한 경우
+                    console.log("Error response:", error.response.data);
+                  } else if (err.request) {
+                    // 요청이 만들어졌지만, 응답을 받지 못한 경우
+                    console.log("Error request:", error.request);
+                  } else {
+                    // 그 외의 에러
+                    console.log("Error", error.message);
+                  }
                 });
             },
             style: "destructive",
@@ -759,7 +761,7 @@ function DetailLectureScreen({ route, navigation }) {
             lecture.status = "RECRUITING";
           }
 
-          axios
+          instance
             .patch(`${URL}/lectures/${data.id}`, lecture, {
               headers: {
                 // 헤더에 필요한 데이터를 여기에 추가
@@ -934,7 +936,6 @@ function DetailLectureScreen({ route, navigation }) {
     let lecture = lectureBasicInfo;
     if (!lecture) {
       console.error("lecture is undefined");
-      // return prev;
     }
 
     delete lecture.id;
@@ -944,7 +945,7 @@ function DetailLectureScreen({ route, navigation }) {
       lecture.status = "RECRUITING";
     }
 
-    axios
+    instance
       .patch(`${URL}/lectures/${data.id}`, lecture, {
         headers: {
           // 헤더에 필요한 데이터를 여기에 추가
@@ -959,8 +960,7 @@ function DetailLectureScreen({ route, navigation }) {
         setIsLectureUpdate(!isLectureUpdate);
       })
       .catch((error) => {
-        console.log("에러");
-        console.log(error);
+        errorHandler(error, "강의 상태 변경 오류");
       });
   };
 
