@@ -57,7 +57,7 @@ function MyPageScreen({ navigation }) {
       console.log(JSON.stringify(response) + "여기임");
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      console.log("프로필 핸들러 에러" + error);
       setIsLoading(true);
     }
   }
@@ -86,7 +86,7 @@ function MyPageScreen({ navigation }) {
         });
         setFinished(() => {
           const data = res.data.data.filter((item) => item.status === "FINISH");
-          console.log(data);
+          // console.log(data);
           return data;
         });
         console.log("성공");
@@ -105,7 +105,7 @@ function MyPageScreen({ navigation }) {
           notificationAgreement: notificationAgreement,
         });
       } catch (error) {
-        console.log(error);
+        console.log("알림 수정 콘솔 : ", error);
       }
     }
 
@@ -138,7 +138,7 @@ function MyPageScreen({ navigation }) {
       try {
         const response = await logout();
 
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           navigation.dispatch(
             CommonActions.reset({
@@ -157,7 +157,7 @@ function MyPageScreen({ navigation }) {
           })
         );
         authCtx.logout();
-        console.log(error);
+        console.log("로그아웃 에러 콘솔: ", error);
         console.log("에러났쪄염");
       }
     }

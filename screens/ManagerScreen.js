@@ -18,7 +18,6 @@ import axios from "axios";
 import Interceptor from "../utill/Interceptor";
 import { URL } from "../utill/config";
 import { AuthContext } from "../store/auth-context";
-import { useLectures } from "../store/LecturesProvider";
 import Search from "../assets/search.svg";
 import { GlobalStyles } from "./../constants/styles";
 import FilterBox from "../components/ui/FilterBox";
@@ -180,25 +179,10 @@ function ManagerScreen() {
   async function logoutApi() {
     try {
       const response = await logout();
-
-      console.log(response);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        })
-      );
       if (response.status === 200) {
         authCtx.logout();
       }
     } catch (error) {
-      // navigation.navigate("login");
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        })
-      );
       authCtx.logout();
       console.log(error);
       console.log("에러났쪄염");

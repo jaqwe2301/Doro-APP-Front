@@ -53,7 +53,6 @@ import NoticeDetailScreen from "./screens/NoticeDetailScreen";
 import AddNoticeScreen from "./screens/AddNoticeScreen";
 import jwtDecode from "jwt-decode";
 import HeaderContextProvider, { HeaderContext } from "./store/header-context";
-import { LecturesProvider } from "./store/LecturesProvider";
 import EditNoticeScreen from "./screens/EditNoticeScreen";
 import AlarmScreen from "./screens/AlarmScreen";
 import Splash from "./assets/splash.svg";
