@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 import { createContext, useEffect, useState } from "react";
 
@@ -21,18 +21,18 @@ function AuthContextProvider({ children }) {
     setAuthToken(token);
     setReToken(refreshToken);
     // 데이터 저장, 첫번째인자는 key 두번쨰 인자는 데이터(반드시 문자열이어야함 아니면 변환하셈)
-    await AsyncStorage.setItem("token", token);
-    await AsyncStorage.setItem("refreshToken", refreshToken);
+    await SecureStore.setItemAsync("token", token);
+    await SecureStore.setItemAsync("refreshToken", refreshToken);
   }
 
   async function pushtoken(fcmToken) {
     setFcmToken(fcmToken);
-    await AsyncStorage.setItem("fcmToken", fcmToken);
+    await SecureStore.setItemAsync("fcmToken", fcmToken);
   }
 
   async function logout() {
-    AsyncStorage.removeItem("refreshToken", () => setReToken(null));
-    AsyncStorage.removeItem("token", () => setAuthToken(null));
+    SecureStore.deleteItemAsync("refreshToken", () => setReToken(null));
+    SecureStore.deleteItemAsync("token", () => setAuthToken(null));
   }
 
   const value = {

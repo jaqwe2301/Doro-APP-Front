@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { URL } from "./config";
 // import { errorHandler } from "./etc";
@@ -12,8 +12,8 @@ function Interceptor() {
 
   instance.interceptors.request.use(
     async function (config) {
-      console.log("config 콘솔: ", config);
-      const token = await AsyncStorage.getItem("token");
+      // console.log("config 콘솔: ", config);
+      const token = await SecureStore.getItemAsync("token");
 
       if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
@@ -38,8 +38,8 @@ function Interceptor() {
   };
 
   const refreshToken = async () => {
-    const token = await AsyncStorage.getItem("token");
-    const refreshToken = await AsyncStorage.getItem("refreshToken");
+    const token = await SecureStore.getItemAsync("token");
+    const refreshToken = await SecureStore.getItemAsync("refreshToken");
 
     try {
       console.log("hi refresh 할꺼염");
@@ -49,7 +49,7 @@ function Interceptor() {
       });
 
       const newToken = response.headers.authorization;
-      await AsyncStorage.setItem("token", newToken);
+      await SecureStore.setItemAsync("token", newToken);
       console.log("새로운 토큰이얌" + newToken);
       onTokenRefreshed(newToken);
     } catch (error) {

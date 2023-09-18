@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../store/auth-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import Interceptor from "./Interceptor";
 import { URL } from "./config";
 import { errorHandler } from "./etc";
@@ -191,7 +191,7 @@ export async function getAnnouncementId({ id }) {
 
 export async function createAnnouncement({ formData, title, body }) {
   try {
-    const token = await AsyncStorage.getItem("token");
+    const token = await SecureStore.getItemAsync("token");
     // console.log("폼데이터" + JSON.stringify(formData));
     const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
     const response = await axios
@@ -346,7 +346,7 @@ export async function alarmEdit({ id, notificationAgreement }) {
 
 export async function logout() {
   try {
-    const fcmToken = await AsyncStorage.getItem("fcmToken");
+    const fcmToken = await SecureStore.getItemAsync("fcmToken");
     // console.log(fcmToken + "로그아웃 fcm");
     const response = await instance.post("/logout", undefined, {
       headers: {

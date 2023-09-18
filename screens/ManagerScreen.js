@@ -13,8 +13,7 @@ import {
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { CommonActions, useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+// import * as SecureStore from "expo-secure-store";
 import Interceptor from "../utill/Interceptor";
 import { URL } from "../utill/config";
 import { AuthContext } from "../store/auth-context";
@@ -36,7 +35,6 @@ function ManagerScreen() {
   // async function getToken() {
   //   try {
   //     const token = await messaging().getToken();
-  //     // await AsyncStorage.setItem("fcmToken", token);
   //     setBody(token);
   //   } catch (error) {
   //     console.error(error);

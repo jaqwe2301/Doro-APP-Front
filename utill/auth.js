@@ -1,8 +1,8 @@
 import axios from "axios";
 import { URL } from "./config";
 import { Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import * as SecureStore from "expo-secure-store";
 import messaging from "@react-native-firebase/messaging";
 import notifee from "@notifee/react-native";
 
@@ -100,9 +100,9 @@ export async function login({ id, pw }) {
   if (enabled) {
     console.log("Authorization status:", authStatus);
     fcmToken = await messaging().getToken();
-    await AsyncStorage.setItem("fcmToken", fcmToken);
+    await SecureStore.setItemAsync("fcmToken", fcmToken);
   } else {
-    await AsyncStorage.removeItem("fcmToken");
+    await SecureStore.deleteItemAsync("fcmToken");
   }
   try {
     const response = await axios.post(
@@ -162,8 +162,6 @@ export async function reToken({ accessToken, refreshToken }) {
 
   // const token = response.headers.authorization;
   console.log(response);
-
-  // console.log("hihi\t");
   // console.log(token);
 
   return response;
