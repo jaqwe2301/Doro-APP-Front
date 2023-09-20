@@ -731,18 +731,6 @@ function Navigation({ notificationAgreement }) {
 export default function App() {
   const [noti, setNoti] = useState(true);
 
-  // useEffect(() => {
-  //   //push notification permission 요청
-  //   requestUserPermission();
-
-  //   // 포그라운드에서 푸시메시지 수신
-  //   return messaging().onMessage(async (remoteMessage) => {
-  //     const title = remoteMessage?.notification?.title;
-  //     const body = remoteMessage?.notification?.body;
-  //     await onDisplayNotification({ title, body });
-  //   });
-  // }, []);
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
