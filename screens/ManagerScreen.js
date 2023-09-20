@@ -92,6 +92,10 @@ function ManagerScreen() {
             .catch((error) => {
               console.log("에러");
               console.log(error);
+              if (error.isRefreshError) {
+                // RefreshToken 관련 에러 시 로그아웃
+                authCtx.logout();
+              }
             })
         );
 
@@ -119,13 +123,14 @@ function ManagerScreen() {
         title: title,
         body: body,
       });
-      // setBody(JSON.stringify(response));
       if (response.success) {
         Alert.alert("알림 전송 성공", `제목 : ${title}\n내용 : ${body}`);
-        // setBody("");
-        // setTitle("");
       }
     } catch (error) {
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
       Alert.alert("알림 전송 실패", `제목 : ${title}\n내용 : ${body}`);
       console.log(error);
       if (error.response) {
@@ -151,6 +156,10 @@ function ManagerScreen() {
       }
     } catch (error) {
       console.log(error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 
@@ -315,7 +324,6 @@ function ManagerScreen() {
                         fontSize: 15,
                         fontWeight: "bold",
                         paddingLeft: 5,
-                        // backgroundColor: GlobalStyles.colors.gray01,
                       }}
                       placeholderTextColor={GlobalStyles.colors.gray05}
                       placeholder="검색"
@@ -343,10 +351,6 @@ function ManagerScreen() {
               }}
               extraData={userData}
             />
-
-            {/* <Pressable onPress={() => authCtx.logout()}>
-              <Text>매니저 로그아웃</Text>
-            </Pressable> */}
           </View>
         );
 
@@ -436,12 +440,6 @@ function ManagerScreen() {
               borderBottomWidth: 0.5,
               borderBottomColor: GlobalStyles.colors.gray04,
             }}
-            // labelStyle={{
-            //   // 폰트 스타일
-            //   margin: 0,
-            //   fontSize: 15,
-            //   color: "black",
-            // }}
             renderLabel={({ route, focused, color }) => (
               <Text
                 style={

@@ -13,6 +13,7 @@ import { GlobalStyles } from "../constants/styles";
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import { editAnnouncement, getAnnouncementId, getProfile } from "../utill/http";
+import { AuthContext } from "../store/auth-context";
 
 import Camera from "../assets/camera.svg";
 
@@ -23,6 +24,7 @@ import { HeaderContext } from "../store/header-context";
 import { Dimensions } from "react-native";
 
 function EditNoticeScreen({ navigation, route }) {
+  const authCtx = useContext(AuthContext);
   const data = route.params.data;
   const [body, setBody] = useState(data.body);
   const [title, setTitle] = useState(data.title);
@@ -34,33 +36,41 @@ function EditNoticeScreen({ navigation, route }) {
   const [randomKey, setRandomKey] = useState("");
 
   async function completeHandler() {
-    const response = await getProfile({ id: headerId });
-    const formData = new FormData();
-    formData.append("writer", response.data.name);
-    formData.append("title", title);
-    formData.append("body", body);
-    // console.log(formData.get("announcementReq"));
-    if (imageUrl && imageUrl !== data.picture) {
-      formData.append("picture", {
-        uri: imageUrl,
-        type: type,
-        name: filename,
-      });
-    } else if (
-      imageUrl === data.picture &&
-      imageUrl !== undefined &&
-      imageUrl !== null
-    ) {
-      const imagePath = imageUrl.split("/").pop();
-      const imageName = imagePath.split(".")[0];
-      const imageType = imagePath.split(".")[1];
-      formData.append("picture", {
-        uri: imageUrl,
-        type: imageType,
-        name: imageName,
-      });
-      console.log("이미지 넣음요");
+    try {
+      const response = await getProfile({ id: headerId });
+      const formData = new FormData();
+      formData.append("writer", response.data.name);
+      formData.append("title", title);
+      formData.append("body", body);
+      // console.log(formData.get("announcementReq"));
+      if (imageUrl && imageUrl !== data.picture) {
+        formData.append("picture", {
+          uri: imageUrl,
+          type: type,
+          name: filename,
+        });
+      } else if (
+        imageUrl === data.picture &&
+        imageUrl !== undefined &&
+        imageUrl !== null
+      ) {
+        const imagePath = imageUrl.split("/").pop();
+        const imageName = imagePath.split(".")[0];
+        const imageType = imagePath.split(".")[1];
+        formData.append("picture", {
+          uri: imageUrl,
+          type: imageType,
+          name: imageName,
+        });
+        console.log("이미지 넣음요");
+      }
+    } catch (error) {
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
+
     // }
     try {
       console.log(JSON.stringify(formData));
@@ -78,10 +88,18 @@ function EditNoticeScreen({ navigation, route }) {
           navigation.navigate("noticeDetail", { data: response });
         } catch (error) {
           console.log(error);
+          if (error.isRefreshError) {
+            // RefreshToken 관련 에러 시 로그아웃
+            authCtx.logout();
+          }
         }
       }
     } catch (error) {
       console.log(error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 

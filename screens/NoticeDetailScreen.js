@@ -15,11 +15,13 @@ import Left from "../assets/left.svg";
 import Edit from "../assets/edit.svg";
 import Delete from "../assets/delete.svg";
 import { HeaderContext } from "../store/header-context";
+import { AuthContext } from "../store/auth-context";
 import { useContext, useEffect } from "react";
 import Image from "react-native-scalable-image";
 
 function NoticeDetailScreen({ navigation, route }) {
   const data = route.params.data;
+  const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   console.log(data);
   const randomKey = Math.random().toString();
@@ -37,6 +39,10 @@ function NoticeDetailScreen({ navigation, route }) {
       }
     } catch (error) {
       console.log(error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
   function deleteHandler() {

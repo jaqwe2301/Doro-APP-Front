@@ -16,9 +16,10 @@ import InputLine from "../components/ui/InputLine";
 import { useContext, useEffect, useState } from "react";
 import { authPhoneNum, verifyauthPhoneNum } from "../utill/auth";
 import Left from "../assets/left.svg";
-import { getProfile2, updateProfile, updateUserImage } from "../utill/http";
+import { updateProfile, updateUserImage } from "../utill/http";
 import { Ionicons } from "@expo/vector-icons";
 import ButtonBig from "../components/ui/ButtonBig";
+import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 import Timer from "../components/feat/Timer";
 import * as ImagePicker from "expo-image-picker";
@@ -30,6 +31,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 function ProfileEdit({ navigation, route }) {
   const data = route.params.data;
+  const authCtx = useContext(AuthContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { headerAccount, setHeaderAccount } = useContext(HeaderContext);
 
@@ -107,6 +109,10 @@ function ProfileEdit({ navigation, route }) {
           console.log(response);
         } catch (error) {
           console.log(error.message + "사진 못보냄");
+          if (error.isRefreshError) {
+            // RefreshToken 관련 에러 시 로그아웃
+            authCtx.logout();
+          }
         }
       }
       const success = await updateProfile({
@@ -125,6 +131,10 @@ function ProfileEdit({ navigation, route }) {
       }
     } catch (error) {
       Alert.alert("ERROR", "Network Error");
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 

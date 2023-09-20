@@ -20,11 +20,11 @@ import { login } from "../utill/auth";
 import { AuthContext } from "../store/auth-context";
 
 function DeleteUser({ navigation, route }) {
+  const authCtx = useContext(AuthContext);
   const [inputPw, setInputPw] = useState("");
   const [inputRePw, setInputRePw] = useState("");
   const [isNavi, setIsNavi] = useState(false);
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
-  const authCtx = useContext(AuthContext);
   const account = route.params.account;
   const handlePwChange = (text) => {
     setInputPw(text);
@@ -53,6 +53,10 @@ function DeleteUser({ navigation, route }) {
       authCtx.logout();
     } catch (error) {
       console.log("유저삭제 에러" + error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 

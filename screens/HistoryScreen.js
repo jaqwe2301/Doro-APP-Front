@@ -6,6 +6,7 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
+import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 import ApplicationDetails from "./ApplicationDetails";
 import { TabBar, TabView } from "react-native-tab-view";
@@ -15,6 +16,7 @@ import { getLectureList } from "../utill/http";
 import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 
 function HistoryScreen({ navigation }) {
+  const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
 
   useEffect(() => {
@@ -77,6 +79,10 @@ function HistoryScreen({ navigation }) {
         setPageNum((prev) => prev + 1);
       } catch (error) {
         console.error(error);
+        if (error.isRefreshError) {
+          // RefreshToken 관련 에러 시 로그아웃
+          authCtx.logout();
+        }
       }
     }
 

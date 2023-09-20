@@ -88,14 +88,17 @@ function MyPageScreen({ navigation }) {
         console.log("왜 에러나니");
         console.log("에러");
         console.log(error);
+        if (error.isRefreshError) {
+          // RefreshToken 관련 에러 시 로그아웃
+          authCtx.logout();
+        }
       });
   };
   function UserScreen() {
-    async function alarmEditHandler({ notificationAgreement }) {
+    async function alarmEditHandler() {
       try {
         const response = await alarmEdit({
           id: headerId,
-          notificationAgreement: notificationAgreement,
         });
       } catch (error) {
         console.log("알림 수정 콘솔 : ", error);
@@ -109,11 +112,11 @@ function MyPageScreen({ navigation }) {
         [
           {
             text: Platform.OS === "ios" ? "허용             " : "허용",
-            onPress: () => alarmEditHandler({ notificationAgreement: true }),
+            onPress: () => alarmEditHandler(),
           },
           {
             text: Platform.OS === "ios" ? "허용 안함            " : "허용 안함",
-            onPress: () => alarmEditHandler({ notificationAgreement: false }),
+            onPress: () => alarmEditHandler(),
           },
         ]
       );
@@ -188,10 +191,6 @@ function MyPageScreen({ navigation }) {
                   }}
                 />
               ) : (
-                // <Image
-                //   style={styles.image}
-                //   source={require("../assets/profile.png")}
-                // />
                 <View style={{ margin: 11, marginLeft: 31 }}>
                   <Profile />
                 </View>

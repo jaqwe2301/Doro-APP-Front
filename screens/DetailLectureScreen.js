@@ -17,13 +17,12 @@ import {
 } from "react-native-collapsible-tab-view";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import SwitchToggle from "react-native-switch-toggle";
-import axios from "axios";
 
-import { getProfile } from "../utill/http";
 import { GlobalStyles } from "../constants/styles";
 
 import { URL } from "../utill/config";
 import { HeaderContext } from "../store/header-context";
+import { AuthContext } from "../store/auth-context";
 import ApplyingTutorBox from "../components/ui/ApplyingTutorBox";
 import ButtonOneThird from "../components/ui/ButtonOneThird";
 import FilterBox from "../components/ui/FilterBox";
@@ -36,6 +35,7 @@ import { errorHandler } from "../utill/etc";
 import { KRRegular } from "../constants/fonts";
 
 function DetailLectureScreen({ route, navigation }) {
+  const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
 
@@ -176,6 +176,9 @@ function DetailLectureScreen({ route, navigation }) {
       .catch((error) => {
         console.log("강의 세부 못 불러옴");
         console.log(error);
+        if (error.isRefreshError) {
+          authCtx.logout();
+        }
       });
 
     if (headerRole === "ROLE_ADMIN") {
@@ -196,6 +199,9 @@ function DetailLectureScreen({ route, navigation }) {
           console.log("에러");
           console.log("신청 강사 못 불러옴");
           console.log(error);
+          if (error.isRefreshError) {
+            authCtx.logout();
+          }
         });
     }
 
@@ -298,6 +304,9 @@ function DetailLectureScreen({ route, navigation }) {
                       onDismiss: () => {},
                     }
                   );
+                  if (error.isRefreshError) {
+                    authCtx.logout();
+                  }
                   if (error.response) {
                     // 서버가 응답을 반환한 경우
                     console.log("Error response:", error.response.data);
@@ -396,6 +405,10 @@ function DetailLectureScreen({ route, navigation }) {
                 );
               })
               .catch((error) => {
+                if (error.isRefreshError) {
+                  // RefreshToken 관련 에러 시 로그아웃
+                  authCtx.logout();
+                }
                 console.log("에러");
                 console.log(error);
               });
@@ -450,6 +463,10 @@ function DetailLectureScreen({ route, navigation }) {
                 );
               })
               .catch((error) => {
+                if (error.isRefreshError) {
+                  // RefreshToken 관련 에러 시 로그아웃
+                  authCtx.logout();
+                }
                 // console.log("강사 신청 실패");
                 Alert.alert(
                   lectureBasicInfo.subTitle,
@@ -777,6 +794,10 @@ function DetailLectureScreen({ route, navigation }) {
               setStatus((prev) => !prev);
             })
             .catch((error) => {
+              if (error.isRefreshError) {
+                // RefreshToken 관련 에러 시 로그아웃
+                authCtx.logout();
+              }
               console.log("에러");
               console.log(error);
             });
@@ -959,6 +980,10 @@ function DetailLectureScreen({ route, navigation }) {
         setIsLectureUpdate(!isLectureUpdate);
       })
       .catch((error) => {
+        if (error.isRefreshError) {
+          // RefreshToken 관련 에러 시 로그아웃
+          authCtx.logout();
+        }
         errorHandler(error, "강의 상태 변경 오류");
       });
   };

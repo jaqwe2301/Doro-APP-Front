@@ -1,6 +1,4 @@
 import axios from "axios";
-import { useContext } from "react";
-import { AuthContext } from "../store/auth-context";
 import * as SecureStore from "expo-secure-store";
 import Interceptor from "./Interceptor";
 import { URL } from "./config";
@@ -98,11 +96,14 @@ export async function updateProfile({
 }
 
 export async function checkAccount({ account }) {
-  const response = await axios.get(URL + "/check/account?account=" + account);
-
-  console.log(account);
-  const data = response.data;
-  console.log(data);
+  try {
+    const response = await axios.get(URL + "/check/account?account=" + account);
+    console.log(account);
+    const data = response.data;
+    console.log(data);
+  } catch (error) {
+    throw error;
+  }
 
   return data;
 }
@@ -294,6 +295,7 @@ export async function deleteUser() {
     return response;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
@@ -321,11 +323,10 @@ export async function updateUserImage({ formData }) {
   }
 }
 
-export async function alarmEdit({ id, notificationAgreement }) {
+export async function alarmEdit({ id }) {
   try {
     const response = await instance.patch(
-      "/users/" + `${id}` + "/notification-settings",
-      { notificationAgreement: notificationAgreement }
+      "/users/" + `${id}` + "/notification-settings"
     );
     console.log(response.data);
     return response;
@@ -395,17 +396,17 @@ export async function getLectureList({
       },
     });
     return res.data.data; // 프로미스에서 결과를 반환
-  } catch (err) {
-    if (err.response) {
+  } catch (error) {
+    if (error.response) {
       // 서버가 응답을 반환한 경우
-      console.log("Error response:", err.response.data);
+      console.log("Error response:", error.response.data);
     } else if (err.request) {
       // 요청이 만들어졌지만, 응답을 받지 못한 경우
-      console.log("Error request:", err.request);
+      console.log("Error request:", error.request);
     } else {
       // 그 외의 에러
-      console.log("Error", err.message);
+      console.log("Error", error.message);
     }
-    throw err; // 에러를 다시 던져서 호출자에게 전달
+    throw error; // 에러를 다시 던져서 호출자에게 전달
   }
 }

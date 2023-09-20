@@ -19,12 +19,14 @@ import Profile from "../assets/defaultProfile.svg";
 import Down from "../assets/down.svg";
 import { Ionicons } from "@expo/vector-icons";
 import { KRBold, KRRegular } from "../constants/fonts";
+import { AuthContext } from "../store/auth-context";
 import { updateProfile } from "../utill/http";
 import GenerationModal from "../components/ui/GenerationModal";
 
 function TutorScreen({ route, navigation }) {
   const data = route.params.id;
   const headerId = route.params.headerId;
+  const authCtx = useContext(AuthContext);
 
   const [phoneNum, setphoneNum] = useState(data.phone);
   const [visible, setVisible] = useState(false);
@@ -72,6 +74,10 @@ function TutorScreen({ route, navigation }) {
       }
     } catch (error) {
       Alert.alert("ERROR", "Network Error");
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 

@@ -107,6 +107,10 @@ function UpdateLectureScreen({ route, navigation }) {
       .catch((error) => {
         console.log("에러");
         console.log(error);
+        if (error.isRefreshError) {
+          // RefreshToken 관련 에러 시 로그아웃
+          authCtx.logout();
+        }
       });
     // 강의 수정
     if (route.params.data !== "") {
@@ -208,6 +212,10 @@ function UpdateLectureScreen({ route, navigation }) {
           console.log("에러");
           console.log(error);
           console.log(lecturedata);
+          if (error.isRefreshError) {
+            // RefreshToken 관련 에러 시 로그아웃
+            authCtx.logout();
+          }
         });
     } else if (option === "update") {
       instance
@@ -245,6 +253,10 @@ function UpdateLectureScreen({ route, navigation }) {
         .catch((error) => {
           console.log("에러");
           console.log(error);
+          if (error.isRefreshError) {
+            // RefreshToken 관련 에러 시 로그아웃
+            authCtx.logout();
+          }
         });
     }
   };
@@ -603,6 +615,10 @@ function UpdateLectureScreen({ route, navigation }) {
         console.log("에러");
         console.log(error);
         console.log(`${URL}/lecture-contents/`);
+        if (error.isRefreshError) {
+          // RefreshToken 관련 에러 시 로그아웃
+          authCtx.logout();
+        }
       });
 
     Alert.alert(contentsData["content"], "교육 콘텐츠가 생성되었습니다.", [
@@ -623,6 +639,10 @@ function UpdateLectureScreen({ route, navigation }) {
             .catch((error) => {
               console.log("에러");
               console.log(error);
+              if (error.isRefreshError) {
+                // RefreshToken 관련 에러 시 로그아웃
+                authCtx.logout();
+              }
             });
         },
       },

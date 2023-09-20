@@ -7,17 +7,18 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
-import { getAnnouncement, getNotification } from "../utill/http";
+import { getAnnouncement } from "../utill/http";
 import moment from "moment";
 
 import Add from "../assets/addNotice.svg";
 import Home from "../assets/home.svg";
 
 function NoticeScreen({ navigation }) {
+  const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { isNoticeUpdate, setIsNoticeUpdate } = useContext(HeaderContext);
   const [data, setData] = useState([]);
@@ -66,6 +67,10 @@ function NoticeScreen({ navigation }) {
       // console.log(response);
     } catch (error) {
       console.log(error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 

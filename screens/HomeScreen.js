@@ -8,22 +8,12 @@ import {
 import {
   View,
   StyleSheet,
-  StatusBar,
-  Dimensions,
-  TouchableOpacity,
-  Animated,
   Pressable,
   Text,
-  ScrollView,
   useWindowDimensions,
-  SafeAreaView,
   FlatList,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import Logo from "../assets/Logo_main.svg";
-import AlarmAfter from "../assets/alarm_before.svg";
 import Right from "../assets/rightBlack.svg";
 import Megaphone from "../assets/megaphoneBlack.svg";
 import { GlobalStyles } from "../constants/styles";
@@ -32,18 +22,16 @@ import CreactingLecture from "../assets/creatingLecture.svg";
 
 import LectureBox from "./../components/ui/LectureBox";
 import FilterBox from "../components/ui/FilterBox";
-import BottomModal from "../components/ui/BottomModal";
 import { HeaderContext } from "../store/header-context";
-import { URL } from "../utill/config";
 import { KRRegular } from "../constants/fonts";
 import Swiper from "react-native-swiper";
+import { AuthContext } from "../store/auth-context";
 import { getAnnouncement, getCityList, getLectureList } from "../utill/http";
-import Interceptor from "../utill/Interceptor";
 import { errorHandler } from "../utill/etc";
 import FilterModal from "../components/ui/FilterModal";
-const instance = Interceptor();
 
 const HomeScreen = ({ navigation }) => {
+  const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { isLectureUpdate, setIsLectureUpdate } = useContext(HeaderContext);
   const [response, setResponse] = useState([]);
@@ -114,6 +102,10 @@ const HomeScreen = ({ navigation }) => {
         // console.log(result);
       } catch (error) {
         console.error(error);
+        if (error.isRefreshError) {
+          // RefreshToken 관련 에러 시 로그아웃
+          authCtx.logout();
+        }
       }
     }
 
@@ -138,6 +130,10 @@ const HomeScreen = ({ navigation }) => {
       // setACityList(aResult);
     } catch (error) {
       errorHandler(error, "강의 도시 조회 오류");
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 
@@ -199,6 +195,10 @@ const HomeScreen = ({ navigation }) => {
       }
     } catch (error) {
       errorHandler(error, "강의 조회 에러");
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 

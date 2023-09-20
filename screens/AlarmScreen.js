@@ -21,6 +21,7 @@ import Down from "../assets/smalldown.svg";
 import Right from "../assets/smallright.svg";
 import Up from "../assets/smallup.svg";
 function AlarmScreen({ navigation }) {
+  const authCtx = useContext(AuthContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const [data, setData] = useState([]);
   const [pageNum, setPageNum] = useState(0);
@@ -40,6 +41,10 @@ function AlarmScreen({ navigation }) {
       // console.log(response);
     } catch (error) {
       console.log(error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
   async function refreshHandler() {
@@ -67,6 +72,10 @@ function AlarmScreen({ navigation }) {
       // console.log(response);
     } catch (error) {
       console.log(error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 
@@ -103,6 +112,10 @@ function AlarmScreen({ navigation }) {
       }
     } catch (error) {
       console.log(error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../store/auth-context";
 import { HeaderContext } from "../store/header-context";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
@@ -20,6 +21,7 @@ import ApplyingLectureBox from "../components/ui/ApplyingLectureBox";
 import { KRRegular } from "../constants/fonts";
 
 function ApplicationDetails({ route }) {
+  const authCtx = useContext(AuthContext);
   const navigation = useNavigation();
   const { headerId, setHeaderId } = useContext(HeaderContext);
   const { historyIndex, setHistoryIndex } = useContext(HeaderContext);
@@ -67,6 +69,9 @@ function ApplicationDetails({ route }) {
       .catch((error) => {
         console.log("에러");
         console.log(error);
+        if (error.isRefreshError) {
+          authCtx.logout();
+        }
       });
   };
 
@@ -153,6 +158,9 @@ function ApplicationDetails({ route }) {
               .catch((error) => {
                 console.log("에러");
                 console.log(error);
+                if (error.isRefreshError) {
+                  authCtx.logout();
+                }
               });
           },
           style: "destructive",
