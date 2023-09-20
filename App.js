@@ -17,7 +17,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GlobalStyles } from "./constants/styles";
 import { getStatusBarHeight } from "react-native-status-bar-height";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import Constants from "expo-constants";
 import NoticeScreen from "./screens/NoticeScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -678,8 +678,8 @@ function Navigation({ notificationAgreement }) {
   useEffect(() => {
     async function fetchToken() {
       // 저장된 jwt 가져오기
-      const storedToken = await AsyncStorage.getItem("token");
-      const storedReToken = await AsyncStorage.getItem("refreshToken");
+      const storedToken = await SecureStore.getItemAsync("token");
+      const storedReToken = await SecureStore.getItemAsync("refreshToken");
       // console.log();
 
       if (storedToken) {
