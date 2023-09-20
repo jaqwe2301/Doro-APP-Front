@@ -31,8 +31,9 @@ function AuthContextProvider({ children }) {
   }
 
   async function logout() {
-    SecureStore.deleteItemAsync("refreshToken", () => setReToken(null));
-    SecureStore.deleteItemAsync("token", () => setAuthToken(null));
+    setAuthToken();
+    SecureStore.deleteItemAsync("refreshToken");
+    SecureStore.deleteItemAsync("token");
   }
 
   const value = {

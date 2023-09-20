@@ -17,6 +17,7 @@ import { HeaderContext } from "../store/header-context";
 import ManagerScreen from "./ManagerScreen";
 import { CommonActions, StackActions } from "@react-navigation/native";
 import Interceptor from "../utill/Interceptor";
+import * as SecureStore from "expo-secure-store";
 
 function MyPageScreen({ navigation }) {
   const [data, setData] = useState({});
@@ -33,9 +34,6 @@ function MyPageScreen({ navigation }) {
   const [finished, setFinished] = useState([]);
   const instance = Interceptor();
 
-  // function ManagerScreen() {
-  //   return <ManagerScreen />;
-  // }
   useEffect(() => {
     profileHandler();
   }, []);
@@ -135,22 +133,22 @@ function MyPageScreen({ navigation }) {
 
         // console.log(response);
         if (response.status === 200) {
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: "Home" }],
-            })
-          );
+          // navigation.dispatch(
+          //   CommonActions.reset({
+          //     index: 0,
+          //     routes: [{ name: "Home" }],
+          //   })
+          // );
           authCtx.logout();
         }
       } catch (error) {
         // navigation.navigate("login");
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: "Home" }],
-          })
-        );
+        // navigation.dispatch(
+        //   CommonActions.reset({
+        //     index: 0,
+        //     routes: [{ name: "Home" }],
+        //   })
+        // );
         authCtx.logout();
         console.log("로그아웃 에러 콘솔: ", error);
         console.log("에러났쪄염");

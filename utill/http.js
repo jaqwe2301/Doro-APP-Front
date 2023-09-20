@@ -355,7 +355,8 @@ export async function logout() {
     });
     return response;
   } catch (error) {
-    console.log("로그아웃 에러", error);
+    errorHandler(error, "로그아웃 에러");
+    // console.log("로그아웃 에러", error);
     throw error;
   }
 }

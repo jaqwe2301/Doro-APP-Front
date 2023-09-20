@@ -1,10 +1,13 @@
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
+import { Alert } from "react-native";
+import { useContext } from "react";
+import { AuthContext } from "../store/auth-context";
 import { URL } from "./config";
 // import { errorHandler } from "./etc";
-import { Alert } from "react-native";
 
 function Interceptor() {
+  const authCtx = useContext(AuthContext);
   const instance = axios.create({
     baseURL: URL,
     timeout: 2000,
@@ -53,8 +56,10 @@ function Interceptor() {
       console.log("새로운 토큰이얌" + newToken);
       onTokenRefreshed(newToken);
     } catch (error) {
-      console.log("error발생 리프래시" + error);
-      Alert.alert("에러", "로그아웃 후 다시 로그인을 해주세요");
+      // console.log("error발생 리프래시" + error);
+      // errorHandler(error, "refreshToken error");
+      Alert.alert("인증 에러 발생", "다시 로그인 해주세요.");
+      authCtx.logout();
     }
 
     isRefreshingPromise = null;
