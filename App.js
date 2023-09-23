@@ -26,11 +26,8 @@ import LoginScreen from "./screens/LoginScreen";
 import SearchID from "./screens/SearchID";
 import SearchPW from "./screens/SearchPW";
 import DetailLectureScreen from "./screens/DetailLectureScreen";
-import Back from "./assets/backBtn.svg";
 import Logo from "./assets/Logo_main.svg";
 import AlarmAfter from "./assets/alarm_before.svg";
-import Right from "./assets/rightBlack.svg";
-import Left from "./assets/left.svg";
 import AuthPhone from "./components/signUp/AuthPhone";
 import Id from "./components/signUp/Id";
 import Pw from "./components/signUp/Pw";
@@ -72,6 +69,7 @@ import AgreeInfo2 from "./components/signUp/AgreeInfo2";
 import TutorScreen from "./screens/TutorScreen";
 import * as SplashScreen from "expo-splash-screen";
 import HistoryScreen from "./screens/HistoryScreen";
+import SetNoti from "./screens/SetNoti";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -89,7 +87,7 @@ function LogoTitle() {
 }
 
 //로그인 전 화면 -로그인,회원가입 등등
-function AuthStack({ notificationAgreement }) {
+function AuthStack() {
   return (
     <SignContextProvider>
       <Stack.Navigator
@@ -169,7 +167,6 @@ function AuthStack({ notificationAgreement }) {
           options={{
             title: "회원가입",
           }}
-          initialParams={{ notificationAgreement: notificationAgreement }}
         />
         <Stack.Screen
           name="agreeInfo"
@@ -230,12 +227,10 @@ function HomeNavigator({ navigation }) {
     <Stack.Navigator
       screenOptions={{
         headerShadowVisible: false,
-        // headerShown: false,
         headerTitleAlign: "center",
         headerTitleStyle: {
           fontWeight: "600",
           fontSize: 17,
-          // lineHeight: 22,
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
@@ -254,7 +249,6 @@ function HomeNavigator({ navigation }) {
                     <Pressable
                       onPress={() => navigation.navigate("alarm")}
                       style={{
-                        // backgroundColor: "#F5F5F5",
                         paddingBottom: 10,
                         paddingLeft: 10,
                         paddingRight: 10,
@@ -310,7 +304,6 @@ function MyPageNavigator({ route, navigation }) {
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
-        ///  headerBackImageSource: <Back width={24} height={24} />,
       }}
     >
       <Stack.Screen
@@ -369,15 +362,14 @@ function MyPageNavigator({ route, navigation }) {
         component={TutorScreen}
         options={{ title: "매니저 페이지" }}
       />
-      {/* <Stack.Screen
-        name="login"
-        component={LoginScreen}
+      <Stack.Screen
+        name="SetNoti"
+        component={SetNoti}
         options={{
-          header: (props) => <LogoTitle {...props} />,
-          headerBackVisible: false,
-          // headerTitleAlign: "left",
+          title: "알림 설정",
+          headerTitleStyle: { fontWeight: "800" },
         }}
-      /> */}
+      />
     </Stack.Navigator>
   );
 }
@@ -391,7 +383,6 @@ function NoticeNavigator({ navigation }) {
         headerTitleStyle: {
           fontWeight: "600",
           fontSize: 17,
-          // lineHeight: 22,
         },
         headerBackTitleVisible: false,
         headerTintColor: "#000000",
@@ -586,7 +577,6 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="History"
-        // children={() => <ApplicationDetails header={true} />}
         component={HistoryNavigator}
         options={{
           title: "신청 내역",
@@ -667,7 +657,7 @@ function BottomTabNavigator() {
   );
 }
 
-function Navigation({ notificationAgreement }) {
+function Navigation() {
   const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
   const { headerId, setHeaderId } = useContext(HeaderContext);
@@ -707,9 +697,6 @@ function Navigation({ notificationAgreement }) {
 
   if (isTryingLogin) {
     return (
-      // <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      //   <Splash width={100} height={106} />
-      // </View>
       <Image
         source={require("./assets/splash3.png")}
         resizeMode="contain"
@@ -720,24 +707,20 @@ function Navigation({ notificationAgreement }) {
   return (
     // 로그인 여부에 따른 화면
     <NavigationContainer theme={navTheme}>
-      {!authCtx.isAuthenticated && (
-        <AuthStack notificationAgreement={notificationAgreement} />
-      )}
+      {!authCtx.isAuthenticated && <AuthStack />}
       {authCtx.isAuthenticated && <BottomTabNavigator />}
     </NavigationContainer>
   );
 }
 
 export default function App() {
-  const [noti, setNoti] = useState(true);
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <AuthContextProvider>
         <HeaderContextProvider>
           {/* <LecturesProvider> */}
-          <Navigation notificationAgreement={noti} />
+          <Navigation />
           {/* </LecturesProvider> */}
         </HeaderContextProvider>
       </AuthContextProvider>
@@ -758,11 +741,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   HomeHeader: {
-    // paddingTop: 45,
-    // // paddingBottom: Platform.OS === "android" ? 54 : 30,
-    // paddingBottom: Platform.OS === "android" ? 20 : 0,
-    // marginBottom: -40,
-    // paddingHorizontal: 20,
     marginLeft: 20,
     marginRight: 10,
     marginTop: 45,
@@ -772,7 +750,6 @@ const styles = StyleSheet.create({
   headerTopContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // marginBottom: 40,
   },
 
   noticeContainer: {

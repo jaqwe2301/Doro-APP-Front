@@ -6,16 +6,15 @@ import {
   Image,
   Pressable,
   Alert,
-  Platform,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../store/auth-context";
 import Profile from "../assets/defaultProfile.svg";
-import { alarmEdit, getProfile, logout } from "../utill/http";
+import { getProfile, logout } from "../utill/http";
 import { HeaderContext } from "../store/header-context";
 import ManagerScreen from "./ManagerScreen";
-import { CommonActions, StackActions } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Interceptor from "../utill/Interceptor";
 import * as SecureStore from "expo-secure-store";
 
@@ -95,32 +94,6 @@ function MyPageScreen({ navigation }) {
       });
   };
   function UserScreen() {
-    async function alarmEditHandler() {
-      try {
-        const response = await alarmEdit({
-          id: headerId,
-        });
-      } catch (error) {
-        console.log("알림 수정 콘솔 : ", error);
-      }
-    }
-
-    function alarmHandler() {
-      Alert.alert(
-        "'DORO'에서 알림을 보내고자 합니다.",
-        "경고, 사운드 및 아이콘 배지가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다.",
-        [
-          {
-            text: Platform.OS === "ios" ? "허용             " : "허용",
-            onPress: () => alarmEditHandler(),
-          },
-          {
-            text: Platform.OS === "ios" ? "허용 안함            " : "허용 안함",
-            onPress: () => alarmEditHandler(),
-          },
-        ]
-      );
-    }
     function logoutHandler() {
       Alert.alert("'DORO EDU'", "로그아웃 하시겠습니까?", [
         {
@@ -270,7 +243,10 @@ function MyPageScreen({ navigation }) {
                 </View>
               </Pressable>
               {/* <View style={{ flex: 1 }}> */}
-              <Pressable onPress={alarmHandler} style={{ flex: 1 }}>
+              <Pressable
+                onPress={() => navigation.navigate("SetNoti")}
+                style={{ flex: 1 }}
+              >
                 <View style={styles.btnContainer}>
                   <Text style={styles.btn}>알림 설정</Text>
                 </View>
@@ -364,7 +340,8 @@ function MyPageScreen({ navigation }) {
     }
   }
 
-  return headerRole === "ROLE_USER" ? <UserScreen /> : <ManagerScreen />;
+  // return headerRole === "ROLE_USER" ? <UserScreen /> : <ManagerScreen />;
+  return <UserScreen />;
 }
 
 export default MyPageScreen;
