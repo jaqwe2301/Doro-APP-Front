@@ -14,12 +14,7 @@ import {
   Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/styles";
-import {
-  createAnnouncement,
-  createAnnouncement2,
-  getProfile,
-  pushNotification,
-} from "../utill/http";
+import { createAnnouncement2, getProfile } from "../utill/http";
 import { useContext, useEffect, useState } from "react";
 
 import Camera from "../assets/camera.svg";
@@ -32,6 +27,8 @@ import axios from "axios";
 import { HeaderContext } from "../store/header-context";
 
 function AddNoticeScreen({ navigation }) {
+  const authCtx = useContext(AuthContext);
+
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [result, setResult] = useState();
@@ -107,9 +104,17 @@ function AddNoticeScreen({ navigation }) {
       } catch (error) {
         console.log(JSON.stringify(formData));
         console.log(error);
+        if (error.isRefreshError) {
+          // RefreshToken 관련 에러 시 로그아웃
+          authCtx.logout();
+        }
       }
     } catch (error) {
       console.error("Error during announcement creation:", error);
+      if (error.isRefreshError) {
+        // RefreshToken 관련 에러 시 로그아웃
+        authCtx.logout();
+      }
     }
   }
 
