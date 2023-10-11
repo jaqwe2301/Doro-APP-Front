@@ -17,6 +17,7 @@ import { useContext, useEffect, useState } from "react";
 import { changePassword } from "../../utill/auth";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../store/auth-context";
+import { errorHandler } from "../../utill/etc";
 
 function ChangePw({ navigation, route }) {
   const [pw, setPw] = useState("");
@@ -49,7 +50,7 @@ function ChangePw({ navigation, route }) {
           Alert.alert("Error", "일치하는 아이디가 없습니다. ");
         }
       } catch (error) {
-        console.log(error);
+        errorHandler(error, "비밀번호 변경 ERORR");
       }
     } else if (isNavi) {
       setVisible(true);
