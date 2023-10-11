@@ -3,8 +3,10 @@ import * as SecureStore from "expo-secure-store";
 import Interceptor from "./Interceptor";
 import { URL } from "./config";
 import { errorHandler } from "./etc";
+import { Alert } from "react-native";
 
-// const URL = "http://10.0.2.2:8080";
+import messaging from "@react-native-firebase/messaging";
+import notifee from "@notifee/react-native";
 
 const instance = Interceptor();
 
@@ -323,28 +325,6 @@ export async function updateUserImage({ formData }) {
   }
 }
 
-export async function alarmEdit({ id }) {
-  try {
-    const response = await instance.patch(
-      "/users/" + `${id}` + "/notification-settings"
-    );
-    console.log(response.data);
-    return response;
-  } catch (error) {
-    if (error.response) {
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-    } else if (error.request) {
-      console.log(error.request);
-    } else {
-      console.log("Error", error.message);
-    }
-
-    throw error;
-  }
-}
-
 export async function logout() {
   try {
     const fcmToken = await SecureStore.getItemAsync("fcmToken");
@@ -408,5 +388,122 @@ export async function getLectureList({
       console.log("Error", error.message);
     }
     throw error; // 에러를 다시 던져서 호출자에게 전달
+  }
+}
+
+/** 알림 구독 */
+export async function notiSubscribe(notiType) {
+  try {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    let fcmToken = undefined;
+    if (enabled) {
+      console.log("Authorization status:", authStatus);
+      fcmToken = await messaging().getToken();
+      // setItemAsync의 value는 string만 가능
+      await SecureStore.setItemAsync("fcmToken", fcmToken);
+      // 푸시메시지 수신 리스너 등록 -> 앱이 켜져있을 때 알림이 오도록 함
+      const onDisplayNotification = async ({ title = "", body = "" }) => {
+        const channelId = await notifee.createChannel({
+          id: "channelId",
+          name: "channelName",
+        });
+        await notifee.displayNotification({
+          title,
+          body,
+          android: {
+            channelId,
+          },
+        });
+      };
+      messaging().onMessage(async (remoteMessage) => {
+        const title = remoteMessage?.notification?.title;
+        const body = remoteMessage?.notification?.body;
+        await onDisplayNotification({ title, body });
+      });
+      if (notiType === "all") {
+        // 강의 알림
+        await SecureStore.setItemAsync("LECTURE-NOTI", "allow");
+        // 공지사항 알림
+        await SecureStore.setItemAsync("ANNOUNCEMENT-NOTI", "allow");
+        // 일반 알림
+        await SecureStore.setItemAsync("NOTIFICATION-NOTI", "allow");
+
+        await instance.post("/notifications/subscribe", {
+          fcmToken: fcmToken,
+          notificationType: "LECTURE",
+        });
+        await instance.post("/notifications/subscribe", {
+          fcmToken: fcmToken,
+          notificationType: "ANNOUNCEMENT",
+        });
+        await instance.post("/notifications/subscribe", {
+          fcmToken: fcmToken,
+          notificationType: "NOTIFICATION",
+        });
+      } else {
+        await SecureStore.setItemAsync(notiType + "-NOTI", "allow");
+        await instance.post("/notifications/subscribe", {
+          fcmToken: fcmToken,
+          notificationType: "notiType",
+        });
+      }
+      return true;
+    } else {
+      Alert.alert(
+        "알림 동의 필요",
+        "시스템 설정에서 DORO 앱의 알림을 동의해 주세요."
+      );
+      await SecureStore.deleteItemAsync("fcmToken");
+      await SecureStore.deleteItemAsync("lectureNoti");
+      await SecureStore.deleteItemAsync("announcementNoti");
+      await SecureStore.deleteItemAsync("notificationNoti");
+    }
+  } catch (error) {
+    errorHandler(error, "Noti Subscribe ERROR");
+    // console.log("로그아웃 에러", error);
+    throw error;
+  }
+}
+
+/** 알림 구독 취소 */
+export async function notiUnsubscribe(notiType) {
+  try {
+    const fcmToken = await SecureStore.getItemAsync("fcmToken");
+
+    if (notiType === "all") {
+      await instance.post("/notifications/unsubscribe", {
+        fcmToken: fcmToken,
+        notificationType: "LECTURE",
+      });
+      await instance.post("/notifications/unsubscribe", {
+        fcmToken: fcmToken,
+        notificationType: "ANNOUNCEMENT",
+      });
+      await instance.post("/notifications/unsubscribe", {
+        fcmToken: fcmToken,
+        notificationType: "NOTIFICATION",
+      });
+
+      await SecureStore.deleteItemAsync("fcmToken");
+
+      await SecureStore.deleteItemAsync("LECTURE-NOTI");
+      await SecureStore.deleteItemAsync("ANNOUNCEMENT-NOTI");
+      await SecureStore.deleteItemAsync("NOTIFICATION-NOTI");
+    } else {
+      await instance.post("/notifications/unsubscribe", {
+        fcmToken: fcmToken,
+        notificationType: notiType,
+      });
+      await SecureStore.deleteItemAsync(notiType + "-NOTI");
+    }
+
+    return true;
+  } catch (error) {
+    errorHandler(error, "Noti Unsubscribe ERROR");
+    // console.log("로그아웃 에러", error);
+    throw error;
   }
 }

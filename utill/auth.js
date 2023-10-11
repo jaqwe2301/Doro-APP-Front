@@ -1,12 +1,11 @@
 import axios from "axios";
 import { URL } from "./config";
 import { Alert } from "react-native";
+import { errorHandler } from "./etc";
 
 import * as SecureStore from "expo-secure-store";
 import messaging from "@react-native-firebase/messaging";
 import notifee from "@notifee/react-native";
-
-import { errorHandler } from "./etc";
 
 export function authPhoneNum({ messageType, phone }) {
   axios
@@ -14,17 +13,18 @@ export function authPhoneNum({ messageType, phone }) {
       messageType: messageType,
       phone: phone,
     })
-    .then(function (response) {
+    .then((response) => {
       console.log(response.data);
     })
-    .catch(function (error) {
-      console.log(error);
+    .catch((error) => {
+      errorHandler(error, "카카오톡 인증 에러");
     });
 }
 
 export async function checkPhoneNum(phone) {
   try {
     const response = await axios.get(URL + "/check/phone?phone=" + phone);
+
     return response.data.code;
     // console.log(phone);
   } catch (err) {
@@ -92,18 +92,6 @@ export async function changePassword({
 }
 
 export async function login({ id, pw }) {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-  let fcmToken = null;
-  if (enabled) {
-    console.log("Authorization status:", authStatus);
-    fcmToken = await messaging().getToken();
-    await SecureStore.setItemAsync("fcmToken", fcmToken);
-  } else {
-    await SecureStore.deleteItemAsync("fcmToken");
-  }
   try {
     const response = await axios.post(
       URL + "/login",
@@ -116,6 +104,39 @@ export async function login({ id, pw }) {
       }
     );
     const token = response;
+
+    // 강의 알림
+    await SecureStore.setItemAsync("LECTURE-NOTI", "allow");
+    // 공지사항 알림
+    await SecureStore.setItemAsync("ANNOUNCEMENT-NOTI", "allow");
+    // 일반 알림
+    await SecureStore.setItemAsync("NOTIFICATION-NOTI", "allow");
+
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    let fcmToken = undefined;
+    if (enabled) {
+      console.log("Authorization status:", authStatus);
+      fcmToken = await messaging().getToken();
+
+      // setItemAsync의 value는 string만 가능
+      await SecureStore.setItemAsync("fcmToken", fcmToken);
+
+      // 강의 알림
+      await SecureStore.setItemAsync("LECTURE-NOTI", "allow");
+      // 공지사항 알림
+      await SecureStore.setItemAsync("ANNOUNCEMENT-NOTI", "allow");
+      // 일반 알림
+      await SecureStore.setItemAsync("NOTIFICATION-NOTI", "allow");
+    } else {
+      await SecureStore.deleteItemAsync("fcmToken");
+      await SecureStore.deleteItemAsync("LECTURE-NOTI");
+      await SecureStore.deleteItemAsync("ANNOUNCEMENT-NOTI");
+      await SecureStore.deleteItemAsync("NOTIFICATION-NOTI");
+    }
+
     // 로그인 성공 후, 푸시메시지 수신 리스너 등록
     if (fcmToken) {
       const onDisplayNotification = async ({ title = "", body = "" }) => {
@@ -175,7 +196,6 @@ export async function signUp({
   generation,
   major,
   name,
-  notificationAgreement,
   password,
   passwordCheck,
   phone,
@@ -193,7 +213,6 @@ export async function signUp({
       generation,
       major,
       name,
-      notificationAgreement,
       password,
       passwordCheck,
       phone,
@@ -210,7 +229,7 @@ export async function signUp({
       generation: generation,
       major: major,
       name: name,
-      notificationAgreement: notificationAgreement,
+      notificationAgreement: true,
       password: password,
       passwordCheck: passwordCheck,
       phone: phone,
