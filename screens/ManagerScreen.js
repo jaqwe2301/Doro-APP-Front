@@ -28,10 +28,11 @@ import BottomModal from "../components/ui/BottomModal";
 import { getProfile, logout, pushNotification } from "../utill/http";
 import { KRRegular } from "../constants/fonts";
 import FilterModal from "../components/ui/FilterModal";
+import UserScreen from "./UserScreen";
 
 // import messaging from "@react-native-firebase/messaging";
 
-function ManagerScreen() {
+function ManagerScreen({ nav }) {
   // async function getToken() {
   //   try {
   //     const token = await messaging().getToken();
@@ -40,6 +41,9 @@ function ManagerScreen() {
   //     console.error(error);
   //   }
   // }
+  // useEffect(() => {
+  //   getToken();
+  // }, []);
 
   const [userData, setUserData] = useState([]);
   // const [filterUser, setFilterUser] = useState([]);
@@ -109,13 +113,7 @@ function ManagerScreen() {
         console.log("에러");
         console.log(error);
       });
-
-    // getToken();
   }, []);
-
-  // useEffect(() => {
-  //   getToken();
-  // }, []);
 
   const addAlarm = async () => {
     try {
@@ -179,8 +177,8 @@ function ManagerScreen() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "first", title: "강사 목록" },
-    // { key: "second", title: "강의 목록" },
-    { key: "third", title: "알림 발송" },
+    { key: "second", title: "알림 발송" },
+    { key: "third", title: "마이페이지" },
   ]);
 
   async function logoutApi() {
@@ -354,25 +352,7 @@ function ManagerScreen() {
           </View>
         );
 
-      // case "second":
-      //   return (
-      //     <ScrollView style={styles.lectureListContainer}>
-      //       <View
-      //         style={{
-      //           flexDirection: "row",
-      //           gap: 7,
-      //           marginTop: 15,
-      //           marginBottom: 5,
-      //         }}
-      //       >
-      //         <FilterBox text="교육 지역" />
-      //         <FilterBox text="교육 날짜" />
-      //       </View>
-      //       {lecturesElements}
-      //     </ScrollView>
-      //   );
-
-      case "third":
+      case "second":
         return (
           <View
             style={{
@@ -410,6 +390,10 @@ function ManagerScreen() {
             </View>
           </View>
         );
+
+      case "third":
+        return <UserScreen navigation={nav} />;
+
       default:
         return <View />;
     }
