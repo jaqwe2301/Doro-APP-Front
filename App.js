@@ -482,7 +482,6 @@ function BottomTabNavigator() {
   const [lectureIdState, setLectureIdState] = useState([0, "home"]);
 
   const detailLectureVisibleHandler = (id) => {
-    console.log("아이디", id);
     setLectureIdState([id, "detailLecture"]);
     // setHomeScreenState("detailLecture");
     setHeaderVisible(false);
@@ -670,12 +669,10 @@ function Navigation() {
       // 저장된 jwt 가져오기
       const storedToken = await SecureStore.getItemAsync("token");
       const storedReToken = await SecureStore.getItemAsync("refreshToken");
-      // console.log();
 
       if (storedToken) {
         authCtx.authenticate(storedToken, storedReToken);
         const decoded = jwtDecode(storedToken);
-        console.log(decoded);
         setHeaderRole(decoded.roles[0].authority);
         setHeaderId(decoded.id);
         setHeaderAccount(decoded.sub);

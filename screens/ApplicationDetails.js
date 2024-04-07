@@ -46,7 +46,6 @@ function ApplicationDetails({ route }) {
         },
       })
       .then((res) => {
-        // console.log(res.data.data);
         setRecruiting(() => {
           const data = res.data.data.filter(
             (item) => item.status === "RECRUITING"
@@ -57,18 +56,14 @@ function ApplicationDetails({ route }) {
           const data = res.data.data.filter(
             (item) => item.status === "ALLOCATION_COMP"
           );
-          // console.log(data);
           return data;
         });
         setFinished(() => {
           const data = res.data.data.filter((item) => item.status === "FINISH");
           return data;
         });
-        // console.log("성공");
       })
       .catch((error) => {
-        console.log("에러");
-        console.log(error);
         if (error.isRefreshError) {
           authCtx.logout();
         }
@@ -135,7 +130,6 @@ function ApplicationDetails({ route }) {
   };
 
   const deleteLecture = (id, subTitle, role) => {
-    // console.log(id);
     Alert.alert(
       subTitle,
       `${role} 신청을 취소하시겠습니까?`,
@@ -152,12 +146,9 @@ function ApplicationDetails({ route }) {
                 },
               })
               .then((res) => {
-                console.log("강의 취소 완료");
                 getMyLectures();
               })
               .catch((error) => {
-                console.log("에러");
-                console.log(error);
                 if (error.isRefreshError) {
                   authCtx.logout();
                 }
@@ -181,7 +172,6 @@ function ApplicationDetails({ route }) {
             style={styles.container}
             data={recruiting}
             renderItem={(data) => {
-              // console.log(data);
               const date = new Date(data.item.lectureDate.enrollEndDate);
               let dateTypeValue = `${date.getMonth() + 1}월 ${
                 date.getDate() + 1
@@ -196,7 +186,6 @@ function ApplicationDetails({ route }) {
                   : roles === "STAFF"
                   ? "스태프"
                   : "";
-              // console.log(data.item);
               return (
                 <View style={isLastItem && { marginBottom: 30 }}>
                   <ApplyingLectureBox

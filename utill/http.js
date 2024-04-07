@@ -14,11 +14,8 @@ const instance = Interceptor();
 export async function getProfile({ id }) {
   try {
     const response = await instance.get("/users/" + `${id}`);
-    // console.log(response);
     return response.data;
   } catch (error) {
-    console.log(error + "api er");
-
     throw error;
   }
 }
@@ -47,7 +44,6 @@ export async function getProfile2({
     });
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -72,27 +68,9 @@ export async function updateProfile({
       studentId: studentId,
       studentStatus: studentStatus,
     });
-    console.log(
-      parseInt(generation),
-      major,
-      phone,
-      school,
-      studentId,
-      studentStatus,
-      parseInt(id)
-    );
+
     return response.data;
   } catch (error) {
-    console.log(
-      parseInt(generation),
-      major,
-      phone,
-      school,
-      studentId,
-      studentStatus,
-      parseInt(id)
-    );
-    console.log(error);
     throw error;
   }
 }
@@ -100,9 +78,7 @@ export async function updateProfile({
 export async function checkAccount({ account }) {
   try {
     const response = await axios.get(URL + "/check/account?account=" + account);
-    console.log(account);
     const data = response.data;
-    console.log(data);
   } catch (error) {
     throw error;
   }
@@ -119,10 +95,8 @@ export async function getNotification({ page, size }) {
       },
     });
 
-    // console.log(response.data.data);
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -134,7 +108,6 @@ export async function readNotification({ notificationId }) {
     return response;
   } catch (error) {
     errorHandler(error, "Noti Read ERROR");
-    console.log(error);
 
     throw error;
   }
@@ -151,17 +124,12 @@ export async function pushNotification({ body, title }) {
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
-      console.log(error.request);
     } else {
       // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
     }
 
     throw error;
@@ -175,8 +143,6 @@ export async function getAnnouncement({ page, size }) {
     );
     return response.data.data;
   } catch (error) {
-    console.log(error);
-
     throw error;
   }
 }
@@ -186,8 +152,6 @@ export async function getAnnouncementId({ id }) {
     const response = await instance.get("/announcements/" + `${id}`);
     return response.data.data;
   } catch (error) {
-    console.log(error);
-
     throw error;
   }
 }
@@ -195,7 +159,6 @@ export async function getAnnouncementId({ id }) {
 export async function createAnnouncement({ formData, title, body }) {
   try {
     const token = await SecureStore.getItemAsync("token");
-    // console.log("폼데이터" + JSON.stringify(formData));
     const boundary = "----ExpoBoundary" + Math.random().toString(16).slice(2);
     const response = await axios
       .post(
@@ -221,23 +184,15 @@ export async function createAnnouncement({ formData, title, body }) {
         }
       )
       .then((res) => {
-        console.log("then 리턴" + res);
         return res;
       })
-      .catch((e) => {
-        console.log("post 내 에러" + e);
-      });
-    console.log(response);
+      .catch((e) => {});
     return response;
   } catch (error) {
     if (error.response) {
-      console.log(error.response.data);
     }
     if (error.request) {
-      console.log(JSON.stringify(error.request) + "리퀘스트");
     }
-    console.log("Error", error.message);
-    console.log(error);
 
     throw error;
   }
@@ -248,19 +203,12 @@ export async function createAnnouncement2({ formData }) {
     const response = await instance.post("/announcements", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(JSON.stringify(error.response.headers) + "response");
     }
     if (error.request) {
-      console.log(JSON.stringify(error.request) + "리퀘스트");
     }
-    console.log("Error", error.message);
-    console.log(error);
 
     throw error;
   }
@@ -274,8 +222,6 @@ export async function editAnnouncement({ formData, id }) {
     );
     return response.data;
   } catch (error) {
-    console.log(error);
-
     throw error;
   }
 }
@@ -284,8 +230,6 @@ export async function deleteAnnouncement({ id }) {
     const response = await instance.delete("/announcements/" + `${id}`);
     return response.data;
   } catch (error) {
-    console.log(error);
-
     throw error;
   }
 }
@@ -293,17 +237,14 @@ export async function deleteAnnouncement({ id }) {
 export async function deleteUser() {
   try {
     const response = await instance.delete("/withdrawal");
-    console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
 
 export async function updateUserImage({ formData }) {
   try {
-    console.log(formData);
     const response = await instance.patch("/users/profile", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -312,13 +253,8 @@ export async function updateUserImage({ formData }) {
     return response;
   } catch (error) {
     if (error.response) {
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
     } else if (error.request) {
-      console.log(error.request);
     } else {
-      console.log("Error", error.message);
     }
 
     throw error;
@@ -328,7 +264,6 @@ export async function updateUserImage({ formData }) {
 export async function logout() {
   try {
     const fcmToken = await SecureStore.getItemAsync("fcmToken");
-    // console.log(fcmToken + "로그아웃 fcm");
     const response = await instance.post("/logout", undefined, {
       headers: {
         fcmToken: fcmToken,
@@ -337,7 +272,6 @@ export async function logout() {
     return response;
   } catch (error) {
     errorHandler(error, "로그아웃 에러");
-    // console.log("로그아웃 에러", error);
     throw error;
   }
 }
@@ -347,8 +281,6 @@ export async function getCityList({ status }) {
     const response = await instance.get("/lectures/cities/" + `${status}`);
     return response.data.data;
   } catch (error) {
-    console.log(error);
-
     throw error;
   }
 }
@@ -379,13 +311,10 @@ export async function getLectureList({
   } catch (error) {
     if (error.response) {
       // 서버가 응답을 반환한 경우
-      console.log("Error response:", error.response.data);
     } else if (err.request) {
       // 요청이 만들어졌지만, 응답을 받지 못한 경우
-      console.log("Error request:", error.request);
     } else {
       // 그 외의 에러
-      console.log("Error", error.message);
     }
     throw error; // 에러를 다시 던져서 호출자에게 전달
   }
@@ -400,7 +329,6 @@ export async function notiSubscribe(notiType) {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
     let fcmToken = undefined;
     if (enabled) {
-      console.log("Authorization status:", authStatus);
       fcmToken = await messaging().getToken();
       // setItemAsync의 value는 string만 가능
       await SecureStore.setItemAsync("fcmToken", fcmToken);
@@ -463,7 +391,6 @@ export async function notiSubscribe(notiType) {
     }
   } catch (error) {
     errorHandler(error, "Noti Subscribe ERROR");
-    // console.log("로그아웃 에러", error);
     throw error;
   }
 }
@@ -503,7 +430,6 @@ export async function notiUnsubscribe(notiType) {
     return true;
   } catch (error) {
     errorHandler(error, "Noti Unsubscribe ERROR");
-    // console.log("로그아웃 에러", error);
     throw error;
   }
 }

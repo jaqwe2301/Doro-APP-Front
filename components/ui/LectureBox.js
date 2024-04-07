@@ -3,17 +3,12 @@ import {
   StyleSheet,
   Text,
   Pressable,
-  ScrollView,
   useWindowDimensions,
 } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
-import { useEffect, useState } from "react";
 import { KRBold } from "../../constants/fonts";
 
 function LectureBox(props) {
-  useEffect(() => {
-    // console.log(props);
-  });
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
     return new Date(stringDate);

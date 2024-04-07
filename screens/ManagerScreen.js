@@ -33,18 +33,6 @@ import UserScreen from "./UserScreen";
 // import messaging from "@react-native-firebase/messaging";
 
 function ManagerScreen({ nav }) {
-  // async function getToken() {
-  //   try {
-  //     const token = await messaging().getToken();
-  //     setBody(token);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-  // useEffect(() => {
-  //   getToken();
-  // }, []);
-
   const [userData, setUserData] = useState([]);
   // const [filterUser, setFilterUser] = useState([]);
   const [title, setTitle] = useState("");
@@ -94,8 +82,6 @@ function ManagerScreen({ nav }) {
               tmp.push(user);
             })
             .catch((error) => {
-              console.log("에러");
-              console.log(error);
               if (error.isRefreshError) {
                 // RefreshToken 관련 에러 시 로그아웃
                 authCtx.logout();
@@ -109,10 +95,7 @@ function ManagerScreen({ nav }) {
         setUserData(tmp); // 유저 데이터
         // setFilterUser(tmp);
       })
-      .catch((error) => {
-        console.log("에러");
-        console.log(error);
-      });
+      .catch((error) => {});
   }, []);
 
   const addAlarm = async () => {
@@ -130,16 +113,12 @@ function ManagerScreen({ nav }) {
         authCtx.logout();
       }
       Alert.alert("알림 전송 실패", `제목 : ${title}\n내용 : ${body}`);
-      console.log(error);
       if (error.response) {
         // 서버가 응답을 반환한 경우
-        console.log("Error response:", error.response.data);
       } else if (error.request) {
         // 요청이 만들어졌지만, 응답을 받지 못한 경우
-        console.log("Error request:", error.request);
       } else {
         // 그 외의 에러
-        console.log("Error", error.message);
       }
     }
   };
@@ -153,7 +132,6 @@ function ManagerScreen({ nav }) {
         navigation.navigate("tutorScreen", { id: response.data, headerId: id });
       }
     } catch (error) {
-      console.log(error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();
@@ -189,8 +167,6 @@ function ManagerScreen({ nav }) {
       }
     } catch (error) {
       authCtx.logout();
-      console.log(error);
-      console.log("에러났쪄염");
     }
   }
   function logoutHandler() {
@@ -247,7 +223,6 @@ function ManagerScreen({ nav }) {
   const filteredData = filterByGeneration(userData, gfilter);
 
   useEffect(() => {
-    console.log(gfilter);
     setFilterData(gfilter.length === 0 ? userData : filteredData);
     setOnFilter(gfilter.length !== 0);
   }, [gfilter, userData]);

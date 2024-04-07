@@ -8,13 +8,9 @@ function Timer({ count, setCount, smallStyle }) {
   const [ss, setSS] = useState(0);
 
   useEffect(() => {
-    // console.log("timer시작");
     if (count > 0) {
       const intervalId = setInterval(() => {
         setCount((prev) => prev - 1);
-        // setMM(Math.floor(count / 60));
-        // setSS(count % 60);
-        // console.log("1초 빠이");
       }, 1000);
 
       return () => clearInterval(intervalId);

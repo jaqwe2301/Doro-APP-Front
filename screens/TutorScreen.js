@@ -58,7 +58,6 @@ function TutorScreen({ route, navigation }) {
 
   async function completeHandler() {
     try {
-      console.log(generation);
       const success = await updateProfile({
         generation: generation,
         major: major,
@@ -68,7 +67,6 @@ function TutorScreen({ route, navigation }) {
         studentStatus: studentStatus,
         id: headerId,
       });
-      console.log(success);
       if (success.success) {
         navigation.replace("ManagerPage");
       }

@@ -42,7 +42,6 @@ function EditNoticeScreen({ navigation, route }) {
       formData.append("writer", response.data.name);
       formData.append("title", title);
       formData.append("body", body);
-      // console.log(formData.get("announcementReq"));
       if (imageUrl && imageUrl !== data.picture) {
         formData.append("picture", {
           uri: imageUrl,
@@ -62,7 +61,6 @@ function EditNoticeScreen({ navigation, route }) {
           type: imageType,
           name: imageName,
         });
-        console.log("이미지 넣음요");
       }
     } catch (error) {
       if (error.isRefreshError) {
@@ -73,12 +71,10 @@ function EditNoticeScreen({ navigation, route }) {
 
     // }
     try {
-      console.log(JSON.stringify(formData));
       const response = await editAnnouncement({
         formData: formData,
         id: data.id,
       });
-      console.log(response);
       if (response.success) {
         try {
           const response = await getAnnouncementId({
@@ -87,7 +83,6 @@ function EditNoticeScreen({ navigation, route }) {
           setIsNoticeUpdate(!isNoticeUpdate);
           navigation.navigate("noticeDetail", { data: response });
         } catch (error) {
-          console.log(error);
           if (error.isRefreshError) {
             // RefreshToken 관련 에러 시 로그아웃
             authCtx.logout();
@@ -95,7 +90,6 @@ function EditNoticeScreen({ navigation, route }) {
         }
       }
     } catch (error) {
-      console.log(error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();
@@ -144,8 +138,6 @@ function EditNoticeScreen({ navigation, route }) {
       allowsEditing: false,
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setFileName(result.assets[0].uri.split("/").pop());

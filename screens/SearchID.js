@@ -57,7 +57,6 @@ function SearchID({ navigation }) {
           phone: phoneNum,
         });
 
-        console.log(success);
         if (success) {
           isAccount();
         } else {
@@ -88,9 +87,7 @@ function SearchID({ navigation }) {
         navigation.navigate("notFindId");
         setCount(0);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   async function requestNumber() {
@@ -100,7 +97,6 @@ function SearchID({ navigation }) {
           messageType: "ACCOUNT",
           phone: phoneNum,
         });
-        console.log(response);
         setBtnTitle("다시 요청");
         setCount(179);
         setIsVisible(true);

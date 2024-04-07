@@ -99,9 +99,7 @@ const HomeScreen = ({ navigation }) => {
       try {
         const result = await getAnnouncement({ page: 0, size: 3 });
         setResponse(result);
-        // console.log(result);
       } catch (error) {
-        console.error(error);
         if (error.isRefreshError) {
           // RefreshToken 관련 에러 시 로그아웃
           authCtx.logout();
@@ -223,7 +221,6 @@ const HomeScreen = ({ navigation }) => {
         cities = rCities;
         startDate = selectedStartDate;
         endDate = selectedEndDate;
-        console.log("date 맞음");
       }
     }
     if (status === "ALLOCATION_COMP") {
@@ -238,9 +235,6 @@ const HomeScreen = ({ navigation }) => {
         endDate = selectedEndDate;
       }
     }
-
-    // console.log(startDate);
-    // console.log(endDate);
 
     try {
       const result = await getLectureList({

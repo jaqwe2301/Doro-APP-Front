@@ -26,7 +26,6 @@ function ApplyingLectureBox({
   onPress,
   matchingText,
 }) {
-  // console.log(date)
   const dateControl = (stringDate) => {
     // string에서 date 타입으로 전환하기 위해 만듬
     return new Date(stringDate);

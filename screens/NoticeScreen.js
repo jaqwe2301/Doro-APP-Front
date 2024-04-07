@@ -38,12 +38,8 @@ function NoticeScreen({ navigation }) {
       if (response) {
         setData(response);
         setPageNum(1);
-        console.log("공지사항 전체 출력");
-        console.log(response);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   // let pageNum = 0;
@@ -59,14 +55,8 @@ function NoticeScreen({ navigation }) {
           setPageNum(1);
         }
         // pageNum++;
-
-        console.log(pageNum);
-        console.log("공지사항 전체 출력");
-        console.log(response);
       }
-      // console.log(response);
     } catch (error) {
-      console.log(error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();
@@ -93,7 +83,6 @@ function NoticeScreen({ navigation }) {
     navigation.navigate("noticeDetail", {
       data: item,
     });
-    console.log(selectedId + "선택");
   };
   function naviAddHandler() {
     navigation.navigate("noticeAdd");

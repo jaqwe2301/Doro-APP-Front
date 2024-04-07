@@ -30,7 +30,6 @@ function AlarmScreen({ navigation }) {
   async function notiHandler() {
     try {
       const response = await getNotification({
-        // userId: headerId,
         page: pageNum,
         size: 10,
       });
@@ -38,9 +37,7 @@ function AlarmScreen({ navigation }) {
         setData((prev) => [...prev, ...response.data]);
         setPageNum((prev) => prev + 1);
       }
-      // console.log(response);
     } catch (error) {
-      console.log(error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();
@@ -58,9 +55,7 @@ function AlarmScreen({ navigation }) {
         setData(response.data);
         setPageNum(1);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   async function readHandler(notificationId) {
@@ -68,10 +63,7 @@ function AlarmScreen({ navigation }) {
       const response = await readNotification({
         notificationId: notificationId,
       });
-
-      // console.log(response);
     } catch (error) {
-      console.log(error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();
@@ -111,7 +103,6 @@ function AlarmScreen({ navigation }) {
         Alert.alert("삭제된 공지 입니다.");
       }
     } catch (error) {
-      console.log(error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();

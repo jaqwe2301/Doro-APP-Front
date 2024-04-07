@@ -65,7 +65,6 @@ function Id({ navigation, route }) {
       } catch (error) {
         if (error.response) {
           // 서버가 응답을 반환한 경우
-          console.log("Error response:", error.response.data);
           if (error.response.data.code === "AUTH009") {
             Alert.alert(
               "이미 존재하는 아이디",
@@ -74,10 +73,8 @@ function Id({ navigation, route }) {
           }
         } else if (error.request) {
           // 요청이 만들어졌지만, 응답을 받지 못한 경우
-          console.log("Error request:", error.request);
         } else {
           // 그 외의 에러
-          console.log("Error", error.message);
         }
       }
     } else {

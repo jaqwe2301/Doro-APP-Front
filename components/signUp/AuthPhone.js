@@ -67,7 +67,6 @@ function AuthPhone() {
 
   async function requestNumber() {
     if (phoneNum.length === 11) {
-      // console.log(phoneNum);
       const check = await checkPhoneNum(phoneNum);
       if (check === "SUCCESS") {
         authPhoneNum({ messageType: "JOIN", phone: phoneNum });
@@ -80,7 +79,6 @@ function AuthPhone() {
         setInvalidPhone(false);
       } else if (check === "AUTH014") {
         setInvalidPhone(true);
-        // console.log("폰 번호 확인 실패");
       }
     } else {
     }

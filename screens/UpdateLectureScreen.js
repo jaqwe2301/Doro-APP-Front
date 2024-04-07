@@ -101,12 +101,9 @@ function UpdateLectureScreen({ route, navigation }) {
         },
       })
       .then((res) => {
-        // console.log(res.data.data)
         setLectureContents(res.data.data);
       })
       .catch((error) => {
-        console.log("에러");
-        console.log(error);
         if (error.isRefreshError) {
           // RefreshToken 관련 에러 시 로그아웃
           authCtx.logout();
@@ -168,19 +165,14 @@ function UpdateLectureScreen({ route, navigation }) {
   const updateLecture = () => {
     // inputStateHandler();
 
-    // console.log(lecturedata);
-
     for (const item in lecturedata) {
       if (lecturedata[item] === "0") {
         continue;
       } else if (!lecturedata[item]) {
-        console.log(item);
         Alert.alert("경고", "빈 칸이 있는지 확인 해주세요.");
         return 0;
       }
     }
-
-    // console.log(lecturedata)
 
     if (option === "create") {
       instance
@@ -192,7 +184,6 @@ function UpdateLectureScreen({ route, navigation }) {
         })
         .then((res) => {
           setIsLectureUpdate(!isLectureUpdate);
-          console.log(res);
           Alert.alert(
             "강의 업데이트",
             `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.`,
@@ -209,9 +200,6 @@ function UpdateLectureScreen({ route, navigation }) {
           );
         })
         .catch((error) => {
-          console.log("에러");
-          console.log(error);
-          console.log(lecturedata);
           if (error.isRefreshError) {
             // RefreshToken 관련 에러 시 로그아웃
             authCtx.logout();
@@ -231,7 +219,6 @@ function UpdateLectureScreen({ route, navigation }) {
         )
         .then((res) => {
           setIsLectureUpdate(!isLectureUpdate);
-          console.log(lecturedata);
           Alert.alert(
             "강의 업데이트",
             `"${lecturedata["subTitle"]}" 강의가 업데이트 되었습니다.`,
@@ -246,13 +233,8 @@ function UpdateLectureScreen({ route, navigation }) {
               },
             ]
           );
-
-          // console.log("강의 수정 완료");
-          // console.log(res);
         })
         .catch((error) => {
-          console.log("에러");
-          console.log(error);
           if (error.isRefreshError) {
             // RefreshToken 관련 에러 시 로그아웃
             authCtx.logout();
@@ -302,7 +284,6 @@ function UpdateLectureScreen({ route, navigation }) {
     const newList = [...inputList];
     newList.splice(index, 1);
     setInputList(newList);
-    console.log(newList);
     setLectureData((prev) => {
       const newDates = [...prev.lectureDates];
       newDates.splice(inputIdx, 1);
@@ -337,9 +318,7 @@ function UpdateLectureScreen({ route, navigation }) {
     }
   };
 
-  useEffect(() => {
-    console.log(modalVisible);
-  }, [modalVisible]);
+  useEffect(() => {}, [modalVisible]);
 
   const selectingLectureContents = (id) => {
     const lectureContentsData = lectureContents.filter(
@@ -402,7 +381,6 @@ function UpdateLectureScreen({ route, navigation }) {
       setLectureData((prev) => {
         let data = prev;
         data.lectureDates[inputIdx] = pickedDate.toISOString().split("T")[0];
-        // console.log(data);
         return data;
       });
 
@@ -444,9 +422,7 @@ function UpdateLectureScreen({ route, navigation }) {
         [
           {
             text: "확인",
-            selectingLectureContents: () => {
-              // console.log("강사 신청 완료");
-            },
+            selectingLectureContents: () => {},
             style: "destructive",
           },
         ],
@@ -589,7 +565,6 @@ function UpdateLectureScreen({ route, navigation }) {
       ...prev,
       [item]: text,
     }));
-    // console.log(contentsData)
   };
 
   const onConfirmContents = async () => {
@@ -608,13 +583,8 @@ function UpdateLectureScreen({ route, navigation }) {
           "Content-Type": "application/json",
         },
       })
-      .then((res) => {
-        console.log(res);
-      })
+      .then((res) => {})
       .catch((error) => {
-        console.log("에러");
-        console.log(error);
-        console.log(`${URL}/lecture-contents/`);
         if (error.isRefreshError) {
           // RefreshToken 관련 에러 시 로그아웃
           authCtx.logout();
@@ -637,8 +607,6 @@ function UpdateLectureScreen({ route, navigation }) {
               setLectureContents(res.data.data);
             })
             .catch((error) => {
-              console.log("에러");
-              console.log(error);
               if (error.isRefreshError) {
                 // RefreshToken 관련 에러 시 로그아웃
                 authCtx.logout();
@@ -685,9 +653,6 @@ function UpdateLectureScreen({ route, navigation }) {
                       paddingRight: 8,
                     }}
                   >
-                    {/* <Pressable onPress={() => console.log(lectureContents)}> */}
-                    {/* <Text style={{ marginRight: 8.03 }}>+</Text> */}
-
                     <Xmark width={17} height={17} />
                   </Pressable>
                 </View>
@@ -765,7 +730,6 @@ function UpdateLectureScreen({ route, navigation }) {
                   remark: "",
                   requirement: "",
                 });
-                console.log("뭐야");
               }}
               onPress={selectingLectureContents}
               data={lectureContents}

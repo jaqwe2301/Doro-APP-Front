@@ -72,13 +72,10 @@ function HistoryScreen({ navigation }) {
         });
 
         const data = result.lecturesInfos;
-        console.log("ㅗㅑ");
         setRLectureData((prev) => [...prev, ...data]);
 
-        console.log(data);
         setPageNum((prev) => prev + 1);
       } catch (error) {
-        console.error(error);
         if (error.isRefreshError) {
           // RefreshToken 관련 에러 시 로그아웃
           authCtx.logout();
@@ -103,22 +100,16 @@ function HistoryScreen({ navigation }) {
           setRLectureData(data);
           setPageNum(1);
           setRNum(result.totalCount);
-          console.log("rR");
-          console.log(result.totalCount);
         } else if (status === "ALLOCATION_COMP") {
           setALectureData(data);
           setPageNum2(1);
           setANum(result.totalCount);
-          console.log("rA");
         } else if (status === "FINISH") {
           setFLectureData(data);
           setPageNum3(1);
           setFNum(result.totalCount);
-          console.log("rF");
         }
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) {}
     }
 
     async function lectureHandler2() {
@@ -133,13 +124,9 @@ function HistoryScreen({ navigation }) {
         });
 
         const data = result.lecturesInfos;
-        console.log("ㅗㅑ");
         setALectureData((prev) => [...prev, ...data]);
-        console.log(data);
         setPageNum2((prev) => prev + 1);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) {}
     }
     async function lectureHandler3() {
       try {
@@ -153,13 +140,9 @@ function HistoryScreen({ navigation }) {
         });
 
         const data = result.lecturesInfos;
-        console.log("ㅗㅑ");
         setFLectureData((prev) => [...prev, ...data]);
-        console.log(data);
         setPageNum3((prev) => prev + 1);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) {}
     }
     const dateControl = (stringDate) => {
       // string에서 date 타입으로 전환하기 위해 만듬

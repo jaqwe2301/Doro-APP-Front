@@ -106,9 +106,7 @@ function ProfileEdit({ navigation, route }) {
             name: filename,
           });
           const response = await updateUserImage({ formData: formData });
-          console.log(response);
         } catch (error) {
-          console.log(error.message + "사진 못보냄");
           if (error.isRefreshError) {
             // RefreshToken 관련 에러 시 로그아웃
             authCtx.logout();
@@ -125,7 +123,6 @@ function ProfileEdit({ navigation, route }) {
         studentStatus: studentStatus,
         id: headerId,
       });
-      console.log(success);
       if (success.success) {
         navigation.replace("myPageScreen");
       }
@@ -177,7 +174,6 @@ function ProfileEdit({ navigation, route }) {
           phone: phoneNum,
         });
 
-        console.log(success);
         if (success) {
           setCount(0);
           setAuthVisible(false);
@@ -250,7 +246,6 @@ function ProfileEdit({ navigation, route }) {
     if (!result.canceled) {
       // const filename = result.assets[0].uri.split("/").pop();
       setProfileImg(result);
-      // console.log(filename);
       // formData.append("images", {
       //   uri: result.assets[0].uri,
       //   type: "image/jpeg",
@@ -258,8 +253,6 @@ function ProfileEdit({ navigation, route }) {
       //   name: filename,
       // });
 
-      console.log(formData);
-      console.log("hihi");
       setImageUrl(result.assets[0].uri);
     } else {
       return null;

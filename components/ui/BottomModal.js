@@ -69,9 +69,7 @@ function BottomModal({
         [
           {
             text: "확인",
-            onPress: () => {
-              // console.log("강사 신청 완료");
-            },
+            onPress: () => {},
             style: "destructive",
           },
         ],

@@ -23,7 +23,6 @@ function NoticeDetailScreen({ navigation, route }) {
   const data = route.params.data;
   const authCtx = useContext(AuthContext);
   const { headerRole, setHeaderRole } = useContext(HeaderContext);
-  console.log(data);
   const randomKey = Math.random().toString();
   function editHandler() {
     navigation.navigate("noticeEdit", { data: data });
@@ -32,13 +31,10 @@ function NoticeDetailScreen({ navigation, route }) {
   async function deleteAnnouncementHandler() {
     try {
       const response = await deleteAnnouncement({ id: data.id });
-      // console.log(data.id);
-      console.log(response);
       if (response.success) {
         navigation.replace("noticeScreen");
       }
     } catch (error) {
-      console.log(error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();

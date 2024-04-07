@@ -15,7 +15,6 @@ function FinishPw() {
     try {
       const response = await logout();
 
-      console.log(response);
       if (response.status === 200) {
         navigation.dispatch(
           CommonActions.reset({
@@ -34,8 +33,6 @@ function FinishPw() {
         })
       );
       authCtx.logout();
-      console.log(error);
-      console.log("에러났쪄염");
     }
   }
   return (

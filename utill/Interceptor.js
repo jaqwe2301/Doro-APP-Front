@@ -12,7 +12,6 @@ function Interceptor() {
 
   instance.interceptors.request.use(
     async function (config) {
-      // console.log("config 콘솔: ", config);
       const token = await SecureStore.getItemAsync("token");
 
       if (token) {
@@ -21,7 +20,6 @@ function Interceptor() {
       return config;
     },
     function (error) {
-      console.log("instance 에러: ", error);
       return Promise.reject(error);
     }
   );
@@ -42,7 +40,6 @@ function Interceptor() {
     const refreshToken = await SecureStore.getItemAsync("refreshToken");
 
     try {
-      console.log("hi refresh 할꺼염");
       const response = await axios.post(`${URL}/reissue`, {
         accessToken: `Bearer ${token}`,
         refreshToken: refreshToken,
@@ -50,7 +47,6 @@ function Interceptor() {
 
       const newToken = response.headers.authorization;
       await SecureStore.setItemAsync("token", newToken);
-      console.log("새로운 토큰이얌" + newToken);
       onTokenRefreshed(newToken);
     } catch (error) {
       Alert.alert("인증 에러 발생", "다시 로그인 해주세요.");
@@ -67,7 +63,6 @@ function Interceptor() {
     },
     async function (error) {
       // errorHandler(error, "인스턴스 에러");
-      console.log("인스턴스 에러: " + error);
       const originalConfig = error.config;
       if (error.response.status === 401) {
         const retryOriginalRequest = new Promise((resolve) => {

@@ -174,8 +174,6 @@ function DetailLectureScreen({ route, navigation }) {
         }
       })
       .catch((error) => {
-        console.log("강의 세부 못 불러옴");
-        console.log(error);
         if (error.isRefreshError) {
           authCtx.logout();
         }
@@ -191,14 +189,9 @@ function DetailLectureScreen({ route, navigation }) {
           },
         })
         .then((res) => {
-          // console.log("신청 강사 불러옴");
-          // console.log(res.data.data);
           setTutor(res.data.data);
         })
         .catch((error) => {
-          console.log("에러");
-          console.log("신청 강사 못 불러옴");
-          console.log(error);
           if (error.isRefreshError) {
             authCtx.logout();
           }
@@ -262,10 +255,6 @@ function DetailLectureScreen({ route, navigation }) {
                   }
                 )
                 .then((res) => {
-                  // console.log(res);
-                  // console.log("성공");
-                  // console.log("강사 신청 완료");
-
                   Alert.alert(
                     lectureBasicInfo.subTitle,
                     `${role} 신청이 완료되었습니다.`,
@@ -273,7 +262,6 @@ function DetailLectureScreen({ route, navigation }) {
                       {
                         text: "확인",
                         onPress: () => {
-                          // console.log("강사 신청 완료");
                           setAfter((prev) => !prev);
                         },
                         style: "destructive",
@@ -286,16 +274,13 @@ function DetailLectureScreen({ route, navigation }) {
                   );
                 })
                 .catch((error) => {
-                  // console.log("강사 신청 실패");
                   Alert.alert(
                     lectureBasicInfo.subTitle,
                     `강의 신청에 실패하였습니다. 다시 시도해주세요.`,
                     [
                       {
                         text: "확인",
-                        onPress: () => {
-                          // console.log("강사 신청 완료");
-                        },
+                        onPress: () => {},
                         style: "destructive",
                       },
                     ],
@@ -309,13 +294,10 @@ function DetailLectureScreen({ route, navigation }) {
                   }
                   if (error.response) {
                     // 서버가 응답을 반환한 경우
-                    console.log("Error response:", error.response.data);
                   } else if (err.request) {
                     // 요청이 만들어졌지만, 응답을 받지 못한 경우
-                    console.log("Error request:", error.request);
                   } else {
                     // 그 외의 에러
-                    console.log("Error", error.message);
                   }
                 });
             },
@@ -350,7 +332,6 @@ function DetailLectureScreen({ route, navigation }) {
 
   const onLayout = (e) => {
     const { layout } = e.nativeEvent; // layout 추출
-    // console.log("onLayout", layout); // layout 출력
   };
 
   /** 강사 배정 */
@@ -365,7 +346,6 @@ function DetailLectureScreen({ route, navigation }) {
         {
           text: "확인",
           onPress: () => {
-            console.log("강사 배정 혹은 취소 완료");
             instance
               .patch(
                 `${URL}/users-lectures/lectures/${data.id}`,
@@ -381,8 +361,6 @@ function DetailLectureScreen({ route, navigation }) {
                 }
               )
               .then((res) => {
-                // console.log(res);
-
                 Alert.alert(
                   lectureBasicInfo.subTitle,
                   `${role} '${name}' ${
@@ -392,7 +370,6 @@ function DetailLectureScreen({ route, navigation }) {
                     {
                       text: "확인",
                       onPress: () => {
-                        // console.log("강사 신청 완료");
                         setAfter((prev) => !prev);
                       },
                       style: "destructive",
@@ -409,8 +386,6 @@ function DetailLectureScreen({ route, navigation }) {
                   // RefreshToken 관련 에러 시 로그아웃
                   authCtx.logout();
                 }
-                console.log("에러");
-                console.log(error);
               });
           },
           style: "default",
@@ -427,7 +402,6 @@ function DetailLectureScreen({ route, navigation }) {
   const [status, setStatus] = useState();
 
   const deleteLecture = () => {
-    console.log(data.id);
     Alert.alert(
       lectureBasicInfo.subTitle,
       "강의를 삭제하시겠습니까?",
@@ -451,7 +425,6 @@ function DetailLectureScreen({ route, navigation }) {
                     {
                       text: "확인",
                       onPress: () => {
-                        // console.log("강사 신청 완료");
                         data.navi
                           ? navigation.navigate("historyScreen")
                           : navigation.navigate("HomePage");
@@ -467,7 +440,6 @@ function DetailLectureScreen({ route, navigation }) {
                   // RefreshToken 관련 에러 시 로그아웃
                   authCtx.logout();
                 }
-                // console.log("강사 신청 실패");
                 Alert.alert(
                   lectureBasicInfo.subTitle,
                   "강의 삭제에 실패하였습니다. 다시 시도해주세요.",
@@ -479,7 +451,6 @@ function DetailLectureScreen({ route, navigation }) {
                     },
                   ]
                 );
-                console.log(error);
               });
           },
           style: "destructive",
@@ -766,7 +737,6 @@ function DetailLectureScreen({ route, navigation }) {
         const statusHandler = () => {
           let lecture = lectureBasicInfo;
           if (!lecture) {
-            console.error("lecture is undefined");
             // return prev;
           }
 
@@ -786,11 +756,7 @@ function DetailLectureScreen({ route, navigation }) {
             })
             .then((res) => {
               setIsLectureUpdate(!isLectureUpdate);
-              console.log(
-                status
-                  ? "ALLOCATION_COMP" + "변경완료"
-                  : "RECRUITING" + "변경완료"
-              );
+
               setStatus((prev) => !prev);
             })
             .catch((error) => {
@@ -798,8 +764,6 @@ function DetailLectureScreen({ route, navigation }) {
                 // RefreshToken 관련 에러 시 로그아웃
                 authCtx.logout();
               }
-              console.log("에러");
-              console.log(error);
             });
         };
 
@@ -826,7 +790,7 @@ function DetailLectureScreen({ route, navigation }) {
                   <Pressable>
                     <FilterBox text="강사 타입" color="black" />
                   </Pressable>
-                  <Pressable onPress={() => console.log(status)}>
+                  <Pressable>
                     <FilterBox text="정렬 순서" color="black" />
                   </Pressable>
                 </View>
@@ -843,9 +807,7 @@ function DetailLectureScreen({ route, navigation }) {
                           [
                             {
                               text: "확인",
-                              onPress: () => {
-                                // console.log("강사 신청 완료");
-                              },
+                              onPress: () => {},
                               style: "default",
                             },
                           ]
@@ -955,7 +917,6 @@ function DetailLectureScreen({ route, navigation }) {
   const statusHandler = () => {
     let lecture = lectureBasicInfo;
     if (!lecture) {
-      console.error("lecture is undefined");
     }
 
     delete lecture.id;
@@ -973,9 +934,6 @@ function DetailLectureScreen({ route, navigation }) {
         },
       })
       .then((res) => {
-        console.log(
-          status ? "ALLOCATION_COMP" + "변경완료" : "RECRUITING" + "변경완료"
-        );
         setStatus((prev) => !prev);
         setIsLectureUpdate(!isLectureUpdate);
       })
@@ -1348,12 +1306,6 @@ function DetailLectureScreen({ route, navigation }) {
                         { gap: 8, marginBottom: 28 },
                       ]}
                     >
-                      {/* <Pressable>
-                        <FilterBox text="강사 타입" color="black" />
-                      </Pressable>
-                      <Pressable onPress={() => console.log(status)}>
-                        <FilterBox text="정렬 순서" color="black" />
-                      </Pressable> */}
                       <Text
                         style={{
                           fontSize: 18,
@@ -1378,9 +1330,7 @@ function DetailLectureScreen({ route, navigation }) {
                               [
                                 {
                                   text: "확인",
-                                  onPress: () => {
-                                    // console.log("강사 신청 완료");
-                                  },
+                                  onPress: () => {},
                                   style: "default",
                                 },
                               ]

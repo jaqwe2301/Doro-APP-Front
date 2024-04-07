@@ -18,13 +18,10 @@ function formatErrorMessage(data) {
 
 export function errorHandler(error, title) {
   if (error.response) {
-    console.log(title, error.response.data);
     return Alert.alert(title, formatErrorMessage(error.response.data));
   } else if (error.request) {
-    console.log(title, error.request);
     return Alert.alert(title, formatErrorMessage(error.request));
   } else {
-    console.log(title, error.message);
     return Alert.alert(title, formatErrorMessage(error.message));
   }
 }

@@ -64,8 +64,6 @@ function AddNoticeScreen({ navigation }) {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setFileName(result.assets[0].uri.split("/").pop());
       setImageUrl(result.assets[0].uri);
@@ -97,20 +95,16 @@ function AddNoticeScreen({ navigation }) {
         const response = await createAnnouncement2({
           formData: formData,
         });
-        console.log(response);
         if (response.code === "NOTI001" || response.success) {
           navigation.replace("noticeScreen");
         }
       } catch (error) {
-        console.log(JSON.stringify(formData));
-        console.log(error);
         if (error.isRefreshError) {
           // RefreshToken 관련 에러 시 로그아웃
           authCtx.logout();
         }
       }
     } catch (error) {
-      console.error("Error during announcement creation:", error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();

@@ -51,13 +51,9 @@ function Code({ navigation, route }) {
   const [statusStyle, setStatusStyle] = useState(styles.textModal);
   const [statusGStyle, setStatusGStyle] = useState();
 
-  useEffect(() => {
-    console.log(statusGStyle);
-  }, [statusGStyle]);
+  useEffect(() => {}, [statusGStyle]);
 
-  useEffect(() => {
-    console.log(inputGeneration);
-  }, [inputGeneration]);
+  useEffect(() => {}, [inputGeneration]);
 
   const [lbtnColor, setlbtnColor] = useState(GlobalStyles.colors.gray05);
 
@@ -81,7 +77,6 @@ function Code({ navigation, route }) {
         ? GlobalStyles.colors.primaryDefault
         : GlobalStyles.colors.gray05
     );
-    console.log(notificationAgreement + " 여긴 code");
   }, [accept1, accept2, inputCode, inputRole, inputGeneration]);
 
   async function navigateId() {

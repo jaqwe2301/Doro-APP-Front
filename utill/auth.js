@@ -13,9 +13,7 @@ export function authPhoneNum({ messageType, phone }) {
       messageType: messageType,
       phone: phone,
     })
-    .then((response) => {
-      console.log(response.data);
-    })
+    .then((response) => {})
     .catch((error) => {
       errorHandler(error, "카카오톡 인증 에러");
     });
@@ -26,16 +24,13 @@ export async function checkPhoneNum(phone) {
     const response = await axios.get(URL + "/check/phone?phone=" + phone);
 
     return response.data.code;
-    // console.log(phone);
   } catch (err) {
     if (err.response) {
       // 서버가 응답을 반환한 경우
-      // console.log(err.response.data.code);
       return err.response.data.code;
     } else {
       // 그 외의 에러
       Alert.alert("요청 실패", "휴대폰 번호 유효 체크를 실패하였습니다.");
-      console.log("Error", err.message);
     }
   }
 }
@@ -46,7 +41,6 @@ export async function verifyauthPhoneNum({ authNum, messageType, phone }) {
     messageType: messageType,
     phone: phone,
   });
-  console.log(response.data);
   const success = response.data.success;
 
   return success;
@@ -55,9 +49,7 @@ export async function verifyauthPhoneNum({ authNum, messageType, phone }) {
 export async function findAccount({ phone }) {
   const response = await axios.get(URL + "/find/account?phone=" + phone);
 
-  console.log(phone);
   const code = response.data;
-  console.log(code);
 
   return code;
 }
@@ -65,9 +57,7 @@ export async function findAccount({ phone }) {
 export async function checkAccount({ account }) {
   const response = await axios.get(URL + "/check/account?account=" + account);
 
-  console.log(account);
   const data = response.data;
-  console.log(data);
 
   return data;
 }
@@ -86,7 +76,6 @@ export async function changePassword({
   });
 
   const data = response.data;
-  console.log(data);
 
   return data;
 }
@@ -118,7 +107,6 @@ export async function login({ id, pw }) {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
     let fcmToken = undefined;
     if (enabled) {
-      console.log("Authorization status:", authStatus);
       fcmToken = await messaging().getToken();
 
       // setItemAsync의 value는 string만 가능
@@ -161,16 +149,12 @@ export async function login({ id, pw }) {
     return token;
   } catch (error) {
     Alert.alert("로그인 실패", "로그인에 실패하셨습니다.");
-    // console.error("Error occurred during login: ", error);
     if (error.response) {
       // 서버가 응답을 반환한 경우
-      console.log("Error response:", error.response.data);
     } else if (error.request) {
       // 요청이 만들어졌지만, 응답을 받지 못한 경우
-      console.log("Error request:", error.request);
     } else {
       // 그 외의 에러
-      console.log("Error", error.message);
     }
   }
 }
@@ -180,10 +164,6 @@ export async function reToken({ accessToken, refreshToken }) {
     accessToken: accessToken,
     refreshToken: refreshToken,
   });
-
-  // const token = response.headers.authorization;
-  console.log(response);
-  // console.log(token);
 
   return response;
 }
@@ -205,22 +185,6 @@ export async function signUp({
   studentStatus,
 }) {
   try {
-    console.log(
-      account,
-      birth,
-      doroAuth,
-      gender,
-      generation,
-      major,
-      name,
-      password,
-      passwordCheck,
-      phone,
-      role,
-      school,
-      studentId,
-      studentStatus
-    );
     const response = await axios.post(URL + "/join", {
       account: account,
       birth: birth,

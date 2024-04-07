@@ -67,7 +67,6 @@ function SearchPW({ navigation }) {
           messageType: "PASSWORD",
           phone: phoneNum,
         });
-        console.log(success);
         if (success) {
           Keyboard.dismiss();
           setTimeout(() => {

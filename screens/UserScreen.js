@@ -44,10 +44,8 @@ function UserScreen({ navigation }) {
       const response = await getProfile({ id: headerId });
 
       setData(response.data);
-      console.log("profileHandler 콘솔" + JSON.stringify(response));
       setIsLoading(false);
     } catch (error) {
-      console.log("프로필 핸들러 에러" + error);
       setIsLoading(true);
     }
   }
@@ -60,7 +58,6 @@ function UserScreen({ navigation }) {
         },
       })
       .then((res) => {
-        // console.log(res.data.data);
         setRecruiting(() => {
           const data = res.data.data.filter(
             (item) => item.status === "RECRUITING"
@@ -71,20 +68,14 @@ function UserScreen({ navigation }) {
           const data = res.data.data.filter(
             (item) => item.status === "ALLOCATION_COMP"
           );
-          // console.log(data);
           return data;
         });
         setFinished(() => {
           const data = res.data.data.filter((item) => item.status === "FINISH");
-          // console.log(data);
           return data;
         });
-        console.log("성공");
       })
       .catch((error) => {
-        console.log("왜 에러나니");
-        console.log("에러");
-        console.log(error);
         if (error.isRefreshError) {
           // RefreshToken 관련 에러 시 로그아웃
           authCtx.logout();
@@ -105,7 +96,6 @@ function UserScreen({ navigation }) {
     try {
       const response = await logout();
 
-      // console.log(response);
       if (response.status === 200) {
         // navigation.dispatch(
         //   CommonActions.reset({
@@ -124,8 +114,6 @@ function UserScreen({ navigation }) {
       //   })
       // );
       authCtx.logout();
-      console.log("로그아웃 에러 콘솔: ", error);
-      console.log("에러났쪄염");
     }
   }
 

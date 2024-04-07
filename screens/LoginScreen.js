@@ -55,11 +55,8 @@ function LoginScreen({ navigation }) {
     setIsAuthenticating(true);
     try {
       const token = await login({ id: id, pw: pw });
-      console.log("엑세스 토큰: ", token.headers.authorization); // 엑세스 토큰
-      console.log("리프레시 토큰: ", token.data); // 리프레시 토큰
       authCtx.authenticate(token.headers.authorization, token.data);
       const decoded = jwtDecode(token.headers.authorization); // JWT를 디코드함
-      // console.log(decoded);
       setHeaderRole(decoded.roles[0].authority);
       setHeaderId(decoded.id);
       setHeaderAccount(decoded.sub);

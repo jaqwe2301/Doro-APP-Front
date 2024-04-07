@@ -43,7 +43,6 @@ function DeleteUser({ navigation, route }) {
   async function deleteUserHandler() {
     try {
       const response = await deleteUser();
-      console.log("갔니" + response);
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -52,7 +51,6 @@ function DeleteUser({ navigation, route }) {
       );
       authCtx.logout();
     } catch (error) {
-      console.log("유저삭제 에러" + error);
       if (error.isRefreshError) {
         // RefreshToken 관련 에러 시 로그아웃
         authCtx.logout();
@@ -79,10 +77,7 @@ function DeleteUser({ navigation, route }) {
         } catch (error) {
           Alert.alert("알림", "비밀번호가 틀렸습니다");
         }
-      } catch (error) {
-        console.log("error발생" + error);
-        // console.log(error)
-      }
+      } catch (error) {}
     }
   }
   const { StatusBarManager } = NativeModules;
